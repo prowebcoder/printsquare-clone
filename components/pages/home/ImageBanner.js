@@ -29,7 +29,7 @@ export default function ImageBanner() {
         {/* Right Image */}
         <div className="md:w-1/2 flex justify-center">
           <Image
-            src="/homepage/paper.jpg"
+            src="/homepage/paper.png"
             alt="High-quality paper"
             width={650}
             height={400}
