@@ -44,9 +44,9 @@ const MainMenu = () => {
     },
     "Help": {
       items: [
-        { label: "Notice", href: "#" },
-        { label: "F/A", href: "#" },
-        { label: "Contact Us", href: "#" },
+        { label: "Notice", href: "/notice" },
+        { label: "Faq's", href: "/faqs" },
+        { label: "Contact Us", href: "/contact-us" },
       ],
     },
   };

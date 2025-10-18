@@ -1,10 +1,10 @@
 "use client";
 import Head from "next/head";
 import Header from "../../layout/header/header";
-import ContactUs from "./ContactUs";
+import Faq from "./Faq";
 import Footer from "../../layout/footer/footer";
 
-export default function ContactPage() {
+export default function FaqPage() {
   return (
     <>
       <Head>
@@ -15,7 +15,7 @@ export default function ContactPage() {
         />
       </Head> 
       <Header />
-      <ContactUs />
+      <Faq />
       <Footer />
     </>
   );
