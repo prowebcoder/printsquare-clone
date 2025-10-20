@@ -47,7 +47,7 @@ const Header = () => {
 
         {/* Main Header */}
         <header className={`w-full transition-all duration-300 ${isSticky ? "py-2 bg-white" : "py-4 bg-white"}`}>
-          <div className="max-w-7xl mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto flex justify-between items-center">
             {/* Logo */}
             <Link href="/" className="flex items-center">
               <Image src="/homepage/logo.png" alt="PrintStar" width={300} height={80} className="h-auto w-48 md:w-60 lg:w-72" />
