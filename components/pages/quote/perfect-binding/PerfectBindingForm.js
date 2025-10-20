@@ -37,9 +37,9 @@ const coverFoldOptions = [
   { value: 'BOTH', label: 'Both cover folds' },
 ];
 const holePunchOptions = [
-  { value: '6', label: '0.236" (6mm) drill' },
-  { value: '8', label: '0.315" (8mm) drill' },
-  { value: '9.5', label: '0.374" (9.5mm) drill' },
+  { value: '6', label: '0.236&quot; (6mm) drill' },
+  { value: '8', label: '0.315&quot; (8mm) drill' },
+  { value: '9.5', label: '0.374&quot; (9.5mm) drill' },
 ];
 const slipcaseOptions = [
   { value: 'NONE', label: 'None' },
@@ -237,7 +237,7 @@ const PerfectBindingForm = () => {
                   type="text"
                   value={isCustomSize ? customWidth : ''}
                   onChange={(e) => isCustomSize && setCustomWidth(e.target.value)}
-                  placeholder={`Width, ${sizeUnit === 'INCH' ? '"' : 'mm'}`}
+                  placeholder={`Width, ${sizeUnit === 'INCH' ? '&quot;' : 'mm'}`}
                   className={`w-1/2 p-2 border rounded-md text-sm transition-colors ${isCustomSize ? 'bg-white border-indigo-500' : 'bg-gray-100 border-gray-300'}`}
                   readOnly={!isCustomSize}
                 />
@@ -245,14 +245,14 @@ const PerfectBindingForm = () => {
                   type="text"
                   value={isCustomSize ? customHeight : ''}
                   onChange={(e) => isCustomSize && setCustomHeight(e.target.value)}
-                  placeholder={`Height, ${sizeUnit === 'INCH' ? '"' : 'mm'}`}
+                  placeholder={`Height, ${sizeUnit === 'INCH' ? '&quot;' : 'mm'}`}
                   className={`w-1/2 p-2 border rounded-md text-sm transition-colors ${isCustomSize ? 'bg-white border-indigo-500' : 'bg-gray-100 border-gray-300'}`}
                   readOnly={!isCustomSize}
                 />
               </div>
               {isCustomSize && (
                 <p className="text-xs text-gray-500 mt-2">
-                  Min: 4"x4", Max: 11.8"x14.3"
+                  Min: 4&quot;x4&quot;, Max: 11.8&quot;x14.3&quot;
                 </p>
               )}
             </div>
@@ -281,7 +281,7 @@ const PerfectBindingForm = () => {
                 ))}
               </div>
               <p className="text-sm text-gray-500 mt-2">
-                Spine Width: <span className="font-semibold text-gray-700">0.191 {sizeUnit === 'INCH' ? '"' : 'mm'}</span>
+                Spine Width: <span className="font-semibold text-gray-700">0.191 {sizeUnit === 'INCH' ? '&quot;' : 'mm'}</span>
               </p>
             </div>
           </div>

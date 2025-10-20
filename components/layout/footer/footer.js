@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-
+import Link from "next/link";
 export default function Footer() {
   return (
     <footer className="bg-[#1f1f1f] text-gray-300 py-6">
@@ -16,11 +16,11 @@ export default function Footer() {
             className="mb-2"
           />
           <div className="flex gap-3 text-sm mb-2">
-            <a href="/" className="hover:text-white">HOME</a>
+            <Link href="/" className="hover:text-white">HOME</Link>
             <span>|</span>
-            <a href="/privacy-policy" className="hover:text-white">PRIVACY POLICY</a>
+            <Link href="/privacy-policy" className="hover:text-white">PRIVACY POLICY</Link>
             <span>|</span>
-            <a href="/terms-conditions" className="hover:text-white">TERMS & CONDITIONS</a>
+            <Link href="/terms-conditions" className="hover:text-white">TERMS & CONDITIONS</Link>
           </div>
           <p className="text-xs">
             COPYRIGHT © 2020 PRINTSeoul. ALL RIGHTS RESERVED.

@@ -13,22 +13,27 @@ export default function Pricing() {
             Affordable Printing <span className="text-[#008281]">Prices</span>
           </h2>
           <p className="text-gray-700 mb-3 text-lg">
-            At Print Seoul, we bring your ideas to life with top-quality book printing powered by cutting-edge technology and fair pricing.
+            At Print Seoul, we bring your ideas to life with top-quality book
+            printing powered by cutting-edge technology and fair pricing.
           </p>
           <p className="text-gray-700 mb-6 text-lg">
-            Experience premium materials, sharp detail, and a flawless finish perfect for professionals, authors, and brands.
+            Experience premium materials, sharp detail, and a flawless finish
+            perfect for professionals, authors, and brands.
           </p>
         </div>
 
         {/* Right Section - Sample Specification */}
-        <div data-aos="fade-left" className="flex flex-col justify-center items-end">
+        <div
+          data-aos="fade-left"
+          className="flex flex-col justify-center items-end"
+        >
           <div className="bg-white p-8 rounded-2xl shadow-lg border-r-8 border-[#008281] max-w-md w-full">
             <h3 className="text-2xl font-bold text-[#008281] mb-5">
               Sample Specification
             </h3>
             <ul className="space-y-3 text-gray-700">
               {[
-                { label: "Size", value: `8.5" × 11"` },
+                { label: "Size", value: `8.5&quot; × 11&quot;` },
                 { label: "Binding", value: "Perfect Binding" },
                 { label: "Cover", value: "250gsm Gloss, Full Color" },
                 { label: "Inside Pages", value: "110gsm Gloss, Full Color" },
@@ -54,7 +59,7 @@ export default function Pricing() {
           {/* Company A */}
           <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
             <div className="bg-[#ef4146] text-white font-semibold text-center py-3 uppercase tracking-wide">
-              Company "A"
+              Company &quot;A&quot;
             </div>
             <table className="w-full text-sm border-separate border-spacing-y-1">
               <thead className="bg-[#f9f8f7] text-gray-800">
@@ -125,7 +130,7 @@ export default function Pricing() {
           {/* Company D */}
           <div className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300">
             <div className="bg-[#ef4146] text-white font-semibold text-center py-3 uppercase tracking-wide">
-              Company "D"
+              Company &quot;D&quot;
             </div>
             <table className="w-full text-sm border-separate border-spacing-y-1">
               <thead className="bg-[#f9f8f7] text-gray-800">
@@ -159,7 +164,8 @@ export default function Pricing() {
 
         {/* Footer Note */}
         <p className="text-xs text-gray-600 mt-6 italic text-center md:text-left">
-          * For bulk orders, we recommend Ocean shipping / Split delivery to enjoy lower delivery costs.
+          * For bulk orders, we recommend Ocean shipping / Split delivery to
+          enjoy lower delivery costs.
         </p>
       </div>
     </section>

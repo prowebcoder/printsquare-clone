@@ -252,7 +252,7 @@ const SaddleStitchingForm = () => {
               </div>
               {isCustomSize && (
                 <p className="text-xs text-gray-500 mt-2">
-                  Min: 4"x4", Max: 11.8"x14.3"
+                  Min: 4x4inch, Max: 11.8x14.8inch
                 </p>
               )}
             </div>

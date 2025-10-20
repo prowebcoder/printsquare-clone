@@ -9,7 +9,7 @@ export default function Tabs() {
   const tabs = [
     { id: "samples", label: "Product Samples", icon: <Package className="w-5 h-5" /> },
     { id: "setup", label: "File Setup Guide", icon: <FileText className="w-5 h-5" /> },
-    { id: "delivery", label: "Processing & Delivery", icon: <Truck className="w-5 h-5" /> },
+    { id: "delivery", label: "Processing &amp; Delivery", icon: <Truck className="w-5 h-5" /> },
   ];
 
   return (
@@ -59,7 +59,7 @@ export default function Tabs() {
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
                   Perfect binding is one of the most popular binding methods chosen by customers. 
-                  If the spine width is more than 0.7", perfect binding offers better stability 
+                  If the spine width is more than 0.7&quot;, perfect binding offers better stability 
                   and a professional finish. Choose from a range of sizes and paper types for 
                   both cover and inside pages.
                 </p>
@@ -94,7 +94,7 @@ export default function Tabs() {
                 transition={{ duration: 0.4 }}
               >
                 <h3 className="text-2xl font-semibold text-gray-800 mb-3">
-                  Processing & Delivery
+                  Processing &amp; Delivery
                 </h3>
                 <p className="text-gray-600 leading-relaxed">
                   Standard production takes 5 business days after final proof approval. 
