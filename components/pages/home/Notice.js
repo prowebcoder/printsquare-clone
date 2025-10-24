@@ -17,12 +17,12 @@ const Notice = () => {
   ];
 
   return (
-    <section className="bg-[#0B1633] py-20 text-white">
+    <section className="bg-[#FAFAFA] py-20 text-gray-900">
       <div className="max-w-7xl mx-auto px-6 text-center">
         {/* Heading */}
         <div className="mb-14">
           <h2 className="text-4xl md:text-5xl font-bold tracking-wide flex items-center justify-center gap-3">
-            <Megaphone className="w-8 h-8 text-white" />
+            <Megaphone className="w-8 h-8 text-[#E21B36]" />
             Latest Notices
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] mx-auto mt-4 rounded-full"></div>
@@ -33,15 +33,15 @@ const Notice = () => {
           {notices.map((item, idx) => (
             <div
               key={idx}
-              className="bg-[#121A2C] rounded-2xl p-6 hover:bg-gradient-to-r hover:from-[#E21B36] hover:to-[#FF4B2B] transition duration-300 shadow-lg"
+              className="bg-white rounded-2xl p-6 border border-gray-200 hover:shadow-lg hover:border-transparent hover:bg-gradient-to-r hover:from-[#FFE3E5] hover:to-[#FFF0E5] transition duration-300"
             >
-              <h3 className="font-semibold text-lg mb-2 text-white">
+              <h3 className="font-semibold text-lg mb-2 text-gray-900">
                 {item.title}
               </h3>
-              <p className="text-sm text-[#D6D9E0] mb-3 leading-relaxed">
+              <p className="text-sm text-gray-600 mb-3 leading-relaxed">
                 {item.desc}
               </p>
-              <p className="text-xs text-[#D6D9E0]">{item.date}</p>
+              <p className="text-xs text-gray-400">{item.date}</p>
             </div>
           ))}
         </div>
