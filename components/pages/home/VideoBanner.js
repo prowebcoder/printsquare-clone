@@ -24,8 +24,8 @@ export default function VideoBanner() {
           <span className="text-[#fdce2b]">Printing at Affordable Prices</span>
         </h1>
         <p className="text-base md:text-lg text-gray-200">
-          Print Star delivers premium book printing with advanced technology, 
-          flawless finishing, and exceptional value — perfect for businesses and creators.
+          Print Seoul delivers premium book printing with advanced technology, 
+          flawless finishing, and exceptional value perfect for businesses and creators.
         </p>
       </div>
     </section>

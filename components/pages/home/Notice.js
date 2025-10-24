@@ -17,7 +17,7 @@ const Notice = () => {
   ];
 
   return (
-    <section className="bg-[#0c968c] py-20 text-white">
+    <section className="bg-[#26898c] py-20 text-white">
       <div className="max-w-7xl mx-auto px-6 text-center">
         {/* Heading */}
         <div className="mb-14">

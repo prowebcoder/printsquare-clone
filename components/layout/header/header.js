@@ -50,7 +50,7 @@ const Header = () => {
           <div className="max-w-7xl mx-auto flex justify-between items-center">
             {/* Logo */}
             <Link href="/" className="flex items-center">
-              <Image src="/homepage/logo.png" alt="PrintStar" width={300} height={80} className="h-auto w-48 md:w-60 lg:w-72" />
+              <Image src="/homepage/logo-main.png" alt="PrintStar" width={300} height={80} className="h-auto w-48 md:w-60 lg:w-72" />
             </Link>
 
             {/* Desktop Menu */}
