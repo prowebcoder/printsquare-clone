@@ -189,7 +189,7 @@ const SaddleStitchingForm = () => {
   // --- RENDER ---
   return (
     <div className="max-w-6xl mx-auto p-4 sm:p-6 bg-gray-50 font-sans">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Perfect Binding Configuration</h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Saddle Stiching Configuration</h1>
 
       {/* --- Unit Selectors --- */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-white shadow-md rounded-lg mb-6">
