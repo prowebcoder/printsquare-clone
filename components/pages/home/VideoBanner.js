@@ -20,8 +20,8 @@ export default function VideoBanner() {
       {/* Text Overlay */}
       <div className="relative z-10 text-center px-6 max-w-3xl">
         <h1 className="text-4xl md:text-6xl font-extrabold mb-4 leading-tight">
-          <span className="text-[#ec8f34]">High-Quality</span>{" "}
-          <span className="text-[#fdce2b]">Printing at Affordable Prices</span>
+          <span className="text-[#FF4B2B]">High-Quality</span>{" "}
+          <span className="text-[#D6D9E0]">Printing at Affordable Prices</span>
         </h1>
         <p className="text-base md:text-lg text-gray-200">
           Print Seoul delivers premium book printing with advanced technology, 

@@ -39,15 +39,15 @@ export default function TabsGallery() {
   };
 
   return (
-    <section className="bg-gray-50 py-20 px-6 sm:px-10">
+    <section className="bg-white py-20 px-6 sm:px-10">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <header className="text-center mb-12">
           <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900">
             Our Advanced Printing Facilities
           </h2>
-          <p className="mt-4 text-gray-600 text-base sm:text-lg max-w-3xl mx-auto">
-            From small runs to large-scale printing, Print Square delivers precision and quality at every stage.
+          <p className="mt-4 text-gray-700 text-base sm:text-lg max-w-3xl mx-auto">
+            From small runs to large-scale printing, <strong className="text-[#E21B36]">PrintSeoul</strong> delivers precision and quality at every stage.
           </p>
         </header>
 
@@ -59,7 +59,7 @@ export default function TabsGallery() {
               onClick={() => setActiveTab(tab.id)}
               className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 border ${
                 activeTab === tab.id
-                  ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white border-transparent shadow-md"
+                  ? "bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white border-transparent shadow-md"
                   : "bg-white text-gray-700 border-gray-200 hover:bg-gray-100"
               }`}
             >
@@ -90,7 +90,7 @@ export default function TabsGallery() {
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-500"></div>
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-500 rounded-2xl"></div>
                 </div>
               ))}
             </motion.div>

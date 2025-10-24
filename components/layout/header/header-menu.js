@@ -58,7 +58,7 @@ const MainMenu = () => {
   return (
     <nav className="relative">
       {/* Desktop Menu */}
-      <ul className="hidden md:flex space-x-8 font-medium text-gray-700">
+      <ul className="hidden md:flex space-x-8 font-medium text-white">
         {Object.keys(menuData).map((menuItem) => (
           <li
             key={menuItem}
@@ -66,15 +66,15 @@ const MainMenu = () => {
             onMouseEnter={() => setActiveMenu(menuItem)}
             onMouseLeave={() => setActiveMenu(null)}
           >
-            <span className="hover:text-blue-600 transition-colors duration-200 py-2 block cursor-pointer">
+            <span className="hover:text-red-500 transition-colors duration-200 py-2 block cursor-pointer">
               {menuItem}
             </span>
 
             {/* Dropdown */}
             {activeMenu === menuItem && (
-              <div className="absolute left-0 top-full mt-0 bg-white shadow-xl rounded-lg border border-gray-200 min-w-64 z-50">
+              <div className="absolute left-0 top-full mt-0 bg-[#121A2C] shadow-xl rounded-lg border border-[#2E3850] min-w-64 z-50">
                 <div className="p-4">
-                  <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                  <div className="text-xs font-semibold text-[#D6D9E0] uppercase tracking-wider mb-2">
                     {menuItem}
                   </div>
                   <ul className="space-y-1">
@@ -82,7 +82,7 @@ const MainMenu = () => {
                       <li key={subItem.label}>
                         <Link
                           href={subItem.href}
-                          className="block px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 rounded-md transition-colors duration-200"
+                          className="block px-3 py-2 text-sm text-white hover:bg-gradient-to-r hover:from-[#E21B36] hover:to-[#FF4B2B] hover:text-white rounded-md transition-all duration-200"
                         >
                           {subItem.label}
                         </Link>
@@ -100,26 +100,26 @@ const MainMenu = () => {
       <div className="md:hidden">
         <ul className="space-y-2 py-2">
           {Object.keys(menuData).map((menuItem) => (
-            <li key={menuItem} className="border-b border-gray-200">
+            <li key={menuItem} className="border-b border-[#2E3850]">
               <button
                 onClick={() => toggleMobileMenu(menuItem)}
-                className="w-full flex justify-between items-center px-4 py-3 text-gray-700 font-medium focus:outline-none"
+                className="w-full flex justify-between items-center px-4 py-3 text-white font-medium focus:outline-none"
               >
                 {menuItem}
                 {openMenus[menuItem] ? (
-                  <FiMinus className="text-gray-500" />
+                  <FiMinus className="text-white" />
                 ) : (
-                  <FiPlus className="text-gray-500" />
+                  <FiPlus className="text-white" />
                 )}
               </button>
 
               {openMenus[menuItem] && (
-                <ul className="bg-gray-50 rounded-md ml-2 mr-2 mb-2">
+                <ul className="bg-[#121A2C] rounded-md ml-2 mr-2 mb-2">
                   {menuData[menuItem].items.map((subItem) => (
                     <li key={subItem.label}>
                       <Link
                         href={subItem.href}
-                        className="block px-4 py-2 text-sm text-gray-600 hover:bg-blue-50 hover:text-blue-600 rounded-md transition-colors"
+                        className="block px-4 py-2 text-sm text-white hover:bg-gradient-to-r hover:from-[#E21B36] hover:to-[#FF4B2B] hover:text-white rounded-md transition-all duration-200"
                       >
                         {subItem.label}
                       </Link>

@@ -3,31 +3,27 @@ import React from "react";
 
 export default function TextAndVideo() {
   return (
-    <section className="w-full bg-gradient-to-br from-[#f8f8f8] via-[#f1f1f1] to-[#eaeaea] py-16 sm:py-24 px-6 sm:px-10">
+    <section className="w-full bg-gradient-to-br from-[#F8F9FB] via-[#F2F2F2] to-[#EAEAEA] py-16 sm:py-24 px-6 sm:px-10">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
         
         {/* Left: Text Content */}
         <div className="space-y-6">
           <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900 leading-tight">
-            Print Square <span className="text-[#0fb9b8]">Specializes</span> in
+            PrintSeoul <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#E21B36] to-[#FF4B2B]">Specializes</span> in
             Magazine and Catalog Printing
           </h2>
           <p className="text-gray-700 text-base sm:text-lg leading-relaxed">
-            We feel that with all our experience and expertise, any client who
-            trusts their printing needs with <span className="font-semibold text-[#1aa0f3]">Print Square</span> will be
-            amazed by the high quality and excellent service.
+            With years of experience, any client who trusts their printing needs with <strong className="text-gray-900 font-semibold">PrintSeoul</strong> will be impressed by the premium quality and outstanding service.
           </p>
           <p className="text-gray-700 text-base sm:text-lg leading-relaxed">
-            We pride ourselves on maintaining an exceptionally high level of
-            printing quality. Print Square ensures that we are never behind even
-            the most advanced printers from the US.
+            We pride ourselves on maintaining the highest standards of printing. PrintSeoul ensures precision, reliability, and a finish that meets international expectations.
           </p>
 
-          <div className="flex items-center gap-4 pt-4">
-            <span className="inline-block bg-[#0fb9b8]/10 text-[#0fb9b8] border border-[#0fb9b8]/20 px-5 py-2 rounded-full text-sm font-medium">
+          <div className="flex flex-wrap items-center gap-4 pt-4">
+            <span className="inline-block bg-[#FFE8E8] text-[#E21B36] border border-[#F5C2C2] px-5 py-2 rounded-full text-sm font-medium">
               High Quality Prints
             </span>
-            <span className="inline-block bg-[#1aa0f3]/10 text-[#1aa0f3] border border-[#1aa0f3]/20 px-5 py-2 rounded-full text-sm font-medium">
+            <span className="inline-block bg-[#FFE8E8] text-[#FF4B2B] border border-[#F5C2C2] px-5 py-2 rounded-full text-sm font-medium">
               Excellent Service
             </span>
           </div>
@@ -43,7 +39,7 @@ export default function TextAndVideo() {
             playsInline
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/20 pointer-events-none"></div>
+          <div className="absolute inset-0 bg-black/10 pointer-events-none rounded-2xl"></div>
         </div>
       </div>
     </section>

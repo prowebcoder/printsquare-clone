@@ -33,15 +33,17 @@ export default function ImageColumn() {
   return (
     <section className="w-full bg-white py-16 sm:py-24 px-6 sm:px-10">
       <div className="max-w-7xl mx-auto">
+        {/* Header */}
         <header className="text-center mb-14">
           <h2 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900">
             Our Printing Excellence
           </h2>
           <p className="mt-4 text-gray-600 text-base sm:text-lg max-w-3xl mx-auto">
-            At Print Square, every print goes through the highest level of craftsmanship — powered by technology, guided by experience, and perfected by quality control.
+            At <strong className="text-[#E21B36]">PrintSeoul</strong>, every print goes through the highest level of craftsmanship — powered by technology, guided by experience, and perfected by quality control.
           </p>
         </header>
 
+        {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {data.map((item) => (
             <div
@@ -55,6 +57,8 @@ export default function ImageColumn() {
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-700"
                 />
+                {/* Optional subtle red overlay accent on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#E21B36]/10 to-[#FF4B2B]/10 opacity-0 group-hover:opacity-30 rounded-2xl transition-opacity duration-500"></div>
               </div>
               <h3 className="text-xl font-semibold text-gray-900">
                 {item.title}

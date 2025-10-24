@@ -3,36 +3,35 @@ import Image from "next/image";
 
 export default function ImageBannerTwo() {
   return (
-    <section className="relative bg-gradient-to-r from-[#008281] via-[#32a8b9] to-[#0da5da] py-20 overflow-hidden">
+    <section className="relative bg-gradient-to-r from-[#0B1633] via-[#121A2C] to-[#0B1633] py-20 overflow-hidden">
       {/* Decorative Background Elements */}
       <div className="absolute top-[-5rem] left-[-5rem] w-96 h-96 bg-white/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-[-6rem] right-[-4rem] w-[28rem] h-[28rem] bg-[#ffffff1a] rounded-full blur-2xl" />
+      <div className="absolute bottom-[-6rem] right-[-4rem] w-[28rem] h-[28rem] bg-white/10 rounded-full blur-2xl" />
 
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-10 px-6 md:px-12 relative z-10">
         {/* Left Content */}
         <div className="md:w-1/2 text-center md:text-left text-white" data-aos="fade-right">
           <h2 className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">
-            Special Order <span className="text-yellow-300">Available</span>
+            Special Order <span className="text-gradient bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] bg-clip-text text-transparent">Available</span>
           </h2>
 
-          <p className="text-lg mb-4 leading-relaxed text-white/90">
+          <p className="text-lg mb-4 leading-relaxed text-[#D6D9E0]">
             Would you like to make a special book other than the quote we provide?  
             Don’t worry — we’ve got you covered.
           </p>
 
-          <p className="text-lg mb-4 leading-relaxed text-white/90">
+          <p className="text-lg mb-4 leading-relaxed text-[#D6D9E0]">
             Describe the book you want using the{" "}
-            <span className="font-semibold text-yellow-300">Custom Quote</span>.
+            <span className="font-semibold bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white px-2 py-1 rounded">Custom Quote</span>.
             Our printing experts at Print Seoul will bring your idea to life.
           </p>
 
-          <p className="text-lg mb-8 leading-relaxed text-white/90">
+          <p className="text-lg mb-8 leading-relaxed text-[#D6D9E0]">
             Want to create your own special edition book?
           </p>
 
-          <button className="relative overflow-hidden bg-white text-[#2e6e97] font-semibold py-3 px-8 rounded-full shadow-md hover:shadow-xl transition-all duration-300 group">
+          <button className="relative overflow-hidden bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white font-semibold py-3 px-8 rounded-full shadow-md hover:shadow-xl transition-all duration-300 group">
             <span className="relative z-10">Go to Custom Quote</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-[#e0efff] to-[#bde0ff] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </button>
         </div>
 
@@ -68,4 +67,4 @@ export default function ImageBannerTwo() {
       </div>
     </section>
   );
-} 
+}

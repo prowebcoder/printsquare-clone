@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Megaphone } from "lucide-react"; // optional icon
+import { Megaphone } from "lucide-react";
 
 const Notice = () => {
   const notices = [
@@ -17,7 +17,7 @@ const Notice = () => {
   ];
 
   return (
-    <section className="bg-[#26898c] py-20 text-white">
+    <section className="bg-[#0B1633] py-20 text-white">
       <div className="max-w-7xl mx-auto px-6 text-center">
         {/* Heading */}
         <div className="mb-14">
@@ -25,7 +25,7 @@ const Notice = () => {
             <Megaphone className="w-8 h-8 text-white" />
             Latest Notices
           </h2>
-          <div className="w-24 h-1 bg-white mx-auto mt-4 rounded-full"></div>
+          <div className="w-24 h-1 bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] mx-auto mt-4 rounded-full"></div>
         </div>
 
         {/* Notice Cards */}
@@ -33,15 +33,15 @@ const Notice = () => {
           {notices.map((item, idx) => (
             <div
               key={idx}
-              className="bg-[#13a59a]/40 rounded-2xl p-6 hover:bg-[#9a8375]/50 transition duration-300 shadow-lg"
+              className="bg-[#121A2C] rounded-2xl p-6 hover:bg-gradient-to-r hover:from-[#E21B36] hover:to-[#FF4B2B] transition duration-300 shadow-lg"
             >
               <h3 className="font-semibold text-lg mb-2 text-white">
                 {item.title}
               </h3>
-              <p className="text-sm text-gray-100 mb-3 leading-relaxed">
+              <p className="text-sm text-[#D6D9E0] mb-3 leading-relaxed">
                 {item.desc}
               </p>
-              <p className="text-xs text-gray-300">{item.date}</p>
+              <p className="text-xs text-[#D6D9E0]">{item.date}</p>
             </div>
           ))}
         </div>
@@ -50,7 +50,7 @@ const Notice = () => {
         <div className="mt-12">
           <Link
             href="#"
-            className="inline-block border border-white px-8 py-3 rounded-full text-sm font-semibold hover:bg-white hover:text-[#7b695b] transition duration-300"
+            className="inline-block bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white px-8 py-3 rounded-full text-sm font-semibold shadow-lg hover:opacity-90 transition duration-300"
           >
             View All Notices
           </Link>

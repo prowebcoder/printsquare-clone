@@ -15,13 +15,16 @@ const steps = [
 
 const OrderProcess = () => {
   return (
-    <section className="bg-[#fdf6e3] py-24 px-6 md:px-12 relative overflow-hidden">
+    <section className="bg-[#F8F9FB] py-24 px-6 md:px-12 relative overflow-hidden">
       <div className="max-w-7xl mx-auto text-center mb-16 relative z-10">
-        <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-3">
-          <span className="text-[#ec8f34]">Order</span> Process
+        <h2 className="text-4xl md:text-5xl font-extrabold text-[#0B1633] mb-3">
+          <span className="bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] bg-clip-text text-transparent">
+            Order
+          </span>{" "}
+          Process
         </h2>
-        <div className="w-28 h-1 bg-gradient-to-r from-[#ec8f34] to-[#fdce2b] mx-auto rounded-full mb-4"></div>
-        <p className="mt-4 text-gray-700 max-w-2xl mx-auto text-lg md:text-base">
+        <div className="w-28 h-1 bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] mx-auto rounded-full mb-4"></div>
+        <p className="mt-4 text-[#2E3850] max-w-2xl mx-auto text-lg md:text-base">
           Follow our simple 8-step process to get your printing done efficiently and hassle-free.
         </p>
       </div>
@@ -30,16 +33,16 @@ const OrderProcess = () => {
       <div className="relative flex flex-col md:flex-row items-center justify-between gap-10 md:gap-6 max-w-7xl mx-auto">
         {/* Gradient connecting line */}
         <div className="hidden md:block absolute top-1/2 left-0 w-full h-2">
-          <div className="w-full h-2 bg-gradient-to-r from-[#ec8f34] to-[#fdce2b] rounded-full"></div>
+          <div className="w-full h-2 bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] rounded-full"></div>
         </div>
 
-        {steps.map((step, idx) => (
+        {steps.map((step) => (
           <div
             key={step.id}
             className="flex flex-col items-center text-center relative group transform transition duration-300 hover:scale-105 z-10"
           >
             {/* Step circle */}
-            <div className="w-15 h-15 rounded-full bg-gradient-to-br from-[#ec8f34] to-[#fdce2b] text-white font-bold text-1xl flex items-center justify-center shadow-2xl mb-4 z-10">
+            <div className="w-15 h-15 rounded-full bg-gradient-to-br from-[#E21B36] to-[#FF4B2B] text-white font-bold text-1xl flex items-center justify-center shadow-2xl mb-4 z-10">
               {step.id}
             </div>
 
@@ -54,16 +57,16 @@ const OrderProcess = () => {
             </div>
 
             {/* Step title */}
-            <h3 className="font-semibold text-gray-900 text-base md:text-sm mb-1">{step.title}</h3>
+            <h3 className="font-semibold text-[#0B1633] text-base md:text-sm mb-1">{step.title}</h3>
             {/* Step description */}
-            <p className="text-gray-700 text-xs md:text-sm">{step.desc}</p>
+            <p className="text-[#2E3850] text-xs md:text-sm">{step.desc}</p>
           </div>
         ))}
       </div>
 
       {/* Decorative blurred circles */}
-      <div className="absolute -top-16 -left-16 w-40 h-40 bg-yellow-200/20 rounded-full blur-3xl"></div>
-      <div className="absolute -bottom-16 -right-16 w-72 h-72 bg-blue-200/20 rounded-full blur-3xl"></div>
+      <div className="absolute -top-16 -left-16 w-40 h-40 bg-[#E21B36]/10 rounded-full blur-3xl"></div>
+      <div className="absolute -bottom-16 -right-16 w-72 h-72 bg-[#FF4B2B]/10 rounded-full blur-3xl"></div>
     </section>
   );
 };
