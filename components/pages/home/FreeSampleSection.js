@@ -26,7 +26,7 @@ export default function FreeSampleSection() {
         {/* Text Content */}
         <div className="lg:w-1/2 order-1 lg:order-2 text-center lg:text-left">
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-800 mb-6 leading-tight">
-            Free <span className="text-[#068180]">Sample Service</span>
+            Free <span className="text-[#e21b36]">Sample Service</span>
           </h2>
 
           <div className="space-y-5 text-gray-600 text-lg mb-10">
@@ -50,7 +50,7 @@ export default function FreeSampleSection() {
           {/* Button */}
           <a
             href="mailto:support@printsquare.net"
-            className="inline-block bg-[#0a949a] hover:bg-[#068180] text-white font-semibold px-10 py-4 rounded-full shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+            className="inline-block bg-[#e21b36] hover:bg-[#068180] text-white font-semibold px-10 py-4 rounded-full shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
           >
             Request a Free Sample
           </a>
