@@ -9,8 +9,8 @@ export default function ContactUs() {
       {/* Hero Section */}
       <div className="text-center mb-12">
         <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
-          <span className="text-[#ec8f34]">Contact</span>{" "}
-          <span className="text-[#fdce2b]">Us</span>
+          <span className="text-[#0B1633]">Contact</span>{" "}
+          <span className="text-[#FF4B2B]">Us</span>
         </h1>
         <p className="text-gray-600 max-w-2xl mx-auto">
           We’d love to hear from you! Whether it’s an inquiry, feedback, or partnership opportunity, our team is ready to assist.
@@ -21,7 +21,7 @@ export default function ContactUs() {
       <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8 px-6 mb-16">
         {/* Address */}
         <div className="bg-white shadow-lg rounded-2xl p-8 flex flex-col items-center text-center hover:shadow-xl transition">
-          <div className="w-14 h-14 flex items-center justify-center bg-[#fdce2b]/20 text-[#ec8f34] rounded-full mb-4">
+          <div className="w-14 h-14 flex items-center justify-center bg-[#FF4B2B]/20 text-[#FF4B2B] rounded-full mb-4">
             <MapPin size={26} />
           </div>
           <h3 className="font-semibold text-gray-900 text-lg mb-2">
@@ -36,7 +36,7 @@ export default function ContactUs() {
 
         {/* Phone */}
         <div className="bg-white shadow-lg rounded-2xl p-8 flex flex-col items-center text-center hover:shadow-xl transition">
-          <div className="w-14 h-14 flex items-center justify-center bg-[#ec8f34]/20 text-[#ec8f34] rounded-full mb-4">
+          <div className="w-14 h-14 flex items-center justify-center bg-[#FF4B2B]/20 text-[#FF4B2B] rounded-full mb-4">
             <Phone size={26} />
           </div>
           <h3 className="font-semibold text-gray-900 text-lg mb-2">
@@ -50,7 +50,7 @@ export default function ContactUs() {
 
         {/* Email */}
         <div className="bg-white shadow-lg rounded-2xl p-8 flex flex-col items-center text-center hover:shadow-xl transition">
-          <div className="w-14 h-14 flex items-center justify-center bg-[#ec8f34]/20 text-[#ec8f34] rounded-full mb-4">
+          <div className="w-14 h-14 flex items-center justify-center bg-[#FF4B2B]/20 text-[#FF4B2B] rounded-full mb-4">
             <Mail size={26} />
           </div>
           <h3 className="font-semibold text-gray-900 text-lg mb-2">
@@ -113,7 +113,7 @@ export default function ContactUs() {
           <div className="md:col-span-2 text-center">
             <button
               type="submit"
-              className="px-8 py-3 bg-gradient-to-r from-[#ec8f34] to-[#fdce2b] text-white rounded-lg font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300"
+              className="px-8 py-3 bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white rounded-lg font-semibold shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300"
             >
               Send Message
             </button>

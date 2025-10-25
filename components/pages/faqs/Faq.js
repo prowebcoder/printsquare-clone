@@ -10,9 +10,12 @@ export default function Faq() {
   return (
     <section className="py-20 bg-gradient-to-b from-[#f5f3ef] to-[#e8e3dd]">
       <div className="max-w-5xl mx-auto px-4">
-        <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">
-          Frequently Asked <span className="text-[#ec8f34]">Questions</span>
-        </h2>
+        <div className="text-center mb-12">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">
+          <span className="text-[#0B1633]">Frequently Asked</span>{" "}
+          <span className="text-[#FF4B2B]">Questions</span>
+        </h1>
+      </div>
 
         {/* Tabs */}
         <div className="flex flex-wrap justify-center gap-3 mb-10">
@@ -25,7 +28,7 @@ export default function Faq() {
               }}
               className={`px-5 py-2 rounded-full font-semibold transition-all ${
                 activeTab === tab
-                  ? "bg-[#ec8f34] text-white shadow-md"
+                  ? "bg-[#e21b36] text-white shadow-md"
                   : "bg-white text-gray-600 hover:bg-gray-100"
               }`}
             >
@@ -48,7 +51,7 @@ export default function Faq() {
                 <span
                   className={`transition-transform ${
                     openIndex === index ? "rotate-45" : ""
-                  } text-[#ec8f34] text-2xl leading-none`}
+                  } text-[#e21b36] text-2xl leading-none`}
                 >
                   +
                 </span>
@@ -66,4 +69,4 @@ export default function Faq() {
       </div>
     </section>
   );
-}
+} 
