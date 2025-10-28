@@ -1,15 +1,56 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
-import { FiX } from "react-icons/fi";
+import { FiPlus, FiMinus, FiX } from "react-icons/fi";
 
 const MobileMenu = ({ isOpen, toggleMenu }) => {
+  const [openMenus, setOpenMenus] = useState({});
+
+  const toggleSubMenu = (menu) => {
+    setOpenMenus((prev) => ({ ...prev, [menu]: !prev[menu] }));
+  };
+
+  const menuData = {
+    "About Us": [
+      { label: "About Us", href: "/about-us" },
+      { label: "Tour Our Facilities", href: "/tour-our-facilities" },
+    ],
+    "Quote": [
+      { label: "Perfect Binding", href: "/perfect-binding" },
+      { label: "Saddle Stitching", href: "/saddle-stitching" },
+      { label: "Hardcover Book", href: "/hardcover-book" },
+      { label: "Wire Binding", href: "/wire-binding" },
+      { label: "Custom Quote", href: "/custom-quote" },
+    ],
+    "Printing Service": [
+      { label: "Printing", href: "/printing" },
+      { label: "Sheet-Fed Press", href: "/sheet-fed-press" },
+      { label: "Web-Fed Press", href: "/web-fed-press" },
+      { label: "Binding & Finishing", href: "/binding-and-finishing" },
+    ],
+    "Tutorials": [
+      { label: "Quick Guide for Art Files", href: "#" },
+      { label: "Page Layout", href: "#" },
+      { label: "Bleed & Trimming", href: "#" },
+      { label: "Print-ready PDF files", href: "#" },
+      { label: "Paper Size & Weight", href: "#" },
+      { label: "Paper Weight Converter", href: "#" },
+      { label: "Add-on", href: "#" },
+    ],
+    "Help": [
+      { label: "Notice", href: "/notice" },
+      { label: "Faq's", href: "/faqs" },
+      { label: "Contact Us", href: "/contact-us" },
+    ],
+  };
+
   return (
     <div
       className={`md:hidden fixed top-0 left-0 w-full h-full bg-white z-50 transform transition-transform duration-300 ${
         isOpen ? "translate-x-0" : "-translate-x-full"
       }`}
     >
+      {/* Header */}
       <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
         <h2 className="text-xl font-bold text-gray-800">Menu</h2>
         <button onClick={toggleMenu} className="text-2xl text-gray-700">
@@ -17,43 +58,76 @@ const MobileMenu = ({ isOpen, toggleMenu }) => {
         </button>
       </div>
 
-      <nav className="flex flex-col px-6 py-6 space-y-4">
-        {/* Main Menu Links */}
-        <Link href="/" className="text-gray-800 font-medium hover:text-blue-600">
+      {/* Navigation */}
+      <nav className="px-6 py-6 overflow-y-auto max-h-[80vh]">
+        {/* Home Link */}
+        <Link
+          href="/"
+          onClick={toggleMenu}
+          className="block text-gray-800 font-medium py-2 hover:text-[#ec8f34]"
+        >
           Home
         </Link>
-        <Link href="/about" className="text-gray-800 font-medium hover:text-blue-600">
-          About
-        </Link>
-        <Link href="/services" className="text-gray-800 font-medium hover:text-blue-600">
-          Services
-        </Link>
-        <Link href="/contact" className="text-gray-800 font-medium hover:text-blue-600">
-          Contact
-        </Link>
 
-        {/* Announcement Bar Content for Mobile */}
+        {/* Dropdown Sections */}
+        {Object.keys(menuData).map((menuItem) => (
+          <div key={menuItem} className="border-b border-gray-200 py-2">
+            <button
+              onClick={() => toggleSubMenu(menuItem)}
+              className="w-full flex justify-between items-center text-gray-800 font-medium text-left py-2 focus:outline-none"
+            >
+              {menuItem}
+              {openMenus[menuItem] ? (
+                <FiMinus className="text-[#ec8f34]" />
+              ) : (
+                <FiPlus className="text-[#ec8f34]" />
+              )}
+            </button>
+
+            {openMenus[menuItem] && (
+              <ul className="ml-3 mt-1 space-y-2">
+                {menuData[menuItem].map((subItem) => (
+                  <li key={subItem.label}>
+                    <Link
+                      href={subItem.href}
+                      onClick={toggleMenu}
+                      className="block text-gray-600 hover:text-[#ec8f34] text-sm py-1 transition"
+                    >
+                      {subItem.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
+
+        {/* Footer Section */}
         <div className="mt-6 border-t border-gray-200 pt-4 space-y-3">
           <div className="text-gray-700 text-sm space-y-1">
-            <div>© support@printsquarenet</div>
+            <div>support@printsquarenet</div>
             <div>(415)-694-4593</div>
           </div>
-          <div className="flex flex-col gap-2 mt-2">
+
+          <div className="flex flex-col gap-2 mt-3">
             <Link
               href="/sign-up"
-              className="text-center bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-50 font-medium shadow-sm"
+              onClick={toggleMenu}
+              className="text-center border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 font-medium transition"
             >
               Join Us
             </Link>
             <Link
               href="/login"
-              className="text-center bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-50 font-medium shadow-sm"
+              onClick={toggleMenu}
+              className="text-center border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 font-medium transition"
             >
               Login
             </Link>
             <Link
               href="/request-sample"
-              className="text-center bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-medium shadow-sm"
+              onClick={toggleMenu}
+              className="text-center bg-gradient-to-r from-[#ec8f34] to-[#fdce2b] text-white px-4 py-2 rounded-lg font-medium shadow-md hover:shadow-lg transition"
             >
               Requesting Sample
             </Link>
