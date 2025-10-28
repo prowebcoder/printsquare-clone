@@ -64,43 +64,54 @@ const MobileMenu = ({ isOpen, toggleMenu }) => {
         <Link
           href="/"
           onClick={toggleMenu}
-          className="block text-gray-800 font-medium py-2 hover:text-[#ec8f34]"
+          className="block text-gray-800 font-medium py-2 hover:text-[#E21B36]"
         >
           Home
         </Link>
 
         {/* Dropdown Sections */}
-        {Object.keys(menuData).map((menuItem) => (
-          <div key={menuItem} className="border-b border-gray-200 py-2">
-            <button
-              onClick={() => toggleSubMenu(menuItem)}
-              className="w-full flex justify-between items-center text-gray-800 font-medium text-left py-2 focus:outline-none"
-            >
-              {menuItem}
-              {openMenus[menuItem] ? (
-                <FiMinus className="text-[#ec8f34]" />
-              ) : (
-                <FiPlus className="text-[#ec8f34]" />
-              )}
-            </button>
+        {Object.keys(menuData).map((menuItem) => {
+          const isOpenMenu = openMenus[menuItem];
+          return (
+            <div key={menuItem} className="border-b border-gray-200 py-2">
+              <button
+                onClick={() => toggleSubMenu(menuItem)}
+                className={`w-full flex justify-between items-center text-left py-2 px-3 rounded-md font-medium transition-colors duration-300 ${
+                  isOpenMenu
+                    ? "bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white"
+                    : "text-gray-800"
+                }`}
+              >
+                {menuItem}
+                {isOpenMenu ? (
+                  <FiMinus className="text-black" />
+                ) : (
+                  <FiPlus className="text-black" />
+                )}
+              </button>
 
-            {openMenus[menuItem] && (
-              <ul className="ml-3 mt-1 space-y-2">
-                {menuData[menuItem].map((subItem) => (
-                  <li key={subItem.label}>
-                    <Link
-                      href={subItem.href}
-                      onClick={toggleMenu}
-                      className="block text-gray-600 hover:text-[#ec8f34] text-sm py-1 transition"
-                    >
-                      {subItem.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        ))}
+              <div
+                className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                  isOpenMenu ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                }`}
+              >
+                <ul className="ml-3 mt-2 space-y-2">
+                  {menuData[menuItem].map((subItem) => (
+                    <li key={subItem.label}>
+                      <Link
+                        href={subItem.href}
+                        onClick={toggleMenu}
+                        className="block text-gray-600 hover:text-[#E21B36] text-sm py-1 transition"
+                      >
+                        {subItem.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          );
+        })}
 
         {/* Footer Section */}
         <div className="mt-6 border-t border-gray-200 pt-4 space-y-3">
@@ -127,7 +138,7 @@ const MobileMenu = ({ isOpen, toggleMenu }) => {
             <Link
               href="/request-sample"
               onClick={toggleMenu}
-              className="text-center bg-gradient-to-r from-[#ec8f34] to-[#fdce2b] text-white px-4 py-2 rounded-lg font-medium shadow-md hover:shadow-lg transition"
+              className="text-center bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white px-4 py-2 rounded-lg font-medium shadow-md hover:shadow-lg transition"
             >
               Requesting Sample
             </Link>

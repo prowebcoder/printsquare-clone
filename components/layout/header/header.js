@@ -60,7 +60,7 @@ const Header = () => {
         {/* Main Header */}
         <header
           className={`w-full transition-all duration-300 ${
-            isSticky ? "py-2 bg-[#151134]" : "py-4 bg-[#151134]"
+            isSticky ? "py-2 bg-[#151134]" : "py-4 px-4 bg-[#151134]"
           } text-white`}
         >
           <div className="max-w-7xl mx-auto flex justify-between items-center">
