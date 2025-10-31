@@ -44,76 +44,110 @@ export default function ManagePages() {
   };
 
   return (
-    <div className="space-y-8">
-      <h2 className="text-2xl font-semibold">Manage Pages</h2>
+    <div className="space-y-10">
+      {/* Title */}
+      <div>
+        <h2 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 text-transparent bg-clip-text">
+          Manage Pages
+        </h2>
+        <p className="text-gray-500 mt-1 text-sm">
+          Create, view, and delete your site pages easily.
+        </p>
+      </div>
 
-      {/* Add new page */}
-      <div className="p-4 bg-white rounded shadow">
-        <h3 className="font-semibold mb-2">Add New Page</h3>
-        <form onSubmit={handleAdd} className="flex flex-col gap-3">
+      {/* Add New Page */}
+      <div className="bg-white/80 backdrop-blur-lg border border-gray-100 rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
+        <h3 className="text-xl font-semibold text-gray-800 mb-4">
+          Add New Page
+        </h3>
+        <form
+          onSubmit={handleAdd}
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+        >
           <input
             required
-            placeholder="Title"
+            placeholder="Page Title"
             value={newPage.title}
             onChange={(e) => setNewPage({ ...newPage, title: e.target.value })}
-            className="border px-3 py-2 rounded"
+            className="border border-gray-200 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
           />
           <input
             required
             placeholder="Slug (e.g. about-us)"
             value={newPage.slug}
             onChange={(e) => setNewPage({ ...newPage, slug: e.target.value })}
-            className="border px-3 py-2 rounded"
+            className="border border-gray-200 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
           />
           <textarea
             placeholder="Content"
             value={newPage.content}
-            onChange={(e) => setNewPage({ ...newPage, content: e.target.value })}
-            className="border px-3 py-2 rounded"
+            onChange={(e) =>
+              setNewPage({ ...newPage, content: e.target.value })
+            }
+            className="md:col-span-2 border border-gray-200 rounded-lg px-4 py-2.5 h-32 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
           />
-          <button className="bg-blue-600 text-white px-4 py-2 rounded">
-            Add Page
-          </button>
+          <div className="md:col-span-2 flex justify-end">
+            <button
+              type="submit"
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2.5 rounded-lg font-medium shadow-md hover:shadow-lg transition-transform hover:-translate-y-0.5"
+            >
+              + Add Page
+            </button>
+          </div>
         </form>
       </div>
 
-      {/* Page list */}
-      <div className="p-4 bg-white rounded shadow">
-        <h3 className="font-semibold mb-2">All Pages</h3>
+      {/* Page List */}
+      <div className="bg-white/80 backdrop-blur-lg border border-gray-100 rounded-2xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
+        <h3 className="text-xl font-semibold text-gray-800 mb-4">All Pages</h3>
+
         {loading ? (
-          <p>Loading…</p>
+          <div className="flex justify-center py-10">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-600"></div>
+          </div>
+        ) : pages.length === 0 ? (
+          <p className="text-gray-500 italic">No pages found.</p>
         ) : (
-          <table className="w-full text-sm border">
-            <thead>
-              <tr className="border-b bg-gray-100">
-                <th className="p-2 text-left">Title</th>
-                <th className="p-2 text-left">Slug</th>
-                <th className="p-2 text-left">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pages.map((page) => (
-                <tr key={page.id} className="border-b">
-                  <td className="p-2">{page.title}</td>
-                  <td className="p-2">{page.slug}</td>
-                  <td className="p-2">
-                    <button
-                      className="px-2 py-1 border rounded mr-2"
-                      onClick={() => alert("Edit coming soon!")}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="px-2 py-1 border rounded text-red-500"
-                      onClick={() => deletePage(page.id)}
-                    >
-                      Delete
-                    </button>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
+              <thead>
+                <tr className="bg-gradient-to-r from-gray-100 to-gray-50 border-b text-gray-700 uppercase text-xs tracking-wide">
+                  <th className="text-left p-3">Title</th>
+                  <th className="text-left p-3">Slug</th>
+                  <th className="text-left p-3">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {pages.map((page, idx) => (
+                  <tr
+                    key={page.id}
+                    className={`border-b hover:bg-gray-50 transition-all ${
+                      idx % 2 === 0 ? "bg-white" : "bg-gray-50"
+                    }`}
+                  >
+                    <td className="p-3 font-medium text-gray-800">
+                      {page.title}
+                    </td>
+                    <td className="p-3 text-gray-600">{page.slug}</td>
+                    <td className="p-3 space-x-2">
+                      <button
+                        onClick={() => alert("Edit coming soon!")}
+                        className="px-3 py-1.5 text-sm rounded-md bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-all"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => deletePage(page.id)}
+                        className="px-3 py-1.5 text-sm rounded-md bg-red-50 text-red-600 hover:bg-red-100 transition-all"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>
