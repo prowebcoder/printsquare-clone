@@ -1,3 +1,4 @@
+//components/pages/faqs/Faq.js
 "use client";
 import React, { useState } from "react";
 import { faqData } from "../../data/FaqData";

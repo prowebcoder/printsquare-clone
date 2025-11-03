@@ -1,3 +1,4 @@
+//components/pages/home/VideoBanner.js
 "use client";
 import React from "react";
 

@@ -1,4 +1,4 @@
-// PortfolioData.js
+// components/data/PortfolioData.js
 
 const PortfolioData = [
   {

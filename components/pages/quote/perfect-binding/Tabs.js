@@ -1,3 +1,4 @@
+//components/pages/quote/perfect-binding/Tabs.js
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";

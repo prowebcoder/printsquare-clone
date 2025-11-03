@@ -1,3 +1,4 @@
+//components/pages/home/HeroBanner.js
 "use client";
 import Image from "next/image";
 

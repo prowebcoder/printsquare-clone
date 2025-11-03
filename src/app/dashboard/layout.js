@@ -1,3 +1,4 @@
+// src/app/dashboard/layout.js
 import React from "react";
 import Link from "next/link";
 import LogoutButton from "./LogoutButton";

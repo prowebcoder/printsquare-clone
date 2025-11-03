@@ -1,3 +1,4 @@
+//components/pages/printing-service/binding-and-finishing/ImagesWithText.js
 "use client";
 import Image from "next/image";
 import React from "react";

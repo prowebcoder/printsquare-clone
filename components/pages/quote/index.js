@@ -1,0 +1,1 @@
+//components/pages/quote/index.js

@@ -1,3 +1,4 @@
+//components/pages/home/ImageBanner.js
 import Image from "next/image";
 
 export default function ImageBanner() {

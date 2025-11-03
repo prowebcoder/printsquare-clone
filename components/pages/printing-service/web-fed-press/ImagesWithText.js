@@ -1,3 +1,4 @@
+//components/pages/printing-service/web-fed-press/ImagesWithText.js
 "use client";
 import React from "react";
 import Image from "next/image";

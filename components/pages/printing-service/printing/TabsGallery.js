@@ -1,3 +1,4 @@
+//components/pages/printing-service/printing/TabsGallery.js
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";

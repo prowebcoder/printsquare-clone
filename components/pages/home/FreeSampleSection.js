@@ -1,3 +1,4 @@
+//components/pages/home/FreeSampleSection.js
 "use client";
 import Image from "next/image";
 

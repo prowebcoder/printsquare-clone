@@ -1,4 +1,4 @@
-
+//components/pages/printing-service/binding-and-finishing/index.js
 "use client";
 import Head from "next/head";
 import Header from "../../../layout/header/header";

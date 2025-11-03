@@ -1,3 +1,4 @@
+//components/pages/home/Pricing.js
 "use client";
 
 export default function Pricing() {

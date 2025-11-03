@@ -1,3 +1,4 @@
+//components/pages/printing-service/binding-and-finishing/BindingFinishingText.js
 "use client";
 import React from "react";
 

@@ -1,0 +1,299 @@
+├── components
+│   ├── data
+│   │   ├── adminUsers.json
+│   │   ├── FaqData.js
+│   │   └── PortfolioData.js
+│   ├── global
+│   ├── layout
+│   │   ├── footer
+│   │   │   └── footer.js
+│   │   ├── header
+│   │   │   ├── header-menu.js
+│   │   │   ├── header.js
+│   │   │   ├── MobileMenu.js
+│   │   │   └── RequestingSample.js
+│   │   └── Popup.js
+│   ├── pages
+│   │   ├── about
+│   │   │   ├── tour-our-facilities
+│   │   │   │   └── index.js
+│   │   │   ├── AboutHero.js
+│   │   │   ├── AboutUs.js
+│   │   │   ├── BottomBanner.js
+│   │   │   └── index.js
+│   │   ├── api
+│   │   │   └── admin
+│   │   │       ├── pages
+│   │   │       │   ├── [id]
+│   │   │       │   │   └── route.js
+│   │   │       │   └── route.js
+│   │   │       ├── login.js
+│   │   │       ├── stats.js
+│   │   │       └── users.js
+│   │   ├── contact
+│   │   │   ├── ContactUs.js
+│   │   │   └── index.js
+│   │   ├── faqs
+│   │   │   ├── Faq.js
+│   │   │   └── index.js
+│   │   ├── home
+│   │   │   ├── FreeSampleSection.js
+│   │   │   ├── HeroBanner.js
+│   │   │   ├── ImageBanner.js
+│   │   │   ├── ImageBannerTwo.js
+│   │   │   ├── ImagesWithText.js
+│   │   │   ├── index.js
+│   │   │   ├── Method.js
+│   │   │   ├── Notice.js
+│   │   │   ├── OrderProcess.js
+│   │   │   ├── Portfolio.js
+│   │   │   ├── Pricing.js
+│   │   │   ├── QuickGuides.js
+│   │   │   └── VideoBanner.js
+│   │   ├── login
+│   │   │   ├── index.js
+│   │   │   └── Login.js
+│   │   ├── portfolio
+│   │   │   ├── index.js
+│   │   │   └── PortfolioShowcase.js
+│   │   ├── printing-service
+│   │   │   ├── binding-and-finishing
+│   │   │   │   ├── BindingFinishingText.js
+│   │   │   │   ├── ImagesWithText.js
+│   │   │   │   └── index.js
+│   │   │   ├── printing
+│   │   │   │   ├── EquipmentList.js
+│   │   │   │   ├── ImageCoulmn.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── Intro.js
+│   │   │   │   ├── TabsGallery.js
+│   │   │   │   └── TextAndVideo.js
+│   │   │   ├── sheet-fed-press
+│   │   │   │   ├── CustomSheetFedText.JS
+│   │   │   │   ├── ImagesWithText.js
+│   │   │   │   └── index.js
+│   │   │   ├── web-fed-press
+│   │   │   │   ├── ImagesWithText.js
+│   │   │   │   ├── index.js
+│   │   │   │   └── WebFedPressText.js
+│   │   │   ├── index.js
+│   │   │   └── PrintingServicesHero.js
+│   │   ├── quote
+│   │   │   ├── perfect-binding
+│   │   │   │   ├── Heading.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── PerfectBindingForm.js
+│   │   │   │   └── Tabs.js
+│   │   │   ├── saddle-stitching
+│   │   │   │   ├── Heading.js
+│   │   │   │   ├── index.js
+│   │   │   │   └── SaddleStitchingForm.js
+│   │   │   └── index.js
+│   │   ├── services
+│   │   │   └── index.js
+│   │   ├── signup
+│   │   │   ├── index.js
+│   │   │   └── SignUp .js
+│   │   └── tutorials
+│   │       └── index.js
+│   ├── FolderStructureCreator.js
+│   ├── ImageUpload.js
+│   └── PageEditor.js
+├── lib
+│   └── mongodb.js
+├── models
+│   ├── Page.js
+│   └── User.js
+├── public
+│   ├── about
+│   │   ├── about-banner.jpg
+│   │   ├── About.jpg
+│   │   └── pexels-shkrabaanthony-6620992.jpg
+│   ├── footer
+│   │   ├── main-footer-1.png
+│   │   ├── main-footer-2.png
+│   │   ├── main-footer-3.png
+│   │   ├── main-footer-4.png
+│   │   ├── main-footer-5.png
+│   │   └── main-footer-logo.png
+│   ├── homepage
+│   │   ├── video
+│   │   │   └── printing.mp4
+│   │   ├── books.webp
+│   │   ├── bottom-banner.png
+│   │   ├── bottom-banner.webp
+│   │   ├── Gemini_Generated_Image_pgi6xnpgi6xnpgi6.png
+│   │   ├── logo-main.png
+│   │   ├── logo.jpg
+│   │   ├── logo.png
+│   │   ├── main-bg.jpg
+│   │   ├── main-process1.jpg
+│   │   ├── main-process2.jpg
+│   │   ├── main-process3.jpg
+│   │   ├── main-process4.jpg
+│   │   ├── main-process5.jpg
+│   │   ├── main-process6.jpg
+│   │   ├── main-process7.jpg
+│   │   ├── main-process8.jpg
+│   │   ├── main-quick-1.jpg
+│   │   ├── main-quick-12.jpg
+│   │   ├── main-sec03-1.jpg
+│   │   ├── main-sec04-1.png
+│   │   ├── main-sec05-1.jpg
+│   │   ├── main-sec06-1.png
+│   │   ├── main-sec07-1.jpg
+│   │   ├── main-sec08-1.jpg
+│   │   ├── main-sec08-2.jpg
+│   │   ├── main-sec09-1.jpg
+│   │   ├── Order.png
+│   │   ├── p1.jpg
+│   │   ├── p10.jpg
+│   │   ├── p2.jpg
+│   │   ├── p3.jpg
+│   │   ├── p4.jpg
+│   │   ├── p5.jpg
+│   │   ├── p6.jpg
+│   │   ├── p7.jpg
+│   │   ├── p8.jpg
+│   │   ├── p9.jpg
+│   │   ├── paper-480538_1280.jpg
+│   │   ├── paper.png
+│   │   └── Print.png
+│   ├── portfolio
+│   │   ├── 24.jpg
+│   │   ├── p1.jpg
+│   │   ├── p10.jpg
+│   │   ├── p11.jpg
+│   │   ├── p12.jpg
+│   │   ├── p13.jpg
+│   │   ├── p14.jpg
+│   │   ├── p15.jpg
+│   │   ├── p16.jpg
+│   │   ├── p17.jpg
+│   │   ├── p18.jpg
+│   │   ├── p19.jpg
+│   │   ├── p2.jpg
+│   │   ├── p20.jpg
+│   │   ├── p21.jpg
+│   │   ├── p22.jpg
+│   │   ├── p23.jpg
+│   │   ├── p24.jpg
+│   │   ├── p25.jpg
+│   │   ├── p26.jpg
+│   │   ├── p27.jpg
+│   │   ├── p28.jpg
+│   │   ├── p29.jpg
+│   │   ├── p3.jpg
+│   │   ├── p4.jpg
+│   │   ├── p5.jpg
+│   │   ├── p6.jpg
+│   │   ├── p7.jpg
+│   │   ├── p8.jpg
+│   │   └── p9.jpg
+│   ├── printing-service
+│   │   ├── bm1.png
+│   │   ├── bm2.png
+│   │   ├── bm3.png
+│   │   ├── bm4.png
+│   │   ├── ps1.png
+│   │   ├── ps2.png
+│   │   ├── ps3.png
+│   │   ├── ps4.png
+│   │   ├── sfp1.png
+│   │   ├── sfp2.png
+│   │   ├── sfp3.png
+│   │   ├── sfp4.png
+│   │   ├── sfp5.png
+│   │   ├── sfp6.png
+│   │   ├── spr1.png
+│   │   ├── spr2.png
+│   │   ├── sub1-02-1.png
+│   │   ├── sub1-02-2.png
+│   │   ├── sub1-02-3.png
+│   │   ├── sub1-02-4.png
+│   │   ├── sub1-03-1.png
+│   │   ├── sub1-03-2.png
+│   │   ├── sub1-03-3.png
+│   │   ├── sub1-04-1.jpg
+│   │   ├── sub1-05-1-1.png
+│   │   ├── sub1-05-1.png
+│   │   ├── sub1-05-2.png
+│   │   ├── sub1-05-3.png
+│   │   ├── sub1-05-4.png
+│   │   ├── sub1-05-5.png
+│   │   ├── sub1-05-6.png
+│   │   ├── wfp1.png
+│   │   └── wfp2.png
+│   ├── file.svg
+│   ├── folder_structure.txt
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
+├── src
+│   ├── app
+│   │   ├── about-us
+│   │   │   └── page.js
+│   │   ├── api
+│   │   │   ├── admin
+│   │   │   │   ├── images
+│   │   │   │   │   └── route.js
+│   │   │   │   └── pages
+│   │   │   │       ├── [slug]
+│   │   │   │       │   └── route.js
+│   │   │   │       └── route.js
+│   │   │   └── folder-structure
+│   │   │       └── route.js
+│   │   ├── binding-and-finishing
+│   │   │   └── page.js
+│   │   ├── contact-us
+│   │   │   └── page.js
+│   │   ├── dashboard
+│   │   │   ├── content
+│   │   │   │   └── page.js
+│   │   │   ├── pages
+│   │   │   │   └── page.js
+│   │   │   ├── users
+│   │   │   │   └── page.js
+│   │   │   ├── layout.js
+│   │   │   ├── LogoutButton.js
+│   │   │   └── page.js
+│   │   ├── faqs
+│   │   │   └── page.js
+│   │   ├── login
+│   │   │   └── page.js
+│   │   ├── perfect-binding
+│   │   │   └── page.js
+│   │   ├── portfolio
+│   │   │   └── page.js
+│   │   ├── printing
+│   │   │   └── page.js
+│   │   ├── privacy-policy
+│   │   │   └── page.js
+│   │   ├── saddle-stitching
+│   │   │   └── page.js
+│   │   ├── sheet-fed-press
+│   │   │   └── page.js
+│   │   ├── sign-up
+│   │   │   └── page.js
+│   │   ├── sitemap
+│   │   │   └── page.js
+│   │   ├── terms-conditions
+│   │   │   └── page.js
+│   │   ├── tour-our-facilities
+│   │   │   └── page.js
+│   │   ├── web-fed-press
+│   │   │   └── page.js
+│   │   ├── favicon.ico
+│   │   ├── globals.css
+│   │   ├── layout.js
+│   │   └── page.js
+│   └── lib
+├── eslint.config.mjs
+├── folder-structure.txt
+├── jsconfig.json
+├── next.config.mjs
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+└── README.md

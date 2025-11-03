@@ -1,3 +1,4 @@
+//components/pages/printing-service/printing/EquipmentList.js
 "use client";
 import React from "react";
 import { Wrench, Printer, Layers, Settings } from "lucide-react";

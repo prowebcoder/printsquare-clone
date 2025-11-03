@@ -1,3 +1,4 @@
+//src/app/terms-conditions/page.js
 import Header from "../../../components/layout/header/header";
 import Footer from "../../../components/layout/footer/footer";
 

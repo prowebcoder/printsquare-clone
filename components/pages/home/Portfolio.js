@@ -1,3 +1,4 @@
+//components/pages/home/Portfolio.js
 import Image from "next/image";
 import Link from "next/link";
 

@@ -1,3 +1,4 @@
+//components/pages/about/tour-our-facilities/index.js
 "use client";
 import Head from "next/head";
 import Header from "../../../layout/header/header";

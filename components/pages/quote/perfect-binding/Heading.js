@@ -1,3 +1,4 @@
+//components/pages/quote/perfect-binding/Heading.js
 "use client";
 import React from "react";
 

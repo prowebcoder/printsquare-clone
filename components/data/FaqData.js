@@ -1,4 +1,4 @@
-// src/data/FaqData.js
+// components/data/FaqData.js
 
 export const faqData = {
   ORDER: [

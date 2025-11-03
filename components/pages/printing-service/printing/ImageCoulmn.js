@@ -1,3 +1,4 @@
+//components/pages/printing-service/printing/ImageCoulmn.js
 "use client";
 import React from "react";
 import Image from "next/image";

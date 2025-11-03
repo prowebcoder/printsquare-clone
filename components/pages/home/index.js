@@ -1,3 +1,4 @@
+//components/pages/home/index.js
 "use client";
 import Head from "next/head";
 import Header from "../../layout/header/header";
@@ -13,6 +14,7 @@ import OrderProcess from "./OrderProcess";
 import QuickGuides from "./QuickGuides";
 import Notice from "./Notice";
 import Footer from "../../layout/footer/footer";
+
 
 export default function HomePage() {
   return (

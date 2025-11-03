@@ -1,3 +1,4 @@
+//src/app/page.js
 import HomePage from "../../components/pages/home";
 import Popup from "../../components/layout/Popup";
 

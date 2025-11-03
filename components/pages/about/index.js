@@ -1,3 +1,4 @@
+//components/pages/about/index.js
 "use client";
 import Head from "next/head";
 import Header from "../../layout/header/header";

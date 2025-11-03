@@ -1,4 +1,4 @@
-// components/Login.js
+//components/pages/login/Login.js
 "use client";
 
 import React, { useState } from "react";

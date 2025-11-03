@@ -1,3 +1,4 @@
+//components/pages/api/admin/stats.js
 export default function handler(req, res) {
   res.status(200).json({
     users: 1245,

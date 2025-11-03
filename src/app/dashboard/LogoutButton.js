@@ -1,3 +1,4 @@
+//src/app/dashboard/LogoutButton.js
 "use client";
 
 import React from "react";
