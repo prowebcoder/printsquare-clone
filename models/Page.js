@@ -1,35 +1,60 @@
-// models/Page.js
 import mongoose from 'mongoose';
 
 const ImageSchema = new mongoose.Schema({
-  url: { type: String, required: true },
-  alt: { type: String, default: '' },
-  caption: { type: String, default: '' },
-  order: { type: Number, default: 0 }
+  key: {
+    type: String,
+    required: true
+  },
+  url: {
+    type: String,
+    required: true
+  },
+  alt: {
+    type: String,
+    default: ''
+  },
+  section: String,
+  uploadDate: { 
+    type: Date, 
+    default: Date.now 
+  }
 });
 
 const SectionSchema = new mongoose.Schema({
-  type: { type: String, required: true }, // 'hero', 'pricing', 'portfolio', etc.
-  data: { type: mongoose.Schema.Types.Mixed, default: {} },
-  images: [ImageSchema],
-  order: { type: Number, default: 0 }
+  sectionId: {
+    type: String,
+    required: true
+  },
+  content: {
+    type: mongoose.Schema.Types.Mixed,
+    default: {}
+  },
+  images: [ImageSchema]
 });
 
 const PageSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  slug: { type: String, required: true, unique: true },
-  title: { type: String, required: true },
-  description: { type: String, default: '' },
-  sections: [SectionSchema],
-  metadata: {
-    title: { type: String, default: '' },
-    description: { type: String, default: '' },
-    keywords: { type: String, default: '' }
+  slug: { 
+    type: String, 
+    required: true, 
+    unique: true 
   },
-  isActive: { type: Boolean, default: true },
-  lastUpdated: { type: Date, default: Date.now }
+  title: { 
+    type: String, 
+    required: true 
+  },
+  description: String,
+  sections: [SectionSchema],
+  isActive: { 
+    type: Boolean, 
+    default: true 
+  },
+  lastUpdated: { 
+    type: Date, 
+    default: Date.now 
+  }
 }, {
   timestamps: true
 });
 
+// Check if the model already exists to prevent overwriting
 export default mongoose.models.Page || mongoose.model('Page', PageSchema);

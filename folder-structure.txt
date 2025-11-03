@@ -3,7 +3,6 @@
 │   │   ├── adminUsers.json
 │   │   ├── FaqData.js
 │   │   └── PortfolioData.js
-│   ├── global
 │   ├── layout
 │   │   ├── footer
 │   │   │   └── footer.js
@@ -88,8 +87,6 @@
 │   │   │   │   ├── Heading.js
 │   │   │   │   ├── index.js
 │   │   │   │   └── SaddleStitchingForm.js
-│   │   │   └── index.js
-│   │   ├── services
 │   │   │   └── index.js
 │   │   ├── signup
 │   │   │   ├── index.js
@@ -230,13 +227,21 @@
 │   ├── next.svg
 │   ├── vercel.svg
 │   └── window.svg
+├── scripts
+│   └── seedPages.js
 ├── src
 │   ├── app
 │   │   ├── about-us
 │   │   │   └── page.js
 │   │   ├── api
 │   │   │   ├── admin
+│   │   │   │   ├── content
+│   │   │   │   │   ├── [slug]
+│   │   │   │   │   │   └── route.js
+│   │   │   │   │   └── route.js
 │   │   │   │   ├── images
+│   │   │   │   │   ├── upload
+│   │   │   │   │   │   └── route.js
 │   │   │   │   │   └── route.js
 │   │   │   │   └── pages
 │   │   │   │       ├── [slug]
@@ -250,6 +255,8 @@
 │   │   │   └── page.js
 │   │   ├── dashboard
 │   │   │   ├── content
+│   │   │   │   ├── editor
+│   │   │   │   │   └── page.js
 │   │   │   │   └── page.js
 │   │   │   ├── pages
 │   │   │   │   └── page.js
