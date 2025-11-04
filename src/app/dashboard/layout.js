@@ -33,12 +33,12 @@ export default function AdminLayout({ children }) {
               </Link>
             ))}
 
-            <a
+            <Link
               href="/"
               className="relative px-4 py-2.5 rounded-lg transition-all duration-300 hover:bg-indigo-50 hover:text-indigo-700 flex items-center gap-2"
             >
               Go to site
-            </a>
+            </Link>
           </nav>
         </div>
 
