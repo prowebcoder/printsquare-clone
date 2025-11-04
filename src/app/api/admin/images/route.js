@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Image from '@/models/Image';
 
+
 export async function GET(request) {
   try {
     await connectDB();
