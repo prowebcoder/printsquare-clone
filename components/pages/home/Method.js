@@ -88,7 +88,7 @@ const Method = ({ sectionData }) => {
                 </h3>
               </div>
               <p className="text-[#2E3850] leading-relaxed text-base">
-                Proceed with proofing through a digital proof file. It's
+                Proceed with proofing through a digital proof file. Its
                 <span className="font-medium text-[#E21B36]">free</span>, fast,
                 and perfect for quick approvals.
               </p>
@@ -105,7 +105,7 @@ const Method = ({ sectionData }) => {
                 </h3>
               </div>
               <p className="text-[#2E3850] leading-relaxed text-base">
-                Get a printed version of your uploaded file for review. You'll see
+                Get a printed version of your uploaded file for review. You will  see
                 the actual proof quality — though it requires extra
                 <span className="font-medium text-[#FF4B2B]">time and cost</span>.
               </p>
