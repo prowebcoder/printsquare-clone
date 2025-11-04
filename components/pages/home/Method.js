@@ -130,11 +130,11 @@ const Method = ({ sectionData }) => {
   const methodImage = content.images?.find(img => img.key === 'method-image');
 const method1 = content.content?.method1 || {
   title: "E-Proof",
-  description: "Proceed with proofing through a digital proof file. It&apos;s free, fast, and perfect for quick approvals."
+  description: "Proceed with proofing through a digital proof file. Its free, fast, and perfect for quick approvals."
 };
 const method2 = content.content?.method2 || {
   title: "Digital-Proof",
-  description: "Get a printed version of your uploaded file for review. You&apos;ll see the actual proof quality — though it requires extra time and cost."
+  description: "Get a printed version of your uploaded file for review. You will see the actual proof quality — though it requires extra time and cost."
 };
 
 
