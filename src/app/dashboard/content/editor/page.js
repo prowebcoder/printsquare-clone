@@ -1,19 +1,28 @@
-
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import PageEditor from '@/components/PageEditor';
+import React, { Suspense, useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import PageEditor from "@/components/PageEditor";
 
+// 🔹 Main component now wraps inner editor in Suspense
 export default function ContentEditor() {
+  return (
+    <Suspense fallback={<div className="p-6 text-center">Loading editor...</div>}>
+      <ContentEditorInner />
+    </Suspense>
+  );
+}
+
+// 🔹 All logic moved inside a new inner component
+function ContentEditorInner() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const slug = searchParams.get('slug');
-  const isNew = searchParams.get('new') === 'true';
-  
+  const slug = searchParams.get("slug");
+  const isNew = searchParams.get("new") === "true";
+
   const [pageData, setPageData] = useState(null);
   const [sections, setSections] = useState([]);
-  const [selectedSection, setSelectedSection] = useState('');
+  const [selectedSection, setSelectedSection] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,7 +34,7 @@ export default function ContentEditor() {
   }, [slug, isNew]);
 
   const fetchPageData = async () => {
-    if (!slug || slug === 'null') {
+    if (!slug || slug === "null") {
       setLoading(false);
       return;
     }
@@ -39,52 +48,49 @@ export default function ContentEditor() {
         if (data.sections?.length > 0) {
           setSelectedSection(data.sections[0].sectionId);
         } else {
-          // Create a default section if none exist
-          const defaultSection = { sectionId: 'hero', content: {}, images: [] };
+          const defaultSection = { sectionId: "hero", content: {}, images: [] };
           setSections([defaultSection]);
-          setSelectedSection('hero');
+          setSelectedSection("hero");
         }
       } else {
-        // If page doesn't exist, create default sections
         const defaultSections = [
-          { sectionId: 'hero', content: {}, images: [] },
-          { sectionId: 'content', content: {}, images: [] }
+          { sectionId: "hero", content: {}, images: [] },
+          { sectionId: "content", content: {}, images: [] },
         ];
         setSections(defaultSections);
-        setSelectedSection('hero');
+        setSelectedSection("hero");
       }
     } catch (error) {
-      console.error('Error fetching page data:', error);
-      // Create default sections on error
+      console.error("Error fetching page data:", error);
       const defaultSections = [
-        { sectionId: 'hero', content: {}, images: [] },
-        { sectionId: 'content', content: {}, images: [] }
+        { sectionId: "hero", content: {}, images: [] },
+        { sectionId: "content", content: {}, images: [] },
       ];
       setSections(defaultSections);
-      setSelectedSection('hero');
+      setSelectedSection("hero");
     } finally {
       setLoading(false);
     }
   };
 
   const addSection = () => {
-    const sectionId = prompt('Enter section ID (e.g., hero, pricing):');
-    if (sectionId && !sections.find(s => s.sectionId === sectionId)) {
+    const sectionId = prompt("Enter section ID (e.g., hero, pricing):");
+    if (sectionId && !sections.find((s) => s.sectionId === sectionId)) {
       const newSection = { sectionId, content: {}, images: [] };
       const updatedSections = [...sections, newSection];
       setSections(updatedSections);
       setSelectedSection(sectionId);
     } else if (sectionId) {
-      alert('Section ID already exists!');
+      alert("Section ID already exists!");
     }
   };
 
   const createNewPage = async (pageData) => {
     try {
-      const response = await fetch('/api/admin/content', {
-        method: 'POST',
+      const response = await fetch("/api/admin/content", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(pageData),
       });
@@ -93,11 +99,11 @@ export default function ContentEditor() {
         const newPage = await response.json();
         router.push(`/dashboard/content/editor?slug=${newPage.slug}`);
       } else {
-        alert('Error creating page');
+        alert("Error creating page");
       }
     } catch (error) {
-      console.error('Error creating page:', error);
-      alert('Error creating page');
+      console.error("Error creating page:", error);
+      alert("Error creating page");
     }
   };
 
@@ -135,11 +141,11 @@ export default function ContentEditor() {
             </div>
             <button
               onClick={() => {
-                const slug = document.getElementById('newPageSlug').value.trim();
-                const title = document.getElementById('newPageTitle').value.trim();
-                
+                const slug = document.getElementById("newPageSlug").value.trim();
+                const title = document.getElementById("newPageTitle").value.trim();
+
                 if (!slug) {
-                  alert('Please enter a page slug');
+                  alert("Please enter a page slug");
                   return;
                 }
 
@@ -147,8 +153,8 @@ export default function ContentEditor() {
                   slug,
                   title: title || slug.charAt(0).toUpperCase() + slug.slice(1),
                   description: `Content for ${slug}`,
-                  sections: [{ sectionId: 'hero', content: {}, images: [] }],
-                  isActive: true
+                  sections: [{ sectionId: "hero", content: {}, images: [] }],
+                  isActive: true,
                 });
               }}
               className="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700"
@@ -165,9 +171,11 @@ export default function ContentEditor() {
     return (
       <div className="p-6 text-center">
         <h1 className="text-2xl font-bold mb-4">No Page Selected</h1>
-        <p className="text-gray-600 mb-4">Please select a page to edit or create a new one.</p>
+        <p className="text-gray-600 mb-4">
+          Please select a page to edit or create a new one.
+        </p>
         <button
-          onClick={() => router.push('/dashboard/content/editor?new=true')}
+          onClick={() => router.push("/dashboard/content/editor?new=true")}
           className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600"
         >
           Create New Page
@@ -180,11 +188,9 @@ export default function ContentEditor() {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold">
-            Editing: {slug}
-          </h1>
+          <h1 className="text-3xl font-bold">Editing: {slug}</h1>
           <p className="text-gray-600 mt-1">
-            {pageData?.title || 'Page title not set'}
+            {pageData?.title || "Page title not set"}
           </p>
         </div>
         <div className="flex gap-3">
@@ -195,7 +201,7 @@ export default function ContentEditor() {
             + Add Section
           </button>
           <button
-            onClick={() => router.push('/dashboard/content/editor?new=true')}
+            onClick={() => router.push("/dashboard/content/editor?new=true")}
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
             New Page
@@ -214,8 +220,8 @@ export default function ContentEditor() {
                 onClick={() => setSelectedSection(section.sectionId)}
                 className={`w-full text-left p-3 rounded-lg transition-colors ${
                   selectedSection === section.sectionId
-                    ? 'bg-indigo-500 text-white'
-                    : 'bg-white hover:bg-gray-100 text-gray-800'
+                    ? "bg-indigo-500 text-white"
+                    : "bg-white hover:bg-gray-100 text-gray-800"
                 }`}
               >
                 {section.sectionId}
@@ -227,10 +233,7 @@ export default function ContentEditor() {
         {/* Editor Area */}
         <div className="flex-1">
           {selectedSection ? (
-            <PageEditor 
-              pageSlug={slug} 
-              sectionId={selectedSection} 
-            />
+            <PageEditor pageSlug={slug} sectionId={selectedSection} />
           ) : (
             <div className="bg-yellow-100 border border-yellow-400 rounded-lg p-6 text-center">
               <p className="text-yellow-800">
