@@ -1,34 +1,35 @@
 import { NextResponse } from 'next/server';
+import Content from '@/models/Content';
 import dbConnect from '@/lib/mongodb';
-import Page from '@/models/Page';
 
 export async function GET() {
   try {
     await dbConnect();
-    const pages = await Page.find({}).sort({ title: 1 });
-    return NextResponse.json(pages);
+    const contents = await Content.find().sort({ pageName: 1 });
+    return NextResponse.json(contents);
   } catch (error) {
-    console.error('Error fetching pages:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch pages' }, 
+      { error: 'Failed to fetch content' },
       { status: 500 }
     );
   }
 }
 
-export async function POST(req) {
+export async function POST(request) {
   try {
     await dbConnect();
-    const body = await req.json();
+    const data = await request.json();
     
-    const page = new Page(body);
-    await page.save();
+    const content = await Content.findOneAndUpdate(
+      { pageId: data.pageId },
+      data,
+      { upsert: true, new: true }
+    );
     
-    return NextResponse.json(page, { status: 201 });
+    return NextResponse.json(content);
   } catch (error) {
-    console.error('Error creating page:', error);
     return NextResponse.json(
-      { error: 'Failed to create page' }, 
+      { error: 'Failed to save content' },
       { status: 500 }
     );
   }
