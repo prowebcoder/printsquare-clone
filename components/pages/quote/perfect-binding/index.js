@@ -6,6 +6,7 @@ import Heading from "./Heading";
 import PerfectBindingForm from "./PerfectBindingForm";
 import Tabs from "./Tabs";
 import Footer from "../../../layout/footer/footer";
+import DynamicPerfectBindingForm from "./DynamicPerfectBindingForm";
 
 export default function PerfectBindingFormPage() {
   return (
@@ -20,6 +21,7 @@ export default function PerfectBindingFormPage() {
       <Header />
       <Heading />
 <PerfectBindingForm />
+<DynamicPerfectBindingForm />
       <Tabs />
       <Footer />
     </>
