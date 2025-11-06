@@ -1,93 +1,78 @@
-"use client";
+'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function AdminDashboard() {
-  const [user, setUser] = useState(null);
+  const [pages, setPages] = useState([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
-    try {
-      const response = await fetch('/api/auth/check');
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-      } else {
+    // Check if user is authenticated
+    fetch('/api/admin/content/home')
+      .then(res => {
+        if (!res.ok) {
+          router.push('/admin/login');
+        }
+        setLoading(false);
+      })
+      .catch(() => {
         router.push('/admin/login');
-      }
-    } catch (error) {
-      router.push('/admin/login');
-    } finally {
-      setLoading(false);
-    }
-  };
+      });
+
+    // Define available pages
+    setPages([
+      { id: 'home', name: 'Home Page', description: 'Manage homepage content and sections' },
+      { id: 'about', name: 'About Page', description: 'Manage about us content' },
+      { id: 'contact', name: 'Contact Page', description: 'Manage contact information' },
+      { id: 'portfolio', name: 'Portfolio', description: 'Manage portfolio items' },
+    ]);
+  }, [router]);
 
   const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
+    await fetch('/api/admin/logout', { method: 'POST' });
     router.push('/admin/login');
   };
 
   if (loading) {
     return (
-      <div className="p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-        <p>Loading...</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-lg">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
-        <button
-          onClick={handleLogout}
-          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-        >
-          Logout
-        </button>
-      </div>
-
-      {user && (
-        <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-          <h2 className="text-xl font-semibold mb-4">Welcome, {user.name}!</h2>
-          <div className="space-y-2 text-gray-600">
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>Role:</strong> {user.role}</p>
-          </div>
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white shadow">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+          <button
+            onClick={handleLogout}
+            className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700"
+          >
+            Logout
+          </button>
         </div>
-      )}
+      </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold mb-2">Home Page</h3>
-          <p className="text-gray-600 mb-4">Manage homepage content and sections</p>
-          <a href="/admin/content/home" className="text-blue-600 hover:text-blue-800">
-            Edit Home Page →
-          </a>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {pages.map((page) => (
+            <Link
+              key={page.id}
+              href={`/admin/pages/${page.id}`}
+              className="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6"
+            >
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                {page.name}
+              </h3>
+              <p className="text-gray-600">{page.description}</p>
+            </Link>
+          ))}
         </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold mb-2">About Page</h3>
-          <p className="text-gray-600 mb-4">Update about us information</p>
-          <a href="/admin/content/about" className="text-blue-600 hover:text-blue-800">
-            Edit About Page →
-          </a>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold mb-2">Portfolio</h3>
-          <p className="text-gray-600 mb-4">Manage portfolio items</p>
-          <a href="/admin/content/portfolio" className="text-blue-600 hover:text-blue-800">
-            Edit Portfolio →
-          </a>
-        </div>
-      </div>
+      </main>
     </div>
   );
 }
