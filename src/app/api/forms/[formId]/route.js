@@ -1,12 +1,10 @@
 import { NextResponse } from 'next/server';
-
 import dbConnect from '@/lib/mongodb';
 import FormConfiguration from '@/models/FormConfiguration';
 
 export async function GET(request, { params }) {
   try {
-    // Await the params in Next.js 14+
-    const { formId } = await params;
+    const { formId } = await params; // Add await here
     
     await dbConnect();
     

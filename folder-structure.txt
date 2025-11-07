@@ -1,4 +1,6 @@
 ├── components
+│   ├── admin
+│   │   └── DynamicFormEditor.js
 │   ├── data
 │   │   ├── adminUsers.json
 │   │   ├── FaqData.js
@@ -68,6 +70,7 @@
 │   │   │   └── PrintingServicesHero.js
 │   │   ├── quote
 │   │   │   ├── perfect-binding
+│   │   │   │   ├── DynamicPerfectBindingForm.js
 │   │   │   │   ├── Heading.js
 │   │   │   │   ├── index.js
 │   │   │   │   ├── PerfectBindingForm.js
@@ -78,14 +81,19 @@
 │   │   │   │   └── SaddleStitchingForm.js
 │   │   │   └── index.js
 │   │   ├── signup
-│   │   │   ├── index.js
-│   │   │   └── SignUp .js
 │   │   └── tutorials
 │   │       └── index.js
 │   └── FolderStructureCreator.js
+├── hooks
 ├── lib
+│   ├── auth.js
 │   └── mongodb.js
 ├── models
+│   ├── Content.js
+│   ├── FormConfiguration.js
+│   ├── Page.js
+│   ├── PageContent.js
+│   └── User.js
 ├── public
 │   ├── about
 │   │   ├── about-banner.jpg
@@ -213,14 +221,40 @@
 │   ├── vercel.svg
 │   └── window.svg
 ├── scripts
-│   └── seedPages.js
+│   ├── resetAuth.js
+│   ├── seedAdmin.js
+│   ├── seedFormConfig.js
+│   ├── seedPages.js
+│   └── testAuth.js
 ├── src
 │   └── app
 │       ├── about-us
 │       │   └── page.js
+│       ├── admin
+│       │   ├── dashboard
+│       │   │   └── page.js
+│       │   ├── login
+│       │   │   └── page.js
+│       │   └── pages
+│       │       └── [pages]
+│       │           └── page.js
 │       ├── api
-│       │   └── folder-structure
-│       │       └── route.js
+│       │   ├── admin
+│       │   │   ├── content
+│       │   │   │   └── [page]
+│       │   │   │       └── route.js
+│       │   │   ├── forms
+│       │   │   │   └── [formId]
+│       │   │   │       └── route.js
+│       │   │   ├── login
+│       │   │   │   └── route.js
+│       │   │   └── logout
+│       │   │       └── route.js
+│       │   ├── folder-structure
+│       │   │   └── route.js
+│       │   └── forms
+│       │       └── [formId]
+│       │           └── route.js
 │       ├── binding-and-finishing
 │       │   └── page.js
 │       ├── contact-us

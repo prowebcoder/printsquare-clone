@@ -9,18 +9,8 @@ export default function AdminDashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    // Check if user is authenticated
-    fetch('/api/admin/content/home')
-      .then(res => {
-        if (!res.ok) {
-          router.push('/admin/login');
-        }
-        setLoading(false);
-      })
-      .catch(() => {
-        router.push('/admin/login');
-      });
-
+    checkAuth();
+    
     // Define available pages
     setPages([
       { id: 'home', name: 'Home Page', description: 'Manage homepage content and sections' },
@@ -29,6 +19,18 @@ export default function AdminDashboard() {
       { id: 'portfolio', name: 'Portfolio', description: 'Manage portfolio items' },
     ]);
   }, [router]);
+
+  const checkAuth = async () => {
+    try {
+      const response = await fetch('/api/admin/content/home');
+      if (!response.ok) {
+        throw new Error('Not authenticated');
+      }
+      setLoading(false);
+    } catch (error) {
+      router.push('/admin/login');
+    }
+  };
 
   const handleLogout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' });

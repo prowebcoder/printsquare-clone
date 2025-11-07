@@ -6,13 +6,12 @@ export async function POST(request) {
     const { username, password } = await request.json();
     
     if (verifyCredentials(username, password)) {
-      // Simple token-based auth
       const response = NextResponse.json({ 
         success: true, 
         message: 'Login successful' 
       });
       
-      // Set a simple cookie (in production, use secure HttpOnly cookies)
+      // Set authentication cookie
       response.cookies.set('admin-auth', 'true', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',

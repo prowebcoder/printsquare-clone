@@ -1,14 +1,23 @@
 import mongoose from 'mongoose';
 
 const PageContentSchema = new mongoose.Schema({
-  page: { type: String, required: true }, // 'home', 'about', 'contact', etc.
-  sectionId: { type: String, required: true }, // 'hero', 'pricing', etc.
-  content: { type: Object, default: {} }, // Flexible content structure
+  page: { type: String, required: true },
+  sectionId: { type: String, required: true },
+  content: { type: Object, default: {} },
   images: [{
     key: String,
     url: String,
     alt: String
-  }]
-}, { timestamps: true });
+  }],
+  lastUpdated: {
+    type: Date,
+    default: Date.now,
+  }
+}, { 
+  timestamps: true 
+});
+
+// Create compound index
+PageContentSchema.index({ page: 1, sectionId: 1 }, { unique: true });
 
 export default mongoose.models.PageContent || mongoose.model('PageContent', PageContentSchema);

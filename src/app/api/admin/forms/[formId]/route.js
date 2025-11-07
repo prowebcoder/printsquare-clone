@@ -5,8 +5,7 @@ import { isAuthenticated } from '../../../../../../lib/auth';
 
 export async function GET(request, { params }) {
   try {
-    // Await the params in Next.js 14+
-    const { formId } = await params;
+    const { formId } = await params; // Add await here
     
     await dbConnect();
     
@@ -35,8 +34,7 @@ export async function POST(request, { params }) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     
-    // Await the params in Next.js 14+
-    const { formId } = await params;
+    const { formId } = await params; // Add await here
     
     await dbConnect();
     const formData = await request.json();
