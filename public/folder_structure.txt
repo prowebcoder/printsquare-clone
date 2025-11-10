@@ -1,0 +1,46 @@
+printsquare-clone/
+├── .next/
+├── components/
+├── data/
+│   ├── JS/
+│   │   ├── FaqData.js
+│   │   └── PortfolioData.js
+├── global/
+├── layout/
+├── footer/
+│   └── JS/
+│       └── footer.js
+├── header/
+│   └── JS/
+│       ├── header-menu.js
+│       ├── header.js
+│       ├── MobileMenu.js
+│       ├── RequestingSample.js
+│       └── Popup.js
+├── pages/
+│   ├── about/
+│   ├── contact/
+│   ├── faqs/
+│   ├── JS/
+│   │   └── Faq.js
+│   ├── index.js
+│   ├── home/
+│   ├── login/
+│   ├── portfolio/
+│   ├── printing-service/
+│   ├── quote/
+│   ├── services/
+│   ├── signup/
+│   └── tutorials/
+├── node_modules/
+├── public/
+└── src/
+    └── app/
+        ├── about-us/
+        │   └── page.js
+        ├── binding-and-finishing/
+        ├── contact-us/
+        ├── dashboard/
+        ├── faqs/
+        ├── login/
+        └── ... (other app router pages)

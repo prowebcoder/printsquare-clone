@@ -1,0 +1,118 @@
+├── app
+│   ├── components
+│   │   ├── CollectionPicker
+│   │   │   └── CollectionPicker.tsx
+│   │   ├── DatePickerField
+│   │   │   └── DatePickerField.tsx
+│   │   ├── DiscountForm
+│   │   │   └── DiscountForm.tsx
+│   │   └── NotFoundPage
+│   │       ├── empty-state.svg
+│   │       ├── index.js
+│   │       └── NotFoundPage.tsx
+│   ├── graphql
+│   │   ├── collections.ts
+│   │   ├── discounts.ts
+│   │   └── functions.ts
+│   ├── hooks
+│   │   ├── useDiscountForm.ts
+│   │   ├── useIcons.ts
+│   │   └── usePlan.ts
+│   ├── models
+│   │   ├── badge.server.ts
+│   │   ├── collections.server.ts
+│   │   ├── functions.server.ts
+│   │   └── shop.server.ts
+│   ├── routes
+│   │   ├── _index
+│   │   │   ├── route.tsx
+│   │   │   └── styles.module.css
+│   │   ├── auth.login
+│   │   │   ├── error.server.tsx
+│   │   │   ├── route.tsx
+│   │   │   └── styles.module.css
+│   │   ├── components
+│   │   │   ├── BadgeFormContent.tsx
+│   │   │   ├── BadgeFormDesign.tsx
+│   │   │   ├── BadgeFormPlacement.tsx
+│   │   │   ├── BadgePreview.tsx
+│   │   │   ├── PlanTag.tsx
+│   │   │   ├── SetupGuide.module.css
+│   │   │   ├── SetupGuide.tsx
+│   │   │   └── StepTabs.tsx
+│   │   ├── api.icons.ts
+│   │   ├── api.metafields.tsx
+│   │   ├── api.track-view.ts
+│   │   ├── app._index.tsx
+│   │   ├── app.badges.$badgeId.edit.tsx
+│   │   ├── app.badges.new.tsx
+│   │   ├── app.billing.$plan.tsx
+│   │   ├── app.pricing.success.tsx
+│   │   ├── app.pricing.tsx
+│   │   ├── app.tsx
+│   │   ├── apps.trust-badges.render.tsx
+│   │   ├── auth.$.tsx
+│   │   ├── webhooks.app.scopes_update.tsx
+│   │   ├── webhooks.app.subscriptions.tsx
+│   │   └── webhooks.app.uninstalled.tsx
+│   ├── types
+│   │   ├── admin-unstable.schema.json
+│   │   ├── admin.generated.d.ts
+│   │   ├── admin.types.d.ts
+│   │   ├── form.types.ts
+│   │   └── types.ts
+│   ├── utils
+│   │   ├── billing.server.ts
+│   │   ├── clipboard.client.ts
+│   │   ├── icons-data.server.ts
+│   │   ├── isomorphicEffect.ts
+│   │   ├── navigation.ts
+│   │   ├── theme-check.server.ts
+│   │   ├── types.ts
+│   │   └── upload-to-r2.server.ts
+│   ├── db.server.ts
+│   ├── entry.server.tsx
+│   ├── globals.d.ts
+│   ├── root.tsx
+│   ├── routes.ts
+│   └── shopify.server.ts
+├── extensions
+│   └── progus-trust-badges
+│       ├── assets
+│       │   ├── thumbs-up.png
+│       │   └── trust-badges.js
+│       ├── blocks
+│       │   ├── cart-badges.liquid
+│       │   ├── product-badges.liquid
+│       │   ├── progus-app-embed.liquid
+│       │   └── trust-badge.liquid
+│       ├── locales
+│       │   └── en.default.json
+│       ├── snippets
+│       │   ├── trust-badge.liquid
+│       │   └── trust-badges-data.liquid
+│       └── shopify.extension.toml
+├── prisma
+│   ├── migrations
+│   │   ├── 20230615155147_create_session_table
+│   │   │   └── migration.sql
+│   │   ├── 20250324165856_add_session_fields
+│   │   │   └── migration.sql
+│   │   ├── 20251018093711_add_billing_models
+│   │   │   └── migration.sql
+│   │   └── migration_lock.toml
+│   ├── dev.sqlite
+│   └── schema.prisma
+├── public
+│   ├── favicon.ico
+│   └── FOLDER_STRUCTURE.txt
+├── Dockerfile
+├── env.d.ts
+├── eslint.config.js
+├── package-lock.json
+├── package.json
+├── README.md
+├── shopify.app.toml
+├── shopify.web.toml
+├── tsconfig.json
+└── vite.config.ts

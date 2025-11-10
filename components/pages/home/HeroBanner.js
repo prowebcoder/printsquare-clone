@@ -1,3 +1,4 @@
+// components/pages/home/HeroBanner.js
 "use client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -12,14 +13,14 @@ export default function HeroBanner({ sectionData }) {
       setContent(sectionData);
       setLoading(false);
     } else {
-      // Otherwise, fetch it directly
+      // Otherwise, fetch it from our new API
       fetchContent();
     }
   }, [sectionData]);
 
   const fetchContent = async () => {
     try {
-      const response = await fetch('/api/admin/content/home');
+      const response = await fetch('/api/admin/content?page=home');
       if (response.ok) {
         const data = await response.json();
         const heroSection = data.sections?.find(s => s.sectionId === 'hero');
@@ -69,27 +70,15 @@ export default function HeroBanner({ sectionData }) {
     );
   }
 
-  const backgroundImage = content.images?.find(img => img.key === 'background');
-
   return (
     <section className="relative w-full h-[400px] md:h-[480px] flex items-center justify-center">
-      {backgroundImage ? (
-        <Image
-          src={backgroundImage.url}
-          alt={backgroundImage.alt}
-          fill
-          priority
-          className="object-cover brightness-95"
-        />
-      ) : (
-        <Image
-          src="/homepage/main-bg.jpg"
-          alt="Printsquare background"
-          fill
-          priority
-          className="object-cover brightness-95"
-        />
-      )}
+      <Image
+        src="/homepage/main-bg.jpg"
+        alt="Printsquare background"
+        fill
+        priority
+        className="object-cover brightness-95"
+      />
       <div className="relative z-10 text-center px-4">
         <h2 className="text-white text-2xl md:text-3xl font-light mb-2 drop-shadow-md">
           {content.content?.subtitle || "Quality prints. Fair prices. Print Seoul"}

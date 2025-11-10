@@ -1,3 +1,4 @@
+// components/pages/home/Notice.js
 "use client";
 import Link from "next/link";
 import { Megaphone } from "lucide-react";

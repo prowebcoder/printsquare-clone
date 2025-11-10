@@ -1,3 +1,4 @@
+// components/pages/home/OrderProcess.js
 "use client";
 import Image from "next/image";
 import { useState, useEffect } from "react";

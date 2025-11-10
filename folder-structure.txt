@@ -1,6 +1,102 @@
+├── app
+│   ├── [...slug]
+│   │   └── page.js
+│   ├── about-us
+│   │   └── page.js
+│   ├── admin
+│   │   ├── dashboard
+│   │   │   ├── content
+│   │   │   │   └── page.js
+│   │   │   ├── media
+│   │   │   │   └── page.js
+│   │   │   ├── pages
+│   │   │   │   ├── [id]
+│   │   │   │   │   └── page.js
+│   │   │   │   ├── new
+│   │   │   │   │   └── page.js
+│   │   │   │   └── page.js
+│   │   │   ├── users
+│   │   │   │   └── page.js
+│   │   │   ├── layout.js
+│   │   │   └── page.js
+│   │   └── login
+│   │       └── page.js
+│   ├── api
+│   │   ├── admin
+│   │   │   ├── auth
+│   │   │   │   ├── login
+│   │   │   │   │   └── route.js
+│   │   │   │   └── verify
+│   │   │   │       └── route.js
+│   │   │   ├── content
+│   │   │   │   └── route.js
+│   │   │   ├── create-admin
+│   │   │   │   └── route.js
+│   │   │   ├── login
+│   │   │   │   └── route.js
+│   │   │   ├── media
+│   │   │   │   └── route.js
+│   │   │   ├── pages
+│   │   │   │   ├── [id]
+│   │   │   │   │   └── route.js
+│   │   │   │   └── route.js
+│   │   │   ├── setup
+│   │   │   │   └── route.js
+│   │   │   ├── stats
+│   │   │   │   └── route.js
+│   │   │   └── users
+│   │   │       └── route.js
+│   │   ├── debug
+│   │   │   └── pages
+│   │   │       └── route.js
+│   │   ├── fix-pages
+│   │   │   └── route.js
+│   │   ├── folder-structure
+│   │   │   └── route.js
+│   │   ├── force-fix
+│   │   │   └── route.js
+│   │   ├── reset-pages
+│   │   │   └── route.js
+│   │   └── test
+│   │       └── route.js
+│   ├── binding-and-finishing
+│   │   └── page.js
+│   ├── contact-us
+│   │   └── page.js
+│   ├── debug-pages
+│   │   └── page.js
+│   ├── faqs
+│   │   └── page.js
+│   ├── perfect-binding
+│   │   └── page.js
+│   ├── portfolio
+│   │   └── page.js
+│   ├── printing
+│   │   └── page.js
+│   ├── privacy-policy
+│   │   └── page.js
+│   ├── saddle-stitching
+│   │   └── page.js
+│   ├── sheet-fed-press
+│   │   └── page.js
+│   ├── sitemap
+│   │   └── page.js
+│   ├── terms-conditions
+│   │   └── page.js
+│   ├── tour-our-facilities
+│   │   └── page.js
+│   ├── web-fed-press
+│   │   └── page.js
+│   ├── favicon.ico
+│   ├── globals.css
+│   ├── layout.js
+│   └── page.js
 ├── components
 │   ├── admin
-│   │   └── DynamicFormEditor.js
+│   │   ├── ContentEditor.js
+│   │   ├── DynamicFormEditor.js
+│   │   ├── Header.js
+│   │   └── Sidebar.js
 │   ├── data
 │   │   ├── adminUsers.json
 │   │   ├── FaqData.js
@@ -23,6 +119,14 @@
 │   │   │   ├── BottomBanner.js
 │   │   │   └── index.js
 │   │   ├── api
+│   │   │   └── admin
+│   │   │       ├── pages
+│   │   │       │   ├── [id]
+│   │   │       │   │   └── route.js
+│   │   │       │   └── route.js
+│   │   │       ├── login.js
+│   │   │       ├── stats.js
+│   │   │       └── users.js
 │   │   ├── contact
 │   │   │   ├── ContactUs.js
 │   │   │   └── index.js
@@ -83,14 +187,17 @@
 │   │   ├── signup
 │   │   └── tutorials
 │   │       └── index.js
-│   └── FolderStructureCreator.js
+│   ├── FolderStructureCreator.js
+│   └── PageBuilder.js
 ├── hooks
 ├── lib
 │   ├── auth.js
+│   ├── db.js
 │   └── mongodb.js
 ├── models
 │   ├── Content.js
 │   ├── FormConfiguration.js
+│   ├── Media.js
 │   ├── Page.js
 │   ├── PageContent.js
 │   └── User.js
@@ -215,6 +322,7 @@
 │   │   ├── wfp1.png
 │   │   └── wfp2.png
 │   ├── file.svg
+│   ├── folder_structure.txt
 │   ├── folder-structure.txt
 │   ├── globe.svg
 │   ├── next.svg
@@ -249,6 +357,12 @@
 │       │   │   ├── login
 │       │   │   │   └── route.js
 │       │   │   └── logout
+│       │   │       └── route.js
+│       │   ├── content
+│       │   │   └── [page]
+│       │   │       └── route.js
+│       │   ├── debug
+│       │   │   └── content
 │       │   │       └── route.js
 │       │   ├── folder-structure
 │       │   │   └── route.js
@@ -288,6 +402,8 @@
 ├── eslint.config.mjs
 ├── folder-structure.txt
 ├── jsconfig.json
+├── litstructure.txt
+├── middleware.js
 ├── next.config.mjs
 ├── package-lock.json
 ├── package.json
