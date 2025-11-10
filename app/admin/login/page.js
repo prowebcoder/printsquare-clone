@@ -133,7 +133,7 @@ export default function Login() {
 
           <div className="text-center">
             <p className="text-xs text-gray-500">
-              Default credentials: admin@printsquare.com / admin123
+              Default credentials: admin@printsquare.com / neha@1234
             </p>
             <button
               type="button"
