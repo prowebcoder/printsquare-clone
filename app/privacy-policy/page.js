@@ -1,11 +1,13 @@
+import Footer from "@/components/layout/footer/footer";
+import Header from "@/components/layout/header/header"
+
 //src/app/privacy-policy/page.js
-import Header from "../../../components/layout/header/header";
-import Footer from "../../../components/layout/footer/footer";
+
 
 export default function PrivacyPolicy() {
   return (
     <>
-      <Header />
+      <Header/>
       <section className="bg-[#0B1633] text-[#D6D9E0] py-20 px-6 md:px-12 lg:px-24">
         <div className="max-w-5xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-10">
@@ -123,7 +125,7 @@ export default function PrivacyPolicy() {
           </p>
         </div>
       </section>
-      <Footer />
+     <Footer/>
     </>
   );
 }
