@@ -16,12 +16,7 @@ export default function TermsConditions() {
             <span className="text-white font-semibold">Print Seoul</span>. By
             accessing or using our website (“Site”), you agree to comply with
             and be bound by the following Terms and Conditions, along with our{" "}
-            <a
-              href="/privacy-policy"
-              className="text-[#E21B36] hover:text-[#FF4B2B] underline transition"
-            >
-              Privacy Policy
-            </a>
+           
             . Please review these terms carefully before using our services.
           </p>
 

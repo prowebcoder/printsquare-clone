@@ -60,12 +60,12 @@ export default function AboutUs() {
           </p>
 
           <div className="mt-8">
-            <a
+            {/* <a
               href="/quote"
               className="inline-block bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white font-semibold px-8 py-3 rounded-full shadow-md hover:opacity-90 transition-all"
             >
               Get a Quote
-            </a>
+            </a> */}
           </div>
         </div>
       </div>
