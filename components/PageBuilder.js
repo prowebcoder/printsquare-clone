@@ -81,7 +81,7 @@ export default function PageBuilder({ onComponentsChange, initialComponents = []
       freeSample: {
         title: 'Free Sample Service',
         description1: 'Curious about the paper texture or print quality before ordering? Experience it yourself with our free sample service.',
-        description2: 'Just share your preferred book type, paper, and contact details — and we\'ll send you a sample book to help you make the best choice.',
+        description2: `Just share your preferred book type, paper, and contact details — and we&apos;ll send you a sample book to help you make the best choice.`,
         description3: 'Build your trust with Print Seoul — where quality meets precision.',
         buttonText: 'Request a Free Sample',
         buttonLink: 'mailto:support@printsquare.net',
@@ -109,7 +109,7 @@ export default function PageBuilder({ onComponentsChange, initialComponents = []
       imageBannerTwo: {
         title: 'Special Order Available',
         paragraphs: [
-          'Would you like to make a special book other than the quote we provide? Don\'t worry — we\'ve got you covered.',
+          'Would you like to make a special book other than the quote we provide? Dont worry — weve got you covered.',
           'Describe the book you want using the Custom Quote. Our printing experts at Print Seoul will bring your idea to life.',
           'Want to create your own special edition book?'
         ],
@@ -140,7 +140,7 @@ export default function PageBuilder({ onComponentsChange, initialComponents = []
             date: '09.24.2025'
           },
           {
-            title: '[Update] Print Seoul\'s Homepage has been RE-DESIGNED!',
+            title: `[Update] Print Seoul&apos;s Homepage has been RE-DESIGNED!`,
             desc: 'Dear Client, Print Seoul has re-formed the homepage to make it more convenient for clients to place an order and easier to understand the advantages of PrintSquare. We pr...',
             date: '08.23.2023'
           }
@@ -153,14 +153,14 @@ export default function PageBuilder({ onComponentsChange, initialComponents = []
         title: 'Order Process',
         description: 'Follow our simple 8-step process to get your printing done efficiently and hassle-free.',
         steps: [
-          { id: "01", title: "Quote Check", desc: "Get an accurate quote for your book printing.", image: "/homepage/main-process1.jpg" },
-          { id: "02", title: "Order", desc: "Place your order easily online.", image: "/homepage/main-process2.jpg" },
-          { id: "03", title: "File Upload", desc: "Upload your files securely.", image: "/homepage/main-process3.jpg" },
-          { id: "04", title: "Proof Check", desc: "Check proofs to ensure perfection.", image: "/homepage/main-process4.jpg" },
-          { id: "05", title: "Payment", desc: "Make a secure payment.", image: "/homepage/main-process5.jpg" },
-          { id: "06", title: "Print", desc: "High-quality printing begins.", image: "/homepage/main-process6.jpg" },
-          { id: "07", title: "Shipping", desc: "Fast and safe delivery.", image: "/homepage/main-process7.jpg" },
-          { id: "08", title: "Customer Service", desc: "Continuous support throughout.", image: "/homepage/main-process8.jpg" }
+          { id: "01", title: "Quote Check", desc: "Get an accurate quote for your book printing.", image: "/homepage/main-process1.jpg", alt: "Quote check process" },
+          { id: "02", title: "Order", desc: "Place your order easily online.", image: "/homepage/main-process2.jpg", alt: "Order process" },
+          { id: "03", title: "File Upload", desc: "Upload your files securely.", image: "/homepage/main-process3.jpg", alt: "File upload process" },
+          { id: "04", title: "Proof Check", desc: "Check proofs to ensure perfection.", image: "/homepage/main-process4.jpg", alt: "Proof check process" },
+          { id: "05", title: "Payment", desc: "Make a secure payment.", image: "/homepage/main-process5.jpg", alt: "Payment process" },
+          { id: "06", title: "Print", desc: "High-quality printing begins.", image: "/homepage/main-process6.jpg", alt: "Printing process" },
+          { id: "07", title: "Shipping", desc: "Fast and safe delivery.", image: "/homepage/main-process7.jpg", alt: "Shipping process" },
+          { id: "08", title: "Customer Service", desc: "Continuous support throughout.", image: "/homepage/main-process8.jpg", alt: "Customer service process" }
         ]
       },
       
@@ -606,7 +606,7 @@ export default function PageBuilder({ onComponentsChange, initialComponents = []
       default:
         return (
           <div className="text-gray-500 text-sm">
-            This component type doesn't have a custom editor yet. The content will be saved as configured.
+            This component type doesn&apos;t have a custom editor yet. The content will be saved as configured.
           </div>
         );
     }
@@ -766,7 +766,7 @@ export default function PageBuilder({ onComponentsChange, initialComponents = []
         
         {components.length === 0 && (
           <div className="text-center py-12 text-gray-500 border-2 border-dashed border-gray-300 rounded-lg">
-            <Layout size={48} className="mx-auto mb-4 text-gray-400" />
+            <Layout size={48} className="mx-auto mb-4 text-gray-400" alt="" />
             <p>No components added yet</p>
             <p className="text-sm">Use the toolbar above to add components to your page</p>
           </div>
