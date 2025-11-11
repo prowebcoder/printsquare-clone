@@ -1,7 +1,7 @@
 'use client';
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import PageBuilder from '@/components/PageBuilder';
+import PageBuilder from '@/components/PageBuilder/PageBuilder';
 import { Save, ArrowLeft, Eye } from 'lucide-react';
 
 export default function EditPage() {

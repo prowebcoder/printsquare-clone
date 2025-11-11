@@ -110,6 +110,40 @@
 │   │   │   ├── MobileMenu.js
 │   │   │   └── RequestingSample.js
 │   │   └── Popup.js
+│   ├── PageBuilder
+│   │   ├── editors
+│   │   │   ├── AboutHeroEditor.js
+│   │   │   ├── AboutUsEditor.js
+│   │   │   ├── ComponentEditor.js
+│   │   │   ├── FormEditor.js
+│   │   │   ├── FreeSampleEditor.js
+│   │   │   ├── HeadingEditor.js
+│   │   │   ├── HeroBannerEditor.js
+│   │   │   ├── HeroEditor.js
+│   │   │   ├── ImageBannerEditor.js
+│   │   │   ├── ImageBannerTwoEditor.js
+│   │   │   ├── ImageEditor.js
+│   │   │   ├── MethodEditor.js
+│   │   │   ├── NoticeEditor.js
+│   │   │   ├── OrderProcessEditor.js
+│   │   │   ├── PerfectBindingFormEditor.js
+│   │   │   ├── PortfolioEditor.js
+│   │   │   ├── PricingEditor.js
+│   │   │   ├── QuickGuidesEditor.js
+│   │   │   ├── StyleEditor.js
+│   │   │   ├── TextEditor.js
+│   │   │   └── VideoBannerEditor.js
+│   │   ├── renderers
+│   │   │   ├── FormRenderer.js
+│   │   │   └── TextRenderer.js
+│   │   ├── utils
+│   │   │   ├── componentDefaults.js
+│   │   │   └── componentUtils.js
+│   │   ├── ComponentItem.js
+│   │   ├── ComponentList.js
+│   │   ├── ComponentToolbar.js
+│   │   ├── PageBuilder.js
+│   │   └── PageRenderer.js
 │   ├── pages
 │   │   ├── about
 │   │   │   ├── tour-our-facilities
@@ -184,12 +218,9 @@
 │   │   │   │   ├── index.js
 │   │   │   │   └── SaddleStitchingForm.js
 │   │   │   └── index.js
-│   │   ├── signup
 │   │   └── tutorials
 │   │       └── index.js
-│   ├── FolderStructureCreator.js
-│   └── PageBuilder.js
-├── hooks
+│   └── FolderStructureCreator.js
 ├── lib
 │   ├── auth.js
 │   ├── db.js
@@ -329,6 +360,7 @@
 │   ├── vercel.svg
 │   └── window.svg
 ├── scripts
+│   ├── fixAdmin.js
 │   ├── resetAuth.js
 │   ├── seedAdmin.js
 │   ├── seedFormConfig.js
@@ -366,9 +398,13 @@
 │       │   │       └── route.js
 │       │   ├── folder-structure
 │       │   │   └── route.js
-│       │   └── forms
-│       │       └── [formId]
-│       │           └── route.js
+│       │   ├── forms
+│       │   │   └── [formId]
+│       │   │       └── route.js
+│       │   ├── test-auth
+│       │   │   └── route.js
+│       │   └── test-connection
+│       │       └── route.js
 │       ├── binding-and-finishing
 │       │   └── page.js
 │       ├── contact-us

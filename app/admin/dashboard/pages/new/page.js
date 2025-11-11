@@ -2,7 +2,7 @@
 'use client';
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import PageBuilder from '@/components/PageBuilder';
+import PageBuilder from '@/components/PageBuilder/PageBuilder';
 import { Save, ArrowLeft } from 'lucide-react';
 
 export default function NewPage() {
