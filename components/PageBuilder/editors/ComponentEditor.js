@@ -57,7 +57,8 @@ const ComponentEditor = ({ component, onUpdateContent, onUpdateStyles }) => {
 
 const DefaultEditor = () => (
   <div className="text-gray-500 text-sm p-4 bg-gray-50 rounded-lg border text-center">
-    This component type doesn't have a custom editor yet. The content will be saved as configured.
+   This component type doesn&apos;t have a custom editor yet. The content will be saved as configured.
+
   </div>
 );
 
