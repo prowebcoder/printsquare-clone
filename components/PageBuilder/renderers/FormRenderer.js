@@ -7,11 +7,11 @@ const FormRenderer = ({ component }) => {
   const formData = component.content || {};
   const fields = formData.fields || [];
   const formConfig = formData.formConfig || {
-    title: 'Contact Form',
-    submitText: 'Submit',
-    successMessage: 'Thank you for your submission!',
-    errorMessage: 'There was an error submitting the form.',
-  };
+  title: 'Contact Form',
+  submitText: 'Submit',
+  successMessage: 'Thank you for your submission!',
+  errorMessage: 'There was an error submitting the form.',
+};
 
   const [formValues, setFormValues] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -252,7 +252,8 @@ const FormRenderer = ({ component }) => {
       <div className={`${styleClasses} max-w-2xl mx-auto p-6 text-center`}>
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
           <h3 className="text-lg font-medium text-yellow-800 mb-2">Form Not Configured</h3>
-          <p className="text-yellow-700">This form doesn't have any fields configured yet.</p>
+          <p className="text-yellow-700">This form doesn&apos;t have any fields configured yet.</p>
+
         </div>
       </div>
     );

@@ -1,6 +1,6 @@
 // components/PageBuilder/utils/componentUtils.js
 import { 
-  Type, Image, Layout, Text, FileText, Star, Zap, Users, 
+  Type, Image as ImageIcon, Layout, Text, FileText, Star, Zap, Users, 
   DollarSign, BookOpen, Megaphone, Video, ShoppingCart, 
   Grid, Settings, FileText as FormIcon 
 } from 'lucide-react';
@@ -10,13 +10,13 @@ export const getComponentIcon = (type) => {
     text: <Type size={16} />,
     heading: <Text size={16} />,
     hero: <Star size={16} />,
-    image: <Image size={16} />,
+    image: <ImageIcon size={16} />,
     aboutHero: <Users size={16} />,
     aboutUs: <BookOpen size={16} />,
     freeSample: <Zap size={16} />,
     heroBanner: <Layout size={16} />,
-    imageBanner: <Image size={16} />,
-    imageBannerTwo: <Image size={16} />,
+    imageBanner: <ImageIcon size={16} />,
+    imageBannerTwo: <ImageIcon size={16} />,
     method: <FileText size={16} />,
     notice: <Megaphone size={16} />,
     orderProcess: <ShoppingCart size={16} />,
@@ -28,6 +28,7 @@ export const getComponentIcon = (type) => {
   };
   return icons[type] || <FileText size={16} />;
 };
+
 
 export const getComponentCategory = (type) => {
   if (['aboutHero', 'aboutUs', 'freeSample'].includes(type)) {

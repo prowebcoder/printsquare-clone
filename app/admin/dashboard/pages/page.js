@@ -1,4 +1,3 @@
-// app/admin/dashboard/pages/page.js
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -9,10 +8,6 @@ export default function PagesPage() {
   const [pages, setPages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-
-  useEffect(() => {
-    fetchPages();
-  }, []);
 
   const fetchPages = async () => {
     try {
@@ -32,6 +27,11 @@ export default function PagesPage() {
     }
   };
 
+  useEffect(() => {
+    fetchPages();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleDelete = async (pageId) => {
     if (!confirm('Are you sure you want to delete this page?')) return;
 
@@ -43,7 +43,7 @@ export default function PagesPage() {
       });
 
       if (res.ok) {
-        setPages(pages.filter((page) => page._id !== pageId));
+        setPages((prev) => prev.filter((page) => page._id !== pageId));
       } else {
         alert('Failed to delete page');
       }
@@ -53,9 +53,10 @@ export default function PagesPage() {
     }
   };
 
-  const filteredPages = pages.filter((page) =>
-    page.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    page.slug.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPages = pages.filter(
+    (page) =>
+      page.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      page.slug.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (loading) {

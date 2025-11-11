@@ -1,7 +1,8 @@
 // components/admin/ContentEditor.js
 'use client';
 import { useState, useEffect } from 'react';
-import { Edit, Save, X, Image, Type, Video } from 'lucide-react';
+import { Edit, Save, X, Image as ImageIcon, Type, Video } from 'lucide-react';
+
 
 export default function ContentEditor({ pageSlug = 'home' }) {
   const [sections, setSections] = useState([]);
@@ -12,6 +13,7 @@ export default function ContentEditor({ pageSlug = 'home' }) {
 
   useEffect(() => {
     fetchContent();
+
   }, [pageSlug]);
 
   const fetchContent = async () => {
@@ -76,7 +78,7 @@ export default function ContentEditor({ pageSlug = 'home' }) {
 
   const getSectionIcon = (sectionId) => {
     const icons = {
-      hero: <Image size={20} className="text-blue-500" />,
+      hero: <ImageIcon size={20} className="text-blue-500" />,
       text: <Type size={20} className="text-green-500" />,
       heading: <Type size={20} className="text-purple-500" />,
       video: <Video size={20} className="text-red-500" />,

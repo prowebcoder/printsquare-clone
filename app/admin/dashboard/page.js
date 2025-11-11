@@ -1,7 +1,6 @@
-// app/admin/dashboard/page.js
 'use client';
 import { useEffect, useState } from 'react';
-import { Users, FileText, Image, Eye } from 'lucide-react';
+import { Users, FileText, Image as ImageIcon, Eye } from 'lucide-react';
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -12,10 +11,7 @@ export default function Dashboard() {
   });
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchStats();
-  }, []);
-
+  // define fetchStats before useEffect
   const fetchStats = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -24,7 +20,7 @@ export default function Dashboard() {
           'Authorization': `Bearer ${token}`,
         },
       });
-      
+
       if (res.ok) {
         const data = await res.json();
         setStats(data);
@@ -36,6 +32,11 @@ export default function Dashboard() {
     }
   };
 
+  useEffect(() => {
+    fetchStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // run once on mount
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -45,36 +46,16 @@ export default function Dashboard() {
   }
 
   const statCards = [
-    {
-      title: 'Total Users',
-      value: stats.users,
-      icon: Users,
-      color: 'bg-blue-500',
-    },
-    {
-      title: 'Total Pages',
-      value: stats.pages,
-      icon: FileText,
-      color: 'bg-green-500',
-    },
-    {
-      title: 'Media Files',
-      value: stats.media,
-      icon: Image,
-      color: 'bg-purple-500',
-    },
-    {
-      title: 'Page Views',
-      value: stats.pageViews,
-      icon: Eye,
-      color: 'bg-orange-500',
-    },
+    { title: 'Total Users', value: stats.users, icon: Users, color: 'bg-blue-500' },
+    { title: 'Total Pages', value: stats.pages, icon: FileText, color: 'bg-green-500' },
+    { title: 'Media Files', value: stats.media, icon: ImageIcon, color: 'bg-purple-500' },
+    { title: 'Page Views', value: stats.pageViews, icon: Eye, color: 'bg-orange-500' },
   ];
 
   return (
     <div>
       <h1 className="text-3xl font-bold text-gray-800 mb-8">Dashboard Overview</h1>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {statCards.map((card) => (
           <div key={card.title} className="bg-white rounded-lg shadow-sm border p-6">
