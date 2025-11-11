@@ -1,3 +1,4 @@
+// app/[...slug]/page.js
 import dbConnect from '@/lib/db';
 import Page from '@/models/Page';
 import { notFound } from 'next/navigation';
