@@ -30,121 +30,117 @@ const PageRenderer = ({ components }) => {
 
   const renderComponent = (component) => {
     const styleClasses = getStyleClasses(component.styles);
+    const inlineStyle = getInlineStyle(component.styles);
 
-    switch (component.type) {
-      case 'text':
-        return <TextRenderer key={component.id} component={component} />;
-      case 'heading':
-        return <HeadingRenderer key={component.id} component={component} />;
-      case 'hero':
-        return <HeroRenderer key={component.id} component={component} />;
-      case 'image':
-        return <ImageRenderer key={component.id} component={component} />;
-      case 'aboutHero':
-        return <AboutHeroRenderer key={component.id} component={component} />;
-      case 'aboutUs':
-        return <AboutUsRenderer key={component.id} component={component} />;
-      case 'freeSample':
-        return <FreeSampleRenderer key={component.id} component={component} />;
-      case 'heroBanner':
-        return <HeroBannerRenderer key={component.id} component={component} />;
-      case 'imageBanner':
-        return <ImageBannerRenderer key={component.id} component={component} />;
-      case 'imageBannerTwo':
-        return <ImageBannerTwoRenderer key={component.id} component={component} />;
-      case 'method':
-        return <MethodRenderer key={component.id} component={component} />;
-      case 'notice':
-        return <NoticeRenderer key={component.id} component={component} />;
-      case 'orderProcess':
-        return <OrderProcessRenderer key={component.id} component={component} />;
-      case 'portfolio':
-        return <PortfolioRenderer key={component.id} component={component} />;
-      case 'pricing':
-        return <PricingRenderer key={component.id} component={component} />;
-      case 'quickGuides':
-        return <QuickGuidesRenderer key={component.id} component={component} />;
-      case 'videoBanner':
-        return <VideoBannerRenderer key={component.id} component={component} />;
-      case 'form':
-        return <FormRenderer key={component.id} component={component} />;
-      default:
-        return (
-          <div key={component.id} className={`p-4 border border-yellow-300 bg-yellow-50 ${styleClasses}`}>
-            <p className="text-yellow-800">
-              Component type "{component.type}" is not supported in the renderer.
-            </p>
-          </div>
-        );
-    }
+    const renderMap = {
+      text: TextRenderer,
+      heading: HeadingRenderer,
+      hero: HeroRenderer,
+      image: ImageRenderer,
+      aboutHero: AboutHeroRenderer,
+      aboutUs: AboutUsRenderer,
+      freeSample: FreeSampleRenderer,
+      heroBanner: HeroBannerRenderer,
+      imageBanner: ImageBannerRenderer,
+      imageBannerTwo: ImageBannerTwoRenderer,
+      method: MethodRenderer,
+      notice: NoticeRenderer,
+      orderProcess: OrderProcessRenderer,
+      portfolio: PortfolioRenderer,
+      pricing: PricingRenderer,
+      quickGuides: QuickGuidesRenderer,
+      videoBanner: VideoBannerRenderer,
+      form: FormRenderer,
+    };
+
+    const Renderer = renderMap[component.type];
+
+    return Renderer ? (
+      <div key={component.id} className={styleClasses} style={inlineStyle}>
+        <Renderer component={component} />
+      </div>
+    ) : (
+      <div key={component.id} className={`p-4 border border-yellow-300 bg-yellow-50 ${styleClasses}`}>
+        <p className="text-yellow-800">
+          Component type "{component.type}" is not supported in the renderer.
+        </p>
+      </div>
+    );
   };
 
-  return (
-    <div className="space-y-8">
-      {components.map(renderComponent)}
-    </div>
-  );
+  return <div className="space-y-8">{components.map(renderComponent)}</div>;
 };
 
-// Helper function to convert style object to Tailwind classes
-const getStyleClasses = (styles) => {
-  if (!styles) return '';
-  
-  const classMap = {
-    backgroundColor: `bg-[${styles.backgroundColor}]`,
-    textColor: `text-[${styles.textColor}]`,
+// ✅ Tailwind-safe styles
+const getStyleClasses = (styles = {}) => {
+  const map = {
     fontSize: {
-      'xs': 'text-xs',
-      'sm': 'text-sm',
-      'base': 'text-base',
-      'lg': 'text-lg',
-      'xl': 'text-xl',
+      xs: 'text-xs',
+      sm: 'text-sm',
+      base: 'text-base',
+      lg: 'text-lg',
+      xl: 'text-xl',
       '2xl': 'text-2xl',
       '3xl': 'text-3xl',
       '4xl': 'text-4xl',
-    }[styles.fontSize] || 'text-base',
+    },
     textAlign: {
-      'left': 'text-left',
-      'center': 'text-center',
-      'right': 'text-right',
-      'justify': 'text-justify',
-    }[styles.textAlign] || 'text-left',
+      left: 'text-left',
+      center: 'text-center',
+      right: 'text-right',
+      justify: 'text-justify',
+    },
     padding: {
-      'none': 'p-0',
-      'small': 'p-2',
-      'medium': 'p-4',
-      'large': 'p-6',
-      'xlarge': 'p-8',
-    }[styles.padding] || 'p-4',
+      none: 'p-0',
+      small: 'p-2',
+      medium: 'p-4',
+      large: 'p-6',
+      xlarge: 'p-8',
+    },
     borderRadius: {
-      'none': 'rounded-none',
-      'sm': 'rounded-sm',
-      'md': 'rounded-md',
-      'lg': 'rounded-lg',
-      'xl': 'rounded-xl',
-      'full': 'rounded-full',
-    }[styles.borderRadius] || 'rounded-none',
+      none: 'rounded-none',
+      sm: 'rounded-sm',
+      md: 'rounded-md',
+      lg: 'rounded-lg',
+      xl: 'rounded-xl',
+      full: 'rounded-full',
+    },
     borderWidth: {
-      '0': 'border-0',
-      '1': 'border',
-      '2': 'border-2',
-      '4': 'border-4',
-      '8': 'border-8',
-    }[styles.borderWidth] || 'border-0',
+      0: 'border-0',
+      1: 'border',
+      2: 'border-2',
+      4: 'border-4',
+      8: 'border-8',
+    },
     shadow: {
-      'none': 'shadow-none',
-      'sm': 'shadow-sm',
-      'md': 'shadow-md',
-      'lg': 'shadow-lg',
-      'xl': 'shadow-xl',
-    }[styles.shadow] || 'shadow-none',
+      none: 'shadow-none',
+      sm: 'shadow-sm',
+      md: 'shadow-md',
+      lg: 'shadow-lg',
+      xl: 'shadow-xl',
+    },
   };
 
-  return Object.entries(classMap)
-    .filter(([key, value]) => styles[key])
-    .map(([key, value]) => value)
-    .concat(styles.customClasses?.split(' ') || [])
-    .join(' ');
+  const classNames = [
+    map.fontSize[styles.fontSize] || 'text-base',
+    map.textAlign[styles.textAlign] || 'text-left',
+    map.padding[styles.padding] || 'p-4',
+    map.borderRadius[styles.borderRadius] || '',
+    map.borderWidth[styles.borderWidth] || '',
+    map.shadow[styles.shadow] || '',
+  ];
+
+  if (styles.customClasses) classNames.push(styles.customClasses);
+  return classNames.join(' ');
+};
+
+// ✅ Inline color support
+const getInlineStyle = (styles = {}) => {
+  const inline = {};
+  if (styles.backgroundColor) inline.backgroundColor = styles.backgroundColor;
+  if (styles.textColor) inline.color = styles.textColor;
+  if (styles.borderColor) inline.borderColor = styles.borderColor;
+  return inline;
 };
 
 export default PageRenderer;
