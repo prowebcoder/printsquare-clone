@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Header from '@/components/layout/header/header';
 import Footer from '@/components/layout/footer/footer';
 import { ArrowRight } from "lucide-react";
+import AdvancedFormRenderer from '@/components/PageBuilder/renderers/AdvancedFormRenderer';
 
 async function getPageData(slug) {
   try {
@@ -73,6 +74,173 @@ function renderAboutHero(component, index) {
       </div>
     </section>
   );
+}
+
+function renderAdvancedForm(component, index) {
+  console.log(`🎨 Rendering AdvancedForm:`, component.content);
+  
+  // Ensure component has proper structure with default fields if empty
+  const enhancedComponent = {
+    ...component,
+    content: {
+      fields: component.content?.fields || getDefaultAdvancedFormFields(),
+      formConfig: component.content?.formConfig || {
+        title: 'Advanced Form',
+        submitText: 'Submit',
+        successMessage: 'Thank you for your submission!',
+        errorMessage: 'There was an error submitting the form.',
+        enableMultiStep: false,
+        steps: ['Step 1'],
+        enableCalculations: false,
+      }
+    }
+  };
+
+  return (
+    <div key={component.id || index} className="my-8">
+      <AdvancedFormRenderer component={enhancedComponent} />
+    </div>
+  );
+}
+
+// Default fields for advanced form
+function getDefaultAdvancedFormFields() {
+  return [
+    // Size Section
+    {
+      id: 'size-section',
+      type: 'section',
+      label: 'Size',
+      step: 1
+    },
+    {
+      id: 'size',
+      type: 'select',
+      label: 'Select Size',
+      options: [
+        '5.5 x 8.5',
+        '7.5 x 10',
+        '8.5 x 11',
+        '9 x 12',
+        '8.5 x 5.5',
+        '10 x 7.5',
+        '11 x 8.5',
+        'Custom Size'
+      ],
+      required: true,
+      step: 1,
+      conditionalLogic: {
+        field: 'size',
+        value: 'Custom Size',
+        action: 'show',
+        target: 'custom-size'
+      }
+    },
+    {
+      id: 'custom-size',
+      type: 'text',
+      label: 'Custom Size',
+      placeholder: 'Enter custom size (e.g., 12 x 18)',
+      required: false,
+      step: 1,
+      hidden: true
+    },
+    // Edges Section
+    {
+      id: 'edges-section',
+      type: 'section',
+      label: 'Edges',
+      step: 1
+    },
+    {
+      id: 'binding-edge',
+      type: 'radio-image',
+      label: 'Binding Edge',
+      options: [
+        { value: 'edge01', label: 'Edge 01', image: '/forms/edge01.png' },
+        { value: 'edge02', label: 'Edge 02', image: '/forms/edge02.png' },
+        { value: 'edge03', label: 'Edge 03', image: '/forms/edge03.png' }
+      ],
+      required: true,
+      step: 1
+    },
+    // Cover Section
+    {
+      id: 'cover-section',
+      type: 'section',
+      label: 'Cover',
+      step: 2
+    },
+    {
+      id: 'cover-paper',
+      type: 'select',
+      label: 'Paper',
+      options: ['Matte', 'Gloss', 'Hi-Plus', 'Hi-Q Matte', 'Premium'],
+      required: true,
+      step: 2
+    },
+    {
+      id: 'cover-print-color',
+      type: 'radio-image',
+      label: 'Print Color',
+      options: [
+        { value: 'd1', label: 'Full color', image: '/forms/d1.png' },
+        { value: 'd2', label: 'Full color + 1 Spot color', image: '/forms/d2.png' },
+        { value: 'd3', label: 'Full color + 2 Spot color', image: '/forms/d3.png' },
+        { value: 'd4', label: 'Black only', image: '/forms/d4.png' },
+        { value: 'd5', label: 'Black + 1 Spot color', image: '/forms/d5.png' },
+        { value: 'd6', label: 'Black + 2 Spot color', image: '/forms/d6.png' }
+      ],
+      required: true,
+      step: 2
+    },
+    {
+      id: 'cover-finish',
+      type: 'select',
+      label: 'Cover Finish',
+      options: ['Matte Lamination', 'Gloss Lamination', 'Hi-Plus Lamination', 'Hi-Q Matte Lamination'],
+      required: true,
+      step: 2
+    },
+    // Inside Page Section
+    {
+      id: 'inside-page-section',
+      type: 'section',
+      label: 'Inside Page',
+      step: 3
+    },
+    {
+      id: 'page-count',
+      type: 'select',
+      label: 'Page Count',
+      options: Array.from({ length: 80 }, (_, i) => `${(i + 1) * 10} pages`),
+      required: true,
+      step: 3
+    },
+    {
+      id: 'inside-paper',
+      type: 'select',
+      label: 'Paper',
+      options: ['Matte', 'Gloss', 'Hi-Plus', 'Hi-Q Matte', 'Premium'],
+      required: true,
+      step: 3
+    },
+    {
+      id: 'inside-print-color',
+      type: 'radio-image',
+      label: 'Print Color',
+      options: [
+        { value: 'd1', label: 'Full color', image: '/forms/d1.png' },
+        { value: 'd2', label: 'Full color + 1 Spot color', image: '/forms/d2.png' },
+        { value: 'd3', label: 'Full color + 2 Spot color', image: '/forms/d3.png' },
+        { value: 'd4', label: 'Black only', image: '/forms/d4.png' },
+        { value: 'd5', label: 'Black + 1 Spot color', image: '/forms/d5.png' },
+        { value: 'd6', label: 'Black + 2 Spot color', image: '/forms/d6.png' }
+      ],
+      required: true,
+      step: 3
+    }
+  ];
 }
 
 function renderAboutUs(component, index) {
@@ -1100,6 +1268,8 @@ function renderComponent(component, index) {
         return renderHeroBanner(component, index);
       case 'imageBanner':
         return renderImageBanner(component, index);
+      case 'advancedForm':
+        return renderAdvancedForm(component, index);
       case 'imageBannerTwo':
         return renderImageBannerTwo(component, index);
       case 'method':

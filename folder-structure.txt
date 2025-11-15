@@ -114,6 +114,7 @@
 │   │   ├── editors
 │   │   │   ├── AboutHeroEditor.js
 │   │   │   ├── AboutUsEditor.js
+│   │   │   ├── AdvancedFormEditor.js
 │   │   │   ├── ComponentEditor.js
 │   │   │   ├── FormEditor.js
 │   │   │   ├── FreeSampleEditor.js
@@ -134,6 +135,7 @@
 │   │   │   ├── TextEditor.js
 │   │   │   └── VideoBannerEditor.js
 │   │   ├── renderers
+│   │   │   ├── AdvancedFormRenderer.js
 │   │   │   ├── FormRenderer.js
 │   │   │   └── TextRenderer.js
 │   │   ├── utils
@@ -244,6 +246,16 @@
 │   │   ├── main-footer-4.png
 │   │   ├── main-footer-5.png
 │   │   └── main-footer-logo.png
+│   ├── forms
+│   │   ├── 3.png
+│   │   ├── d1.png
+│   │   ├── d2.png
+│   │   ├── d4.png
+│   │   ├── d5.png
+│   │   ├── d6.png
+│   │   ├── edge01.png
+│   │   ├── edge02.png
+│   │   └── edge03.png
 │   ├── homepage
 │   │   ├── video
 │   │   │   └── printing.mp4

@@ -17,6 +17,7 @@ import PricingRenderer from './renderers/PricingRenderer';
 import QuickGuidesRenderer from './renderers/QuickGuidesRenderer';
 import VideoBannerRenderer from './renderers/VideoBannerRenderer';
 import FormRenderer from './renderers/FormRenderer';
+import AdvancedFormRenderer from './renderers/AdvancedFormRenderer';
 
 const PageRenderer = ({ components }) => {
   if (!components || !Array.isArray(components)) {
@@ -68,13 +69,14 @@ const PageRenderer = ({ components }) => {
         return <VideoBannerRenderer key={component.id} component={component} />;
       case 'form':
         return <FormRenderer key={component.id} component={component} />;
+      case 'advancedForm':
+        return <AdvancedFormRenderer key={component.id} component={component} />;
       default:
         return (
           <div key={component.id} className={`p-4 border border-yellow-300 bg-yellow-50 ${styleClasses}`}>
             <p className="text-yellow-800">
-  Component type &quot;{component.type}&quot; is not supported in the renderer.
-</p>
-
+              Component type &quot;{component.type}&quot; is not supported in the renderer.
+            </p>
           </div>
         );
     }
