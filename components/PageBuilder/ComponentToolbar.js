@@ -22,7 +22,7 @@ const ComponentToolbar = ({ onAddComponent }) => {
     
     // Form Components
     { type: 'form', name: 'Basic Form', category: 'Forms' },
-    { type: 'advancedForm', name: 'Advanced Form', category: 'Forms' },
+   
   ];
 
   const basicComponents = [

@@ -44,32 +44,7 @@ export const getDefaultContent = (type) => {
         image: '/homepage/main-sec07-1.jpg'
       },
 
-      advancedForm: {
-    type: 'advancedForm',
-    name: 'Advanced Form',
-    category: 'forms',
-    icon: '📋',
-    content: {
-      fields: [],
-      formConfig: {
-        title: 'Advanced Form',
-        submitText: 'Submit',
-        successMessage: 'Thank you for your submission!',
-        errorMessage: 'There was an error submitting the form.',
-        enableMultiStep: false,
-        steps: ['Step 1'],
-        enableCalculations: false,
-        calculationFormula: '',
-      },
-      templates: {}
-    },
-    styles: {
-      backgroundColor: '#ffffff',
-      textColor: '#000000',
-      padding: 'medium',
-      borderRadius: 'medium',
-    }
-  },
+    
 
       // Homepage Components
       heroBanner: {
