@@ -1,173 +1,60 @@
-import mongoose from 'mongoose';
-import FormConfiguration from '../models/FormConfiguration.js';
-import dbConnect from '../lib/mongodb.js';
+const mongoose = require('mongoose');
+require('dotenv').config();
+
+const FormConfigurationSchema = new mongoose.Schema({
+  name: { type: String, required: true, unique: true },
+  type: { type: String, enum: ['predefined', 'custom'], default: 'custom' },
+  description: String,
+  config: { type: mongoose.Schema.Types.Mixed, default: {} },
+  status: { type: String, enum: ['draft', 'published'], default: 'draft' },
+  submissions: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+});
+
+const FormConfiguration = mongoose.models.FormConfiguration || 
+  mongoose.model('FormConfiguration', FormConfigurationSchema);
+
+// Default configuration
+const DEFAULT_FORM_CONFIG = {
+  general: {
+    title: "Book Printing Quote",
+    description: "Configure your perfect book with our professional printing services. Get instant pricing and add to cart in minutes.",
+    submitButtonText: "Add to Cart",
+    shippingButtonText: "Calculate Shipping"
+  },
+  bindingTypes: [
+    { value: 'PERFECT', label: 'Perfect Binding' },
+    { value: 'SADDLE', label: 'Saddle Stitching' },
+    { value: 'HARDCOVER', label: 'Hardcover Book' },
+    { value: 'WIRE', label: 'Wire Binding' },
+  ],
+  sizes: ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', '8.5 x 5.5', '10 x 7.5', '11 x 8.5', 'Custom Size'],
+  // ... include all your default configuration here
+};
 
 async function seedFormConfig() {
   try {
-    await dbConnect();
-    
-    const perfectBindingConfig = {
-      formId: 'perfect-binding',
-      formTitle: 'Perfect Binding Quote',
-      sections: [
-        {
-          sectionId: 'size-binding',
-          sectionTitle: 'Size & Binding',
-          fields: [
-            {
-              fieldId: 'size-unit',
-              fieldType: 'radio',
-              label: 'Size Unit',
-              description: 'Select the unit for size measurements',
-              required: true,
-              defaultValue: 'INCH',
-              options: [
-                { value: 'INCH', label: 'Inch', price: 0 },
-                { value: 'MM', label: 'Millimeter', price: 0 }
-              ],
-              pricing: { type: 'fixed', value: 0 }
-            },
-            {
-              fieldId: 'paper-unit',
-              fieldType: 'radio',
-              label: 'Paper Unit',
-              description: 'Select the unit for paper weight',
-              required: true,
-              defaultValue: 'US',
-              options: [
-                { value: 'GSM', label: 'Grammage, gsm', price: 0 },
-                { value: 'US', label: 'US Weight, pound', price: 0 },
-                { value: 'PT', label: 'Caliper, point', price: 0 }
-              ],
-              pricing: { type: 'fixed', value: 0 }
-            },
-            {
-              fieldId: 'book-size',
-              fieldType: 'select',
-              label: 'Book Size',
-              description: 'Select the size of your book',
-              required: true,
-              defaultValue: '8.5 x 11',
-              options: [
-                { value: '5.5 x 8.5', label: '5.5 x 8.5', price: 0 },
-                { value: '7.5 x 10', label: '7.5 x 10', price: 50 },
-                { value: '8.5 x 11', label: '8.5 x 11', price: 0 },
-                { value: '9 x 12', label: '9 x 12', price: 75 }
-              ],
-              pricing: { type: 'fixed', value: 0 }
-            }
-          ]
-        },
-        {
-          sectionId: 'cover-options',
-          sectionTitle: 'Cover Options',
-          fields: [
-            {
-              fieldId: 'cover-paper',
-              fieldType: 'select',
-              label: 'Cover Paper',
-              description: 'Select the paper type for the cover',
-              required: true,
-              defaultValue: 'MATTE',
-              options: [
-                { value: 'MATTE', label: 'Matte', price: 0 },
-                { value: 'GLOSS', label: 'Gloss', price: 25 },
-                { value: 'HI-PLUS', label: 'Hi-Plus', price: 50 }
-              ],
-              pricing: { type: 'fixed', value: 0 }
-            },
-            {
-              fieldId: 'cover-finish',
-              fieldType: 'select',
-              label: 'Cover Finish',
-              description: 'Select the finish for the cover',
-              required: true,
-              defaultValue: 'MATTE_LAM',
-              options: [
-                { value: 'MATTE_LAM', label: 'Matte Lamination', price: 0 },
-                { value: 'GLOSS_LAM', label: 'Gloss Lamination', price: 30 },
-                { value: 'UV_COAT', label: 'UV Coating', price: 45 }
-              ],
-              pricing: { type: 'fixed', value: 0 }
-            }
-          ]
-        },
-        {
-          sectionId: 'inside-pages',
-          sectionTitle: 'Inside Pages',
-          fields: [
-            {
-              fieldId: 'page-count',
-              fieldType: 'number',
-              label: 'Page Count',
-              description: 'Number of inside pages (must be multiple of 2)',
-              required: true,
-              defaultValue: 96,
-              validation: { min: 24, max: 880 },
-              pricing: { type: 'per_unit', value: 0.5 }
-            },
-            {
-              fieldId: 'inside-paper',
-              fieldType: 'select',
-              label: 'Inside Paper',
-              description: 'Select the paper for inside pages',
-              required: true,
-              defaultValue: 'MATTE',
-              options: [
-                { value: 'MATTE', label: 'Matte', price: 0 },
-                { value: 'GLOSS', label: 'Gloss', price: 0.1 },
-                { value: 'UNCOATED', label: 'Uncoated', price: -0.05 }
-              ],
-              pricing: { type: 'per_unit', value: 0 }
-            }
-          ]
-        },
-        {
-          sectionId: 'quantity',
-          sectionTitle: 'Quantity & Options',
-          fields: [
-            {
-              fieldId: 'quantity',
-              fieldType: 'number',
-              label: 'Quantity',
-              description: 'Number of copies',
-              required: true,
-              defaultValue: 200,
-              validation: { min: 1, max: 100000 },
-              pricing: { type: 'per_unit', value: 2 }
-            },
-            {
-              fieldId: 'proof-type',
-              fieldType: 'select',
-              label: 'Proof Type',
-              description: 'Select the type of proof you need',
-              required: true,
-              defaultValue: 'ONLINE',
-              options: [
-                { value: 'ONLINE', label: 'E-Proof (Free)', price: 0 },
-                { value: 'DIGITAL', label: 'Digital Proof (+$50)', price: 50 }
-              ],
-              pricing: { type: 'fixed', value: 0 }
-            }
-          ]
-        }
-      ],
-      pricingConfig: {
-        basePrice: 500,
-        calculations: []
-      }
-    };
+    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/your-database-name');
+    console.log('Connected to MongoDB');
 
-    // Clear existing configuration
-    await FormConfiguration.deleteOne({ formId: 'perfect-binding' });
-    
-    // Insert new configuration
-    await FormConfiguration.create(perfectBindingConfig);
-    
-    console.log('✅ Form configuration seeded successfully!');
+    const result = await FormConfiguration.findOneAndUpdate(
+      { name: 'print-quote' },
+      {
+        name: 'print-quote',
+        type: 'predefined',
+        description: 'Book printing quote calculator with pricing options',
+        config: DEFAULT_FORM_CONFIG,
+        status: 'published',
+        updatedAt: new Date()
+      },
+      { upsert: true, new: true }
+    );
+
+    console.log('Form configuration seeded successfully:', result.name);
     process.exit(0);
   } catch (error) {
-    console.error('❌ Error seeding form configuration:', error);
+    console.error('Error seeding form configuration:', error);
     process.exit(1);
   }
 }

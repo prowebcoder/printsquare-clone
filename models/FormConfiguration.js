@@ -1,56 +1,55 @@
+// models/FormConfiguration.js
 import mongoose from 'mongoose';
 
-const OptionSchema = new mongoose.Schema({
-  value: String,
-  label: String,
-  description: String,
-  image: String,
-  price: { type: Number, default: 0 }
-});
-
-const FieldSchema = new mongoose.Schema({
-  fieldId: String,
-  fieldType: String,
-  label: String,
-  description: String,
-  required: { type: Boolean, default: false },
-  options: [OptionSchema],
-  defaultValue: mongoose.Schema.Types.Mixed,
-  validation: {
-    min: Number,
-    max: Number,
-    pattern: String
+const formConfigurationSchema = new mongoose.Schema({
+  name: { 
+    type: String, 
+    required: true,
+    unique: true 
   },
-  dependencies: [{
-    fieldId: String,
-    value: mongoose.Schema.Types.Mixed,
-    action: String
-  }],
-  pricing: {
-    type: { type: String, default: 'fixed' },
-    value: { type: Number, default: 0 },
-    formula: String
+  type: { 
+    type: String, 
+    enum: ['predefined', 'custom'], 
+    default: 'custom' 
+  },
+  description: String,
+  config: {
+    type: mongoose.Schema.Types.Mixed,
+    default: {}
+  },
+  status: { 
+    type: String, 
+    enum: ['draft', 'published'], 
+    default: 'draft' 
+  },
+  submissions: { 
+    type: Number, 
+    default: 0 
+  },
+  createdAt: { 
+    type: Date, 
+    default: Date.now 
+  },
+  updatedAt: { 
+    type: Date, 
+    default: Date.now 
   }
+}, {
+  // Disable strict mode to allow flexible config object
+  strict: false
 });
 
-const SectionSchema = new mongoose.Schema({
-  sectionId: String,
-  sectionTitle: String,
-  fields: [FieldSchema]
+// Update the updatedAt field before saving
+formConfigurationSchema.pre('save', function(next) {
+  this.updatedAt = Date.now();
+  next();
 });
 
-const FormConfigurationSchema = new mongoose.Schema({
-  formId: { type: String, required: true, unique: true },
-  formTitle: { type: String, required: true },
-  sections: [SectionSchema],
-  pricingConfig: {
-    basePrice: { type: Number, default: 0 },
-    calculations: [{
-      fieldId: String,
-      operation: String,
-      value: Number
-    }]
-  }
-}, { timestamps: true });
+// Update the updatedAt field before updating
+formConfigurationSchema.pre('findOneAndUpdate', function(next) {
+  this.set({ updatedAt: Date.now() });
+  next();
+});
 
-export default mongoose.models.FormConfiguration || mongoose.model('FormConfiguration', FormConfigurationSchema);
+export default mongoose.models.FormConfiguration || 
+  mongoose.model('FormConfiguration', formConfigurationSchema);
