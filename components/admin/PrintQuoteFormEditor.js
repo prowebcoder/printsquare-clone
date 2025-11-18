@@ -109,14 +109,19 @@ const DEFAULT_FORM_CONFIG = {
 };
 
 export default function PrintQuoteFormEditor({ formConfig, onSave }) {
-  const [config, setConfig] = useState(DEFAULT_FORM_CONFIG);
+  const [config, setConfig] = useState({});
   const [activeTab, setActiveTab] = useState('general');
   const [preview, setPreview] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   // Initialize with saved config or defaults
   useEffect(() => {
     if (formConfig && Object.keys(formConfig).length > 0) {
+      console.log('📥 Loading saved config:', formConfig);
       setConfig(formConfig);
+    } else {
+      console.log('📥 Loading default config');
+      setConfig(DEFAULT_FORM_CONFIG);
     }
   }, [formConfig]);
 
@@ -126,6 +131,7 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
       const newConfig = { ...prev };
       let current = newConfig;
       for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) current[keys[i]] = {};
         current[keys[i]] = { ...current[keys[i]] };
         current = current[keys[i]];
       }
@@ -137,14 +143,18 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
   const updateArrayItem = (path, index, field, value) => {
     const keys = path.split('.');
     setConfig(prev => {
-      const newConfig = { ...prev };
+      const newConfig = JSON.parse(JSON.stringify(prev));
       let current = newConfig;
+      
       for (let i = 0; i < keys.length - 1; i++) {
-        current[keys[i]] = Array.isArray(current[keys[i]]) ? [...current[keys[i]]] : { ...current[keys[i]] };
+        if (!current[keys[i]]) current[keys[i]] = {};
         current = current[keys[i]];
       }
+      
       const array = current[keys[keys.length - 1]];
-      array[index] = { ...array[index], [field]: value };
+      if (array && array[index]) {
+        array[index] = { ...array[index], [field]: value };
+      }
       return newConfig;
     });
   };
@@ -152,13 +162,17 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
   const addArrayItem = (path, newItem) => {
     const keys = path.split('.');
     setConfig(prev => {
-      const newConfig = { ...prev };
+      const newConfig = JSON.parse(JSON.stringify(prev));
       let current = newConfig;
+      
       for (let i = 0; i < keys.length - 1; i++) {
-        current[keys[i]] = { ...current[keys[i]] };
+        if (!current[keys[i]]) current[keys[i]] = {};
         current = current[keys[i]];
       }
-      current[keys[keys.length - 1]] = [...current[keys[keys.length - 1]], newItem];
+      
+      const arrayKey = keys[keys.length - 1];
+      if (!current[arrayKey]) current[arrayKey] = [];
+      current[arrayKey] = [...current[arrayKey], newItem];
       return newConfig;
     });
   };
@@ -166,19 +180,35 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
   const removeArrayItem = (path, index) => {
     const keys = path.split('.');
     setConfig(prev => {
-      const newConfig = { ...prev };
+      const newConfig = JSON.parse(JSON.stringify(prev));
       let current = newConfig;
+      
       for (let i = 0; i < keys.length - 1; i++) {
-        current[keys[i]] = { ...current[keys[i]] };
+        if (!current[keys[i]]) return prev;
         current = current[keys[i]];
       }
-      current[keys[keys.length - 1]] = current[keys[keys.length - 1]].filter((_, i) => i !== index);
+      
+      const arrayKey = keys[keys.length - 1];
+      if (current[arrayKey] && Array.isArray(current[arrayKey])) {
+        current[arrayKey] = current[arrayKey].filter((_, i) => i !== index);
+      }
       return newConfig;
     });
   };
 
-  const handleSave = () => {
-    onSave(config);
+ const handleSave = async () => {
+    if (saving) return;
+    
+    setSaving(true);
+    try {
+      console.log('💾 Saving config:', config);
+      await onSave(config);
+    } catch (error) {
+      console.error('Error saving:', error);
+      alert('Error saving configuration');
+    } finally {
+      setSaving(false);
+    }
   };
 
   

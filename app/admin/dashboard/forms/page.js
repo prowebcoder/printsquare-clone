@@ -54,6 +54,15 @@ export default function FormsList() {
       status: 'published',
       fieldsCount: 'Multiple Sections',
       submissions: 0
+    },
+    {
+      _id: 'saddle-quote',
+      name: 'Saddle Stitching Quote Form',
+      description: 'Saddle stitching quote calculator with pricing options',
+      type: 'predefined',
+      status: 'published',
+      fieldsCount: 'Multiple Sections',
+      submissions: 0
     }
   ];
 
@@ -72,7 +81,6 @@ export default function FormsList() {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-bold text-gray-800">Form Management</h1>
-        
         </div>
 
         <div className="bg-red-50 border border-red-200 rounded-lg p-6">
@@ -91,10 +99,6 @@ export default function FormsList() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-800">Form Management</h1>
-      
-      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {allForms.map((form) => (
@@ -125,17 +129,14 @@ export default function FormsList() {
             </div>
 
             <div className="flex space-x-2">
-              <Link
-                href={form.type === 'predefined' 
-                  ? `/admin/dashboard/forms/${form._id}/edit` 
-                  : `/admin/dashboard/forms/${form._id}`
-                }
-                className="flex-1 bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700 transition-colors flex items-center justify-center"
-              >
-                <Edit size={16} className="mr-1" />
-                {form.type === 'predefined' ? 'Configure' : 'Edit'}
-              </Link>
-            </div>
+  <Link
+    href={`/admin/dashboard/forms/${form._id}/edit`}
+    className="flex-1 bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700 transition-colors flex items-center justify-center"
+  >
+    <Edit size={16} className="mr-1" />
+    Configure
+  </Link>
+</div>
           </div>
         ))}
 
@@ -163,9 +164,8 @@ export default function FormsList() {
         <p className="text-blue-700 text-sm">
           • <strong>Print Quote Form</strong> is a predefined form that matches your existing printing quote calculator<br/>
           • You can edit all options, labels, prices, and add/remove items from dropdowns<br/>
-          • Create custom forms for other purposes using the "Create Custom Form" button
         </p>
       </div>
     </div>
   );
-}
+} 

@@ -19,7 +19,7 @@ export default function PerfectBindingFormPage() {
       </Head> 
       <Header />
       <Heading />
-<PrintQuoteForm />
+      <PrintQuoteForm />
       <Tabs />
       <Footer />
     </>

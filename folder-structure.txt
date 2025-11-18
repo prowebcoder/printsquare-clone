@@ -26,9 +26,6 @@
 │   │   │   │   └── page.js
 │   │   │   ├── layout.js
 │   │   │   └── page.js
-│   │   ├── forms
-│   │   │   └── print-quote
-│   │   │       └── route.js
 │   │   └── login
 │   │       └── page.js
 │   ├── api
@@ -43,11 +40,8 @@
 │   │   │   ├── create-admin
 │   │   │   │   └── route.js
 │   │   │   ├── forms
-│   │   │   │   ├── [id]
-│   │   │   │   │   └── route.js
-│   │   │   │   ├── print-quote
-│   │   │   │   │   └── route.js
-│   │   │   │   └── route.js
+│   │   │   │   └── print-quote
+│   │   │   │       └── route.js
 │   │   │   ├── login
 │   │   │   │   └── route.js
 │   │   │   ├── media
@@ -63,8 +57,7 @@
 │   │   │   └── users
 │   │   │       └── route.js
 │   │   ├── debug
-│   │   │   └── pages
-│   │   │       └── route.js
+│   │   │   └── route.js
 │   │   ├── fix-pages
 │   │   │   └── route.js
 │   │   ├── folder-structure
@@ -72,12 +65,9 @@
 │   │   ├── force-fix
 │   │   │   └── route.js
 │   │   ├── forms
-│   │   │   ├── print-quote
-│   │   │   │   └── route.js
-│   │   │   └── route.js
-│   │   ├── reset-pages
-│   │   │   └── route.js
-│   │   └── test
+│   │   │   └── print-quote
+│   │   │       └── route.js
+│   │   └── reset-pages
 │   │       └── route.js
 │   ├── binding-and-finishing
 │   │   └── page.js
@@ -245,6 +235,7 @@
 ├── lib
 │   ├── auth.js
 │   ├── db.js
+│   ├── formConfigStorage.js
 │   └── mongodb.js
 ├── models
 │   ├── Content.js

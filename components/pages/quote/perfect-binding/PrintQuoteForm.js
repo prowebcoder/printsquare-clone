@@ -1,3 +1,4 @@
+// components/pages/quote/perfect-binding/PrintQuoteForm.js
 import React, { useState, useCallback, useEffect } from 'react';
 
 // ===== DEFAULT CONSTANTS (Fallback) =====
@@ -348,67 +349,66 @@ const PrintQuoteForm = () => {
   const isCustomSize = selectedSize === 'Custom Size';
   const [pricingData, setPricingData] = useState(getPricingData());
 
-  // Fetch form configuration
-  useEffect(() => {
-    const fetchFormConfig = async () => {
-      try {
-        console.log('🔄 Fetching form configuration...');
-        const res = await fetch('/api/forms/print-quote');
+  // ===== FIXED: Fetch form configuration =====
+  const fetchFormConfig = async () => {
+    try {
+      console.log('🔄 Fetching form configuration from API...');
+      const res = await fetch('/api/forms/print-quote');
+      
+      if (res.ok) {
+        const apiConfig = await res.json();
+        console.log('📥 API Response received');
         
-        if (res.ok) {
-          const config = await res.json();
-          console.log('✅ Config fetched from API:', config);
+        // If API returns data, use it completely
+        if (apiConfig && Object.keys(apiConfig).length > 0) {
+          console.log('✅ Using API configuration');
           
-          // Merge with defaults to ensure all properties exist
-          if (config && Object.keys(config).length > 0) {
-            const mergedConfig = {
-              ...DEFAULT_FORM_CONFIG,
-              ...config,
-              general: {
-                ...DEFAULT_FORM_CONFIG.general,
-                ...config.general
-              },
-              paperOptions: {
-                ...DEFAULT_FORM_CONFIG.paperOptions,
-                ...config.paperOptions
-              },
-              additionalOptions: {
-                ...DEFAULT_FORM_CONFIG.additionalOptions,
-                ...config.additionalOptions
-              },
-              pricing: {
-                ...DEFAULT_FORM_CONFIG.pricing,
-                ...config.pricing
-              }
-            };
-            setFormConfig(mergedConfig);
-            console.log('✅ Using merged configuration from editor');
-          } else {
-            setFormConfig(DEFAULT_FORM_CONFIG);
-            console.log('⚠️ Using default configuration (no saved config)');
-          }
+          // Simple merge instead of deep merge
+          const mergedConfig = {
+            ...DEFAULT_FORM_CONFIG,
+            ...apiConfig,
+            general: {
+              ...DEFAULT_FORM_CONFIG.general,
+              ...apiConfig.general
+            },
+            paperOptions: {
+              ...DEFAULT_FORM_CONFIG.paperOptions,
+              ...apiConfig.paperOptions
+            },
+            additionalOptions: {
+              ...DEFAULT_FORM_CONFIG.additionalOptions,
+              ...apiConfig.additionalOptions
+            },
+            pricing: {
+              ...DEFAULT_FORM_CONFIG.pricing,
+              ...apiConfig.pricing
+            }
+          };
+          
+          setFormConfig(mergedConfig);
         } else {
-          console.log('⚠️ Using default configuration (API error)');
+          console.log('⚠️ API returned empty, using defaults');
           setFormConfig(DEFAULT_FORM_CONFIG);
         }
-      } catch (error) {
-        console.error('❌ Error fetching form configuration:', error);
+      } else {
+        console.log('❌ API error, using defaults');
         setFormConfig(DEFAULT_FORM_CONFIG);
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (error) {
+      console.error('❌ Error fetching form configuration:', error);
+      setFormConfig(DEFAULT_FORM_CONFIG);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchFormConfig();
   }, [configVersion]);
 
-  // Refresh configuration (call this after saving in editor)
-  const refreshConfig = () => {
-    console.log('🔄 Manually refreshing configuration...');
-    setConfigVersion(prev => prev + 1);
-  };
-
-  // Use configuration with safe access
+  // ===== FIXED: Move ALL configuration constants BEFORE any useEffect that uses them =====
+  
+  // Use configuration with safe access - MOVED ABOVE the useEffect
   const BINDING_TYPES = formConfig?.bindingTypes || DEFAULT_FORM_CONFIG.bindingTypes;
   const SIZES = formConfig?.sizes || DEFAULT_FORM_CONFIG.sizes;
   const BINDING_EDGES = formConfig?.bindingEdges || DEFAULT_FORM_CONFIG.bindingEdges;
@@ -422,10 +422,26 @@ const PrintQuoteForm = () => {
   const WEIGHT_OPTIONS = formConfig?.weightOptions || DEFAULT_FORM_CONFIG.weightOptions;
   const QUANTITIES = formConfig?.quantities || DEFAULT_FORM_CONFIG.quantities;
 
-  // General settings with safe access
+  // General settings with safe access - MOVED ABOVE the useEffect
   const generalSettings = formConfig?.general || DEFAULT_FORM_CONFIG.general;
   const customSizeInstructions = formConfig?.customSizeInstructions || DEFAULT_FORM_CONFIG.customSizeInstructions;
   const spineWidth = formConfig?.spineWidth || DEFAULT_FORM_CONFIG.spineWidth;
+
+  // ===== FIXED: Debug effect to check configuration - NOW generalSettings is defined =====
+  useEffect(() => {
+    console.log('🔍 DEBUG - Current Configuration:', {
+      title: generalSettings.title,
+      description: generalSettings.description,
+      hasCustomConfig: formConfig !== DEFAULT_FORM_CONFIG,
+      configSource: formConfig === DEFAULT_FORM_CONFIG ? 'DEFAULT' : 'API'
+    });
+  }, [formConfig, generalSettings]);
+
+  // Refresh configuration (call this after saving in editor)
+  const refreshConfig = () => {
+    console.log('🔄 Manually refreshing configuration...');
+    setConfigVersion(prev => prev + 1);
+  };
 
   // Handlers
   const handleNumberInput = (setter) => (e) => {
@@ -578,7 +594,7 @@ const PrintQuoteForm = () => {
         <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <div className="flex justify-between items-center">
             <span className="text-sm text-blue-700">
-              {formConfig === DEFAULT_FORM_CONFIG ? 'Using default configuration' : 'Using saved editor configuration'}
+              {formConfig === DEFAULT_FORM_CONFIG ? 'Using default configuration' : 'Using live configuration from editor'}
             </span>
             <button 
               onClick={refreshConfig}
@@ -591,7 +607,9 @@ const PrintQuoteForm = () => {
 
         {/* Header Section */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">{generalSettings.title}</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            {generalSettings.title}
+          </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             {generalSettings.description}
           </p>
@@ -599,7 +617,9 @@ const PrintQuoteForm = () => {
 
         {/* Binding Type Selection */}
         <div className="mb-12 bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Select Binding Type</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+            Select Binding Type
+          </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {BINDING_TYPES.map((option) => (
               <button

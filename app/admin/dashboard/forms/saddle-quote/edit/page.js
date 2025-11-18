@@ -1,10 +1,10 @@
-// app/admin/dashboard/forms/print-quote/edit/page.js
+// app/admin/dashboard/forms/saddle-quote/edit/page.js
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import PrintQuoteFormEditor from '@/components/admin/PrintQuoteFormEditor';
+import SaddleQuoteFormEditor from '@/components/admin/SaddleQuoteFormEditor';
 
-export default function PrintQuoteFormEdit() {
+export default function SaddleQuoteFormEdit() {
   const [formConfig, setFormConfig] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -16,7 +16,7 @@ export default function PrintQuoteFormEdit() {
   const fetchFormConfig = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/admin/forms/print-quote', {
+      const res = await fetch('/api/admin/forms/saddle-quote', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -26,7 +26,6 @@ export default function PrintQuoteFormEdit() {
         const config = await res.json();
         setFormConfig(config);
       } else {
-        // Use empty config - the editor will use defaults
         setFormConfig({});
       }
     } catch (error) {
@@ -40,7 +39,7 @@ export default function PrintQuoteFormEdit() {
   const saveFormConfig = async (config) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/admin/forms/print-quote', {
+      const res = await fetch('/api/admin/forms/saddle-quote', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -53,7 +52,6 @@ export default function PrintQuoteFormEdit() {
       
       if (res.ok) {
         alert('Form configuration saved successfully!');
-        // Update local state
         setFormConfig(config);
       } else {
         alert(`Error saving configuration: ${result.error}`);
@@ -74,7 +72,7 @@ export default function PrintQuoteFormEdit() {
 
   return (
     <div>
-      <PrintQuoteFormEditor 
+      <SaddleQuoteFormEditor 
         formConfig={formConfig} 
         onSave={saveFormConfig}
       />

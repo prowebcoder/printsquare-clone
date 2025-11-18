@@ -35,9 +35,12 @@ const formConfigurationSchema = new mongoose.Schema({
     default: Date.now 
   }
 }, {
-  // Disable strict mode to allow flexible config object
-  strict: false
+  // Disable auto-indexing to prevent conflicts
+  autoIndex: false
 });
+
+// Create indexes manually
+formConfigurationSchema.index({ name: 1 }, { unique: true });
 
 // Update the updatedAt field before saving
 formConfigurationSchema.pre('save', function(next) {
@@ -51,5 +54,6 @@ formConfigurationSchema.pre('findOneAndUpdate', function(next) {
   next();
 });
 
+// Check if model exists to prevent OverwriteModelError
 export default mongoose.models.FormConfiguration || 
   mongoose.model('FormConfiguration', formConfigurationSchema);
