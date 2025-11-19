@@ -149,23 +149,34 @@ const RadioGroup = ({ label, name, options, selected, onChange, className = "" }
   </div>
 );
 
-const SelectDropdown = ({ label, options, selected, onChange, className = "", disabled = false }) => (
-  <div className={className}>
-    {label && <p className="text-sm font-semibold mb-2 text-gray-700">{label}</p>}
-    <select
-      value={selected}
-      onChange={onChange}
-      disabled={disabled}
-      className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
-    >
-      {options && options.map((opt) => (
-        <option key={opt.value || opt} value={opt.value || opt}>
-          {opt.label || opt}
-        </option>
-      ))}
-    </select>
-  </div>
-);
+// ===== FIXED: Updated SelectDropdown to handle both object and string values =====
+const SelectDropdown = ({ label, options, selected, onChange, className = "", disabled = false }) => {
+  // Ensure selected is always a string, not an object
+  const stringValue = typeof selected === 'object' ? selected.value : selected;
+  
+  return (
+    <div className={className}>
+      {label && <p className="text-sm font-semibold mb-2 text-gray-700">{label}</p>}
+      <select
+        value={stringValue}
+        onChange={onChange}
+        disabled={disabled}
+        className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
+      >
+        {options && options.map((opt) => {
+          // Handle both string options and object options
+          const value = opt.value || opt;
+          const label = opt.label || opt;
+          return (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          );
+        })}
+      </select>
+    </div>
+  );
+};
 
 const ToggleOption = ({ label, enabled, onToggle, children, className = "" }) => (
   <div className={`border-2 rounded-xl p-4 transition-all duration-200 ${className} ${
@@ -591,7 +602,7 @@ const PrintQuoteForm = () => {
       <div className="max-w-7xl mx-auto">
         
         {/* Configuration Status */}
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+        {/*<div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <div className="flex justify-between items-center">
             <span className="text-sm text-blue-700">
               {formConfig === DEFAULT_FORM_CONFIG ? 'Using default configuration' : 'Using live configuration from editor'}
@@ -603,7 +614,7 @@ const PrintQuoteForm = () => {
               🔄 Refresh Config
             </button>
           </div>
-        </div>
+        </div>*/}
 
         {/* Header Section */}
         <div className="text-center mb-12">
@@ -678,6 +689,7 @@ const PrintQuoteForm = () => {
                   </svg>
                   Size & Dimensions
                 </h3>
+                {/* ===== FIXED: Ensure selectedSize is always a string ===== */}
                 <SelectDropdown
                   label="Select Standard Size"
                   options={SIZES.map(s => ({ value: s, label: s }))}
@@ -731,6 +743,7 @@ const PrintQuoteForm = () => {
                   </svg>
                   Binding Details
                 </h3>
+                {/* ===== FIXED: Ensure bindingEdge is always a string ===== */}
                 <SelectDropdown
                   label="Binding Edge"
                   options={BINDING_EDGES}
@@ -765,6 +778,7 @@ const PrintQuoteForm = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                {/* ===== FIXED: Ensure all selected values are strings ===== */}
                 <SelectDropdown 
                   label="Paper Type" 
                   options={PAPER_OPTIONS.cover} 
@@ -848,6 +862,7 @@ const PrintQuoteForm = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                {/* ===== FIXED: Ensure all selected values are strings ===== */}
                 <SelectDropdown
                   label="Page Count"
                   options={PAGE_COUNTS.map(c => ({ value: c, label: `${c} pages` }))}
@@ -994,6 +1009,7 @@ const PrintQuoteForm = () => {
               </h3>
               
               <div className="space-y-6">
+                {/* ===== FIXED: Ensure all selected values are strings ===== */}
                 <SelectDropdown 
                   label="Proof Type" 
                   options={ADDITIONAL_OPTIONS.proof} 
