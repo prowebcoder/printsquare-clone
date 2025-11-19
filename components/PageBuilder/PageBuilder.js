@@ -1,13 +1,36 @@
 // components/PageBuilder/PageBuilder.js
 'use client';
 import { useState, useEffect, useCallback } from 'react';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import ComponentToolbar from './ComponentToolbar';
-import ComponentList from './ComponentList';
+import ComponentSidebar from './ComponentSidebar';
+import ComponentEditorArea from './ComponentEditorArea';
 import { getDefaultContent, getDefaultStyles } from './utils/componentDefaults';
 
 export default function PageBuilder({ onComponentsChange, initialComponents = [] }) {
   const [components, setComponents] = useState([]);
+  const [selectedComponent, setSelectedComponent] = useState(null);
   const [isInitialized, setIsInitialized] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   // Initialize components properly
   useEffect(() => {
@@ -19,12 +42,18 @@ export default function PageBuilder({ onComponentsChange, initialComponents = []
             ...comp,
             id: comp.id || `comp-${Date.now()}-${index}`,
             order: comp.order || index,
-            styles: comp.styles || getDefaultStyles(comp.type)
+            styles: comp.styles || getDefaultStyles(comp.type),
+            content: comp.content || getDefaultContent(comp.type)
           }))
         : [];
       
       setComponents(processedComponents);
       setIsInitialized(true);
+      
+      // Select first component if available
+      if (processedComponents.length > 0) {
+        setSelectedComponent(processedComponents[0].id);
+      }
     }
   }, [initialComponents, isInitialized]);
 
@@ -45,7 +74,9 @@ export default function PageBuilder({ onComponentsChange, initialComponents = []
       order: components.length
     };
     
-    setComponents(prev => [...prev, newComponent]);
+    const updatedComponents = [...components, newComponent];
+    setComponents(updatedComponents);
+    setSelectedComponent(newComponent.id);
   }, [components.length]);
 
   const updateComponentContent = useCallback((id, contentUpdates) => {
@@ -67,29 +98,94 @@ export default function PageBuilder({ onComponentsChange, initialComponents = []
   }, []);
 
   const removeComponent = useCallback((id) => {
-    setComponents(prev => prev.filter(comp => comp.id !== id));
-  }, []);
+    setComponents(prev => {
+      const newComponents = prev.filter(comp => comp.id !== id);
+      
+      // Update selection if needed
+      if (selectedComponent === id) {
+        if (newComponents.length > 0) {
+          setSelectedComponent(newComponents[0].id);
+        } else {
+          setSelectedComponent(null);
+        }
+      }
+      
+      return newComponents;
+    });
+  }, [selectedComponent]);
 
-  const moveComponent = useCallback((index, direction) => {
-    if ((direction === 'up' && index === 0) || (direction === 'down' && index === components.length - 1)) return;
-    
-    const newIndex = direction === 'up' ? index - 1 : direction === 'down' ? index + 1 : index;
-    const newComponents = [...components];
-    [newComponents[index], newComponents[newIndex]] = [newComponents[newIndex], newComponents[index]];
-    setComponents(newComponents);
+  const duplicateComponent = useCallback((id) => {
+    const componentToDuplicate = components.find(comp => comp.id === id);
+    if (componentToDuplicate) {
+      const duplicatedComponent = {
+        ...componentToDuplicate,
+        id: `comp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        order: components.length
+      };
+      
+      const updatedComponents = [...components, duplicatedComponent];
+      setComponents(updatedComponents);
+      setSelectedComponent(duplicatedComponent.id);
+    }
   }, [components]);
 
+  const handleDragEnd = useCallback((event) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      setComponents((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+
+        const newComponents = arrayMove(items, oldIndex, newIndex);
+        
+        // Update orders
+        return newComponents.map((comp, index) => ({
+          ...comp,
+          order: index
+        }));
+      });
+    }
+  }, []);
+
+  const selectedComponentData = components.find(comp => comp.id === selectedComponent);
+
   return (
-    <div className="space-y-6">
-      <ComponentToolbar onAddComponent={addComponent} />
+    <div className="space-y-4">
+      <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <h3 className="text-lg font-semibold text-gray-800 mb-2">Add Components</h3>
+        <ComponentToolbar onAddComponent={addComponent} />
+      </div>
       
-      <ComponentList
-        components={components}
-        onMoveComponent={moveComponent}
-        onRemoveComponent={removeComponent}
-        onUpdateComponentContent={updateComponentContent}
-        onUpdateComponentStyles={updateComponentStyles}
-      />
+      <div className="flex gap-6 min-h-[600px]">
+        {/* Sidebar - Component List */}
+        <div className="w-1/3">
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext items={components} strategy={verticalListSortingStrategy}>
+              <ComponentSidebar
+                components={components}
+                selectedComponent={selectedComponent}
+                onSelectComponent={setSelectedComponent}
+                onRemoveComponent={removeComponent}
+                onDuplicateComponent={duplicateComponent}
+              />
+            </SortableContext>
+          </DndContext>
+        </div>
+        
+        {/* Main Editor Area */}
+        <div className="w-2/3">
+          <ComponentEditorArea
+            component={selectedComponentData}
+            onUpdateContent={updateComponentContent}
+            onUpdateStyles={updateComponentStyles}
+          />
+        </div>
+      </div>
     </div>
   );
 }

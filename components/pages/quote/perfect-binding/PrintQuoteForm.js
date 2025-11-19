@@ -149,11 +149,18 @@ const RadioGroup = ({ label, name, options, selected, onChange, className = "" }
   </div>
 );
 
-// ===== FIXED: Updated SelectDropdown to handle both object and string values =====
+// ===== FIXED: Completely rewrote SelectDropdown to handle objects safely =====
 const SelectDropdown = ({ label, options, selected, onChange, className = "", disabled = false }) => {
-  // Ensure selected is always a string, not an object
-  const stringValue = typeof selected === 'object' ? selected.value : selected;
-  
+  // Convert selected value to string safely
+  const getStringValue = (value) => {
+    if (typeof value === 'string') return value;
+    if (typeof value === 'number') return value.toString();
+    if (value && typeof value === 'object' && value.value) return value.value;
+    return '';
+  };
+
+  const stringValue = getStringValue(selected);
+
   return (
     <div className={className}>
       {label && <p className="text-sm font-semibold mb-2 text-gray-700">{label}</p>}
@@ -163,13 +170,28 @@ const SelectDropdown = ({ label, options, selected, onChange, className = "", di
         disabled={disabled}
         className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
       >
-        {options && options.map((opt) => {
+        {options && options.map((option, index) => {
           // Handle both string options and object options
-          const value = opt.value || opt;
-          const label = opt.label || opt;
+          let value, labelText;
+          
+          if (typeof option === 'string') {
+            value = option;
+            labelText = option;
+          } else if (typeof option === 'object') {
+            value = option.value || option;
+            labelText = option.label || option.value || option;
+          } else {
+            value = option;
+            labelText = option;
+          }
+
+          // Ensure both are strings
+          value = String(value);
+          labelText = String(labelText);
+
           return (
-            <option key={value} value={value}>
-              {label}
+            <option key={`${value}-${index}`} value={value}>
+              {labelText}
             </option>
           );
         })}
@@ -370,11 +392,9 @@ const PrintQuoteForm = () => {
         const apiConfig = await res.json();
         console.log('📥 API Response received');
         
-        // If API returns data, use it completely
         if (apiConfig && Object.keys(apiConfig).length > 0) {
           console.log('✅ Using API configuration');
           
-          // Simple merge instead of deep merge
           const mergedConfig = {
             ...DEFAULT_FORM_CONFIG,
             ...apiConfig,
@@ -417,9 +437,7 @@ const PrintQuoteForm = () => {
     fetchFormConfig();
   }, [configVersion]);
 
-  // ===== FIXED: Move ALL configuration constants BEFORE any useEffect that uses them =====
-  
-  // Use configuration with safe access - MOVED ABOVE the useEffect
+  // ===== FIXED: Configuration constants moved BEFORE useEffect =====
   const BINDING_TYPES = formConfig?.bindingTypes || DEFAULT_FORM_CONFIG.bindingTypes;
   const SIZES = formConfig?.sizes || DEFAULT_FORM_CONFIG.sizes;
   const BINDING_EDGES = formConfig?.bindingEdges || DEFAULT_FORM_CONFIG.bindingEdges;
@@ -433,12 +451,11 @@ const PrintQuoteForm = () => {
   const WEIGHT_OPTIONS = formConfig?.weightOptions || DEFAULT_FORM_CONFIG.weightOptions;
   const QUANTITIES = formConfig?.quantities || DEFAULT_FORM_CONFIG.quantities;
 
-  // General settings with safe access - MOVED ABOVE the useEffect
   const generalSettings = formConfig?.general || DEFAULT_FORM_CONFIG.general;
   const customSizeInstructions = formConfig?.customSizeInstructions || DEFAULT_FORM_CONFIG.customSizeInstructions;
   const spineWidth = formConfig?.spineWidth || DEFAULT_FORM_CONFIG.spineWidth;
 
-  // ===== FIXED: Debug effect to check configuration - NOW generalSettings is defined =====
+  // ===== FIXED: Debug effect - now generalSettings is defined =====
   useEffect(() => {
     console.log('🔍 DEBUG - Current Configuration:', {
       title: generalSettings.title,
@@ -448,7 +465,6 @@ const PrintQuoteForm = () => {
     });
   }, [formConfig, generalSettings]);
 
-  // Refresh configuration (call this after saving in editor)
   const refreshConfig = () => {
     console.log('🔄 Manually refreshing configuration...');
     setConfigVersion(prev => prev + 1);
@@ -602,7 +618,7 @@ const PrintQuoteForm = () => {
       <div className="max-w-7xl mx-auto">
         
         {/* Configuration Status */}
-        {/*<div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <div className="flex justify-between items-center">
             <span className="text-sm text-blue-700">
               {formConfig === DEFAULT_FORM_CONFIG ? 'Using default configuration' : 'Using live configuration from editor'}
@@ -614,7 +630,7 @@ const PrintQuoteForm = () => {
               🔄 Refresh Config
             </button>
           </div>
-        </div>*/}
+        </div>
 
         {/* Header Section */}
         <div className="text-center mb-12">
@@ -689,7 +705,6 @@ const PrintQuoteForm = () => {
                   </svg>
                   Size & Dimensions
                 </h3>
-                {/* ===== FIXED: Ensure selectedSize is always a string ===== */}
                 <SelectDropdown
                   label="Select Standard Size"
                   options={SIZES.map(s => ({ value: s, label: s }))}
@@ -743,7 +758,6 @@ const PrintQuoteForm = () => {
                   </svg>
                   Binding Details
                 </h3>
-                {/* ===== FIXED: Ensure bindingEdge is always a string ===== */}
                 <SelectDropdown
                   label="Binding Edge"
                   options={BINDING_EDGES}
@@ -778,7 +792,6 @@ const PrintQuoteForm = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                {/* ===== FIXED: Ensure all selected values are strings ===== */}
                 <SelectDropdown 
                   label="Paper Type" 
                   options={PAPER_OPTIONS.cover} 
@@ -862,7 +875,6 @@ const PrintQuoteForm = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                {/* ===== FIXED: Ensure all selected values are strings ===== */}
                 <SelectDropdown
                   label="Page Count"
                   options={PAGE_COUNTS.map(c => ({ value: c, label: `${c} pages` }))}
@@ -1009,7 +1021,6 @@ const PrintQuoteForm = () => {
               </h3>
               
               <div className="space-y-6">
-                {/* ===== FIXED: Ensure all selected values are strings ===== */}
                 <SelectDropdown 
                   label="Proof Type" 
                   options={ADDITIONAL_OPTIONS.proof} 

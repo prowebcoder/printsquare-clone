@@ -1,229 +1,348 @@
 // components/PageBuilder/editors/StyleEditor.js
+import { useState } from 'react';
+
 const StyleEditor = ({ styles, onUpdate }) => {
-  const handleChange = (field, value) => {
-    onUpdate({
-      ...styles,
-      [field]: value
-    });
+  const [activeTab, setActiveTab] = useState('layout');
+
+  const updateStyle = (key, value) => {
+    onUpdate({ [key]: value });
   };
 
-  const fontSizeOptions = [
-    { value: 'xs', label: 'Extra Small (0.75rem)' },
-    { value: 'sm', label: 'Small (0.875rem)' },
-    { value: 'base', label: 'Base (1rem)' },
-    { value: 'lg', label: 'Large (1.125rem)' },
-    { value: 'xl', label: 'Extra Large (1.25rem)' },
-    { value: '2xl', label: '2X Large (1.5rem)' },
-    { value: '3xl', label: '3X Large (1.875rem)' },
-    { value: '4xl', label: '4X Large (2.25rem)' },
-  ];
-
-  const paddingOptions = [
-    { value: 'none', label: 'None (0)' },
-    { value: 'small', label: 'Small (0.5rem)' },
-    { value: 'medium', label: 'Medium (1rem)' },
-    { value: 'large', label: 'Large (1.5rem)' },
-    { value: 'xlarge', label: 'Extra Large (2rem)' },
-  ];
-
-  const borderRadiusOptions = [
-    { value: 'none', label: 'None (0)' },
-    { value: 'sm', label: 'Small (0.125rem)' },
-    { value: 'md', label: 'Medium (0.375rem)' },
-    { value: 'lg', label: 'Large (0.5rem)' },
-    { value: 'xl', label: 'Extra Large (0.75rem)' },
-    { value: 'full', label: 'Full (9999px)' },
+  const tabs = [
+    { id: 'layout', name: 'Layout' },
+    { id: 'typography', name: 'Typography' },
+    { id: 'background', name: 'Background' },
+    { id: 'spacing', name: 'Spacing' }
   ];
 
   return (
-    <div className="border-t pt-4 mt-4">
-      <h4 className="font-medium text-gray-700 mb-3">Styling</h4>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Background Color */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Background Color
-          </label>
-          <div className="flex gap-2">
-            <input
-              type="color"
-              value={styles?.backgroundColor || '#ffffff'}
-              onChange={(e) => handleChange('backgroundColor', e.target.value)}
-              className="w-10 h-10 rounded border border-gray-300 cursor-pointer"
-            />
-            <input
-              type="text"
-              value={styles?.backgroundColor || '#ffffff'}
-              onChange={(e) => handleChange('backgroundColor', e.target.value)}
-              className="flex-1 p-2 border border-gray-300 rounded text-sm"
-              placeholder="#ffffff or rgba(255,255,255,1)"
-            />
-          </div>
+    <div className="border rounded-lg">
+      <div className="border-b">
+        <div className="flex">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`px-4 py-2 text-sm font-medium ${
+                activeTab === tab.id
+                  ? 'border-b-2 border-blue-500 text-blue-600'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              {tab.name}
+            </button>
+          ))}
         </div>
+      </div>
 
-        {/* Text Color */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Text Color
-          </label>
-          <div className="flex gap-2">
-            <input
-              type="color"
-              value={styles?.textColor || '#000000'}
-              onChange={(e) => handleChange('textColor', e.target.value)}
-              className="w-10 h-10 rounded border border-gray-300 cursor-pointer"
-            />
-            <input
-              type="text"
-              value={styles?.textColor || '#000000'}
-              onChange={(e) => handleChange('textColor', e.target.value)}
-              className="flex-1 p-2 border border-gray-300 rounded text-sm"
-              placeholder="#000000 or rgba(0,0,0,1)"
-            />
-          </div>
-        </div>
+      <div className="p-4">
+        {activeTab === 'layout' && (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Container Width
+              </label>
+              <select
+                value={styles?.containerWidth || 'full'}
+                onChange={(e) => updateStyle('containerWidth', e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+              >
+                <option value="full">Full Width</option>
+                <option value="xl">Extra Large</option>
+                <option value="lg">Large</option>
+                <option value="md">Medium</option>
+                <option value="sm">Small</option>
+              </select>
+            </div>
 
-        {/* Font Size */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Font Size
-          </label>
-          <select
-            value={styles?.fontSize || 'base'}
-            onChange={(e) => handleChange('fontSize', e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded text-sm"
-          >
-            {fontSizeOptions.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Text Alignment */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Text Alignment
-          </label>
-          <select
-            value={styles?.textAlign || 'left'}
-            onChange={(e) => handleChange('textAlign', e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded text-sm"
-          >
-            <option value="left">Left</option>
-            <option value="center">Center</option>
-            <option value="right">Right</option>
-            <option value="justify">Justify</option>
-          </select>
-        </div>
-
-        {/* Padding */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Padding
-          </label>
-          <select
-            value={styles?.padding || 'medium'}
-            onChange={(e) => handleChange('padding', e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded text-sm"
-          >
-            {paddingOptions.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Border Radius */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Border Radius
-          </label>
-          <select
-            value={styles?.borderRadius || 'none'}
-            onChange={(e) => handleChange('borderRadius', e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded text-sm"
-          >
-            {borderRadiusOptions.map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Custom CSS Classes */}
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Custom CSS Classes
-          </label>
-          <input
-            type="text"
-            value={styles?.customClasses || ''}
-            onChange={(e) => handleChange('customClasses', e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded text-sm"
-            placeholder="custom-class1 custom-class2"
-          />
-          <p className="text-xs text-gray-500 mt-1">Add additional Tailwind CSS classes separated by spaces</p>
-        </div>
-
-        {/* Border Settings */}
-        <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Border Color
-            </label>
-            <div className="flex gap-2">
-              <input
-                type="color"
-                value={styles?.borderColor || '#d1d5db'}
-                onChange={(e) => handleChange('borderColor', e.target.value)}
-                className="w-10 h-10 rounded border border-gray-300 cursor-pointer"
-              />
-              <input
-                type="text"
-                value={styles?.borderColor || '#d1d5db'}
-                onChange={(e) => handleChange('borderColor', e.target.value)}
-                className="flex-1 p-2 border border-gray-300 rounded text-sm"
-                placeholder="#d1d5db"
-              />
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Content Alignment
+              </label>
+              <select
+                value={styles?.contentAlignment || 'left'}
+                onChange={(e) => updateStyle('contentAlignment', e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+              >
+                <option value="left">Left</option>
+                <option value="center">Center</option>
+                <option value="right">Right</option>
+              </select>
             </div>
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Border Width
-            </label>
-            <select
-              value={styles?.borderWidth || '0'}
-              onChange={(e) => handleChange('borderWidth', e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded text-sm"
-            >
-              <option value="0">None</option>
-              <option value="1">1px</option>
-              <option value="2">2px</option>
-              <option value="4">4px</option>
-              <option value="8">8px</option>
-            </select>
+        )}
+
+        {activeTab === 'typography' && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Heading Size
+                </label>
+                <select
+                  value={styles?.headingSize || 'h2'}
+                  onChange={(e) => updateStyle('headingSize', e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                >
+                  <option value="h1">H1 - Large</option>
+                  <option value="h2">H2 - Medium</option>
+                  <option value="h3">H3 - Small</option>
+                  <option value="h4">H4 - Extra Small</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Heading Alignment
+                </label>
+                <select
+                  value={styles?.headingAlignment || 'center'}
+                  onChange={(e) => updateStyle('headingAlignment', e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                >
+                  <option value="left">Left</option>
+                  <option value="center">Center</option>
+                  <option value="right">Right</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Heading Color
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="color"
+                  value={styles?.headingColor || '#000000'}
+                  onChange={(e) => updateStyle('headingColor', e.target.value)}
+                  className="w-12 h-10 border border-gray-300 rounded"
+                />
+                <input
+                  type="text"
+                  value={styles?.headingColor || '#000000'}
+                  onChange={(e) => updateStyle('headingColor', e.target.value)}
+                  className="flex-1 p-2 border border-gray-300 rounded text-sm"
+                  placeholder="#000000"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Use Gradient Text
+              </label>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={styles?.useGradient || false}
+                  onChange={(e) => updateStyle('useGradient', e.target.checked)}
+                  className="mr-2"
+                />
+                <span className="text-sm text-gray-700">Enable gradient text</span>
+              </div>
+            </div>
+
+            {styles?.useGradient && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Gradient Colors
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <input
+                    type="color"
+                    value={styles?.gradientStart || '#E21B36'}
+                    onChange={(e) => updateStyle('gradientStart', e.target.value)}
+                    className="w-full h-10 border border-gray-300 rounded"
+                  />
+                  <input
+                    type="color"
+                    value={styles?.gradientEnd || '#FF4B2B'}
+                    onChange={(e) => updateStyle('gradientEnd', e.target.value)}
+                    className="w-full h-10 border border-gray-300 rounded"
+                  />
+                </div>
+              </div>
+            )}
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Shadow
-            </label>
-            <select
-              value={styles?.shadow || 'none'}
-              onChange={(e) => handleChange('shadow', e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded text-sm"
-            >
-              <option value="none">None</option>
-              <option value="sm">Small</option>
-              <option value="md">Medium</option>
-              <option value="lg">Large</option>
-              <option value="xl">Extra Large</option>
-            </select>
+        )}
+
+        {activeTab === 'background' && (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Background Type
+              </label>
+              <select
+                value={styles?.backgroundType || 'color'}
+                onChange={(e) => updateStyle('backgroundType', e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+              >
+                <option value="color">Solid Color</option>
+                <option value="gradient">Gradient</option>
+                <option value="image">Image</option>
+              </select>
+            </div>
+
+            {styles?.backgroundType === 'color' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Background Color
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="color"
+                    value={styles?.backgroundColor || '#ffffff'}
+                    onChange={(e) => updateStyle('backgroundColor', e.target.value)}
+                    className="w-12 h-10 border border-gray-300 rounded"
+                  />
+                  <input
+                    type="text"
+                    value={styles?.backgroundColor || '#ffffff'}
+                    onChange={(e) => updateStyle('backgroundColor', e.target.value)}
+                    className="flex-1 p-2 border border-gray-300 rounded text-sm"
+                    placeholder="#ffffff"
+                  />
+                </div>
+              </div>
+            )}
+
+            {styles?.backgroundType === 'gradient' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Gradient Colors
+                </label>
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <input
+                      type="color"
+                      value={styles?.gradientStart || '#E21B36'}
+                      onChange={(e) => updateStyle('gradientStart', e.target.value)}
+                      className="w-12 h-10 border border-gray-300 rounded"
+                    />
+                    <input
+                      type="text"
+                      value={styles?.gradientStart || '#E21B36'}
+                      onChange={(e) => updateStyle('gradientStart', e.target.value)}
+                      className="flex-1 p-2 border border-gray-300 rounded text-sm"
+                      placeholder="#E21B36"
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      type="color"
+                      value={styles?.gradientEnd || '#FF4B2B'}
+                      onChange={(e) => updateStyle('gradientEnd', e.target.value)}
+                      className="w-12 h-10 border border-gray-300 rounded"
+                    />
+                    <input
+                      type="text"
+                      value={styles?.gradientEnd || '#FF4B2B'}
+                      onChange={(e) => updateStyle('gradientEnd', e.target.value)}
+                      className="flex-1 p-2 border border-gray-300 rounded text-sm"
+                      placeholder="#FF4B2B"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {styles?.backgroundType === 'image' && (
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Background Image URL
+                  </label>
+                  <input
+                    type="text"
+                    value={styles?.backgroundImage || ''}
+                    onChange={(e) => updateStyle('backgroundImage', e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded text-sm"
+                    placeholder="https://example.com/image.jpg"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Overlay Color
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="color"
+                      value={styles?.overlayColor || 'rgba(0,0,0,0.3)'}
+                      onChange={(e) => updateStyle('overlayColor', e.target.value)}
+                      className="w-12 h-10 border border-gray-300 rounded"
+                    />
+                    <input
+                      type="text"
+                      value={styles?.overlayColor || 'rgba(0,0,0,0.3)'}
+                      onChange={(e) => updateStyle('overlayColor', e.target.value)}
+                      className="flex-1 p-2 border border-gray-300 rounded text-sm"
+                      placeholder="rgba(0,0,0,0.3)"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-        </div>
+        )}
+
+        {activeTab === 'spacing' && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Padding Top/Bottom
+                </label>
+                <select
+                  value={styles?.padding || 'medium'}
+                  onChange={(e) => updateStyle('padding', e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                >
+                  <option value="none">None</option>
+                  <option value="small">Small</option>
+                  <option value="medium">Medium</option>
+                  <option value="large">Large</option>
+                  <option value="xlarge">Extra Large</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Margin Top/Bottom
+                </label>
+                <select
+                  value={styles?.margin || 'none'}
+                  onChange={(e) => updateStyle('margin', e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                >
+                  <option value="none">None</option>
+                  <option value="small">Small</option>
+                  <option value="medium">Medium</option>
+                  <option value="large">Large</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Border Radius
+              </label>
+              <select
+                value={styles?.borderRadius || 'none'}
+                onChange={(e) => updateStyle('borderRadius', e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded"
+              >
+                <option value="none">None</option>
+                <option value="sm">Small</option>
+                <option value="md">Medium</option>
+                <option value="lg">Large</option>
+                <option value="xl">Extra Large</option>
+                <option value="full">Full Rounded</option>
+              </select>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

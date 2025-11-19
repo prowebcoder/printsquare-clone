@@ -43,6 +43,67 @@ async function getPageData(slug) {
   }
 }
 
+// Helper function to check if image is external
+function isExternalImage(src) {
+  return src?.startsWith('http');
+}
+
+// AppImage component that handles both internal and external images
+function AppImage({ src, alt, fill, width, height, className, priority = false, ...props }) {
+  const imageSrc = src || '';
+  
+  if (isExternalImage(imageSrc)) {
+    if (fill) {
+      return (
+        <img 
+          src={imageSrc} 
+          alt={alt}
+          className={className}
+          style={{ position: 'absolute', inset: 0, objectFit: 'cover' }}
+          {...props}
+        />
+      );
+    } else {
+      return (
+        <img 
+          src={imageSrc} 
+          alt={alt}
+          width={width}
+          height={height}
+          className={className}
+          {...props}
+        />
+      );
+    }
+  }
+
+  // For local images, use Next.js Image component
+  if (fill) {
+    return (
+      <Image
+        src={imageSrc}
+        alt={alt}
+        fill
+        className={className}
+        priority={priority}
+        {...props}
+      />
+    );
+  } else {
+    return (
+      <Image
+        src={imageSrc}
+        alt={alt}
+        width={width}
+        height={height}
+        className={className}
+        priority={priority}
+        {...props}
+      />
+    );
+  }
+}
+
 // Premium Component Renderers
 function renderAboutHero(component, index) {
   const content = component.content || {};
@@ -52,7 +113,7 @@ function renderAboutHero(component, index) {
     <section key={component.id || index} className="relative w-full h-[45vh] md:h-[55vh] flex items-center justify-center overflow-hidden bg-[#0B1633]">
       {/* Background Image */}
       <div className="absolute inset-0">
-        <Image
+        <AppImage
           src={content.backgroundImage || '/about/about-banner.jpg'}
           alt="About Print Seoul Banner"
           fill
@@ -65,8 +126,8 @@ function renderAboutHero(component, index) {
       {/* Text Content */}
       <div className="relative z-10 text-center px-6">
         <h1 className="text-3xl md:text-5xl font-extrabold mb-2 leading-tight text-white">
-          <span className="text-[#E21B36]">{content.title || 'About'}</span>
-          <span className="text-[#FF4B2B]"> {content.highlightedTitle || 'Us'}</span>
+          <span className="text-[#E21B36]">{content.title}</span>
+          <span className="text-[#FF4B2B]"> {content.highlightedTitle}</span>
         </h1>
         <p className="max-w-2xl mx-auto text-sm md:text-base text-[#D6D9E0]">
           {content.subtitle || 'Precision. Passion. Printing Excellence from South Korea.'}
@@ -76,13 +137,67 @@ function renderAboutHero(component, index) {
   );
 }
 
-// function renderAdvancedForm(component, index) {
-//   return (
-//     <div key={component.id || index} className="my-8">
-//       <AdvancedFormRenderer component={component} />
-//     </div>
-//   );
-// }
+function renderMultiColumn(component, index) {
+  const content = component.content || {};
+  const columns = content.columns || [];
+  const columnsPerRowDesktop = content.columnsPerRowDesktop || 3;
+  const columnsPerRowMobile = content.columnsPerRowMobile || 1;
+  
+  console.log(`🎨 Rendering MultiColumn:`, content);
+
+  // Grid classes based on configuration
+  const gridClasses = {
+    1: 'grid-cols-1',
+    2: 'grid-cols-1 md:grid-cols-2',
+    3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+    4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
+    5: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-5',
+    6: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-6'
+  };
+
+  return (
+    <section key={component.id || index} className="py-16 bg-white">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className={`grid ${gridClasses[columnsPerRowMobile]} ${gridClasses[columnsPerRowDesktop]} gap-8`}>
+          {columns.map((column, columnIndex) => (
+            <div 
+              key={columnIndex}
+              className="flex flex-col items-center group hover:transform hover:scale-105 transition-all duration-300"
+            >
+              {/* Image */}
+              {column.image && (
+  <div className="mb-6 w-full">
+    <div className="relative w-full h-64 overflow-hidden rounded-xl shadow-lg">
+      <AppImage
+        src={column.image}
+        alt={column.heading || 'Column image'}
+        fill
+        className="object-cover w-full h-full"
+      />
+    </div>
+  </div>
+)}
+              
+              {/* Heading */}
+              {column.heading && (
+                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
+                  {column.heading}
+                </h3>
+              )}
+              
+              {/* Text */}
+              {column.text && (
+                <p className="text-gray-600 leading-relaxed">
+                  {column.text}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function renderAboutUs(component, index) {
   const content = component.content || {};
@@ -95,7 +210,7 @@ function renderAboutUs(component, index) {
         {/* Left Section - Image */}
         <div className="relative">
           <div className="relative h-[380px] md:h-[480px] rounded-3xl overflow-hidden shadow-lg">
-            <Image
+            <AppImage
               src={content.image || '/about/About.jpg'}
               alt="Print Seoul Printing Facility"
               fill
@@ -142,6 +257,8 @@ function renderAboutUs(component, index) {
 
 function renderFreeSample(component, index) {
   const content = component.content || {};
+  const imagePosition = content.imagePosition || 'left';
+  
   console.log(`🎨 Rendering FreeSample:`, content);
   
   return (
@@ -150,11 +267,13 @@ function renderFreeSample(component, index) {
       <div className="absolute top-10 left-10 w-40 h-40 bg-[#2e6e97]/10 rounded-full blur-3xl"></div>
       <div className="absolute bottom-10 right-10 w-56 h-56 bg-[#2e6e97]/10 rounded-full blur-3xl"></div>
 
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-center gap-12">
+      <div className={`relative max-w-7xl mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-center gap-12 ${
+        imagePosition === 'right' ? 'lg:flex-row-reverse' : ''
+      }`}>
         {/* Image Section */}
-        <div className="lg:w-1/2 order-2 lg:order-1 relative group">
+        <div className="lg:w-1/2 relative group">
           <div className="relative h-80 lg:h-96 w-full overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 group-hover:scale-[1.02]">
-            <Image
+            <AppImage
               src={content.image || '/homepage/main-sec07-1.jpg'}
               alt="Book sample showcase"
               fill
@@ -166,7 +285,7 @@ function renderFreeSample(component, index) {
         </div>
 
         {/* Text Content */}
-        <div className="lg:w-1/2 order-1 lg:order-2 text-center lg:text-left">
+        <div className="lg:w-1/2 text-center lg:text-left">
           <h2 className="text-4xl lg:text-5xl font-bold text-gray-800 mb-6 leading-tight">
             {content.title || 'Free Sample Service'}
           </h2>
@@ -213,7 +332,7 @@ function renderHeroBanner(component, index) {
   
   return (
     <section key={component.id || index} className="relative w-full h-[400px] md:h-[480px] flex items-center justify-center">
-      <Image
+      <AppImage
         src={content.backgroundImage || '/homepage/main-bg.jpg'}
         alt="Printsquare background"
         fill
@@ -262,7 +381,7 @@ function renderImageBanner(component, index) {
 
         {/* Right Image */}
         <div className="md:w-1/2 flex justify-center">
-          <Image
+          <AppImage
             src={content.image || '/homepage/paper.png'}
             alt="High-quality paper"
             width={650}
@@ -307,7 +426,7 @@ function renderImageBannerTwo(component, index) {
         {/* Right Image */}
         <div className="flex justify-center">
           <div className="relative w-full h-80 rounded-2xl overflow-hidden shadow-xl">
-            <Image
+            <AppImage
               src={content.image || '/homepage/main-sec06-1.png'}
               alt="Special order book printing"
               fill
@@ -326,92 +445,91 @@ function renderMethod(component, index) {
   
   return (
     <section
-  key={component.id || index}
-  className="relative py-24 bg-[#F8F9FB] overflow-hidden"
->
-  {/* Decorative gradient circles */}
-  <div className="absolute top-[-5rem] left-[-5rem] w-96 h-96 bg-[#E21B36]/10 rounded-full blur-3xl" />
-  <div className="absolute bottom-[-6rem] right-[-4rem] w-96 h-96 bg-[#FF4B2B]/10 rounded-full blur-3xl" />
+      key={component.id || index}
+      className="relative py-24 bg-[#F8F9FB] overflow-hidden"
+    >
+      {/* Decorative gradient circles */}
+      <div className="absolute top-[-5rem] left-[-5rem] w-96 h-96 bg-[#E21B36]/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-[-6rem] right-[-4rem] w-96 h-96 bg-[#FF4B2B]/10 rounded-full blur-3xl" />
 
-  <div className="max-w-7xl mx-auto px-6 md:px-10 relative z-10">
-    {/* Section Title */}
-    <div className="text-center mb-16">
-      <h2 className="text-4xl md:text-5xl font-extrabold mb-4 text-[#0B1633]">
-        {content.title || (
-          <>
-            Selectable{" "}
-            <span className="bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] bg-clip-text text-transparent">
-              Proof Method
-            </span>
-          </>
+      <div className="max-w-7xl mx-auto px-6 md:px-10 relative z-10">
+        {/* Section Title */}
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-4 text-[#0B1633]">
+            {content.title || (
+              <>
+                Selectable{" "}
+                <span className="bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] bg-clip-text text-transparent">
+                  Proof Method
+                </span>
+              </>
+            )}
+          </h2>
+          <p className="text-[#2E3850] max-w-2xl mx-auto text-lg">
+            {content.description ||
+              "Choose from two professional proofing methods that ensure accuracy and efficiency for every project."}
+          </p>
+        </div>
+
+        {/* Proof Methods */}
+        <div className="grid md:grid-cols-2 gap-10 mb-16">
+          {/* Method 1 */}
+          <div className="group bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl hover:border-[#E21B36] transition-all duration-300 border border-[#D6D9E0]">
+            <div className="flex items-center mb-5">
+              <span className="bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white font-bold px-4 py-2 rounded-full mr-3 text-sm">
+                01
+              </span>
+              <h3 className="text-2xl font-semibold text-[#0B1633] group-hover:text-[#E21B36] transition-colors">
+                {content.method1?.title || "E-Proof"}
+              </h3>
+            </div>
+            <p className="text-[#2E3850] leading-relaxed text-base">
+              {content.method1?.description || (
+                <>
+                  Proceed with proofing through a digital proof file. It's{" "}
+                  <span className="font-medium text-[#E21B36]">free</span>, fast, and
+                  perfect for quick approvals.
+                </>
+              )}
+            </p>
+          </div>
+
+          {/* Method 2 */}
+          <div className="group bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl hover:border-[#FF4B2B] transition-all duration-300 border border-[#D6D9E0]">
+            <div className="flex items-center mb-5">
+              <span className="bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white font-bold px-4 py-2 rounded-full mr-3 text-sm">
+                02
+              </span>
+              <h3 className="text-2xl font-semibold text-[#0B1633] group-hover:text-[#FF4B2B] transition-colors">
+                {content.method2?.title || "Digital-Proof"}
+              </h3>
+            </div>
+            <p className="text-[#2E3850] leading-relaxed text-base">
+              {content.method2?.description || (
+                <>
+                  Get a printed version of your uploaded file for review. You will
+                  see the actual proof quality — though it requires extra{" "}
+                  <span className="font-medium text-[#FF4B2B]">time and cost</span>.
+                </>
+              )}
+            </p>
+          </div>
+        </div>
+
+        {/* Optional Image Section */}
+        {content.image && (
+          <div className="relative w-full h-72 md:h-96 overflow-hidden rounded-2xl shadow-lg">
+            <AppImage
+              src={content.image}
+              alt="Selectable Proof Method"
+              fill
+              className="object-cover transform hover:scale-105 transition-transform duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0B1633]/40 to-transparent rounded-2xl" />
+          </div>
         )}
-      </h2>
-      <p className="text-[#2E3850] max-w-2xl mx-auto text-lg">
-        {content.description ||
-          "Choose from two professional proofing methods that ensure accuracy and efficiency for every project."}
-      </p>
-    </div>
-
-    {/* Proof Methods */}
-    <div className="grid md:grid-cols-2 gap-10 mb-16">
-      {/* Method 1 */}
-      <div className="group bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl hover:border-[#E21B36] transition-all duration-300 border border-[#D6D9E0]">
-        <div className="flex items-center mb-5">
-          <span className="bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white font-bold px-4 py-2 rounded-full mr-3 text-sm">
-            01
-          </span>
-          <h3 className="text-2xl font-semibold text-[#0B1633] group-hover:text-[#E21B36] transition-colors">
-            {content.method1?.title || "E-Proof"}
-          </h3>
-        </div>
-        <p className="text-[#2E3850] leading-relaxed text-base">
-          {content.method1?.description || (
-            <>
-              Proceed with proofing through a digital proof file. It’s{" "}
-              <span className="font-medium text-[#E21B36]">free</span>, fast, and
-              perfect for quick approvals.
-            </>
-          )}
-        </p>
       </div>
-
-      {/* Method 2 */}
-      <div className="group bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl hover:border-[#FF4B2B] transition-all duration-300 border border-[#D6D9E0]">
-        <div className="flex items-center mb-5">
-          <span className="bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white font-bold px-4 py-2 rounded-full mr-3 text-sm">
-            02
-          </span>
-          <h3 className="text-2xl font-semibold text-[#0B1633] group-hover:text-[#FF4B2B] transition-colors">
-            {content.method2?.title || "Digital-Proof"}
-          </h3>
-        </div>
-        <p className="text-[#2E3850] leading-relaxed text-base">
-          {content.method2?.description || (
-            <>
-              Get a printed version of your uploaded file for review. You will
-              see the actual proof quality — though it requires extra{" "}
-              <span className="font-medium text-[#FF4B2B]">time and cost</span>.
-            </>
-          )}
-        </p>
-      </div>
-    </div>
-
-    {/* Optional Image Section */}
-    {content.image && (
-      <div className="relative w-full h-72 md:h-96 overflow-hidden rounded-2xl shadow-lg">
-        <Image
-          src={content.image}
-          alt="Selectable Proof Method"
-          fill
-          className="object-cover transform hover:scale-105 transition-transform duration-700"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0B1633]/40 to-transparent rounded-2xl" />
-      </div>
-    )}
-  </div>
-</section>
-
+    </section>
   );
 }
 
@@ -421,69 +539,68 @@ function renderNotice(component, index) {
   
   return (
     <section
-  key={component.id || index}
-  className="bg-[#FAFAFA] py-20 text-gray-900 relative overflow-hidden"
->
-  {/* Decorative gradient circles */}
-  <div className="absolute top-[-5rem] left-[-5rem] w-96 h-96 bg-[#E21B36]/10 rounded-full blur-3xl" />
-  <div className="absolute bottom-[-6rem] right-[-4rem] w-96 h-96 bg-[#FF4B2B]/10 rounded-full blur-3xl" />
+      key={component.id || index}
+      className="bg-[#FAFAFA] py-20 text-gray-900 relative overflow-hidden"
+    >
+      {/* Decorative gradient circles */}
+      <div className="absolute top-[-5rem] left-[-5rem] w-96 h-96 bg-[#E21B36]/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-[-6rem] right-[-4rem] w-96 h-96 bg-[#FF4B2B]/10 rounded-full blur-3xl" />
 
-  <div className="max-w-7xl mx-auto px-6 relative z-10">
-    {/* Section Heading */}
-    <div className="text-center mb-14">
-      <h2 className="text-4xl md:text-5xl font-bold tracking-wide flex items-center justify-center gap-3 text-[#0B1633]">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-8 h-8 text-[#E21B36]"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M9 13h6m2 0a9 9 0 11-6.219-8.56M15 13l3 8M6 21h12"
-          />
-        </svg>
-        {content.title || "Latest Notices"}
-      </h2>
-      <div className="w-24 h-1 bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] mx-auto mt-4 rounded-full"></div>
-    </div>
-
-    {/* Notices List */}
-    <div className="grid md:grid-cols-2 gap-8 text-left">
-      {(content.notices || []).map((notice, noticeIndex) => (
-        <div
-          key={noticeIndex}
-          className="bg-white rounded-2xl p-6 border border-gray-200 hover:shadow-lg hover:border-transparent hover:bg-gradient-to-r hover:from-[#FFE3E5] hover:to-[#FFF0E5] transition duration-300"
-        >
-          <h3 className="font-semibold text-lg mb-2 text-gray-900">
-            {notice.title || "Notice Title"}
-          </h3>
-          <p className="text-sm text-gray-600 mb-3 leading-relaxed">
-            {notice.desc ||
-              "This is a short description for the notice or announcement."}
-          </p>
-          <p className="text-xs text-gray-400">{notice.date || "MM.DD.YYYY"}</p>
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        {/* Section Heading */}
+        <div className="text-center mb-14">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-wide flex items-center justify-center gap-3 text-[#0B1633]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-8 h-8 text-[#E21B36]"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M9 13h6m2 0a9 9 0 11-6.219-8.56M15 13l3 8M6 21h12"
+              />
+            </svg>
+            {content.title || "Latest Notices"}
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] mx-auto mt-4 rounded-full"></div>
         </div>
-      ))}
-    </div>
 
-    {/* View All Button */}
-    {content.buttonText && (
-      <div className="mt-12 text-center">
-        <a
-          href={content.buttonLink || "#"}
-          className="inline-block bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white px-8 py-3 rounded-full text-sm font-semibold shadow-lg hover:opacity-90 transition duration-300"
-        >
-          {content.buttonText}
-        </a>
+        {/* Notices List */}
+        <div className="grid md:grid-cols-2 gap-8 text-left">
+          {(content.notices || []).map((notice, noticeIndex) => (
+            <div
+              key={noticeIndex}
+              className="bg-white rounded-2xl p-6 border border-gray-200 hover:shadow-lg hover:border-transparent hover:bg-gradient-to-r hover:from-[#FFE3E5] hover:to-[#FFF0E5] transition duration-300"
+            >
+              <h3 className="font-semibold text-lg mb-2 text-gray-900">
+                {notice.title || "Notice Title"}
+              </h3>
+              <p className="text-sm text-gray-600 mb-3 leading-relaxed">
+                {notice.desc ||
+                  "This is a short description for the notice or announcement."}
+              </p>
+              <p className="text-xs text-gray-400">{notice.date || "MM.DD.YYYY"}</p>
+            </div>
+          ))}
+        </div>
+
+        {/* View All Button */}
+        {content.buttonText && (
+          <div className="mt-12 text-center">
+            <a
+              href={content.buttonLink || "#"}
+              className="inline-block bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white px-8 py-3 rounded-full text-sm font-semibold shadow-lg hover:opacity-90 transition duration-300"
+            >
+              {content.buttonText}
+            </a>
+          </div>
+        )}
       </div>
-    )}
-  </div>
-</section>
-
+    </section>
   );
 }
 
@@ -493,68 +610,67 @@ function renderOrderProcess(component, index) {
   
   return (
     <section
-  key={component.id || index}
-  className="bg-[#F8F9FB] py-24 px-6 md:px-12 relative overflow-hidden"
->
-  {/* Decorative blurred background circles */}
-  <div className="absolute -top-16 -left-16 w-40 h-40 bg-[#E21B36]/10 rounded-full blur-3xl"></div>
-  <div className="absolute -bottom-16 -right-16 w-72 h-72 bg-[#FF4B2B]/10 rounded-full blur-3xl"></div>
+      key={component.id || index}
+      className="bg-[#F8F9FB] py-24 px-6 md:px-12 relative overflow-hidden"
+    >
+      {/* Decorative blurred background circles */}
+      <div className="absolute -top-16 -left-16 w-40 h-40 bg-[#E21B36]/10 rounded-full blur-3xl"></div>
+      <div className="absolute -bottom-16 -right-16 w-72 h-72 bg-[#FF4B2B]/10 rounded-full blur-3xl"></div>
 
-  <div className="max-w-7xl mx-auto relative z-10">
-    {/* Section Heading */}
-    <div className="text-center mb-16">
-      <h2 className="text-4xl md:text-5xl font-extrabold text-[#0B1633] mb-3">
-        <span className="bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] bg-clip-text text-transparent">
-          {content.title?.split(" ")[0] || "Order"}
-        </span>{" "}
-        {content.title?.split(" ").slice(1).join(" ") || "Process"}
-      </h2>
-      <div className="w-28 h-1 bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] mx-auto rounded-full mb-4"></div>
-      <p className="mt-4 text-[#2E3850] max-w-2xl mx-auto text-lg md:text-base">
-        {content.description ||
-          "Follow our simple 8-step process to get your printing done efficiently and hassle-free."}
-      </p>
-    </div>
-
-    {/* Steps Section */}
-    <div className="relative flex flex-col md:flex-row items-center justify-between gap-10 md:gap-6">
-      {/* Connecting gradient line */}
-      <div className="hidden md:block absolute top-1/2 left-0 w-full h-2">
-        <div className="w-full h-2 bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] rounded-full"></div>
-      </div>
-
-      {(content.steps || []).map((step, stepIndex) => (
-        <div
-          key={stepIndex}
-          className="flex flex-col items-center text-center relative group transform transition duration-300 hover:scale-105 z-10"
-        >
-          {/* Step number circle */}
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#E21B36] to-[#FF4B2B] text-white font-bold text-xl flex items-center justify-center shadow-2xl mb-4 z-10">
-            {step.id || stepIndex + 1}
-          </div>
-
-          {/* Step image */}
-          <div className="w-36 h-24 relative mb-3 rounded-xl overflow-hidden shadow-lg group-hover:shadow-2xl transition-shadow duration-300">
-            <Image
-              src={step.image}
-              alt={step.title}
-              width={144}
-              height={96}
-              className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
-            />
-          </div>
-
-          {/* Step text */}
-          <h3 className="font-semibold text-[#0B1633] text-base md:text-sm mb-1">
-            {step.title}
-          </h3>
-          <p className="text-[#2E3850] text-xs md:text-sm">{step.desc}</p>
+      <div className="max-w-7xl mx-auto relative z-10">
+        {/* Section Heading */}
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-[#0B1633] mb-3">
+            <span className="bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] bg-clip-text text-transparent">
+              {content.title?.split(" ")[0] || "Order"}
+            </span>{" "}
+            {content.title?.split(" ").slice(1).join(" ") || "Process"}
+          </h2>
+          <div className="w-28 h-1 bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] mx-auto rounded-full mb-4"></div>
+          <p className="mt-4 text-[#2E3850] max-w-2xl mx-auto text-lg md:text-base">
+            {content.description ||
+              "Follow our simple 8-step process to get your printing done efficiently and hassle-free."}
+          </p>
         </div>
-      ))}
-    </div>
-  </div>
-</section>
 
+        {/* Steps Section */}
+        <div className="relative flex flex-col md:flex-row items-center justify-between gap-10 md:gap-6">
+          {/* Connecting gradient line */}
+          <div className="hidden md:block absolute top-1/2 left-0 w-full h-2">
+            <div className="w-full h-2 bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] rounded-full"></div>
+          </div>
+
+          {(content.steps || []).map((step, stepIndex) => (
+            <div
+              key={stepIndex}
+              className="flex flex-col items-center text-center relative group transform transition duration-300 hover:scale-105 z-10"
+            >
+              {/* Step number circle */}
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#E21B36] to-[#FF4B2B] text-white font-bold text-xl flex items-center justify-center shadow-2xl mb-4 z-10">
+                {step.id || stepIndex + 1}
+              </div>
+
+              {/* Step image */}
+              <div className="w-36 h-24 relative mb-3 rounded-xl overflow-hidden shadow-lg group-hover:shadow-2xl transition-shadow duration-300">
+                <AppImage
+                  src={step.image}
+                  alt={step.title}
+                  width={144}
+                  height={96}
+                  className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
+                />
+              </div>
+
+              {/* Step text */}
+              <h3 className="font-semibold text-[#0B1633] text-base md:text-sm mb-1">
+                {step.title}
+              </h3>
+              <p className="text-[#2E3850] text-xs md:text-sm">{step.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -563,56 +679,55 @@ function renderPortfolio(component, index) {
   console.log(`🎨 Rendering Portfolio:`, content);
   
   return (
-   <section
-  key={component.id || index}
-  className="relative bg-[#F8F9FB] py-20 px-6 md:px-12 overflow-hidden"
->
-  {/* Decorative circles */}
-  <div className="absolute -top-10 -left-10 w-40 h-40 bg-[#E21B36]/10 rounded-full blur-3xl"></div>
-  <div className="absolute -bottom-16 -right-10 w-72 h-72 bg-[#FF4B2B]/10 rounded-full blur-3xl"></div>
+    <section
+      key={component.id || index}
+      className="relative bg-[#F8F9FB] py-20 px-6 md:px-12 overflow-hidden"
+    >
+      {/* Decorative circles */}
+      <div className="absolute -top-10 -left-10 w-40 h-40 bg-[#E21B36]/10 rounded-full blur-3xl"></div>
+      <div className="absolute -bottom-16 -right-10 w-72 h-72 bg-[#FF4B2B]/10 rounded-full blur-3xl"></div>
 
-  <div className="relative max-w-7xl mx-auto text-center z-10">
-    {/* Heading */}
-    <h2 className="text-3xl md:text-5xl font-extrabold mb-12 text-[#0B1633]">
-      {content.title?.split(" ")[0] || "Our"}{" "}
-      <span className="bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] bg-clip-text text-transparent">
-        {content.title?.split(" ")[1] || "Portfolio"}
-      </span>{" "}
-      Showcase
-    </h2>
+      <div className="relative max-w-7xl mx-auto text-center z-10">
+        {/* Heading */}
+        <h2 className="text-3xl md:text-5xl font-extrabold mb-12 text-[#0B1633]">
+          {content.title?.split(" ")[0] || "Our"}{" "}
+          <span className="bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] bg-clip-text text-transparent">
+            {content.title?.split(" ")[1] || "Portfolio"}
+          </span>{" "}
+          Showcase
+        </h2>
 
-    {/* Image Grid */}
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-12">
-      {(content.images || []).map((image, imageIndex) => (
-        <div
-          key={imageIndex}
-          className="group relative overflow-hidden rounded-xl shadow-lg border border-[#2E3850]/10 bg-white hover:shadow-2xl transition-shadow duration-500"
-        >
-          <Image
-            src={image.url}
-            alt={image.alt || "Portfolio image"}
-            width={400}
-            height={400}
-            className="object-cover w-full h-full rounded-xl group-hover:scale-105 transition-transform duration-500"
-          />
-          {/* Hover overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#E21B36]/20 to-transparent opacity-0 group-hover:opacity-30 transition-opacity duration-300 rounded-xl"></div>
+        {/* Image Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mb-12">
+          {(content.images || []).map((image, imageIndex) => (
+            <div
+              key={imageIndex}
+              className="group relative overflow-hidden rounded-xl shadow-lg border border-[#2E3850]/10 bg-white hover:shadow-2xl transition-shadow duration-500"
+            >
+              <AppImage
+                src={image.url}
+                alt={image.alt || "Portfolio image"}
+                width={400}
+                height={400}
+                className="object-cover w-full h-full rounded-xl group-hover:scale-105 transition-transform duration-500"
+              />
+              {/* Hover overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#E21B36]/20 to-transparent opacity-0 group-hover:opacity-30 transition-opacity duration-300 rounded-xl"></div>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
 
-    {/* Button */}
-    {content.buttonText && (
-      <a
-        href={content.buttonLink || "/portfolio"}
-        className="inline-block bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
-      >
-        {content.buttonText}
-      </a>
-    )}
-  </div>
-</section>
-
+        {/* Button */}
+        {content.buttonText && (
+          <a
+            href={content.buttonLink || "/portfolio"}
+            className="inline-block bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            {content.buttonText}
+          </a>
+        )}
+      </div>
+    </section>
   );
 }
 
@@ -621,63 +736,62 @@ function renderPricing(component, index) {
   console.log(`🎨 Rendering Pricing:`, content);
   
   return (
-   <section
-  key={component.id || index}
-  className="relative bg-gradient-to-b from-gray-900 via-gray-950 to-black text-white py-24 px-6 md:px-12 overflow-hidden"
->
-  {/* Background Glow Elements */}
-  <div className="absolute -top-20 -left-20 w-72 h-72 bg-[#E21B36]/10 rounded-full blur-3xl"></div>
-  <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-[#FF4B2B]/10 rounded-full blur-3xl"></div>
+    <section
+      key={component.id || index}
+      className="relative bg-gradient-to-b from-gray-900 via-gray-950 to-black text-white py-24 px-6 md:px-12 overflow-hidden"
+    >
+      {/* Background Glow Elements */}
+      <div className="absolute -top-20 -left-20 w-72 h-72 bg-[#E21B36]/10 rounded-full blur-3xl"></div>
+      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-[#FF4B2B]/10 rounded-full blur-3xl"></div>
 
-  <div className="relative max-w-6xl mx-auto text-center z-10">
-    {/* Section Title */}
-    <h2 className="text-4xl md:text-5xl font-extrabold mb-8 leading-tight">
-      {content.title?.split(" ")[0] || "Affordable"}{" "}
-      <span className="bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] bg-clip-text text-transparent">
-        {content.title?.split(" ")[1] || "Printing Prices"}
-      </span>
-    </h2>
+      <div className="relative max-w-6xl mx-auto text-center z-10">
+        {/* Section Title */}
+        <h2 className="text-4xl md:text-5xl font-extrabold mb-8 leading-tight">
+          {content.title?.split(" ")[0] || "Affordable"}{" "}
+          <span className="bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] bg-clip-text text-transparent">
+            {content.title?.split(" ")[1] || "Printing Prices"}
+          </span>
+        </h2>
 
-    {/* Description */}
-    <div className="space-y-6 text-lg text-gray-300 mb-16 max-w-3xl mx-auto leading-relaxed">
-      {content.description1 && <p>{content.description1}</p>}
-      {content.description2 && <p>{content.description2}</p>}
-    </div>
-
-    {/* Sample Specification Box */}
-    {content.sampleTitle && (
-      <div
-        data-aos="zoom-in"
-        className="bg-gray-800/70 backdrop-blur-md border border-gray-700 rounded-3xl p-10 max-w-lg mx-auto shadow-2xl relative"
-      >
-        <div className="absolute top-0 left-0 w-full h-1 rounded-t-3xl bg-gradient-to-r from-[#E21B36] to-[#FF4B2B]" />
-        <h3 className="text-2xl font-bold mb-8 text-white tracking-wide">
-          {content.sampleTitle}
-        </h3>
-
-        <div className="space-y-5 text-left">
-          {(content.specifications || []).map((spec, index) => (
-            <div
-              key={index}
-              className="flex justify-between items-center border-b border-gray-700 pb-3"
-            >
-              <span className="text-gray-400">{spec.label}</span>
-              <span className="font-semibold text-white">{spec.value}</span>
-            </div>
-          ))}
+        {/* Description */}
+        <div className="space-y-6 text-lg text-gray-300 mb-16 max-w-3xl mx-auto leading-relaxed">
+          {content.description1 && <p>{content.description1}</p>}
+          {content.description2 && <p>{content.description2}</p>}
         </div>
+
+        {/* Sample Specification Box */}
+        {content.sampleTitle && (
+          <div
+            data-aos="zoom-in"
+            className="bg-gray-800/70 backdrop-blur-md border border-gray-700 rounded-3xl p-10 max-w-lg mx-auto shadow-2xl relative"
+          >
+            <div className="absolute top-0 left-0 w-full h-1 rounded-t-3xl bg-gradient-to-r from-[#E21B36] to-[#FF4B2B]" />
+            <h3 className="text-2xl font-bold mb-8 text-white tracking-wide">
+              {content.sampleTitle}
+            </h3>
+
+            <div className="space-y-5 text-left">
+              {(content.specifications || []).map((spec, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between items-center border-b border-gray-700 pb-3"
+                >
+                  <span className="text-gray-400">{spec.label}</span>
+                  <span className="font-semibold text-white">{spec.value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Footer Note */}
+        {content.footerNote && (
+          <p className="mt-10 text-gray-500 text-sm italic max-w-2xl mx-auto">
+            {content.footerNote}
+          </p>
+        )}
       </div>
-    )}
-
-    {/* Footer Note */}
-    {content.footerNote && (
-      <p className="mt-10 text-gray-500 text-sm italic max-w-2xl mx-auto">
-        {content.footerNote}
-      </p>
-    )}
-  </div>
-</section>
-
+    </section>
   );
 }
 
@@ -687,71 +801,70 @@ function renderQuickGuides(component, index) {
   
   return (
     <section
-  key={component.id || index}
-  className="relative bg-[#0B1633] py-24 overflow-hidden"
->
-  {/* Decorative Gradient Lights */}
-  <div className="absolute top-10 right-10 w-56 h-56 bg-gradient-to-br from-[#E21B36]/20 to-[#FF4B2B]/20 rounded-full blur-3xl"></div>
-  <div className="absolute bottom-10 left-10 w-72 h-72 bg-gradient-to-tr from-[#FF4B2B]/20 to-[#E21B36]/20 rounded-full blur-3xl"></div>
+      key={component.id || index}
+      className="relative bg-[#0B1633] py-24 overflow-hidden"
+    >
+      {/* Decorative Gradient Lights */}
+      <div className="absolute top-10 right-10 w-56 h-56 bg-gradient-to-br from-[#E21B36]/20 to-[#FF4B2B]/20 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-10 left-10 w-72 h-72 bg-gradient-to-tr from-[#FF4B2B]/20 to-[#E21B36]/20 rounded-full blur-3xl"></div>
 
-  <div className="relative max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16 px-6 lg:px-12">
-    {/* Left Image */}
-    {content.image && (
-      <div className="w-full md:w-1/2 relative group">
-        <div className="relative w-full h-80 md:h-[500px] overflow-hidden rounded-3xl shadow-2xl transition-transform duration-500 group-hover:scale-[1.04]">
-          <Image
-            src={content.image}
-            alt={content.title || "Quick Guide"}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            priority
-          />
-        </div>
-        <div className="absolute -bottom-8 -right-8 w-40 h-40 bg-gradient-to-tr from-[#E21B36]/30 to-[#FF4B2B]/30 rounded-full blur-2xl"></div>
-      </div>
-    )}
-
-    {/* Right Text & Cards */}
-    <div className={`w-full ${content.image ? "md:w-1/2" : "md:w-2/3 mx-auto"} text-white`}>
-      <h2 className="text-4xl md:text-5xl font-extrabold mb-10 leading-tight text-center md:text-left">
-        {content.title?.split(" ")[0] || "Quick"}{" "}
-        <span className="bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] bg-clip-text text-transparent">
-          {content.title?.split(" ")[1] || "Guides"}
-        </span>
-      </h2>
-
-      {/* Guide List */}
-      <div className="space-y-6">
-        {(content.guides || []).map((guide, idx) => (
-          <a
-            key={idx}
-            href={guide.href || "#"}
-            className="group flex justify-between items-center p-5 bg-[#121A2C] rounded-2xl border border-[#2E3850] hover:border-[#E21B36] hover:bg-[#1A2438] transition-all duration-300 shadow-lg hover:shadow-red-900/20 cursor-pointer"
-          >
-            <div className="flex items-center gap-4">
-              <span className="text-[#E21B36] font-extrabold text-xl">{`0${idx + 1}`}</span>
-              <span className="font-semibold text-[#D6D9E0] text-lg group-hover:text-white">
-                {guide.title}
-              </span>
+      <div className="relative max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-16 px-6 lg:px-12">
+        {/* Left Image */}
+        {content.image && (
+          <div className="w-full md:w-1/2 relative group">
+            <div className="relative w-full h-80 md:h-[500px] overflow-hidden rounded-3xl shadow-2xl transition-transform duration-500 group-hover:scale-[1.04]">
+              <AppImage
+                src={content.image}
+                alt={content.title || "Quick Guide"}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                priority
+              />
             </div>
-            <ArrowRight
-              size={22}
-              className="text-[#D6D9E0] group-hover:text-[#E21B36] transition-transform duration-300 group-hover:translate-x-3"
-            />
-          </a>
-        ))}
+            <div className="absolute -bottom-8 -right-8 w-40 h-40 bg-gradient-to-tr from-[#E21B36]/30 to-[#FF4B2B]/30 rounded-full blur-2xl"></div>
+          </div>
+        )}
+
+        {/* Right Text & Cards */}
+        <div className={`w-full ${content.image ? "md:w-1/2" : "md:w-2/3 mx-auto"} text-white`}>
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-10 leading-tight text-center md:text-left">
+            {content.title?.split(" ")[0] || "Quick"}{" "}
+            <span className="bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] bg-clip-text text-transparent">
+              {content.title?.split(" ")[1] || "Guides"}
+            </span>
+          </h2>
+
+          {/* Guide List */}
+          <div className="space-y-6">
+            {(content.guides || []).map((guide, idx) => (
+              <a
+                key={idx}
+                href={guide.href || "#"}
+                className="group flex justify-between items-center p-5 bg-[#121A2C] rounded-2xl border border-[#2E3850] hover:border-[#E21B36] hover:bg-[#1A2438] transition-all duration-300 shadow-lg hover:shadow-red-900/20 cursor-pointer"
+              >
+                <div className="flex items-center gap-4">
+                  <span className="text-[#E21B36] font-extrabold text-xl">{`0${idx + 1}`}</span>
+                  <span className="font-semibold text-[#D6D9E0] text-lg group-hover:text-white">
+                    {guide.title}
+                  </span>
+                </div>
+                <ArrowRight
+                  size={22}
+                  className="text-[#D6D9E0] group-hover:text-[#E21B36] transition-transform duration-300 group-hover:translate-x-3"
+                />
+              </a>
+            ))}
+          </div>
+
+          {/* Description */}
+          {content.description && (
+            <p className="mt-10 text-[#D6D9E0] text-sm md:text-base leading-relaxed max-w-lg">
+              {content.description}
+            </p>
+          )}
+        </div>
       </div>
-
-      {/* Description */}
-      {content.description && (
-        <p className="mt-10 text-[#D6D9E0] text-sm md:text-base leading-relaxed max-w-lg">
-          {content.description}
-        </p>
-      )}
-    </div>
-  </div>
-</section>
-
+    </section>
   );
 }
 
@@ -787,7 +900,7 @@ function renderHero(component, index) {
   return (
     <section key={component.id || index} className="relative w-full h-64 flex items-center justify-center bg-gray-100">
       {content.backgroundImage && (
-        <Image
+        <AppImage
           src={content.backgroundImage}
           alt="Hero background"
           fill
@@ -815,58 +928,56 @@ function renderHero(component, index) {
   );
 }
 
-
 function renderVideoBanner(component, index) {
   const content = component.content || {};
   return (
-   <section
-  key={component.id || index}
-  className="relative w-full h-[80vh] md:h-[90vh] overflow-hidden flex items-center justify-center"
->
-  {/* Background Video */}
-  <video
-    className="absolute inset-0 w-full h-full object-cover"
-    src={content.videoUrl || "/homepage/video/printing.mp4"}
-    autoPlay
-    muted
-    loop
-    playsInline
-  />
+    <section
+      key={component.id || index}
+      className="relative w-full h-[80vh] md:h-[90vh] overflow-hidden flex items-center justify-center"
+    >
+      {/* Background Video */}
+      <video
+        className="absolute inset-0 w-full h-full object-cover"
+        src={content.videoUrl || "/homepage/video/printing.mp4"}
+        autoPlay
+        muted
+        loop
+        playsInline
+      />
 
-  {/* Gradient Overlay */}
-  <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70"></div>
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70"></div>
 
-  {/* Decorative Glows */}
-  <div className="absolute -top-20 left-20 w-96 h-96 bg-gradient-to-br from-[#E21B36]/20 to-[#FF4B2B]/20 rounded-full blur-3xl"></div>
-  <div className="absolute bottom-0 right-10 w-72 h-72 bg-gradient-to-tr from-[#FF4B2B]/20 to-[#E21B36]/20 rounded-full blur-3xl"></div>
+      {/* Decorative Glows */}
+      <div className="absolute -top-20 left-20 w-96 h-96 bg-gradient-to-br from-[#E21B36]/20 to-[#FF4B2B]/20 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-10 w-72 h-72 bg-gradient-to-tr from-[#FF4B2B]/20 to-[#E21B36]/20 rounded-full blur-3xl"></div>
 
-  {/* Text Overlay */}
-  <div className="relative z-10 text-center px-6 max-w-3xl">
-    <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
-      <span className="bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] bg-clip-text text-transparent">
-        {content.highlightedText || "High-Quality"}
-      </span>{" "}
-      <span className="text-white">
-        {content.normalText || "Printing at Affordable Prices"}
-      </span>
-    </h1>
-    <p className="text-base md:text-lg text-gray-300 leading-relaxed">
-      {content.description ||
-        "Print Seoul delivers premium book printing with advanced technology, flawless finishing, and exceptional value perfect for businesses and creators."}
-    </p>
+      {/* Text Overlay */}
+      <div className="relative z-10 text-center px-6 max-w-3xl">
+        <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+          <span className="bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] bg-clip-text text-transparent">
+            {content.highlightedText || "High-Quality"}
+          </span>{" "}
+          <span className="text-white">
+            {content.normalText || "Printing at Affordable Prices"}
+          </span>
+        </h1>
+        <p className="text-base md:text-lg text-gray-300 leading-relaxed">
+          {content.description ||
+            "Print Seoul delivers premium book printing with advanced technology, flawless finishing, and exceptional value perfect for businesses and creators."}
+        </p>
 
-    {/* Optional CTA Button */}
-    {content.buttonText && (
-      <a
-        href={content.buttonLink || "#"}
-        className="mt-8 inline-block bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
-      >
-        {content.buttonText}
-      </a>
-    )}
-  </div>
-</section>
-
+        {/* Optional CTA Button */}
+        {content.buttonText && (
+          <a
+            href={content.buttonLink || "#"}
+            className="mt-8 inline-block bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            {content.buttonText}
+          </a>
+        )}
+      </div>
+    </section>
   );
 }
 
@@ -1057,15 +1168,16 @@ function renderFormField(field) {
   }
 }
 
-
 function renderImage(component, index) {
   const content = component.content || {};
   return (
     <figure key={component.id || index} className="my-6 text-center p-6">
       {content.src ? (
-        <img 
-          src={content.src} 
+        <AppImage
+          src={content.src}
           alt={content.alt || 'Image'}
+          width={800}
+          height={600}
           className="mx-auto max-w-full h-auto rounded-lg"
         />
       ) : (
@@ -1109,7 +1221,8 @@ function renderComponent(component, index) {
         return renderHeroBanner(component, index);
       case 'imageBanner':
         return renderImageBanner(component, index);
-    
+    case 'multiColumn':
+        return renderMultiColumn(component, index);
       case 'imageBannerTwo':
         return renderImageBannerTwo(component, index);
       case 'method':
@@ -1133,7 +1246,7 @@ function renderComponent(component, index) {
         console.warn(`❌ Unknown component type: ${component.type}`);
         return (
           <div key={component.id || index} className="p-6 bg-yellow-50 border border-yellow-200 rounded-lg my-4">
-            <p className="text-yellow-800 font-semibold">Unsupported Component: {component.type}</p>
+            <p className="text-yellow-800 font-semibold">Unsupported Component: ${component.type}</p>
             <pre className="text-xs mt-2 overflow-auto">
               {JSON.stringify(component.content, null, 2)}
             </pre>
@@ -1144,7 +1257,7 @@ function renderComponent(component, index) {
     console.error(`❌ Error rendering component ${component.type}:`, error);
     return (
       <div key={component.id || index} className="p-6 bg-red-50 border border-red-200 rounded-lg my-4">
-        <p className="text-red-800 font-semibold">Error rendering: {component.type}</p>
+        <p className="text-red-800 font-semibold">Error rendering: ${component.type}</p>
         <p className="text-red-600 text-sm">{error.message}</p>
       </div>
     );

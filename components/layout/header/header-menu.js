@@ -34,13 +34,13 @@ const MainMenu = () => {
     },
     "Tutorials": {
       items: [
-        { label: "Quick Guide for Art Files", href: "#" },
-        { label: "Page Layout", href: "#" },
-        { label: "Bleed & Trimming", href: "#" },
-        { label: "Print-ready PDF files", href: "#" },
-        { label: "Paper Size & Weight", href: "#" },
-        { label: "Paper Weight Converter", href: "#" },
-        { label: "Add-on", href: "#" },
+        { label: "Quick Guide for Art Files", href: "/quick-guide-for-art-files" },
+        { label: "Page Layout", href: "/page-layout" },
+        { label: "Bleed & Trimming", href: "/bleed-and-trimming" },
+        { label: "Print-ready PDF files", href: "/print-ready-pdf-files" },
+        { label: "Paper Size & Weight", href: "/paper-size-and-weight" },
+        { label: "Paper Weight Converter", href: "/paper-weight-converter" },
+        { label: "Add-on", href: "/add-on" },
       ],
     },
     "Help": {

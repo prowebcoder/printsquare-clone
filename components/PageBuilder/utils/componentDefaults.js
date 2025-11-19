@@ -127,6 +127,28 @@ export const getDefaultContent = (type) => {
           { id: "08", title: "Customer Service", desc: "Continuous support throughout.", image: "/homepage/main-process8.jpg" }
         ]
       },
+
+      multiColumn: {
+  columnsPerRowDesktop: 3,
+  columnsPerRowMobile: 1,
+  columns: [
+    {
+      image: '',
+      heading: 'Feature One',
+      text: 'Description for feature one.'
+    },
+    {
+      image: '',
+      heading: 'Feature Two',
+      text: 'Description for feature two.'
+    },
+    {
+      image: '',
+      heading: 'Feature Three',
+      text: 'Description for feature three.'
+    }
+  ]
+},
       
       portfolio: {
         title: 'Our',

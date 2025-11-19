@@ -7,6 +7,7 @@ import AboutHeroRenderer from './renderers/AboutHeroRenderer';
 import AboutUsRenderer from './renderers/AboutUsRenderer';
 import FreeSampleRenderer from './renderers/FreeSampleRenderer';
 import HeroBannerRenderer from './renderers/HeroBannerRenderer';
+import MultiColumnRenderer from './editors/MultiColumnRenderer';
 import ImageBannerRenderer from './renderers/ImageBannerRenderer';
 import ImageBannerTwoRenderer from './renderers/ImageBannerTwoRenderer';
 import MethodRenderer from './renderers/MethodRenderer';
@@ -45,6 +46,8 @@ const PageRenderer = ({ components }) => {
         return <AboutHeroRenderer key={component.id} component={component} />;
       case 'aboutUs':
         return <AboutUsRenderer key={component.id} component={component} />;
+        case 'multiColumn':
+        return <MultiColumnRenderer key={component.id} component={component} />;
       case 'freeSample':
         return <FreeSampleRenderer key={component.id} component={component} />;
       case 'heroBanner':

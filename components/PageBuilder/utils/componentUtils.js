@@ -12,6 +12,7 @@ export const getComponentIcon = (type) => {
     hero: <Star size={16} />,
     image: <ImageIcon size={16} />,
     aboutHero: <Users size={16} />,
+    multiColumn: <Grid size={16} />,
     aboutUs: <BookOpen size={16} />,
     freeSample: <Zap size={16} />,
     heroBanner: <Layout size={16} />,
@@ -29,16 +30,41 @@ export const getComponentIcon = (type) => {
   return icons[type] || <FileText size={16} />;
 };
 
-
 export const getComponentCategory = (type) => {
   if (['aboutHero', 'aboutUs', 'freeSample'].includes(type)) {
     return 'about';
   }
-  if (['heroBanner', 'imageBanner', 'imageBannerTwo', 'method', 'notice', 'orderProcess', 'portfolio', 'pricing', 'quickGuides', 'videoBanner'].includes(type)) {
+  if (['heroBanner', 'multiColumn', 'imageBanner', 'imageBannerTwo', 'method', 'notice', 'orderProcess', 'portfolio', 'pricing', 'quickGuides', 'videoBanner'].includes(type)) {
     return 'home';
   }
   if (['form'].includes(type)) {
     return 'forms';
   }
   return 'basic';
+};
+
+export const getComponentDisplayName = (type) => {
+  const nameMap = {
+    'text': 'Text',
+    'heading': 'Heading',
+    'hero': 'Hero',
+    'image': 'Image',
+    'aboutHero': 'About Hero',
+    'aboutUs': 'About Us',
+    'freeSample': 'Image with Text',
+    'heroBanner': 'Hero Banner',
+    'imageBanner': 'Image Banner',
+    'imageBannerTwo': 'Image Banner 2',
+    'method': 'Proof Method',
+    'notice': 'Notices',
+    'orderProcess': 'Order Process',
+    'portfolio': 'Portfolio',
+    'pricing': 'Pricing',
+    'quickGuides': 'Quick Guides',
+    'videoBanner': 'Video Banner',
+    'form': 'Basic Form',
+    'multiColumn': 'Multi Column'
+  };
+  
+  return nameMap[type] || type;
 };

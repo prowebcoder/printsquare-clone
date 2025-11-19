@@ -33,7 +33,7 @@ const DEFAULT_FORM_CONFIG = {
     { value: 'FOLDING', label: 'Folding', price: 25 },
     { value: 'PERFORATION', label: 'Perforation', price: 15 },
   ],
-  pageCounts: Array.from({ length: (96 - 8) / 4 + 1 }, (_, i) => 8 + i * 4),
+  pageCounts: Array.from({ length: (96 - 8) / 4 + 1 }, (_, i) => 8 + i * 4), // 8, 12, 16, ..., 96
   quantities: [100, 250, 500, 1000, 2500, 5000],
   customSizeInstructions: "📏 Minimum: 4\" × 4\" | Maximum: 17\" × 22\"",
   pricing: {
@@ -44,14 +44,11 @@ const DEFAULT_FORM_CONFIG = {
   }
 };
 
-// Reuse the same editor component structure as PrintQuoteFormEditor
-// You can copy the entire PrintQuoteFormEditor component and just change the DEFAULT_FORM_CONFIG
-// and component name to SaddleQuoteFormEditor
-
 export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
   const [config, setConfig] = useState(DEFAULT_FORM_CONFIG);
   const [activeTab, setActiveTab] = useState('general');
   const [preview, setPreview] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   // Initialize with saved config or defaults
   useEffect(() => {
@@ -60,16 +57,13 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
     }
   }, [formConfig]);
 
-  // ... Copy all the same helper functions from PrintQuoteFormEditor:
-  // updateNestedConfig, updateArrayItem, addArrayItem, removeArrayItem,
-  // renderEditableArray, renderSimpleArray, etc.
-
   const updateNestedConfig = (path, value) => {
     const keys = path.split('.');
     setConfig(prev => {
-      const newConfig = { ...prev };
+      const newConfig = JSON.parse(JSON.stringify(prev));
       let current = newConfig;
       for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) current[keys[i]] = {};
         current[keys[i]] = { ...current[keys[i]] };
         current = current[keys[i]];
       }
@@ -81,14 +75,18 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
   const updateArrayItem = (path, index, field, value) => {
     const keys = path.split('.');
     setConfig(prev => {
-      const newConfig = { ...prev };
+      const newConfig = JSON.parse(JSON.stringify(prev));
       let current = newConfig;
+
       for (let i = 0; i < keys.length - 1; i++) {
-        current[keys[i]] = Array.isArray(current[keys[i]]) ? [...current[keys[i]]] : { ...current[keys[i]] };
+        if (!current[keys[i]]) current[keys[i]] = {};
         current = current[keys[i]];
       }
+
       const array = current[keys[keys.length - 1]];
-      array[index] = { ...array[index], [field]: value };
+      if (array && array[index]) {
+        array[index] = { ...array[index], [field]: value };
+      }
       return newConfig;
     });
   };
@@ -96,13 +94,17 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
   const addArrayItem = (path, newItem) => {
     const keys = path.split('.');
     setConfig(prev => {
-      const newConfig = { ...prev };
+      const newConfig = JSON.parse(JSON.stringify(prev));
       let current = newConfig;
+
       for (let i = 0; i < keys.length - 1; i++) {
-        current[keys[i]] = { ...current[keys[i]] };
+        if (!current[keys[i]]) current[keys[i]] = {};
         current = current[keys[i]];
       }
-      current[keys[keys.length - 1]] = [...current[keys[keys.length - 1]], newItem];
+
+      const arrayKey = keys[keys.length - 1];
+      if (!current[arrayKey]) current[arrayKey] = [];
+      current[arrayKey] = [...current[arrayKey], newItem];
       return newConfig;
     });
   };
@@ -110,66 +112,100 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
   const removeArrayItem = (path, index) => {
     const keys = path.split('.');
     setConfig(prev => {
-      const newConfig = { ...prev };
+      const newConfig = JSON.parse(JSON.stringify(prev));
       let current = newConfig;
+
       for (let i = 0; i < keys.length - 1; i++) {
-        current[keys[i]] = { ...current[keys[i]] };
+        if (!current[keys[i]]) return prev;
         current = current[keys[i]];
       }
-      current[keys[keys.length - 1]] = current[keys[keys.length - 1]].filter((_, i) => i !== index);
+
+      const arrayKey = keys[keys.length - 1];
+      if (current[arrayKey] && Array.isArray(current[arrayKey])) {
+        current[arrayKey] = current[arrayKey].filter((_, i) => i !== index);
+      }
       return newConfig;
     });
   };
 
-  const handleSave = () => {
-    onSave(config);
+  const handleSave = async () => {
+    if (saving) return;
+
+    setSaving(true);
+    try {
+      await onSave(config);
+    } catch (error) {
+      console.error('Error saving:', error);
+      alert('Error saving configuration');
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const renderEditableArray = (title, path, fields) => (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h4 className="font-medium text-gray-700">{title}</h4>
-        <button
-          onClick={() => addArrayItem(path, fields.reduce((acc, field) => ({ ...acc, [field]: '' }), {}))}
-          className="flex items-center px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700"
-        >
-          <Plus size={14} className="mr-1" />
-          Add New
-        </button>
-      </div>
-      <div className="space-y-3">
-        {config[path]?.map((item, index) => (
-          <div key={index} className="flex space-x-3 p-4 border border-gray-200 rounded-lg bg-gray-50">
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
-              {fields.map(field => (
-                <div key={field}>
-                  <label className="block text-xs font-medium text-gray-500 mb-1 capitalize">
-                    {field}
-                  </label>
-                  <input
-                    type={field === 'price' ? 'number' : 'text'}
-                    value={item[field] || ''}
-                    onChange={(e) => updateArrayItem(path, index, field, 
-                      field === 'price' ? parseFloat(e.target.value) || 0 : e.target.value
-                    )}
-                    className="w-full p-2 border border-gray-300 rounded text-sm"
-                    placeholder={`Enter ${field}`}
-                  />
-                </div>
-              ))}
+  const renderEditableArray = (title, path, fields) => {
+    // Helper to resolve nested array path for dynamic rendering (e.g., 'paperOptions.cover')
+    const getNestedArray = (obj, path) => {
+        const keys = path.split('.');
+        let current = obj;
+        for (const key of keys) {
+            if (current && current[key] !== undefined) {
+                current = current[key];
+            } else {
+                return [];
+            }
+        }
+        return Array.isArray(current) ? current : [];
+    };
+
+    const currentArray = getNestedArray(config, path);
+    const itemTemplate = fields.reduce((acc, field) => ({ ...acc, [field]: field === 'price' ? 0 : '' }), {});
+
+    return (
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <h4 className="font-medium text-gray-700">{title}</h4>
+          <button
+            onClick={() => addArrayItem(path, itemTemplate)}
+            className="flex items-center px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700"
+          >
+            <Plus size={14} className="mr-1" />
+            Add New
+          </button>
+        </div>
+        <div className="space-y-3">
+          {currentArray.map((item, index) => (
+            <div key={index} className="flex space-x-3 p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                {fields.map(field => (
+                  <div key={field}>
+                    <label className="block text-xs font-medium text-gray-500 mb-1 capitalize">
+                      {field}
+                    </label>
+                    <input
+                      type={field === 'price' ? 'number' : 'text'}
+                      value={item[field] === undefined ? '' : item[field]}
+                      onChange={(e) => updateArrayItem(path, index, field,
+                        field === 'price' ? parseFloat(e.target.value) || 0 : e.target.value
+                      )}
+                      className="w-full p-2 border border-gray-300 rounded text-sm"
+                      placeholder={`Enter ${field}`}
+                    />
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={() => removeArrayItem(path, index)}
+                className="p-2 text-red-600 hover:bg-red-50 rounded self-start"
+                title="Remove"
+              >
+                <Trash2 size={16} />
+              </button>
             </div>
-            <button
-              onClick={() => removeArrayItem(path, index)}
-              className="p-2 text-red-600 hover:bg-red-50 rounded self-start"
-              title="Remove"
-            >
-              <Trash2 size={16} />
-            </button>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const renderSimpleArray = (title, path, placeholder = "Enter value") => (
     <div className="space-y-4">
@@ -187,11 +223,11 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
         {config[path]?.map((item, index) => (
           <div key={index} className="flex space-x-2">
             <input
-              type="text"
+              type={path === 'pageCounts' || path === 'quantities' ? 'number' : 'text'}
               value={item}
               onChange={(e) => {
                 const newArray = [...config[path]];
-                newArray[index] = e.target.value;
+                newArray[index] = path === 'pageCounts' || path === 'quantities' ? parseInt(e.target.value) || e.target.value : e.target.value;
                 updateNestedConfig(path, newArray);
               }}
               className="flex-1 p-2 border border-gray-300 rounded text-sm"
@@ -200,6 +236,7 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
             <button
               onClick={() => removeArrayItem(path, index)}
               className="p-2 text-red-600 hover:bg-red-50 rounded"
+              title="Remove"
             >
               <Trash2 size={16} />
             </button>
@@ -209,7 +246,6 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
     </div>
   );
 
-  // ... Copy the same JSX structure from PrintQuoteFormEditor but adjust for saddle stitching
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -227,10 +263,11 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
               </button>
               <button
                 onClick={handleSave}
-                className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                disabled={saving}
+                className={`flex items-center px-4 py-2 text-white rounded-lg ${saving ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'}`}
               >
                 <Save size={16} className="mr-2" />
-                Save Changes
+                {saving ? 'Saving...' : 'Save Changes'}
               </button>
             </div>
           </div>
@@ -238,7 +275,7 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
           {/* Tabs */}
           <div className="flex space-x-8 overflow-x-auto">
             {[
-              'general', 'sizes', 'paper-cover', 'paper-inside', 
+              'general', 'sizes', 'page-counts', 'paper-cover', 'paper-inside',
               'colors', 'finishing', 'quantities', 'pricing'
             ].map(tab => (
               <button
@@ -274,9 +311,10 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
                 <nav className="space-y-2">
                   {[
                     { id: 'general', label: 'General Settings' },
-                    { id: 'sizes', label: 'Sizes & Dimensions' },
-                    { id: 'paper-cover', label: 'Cover Paper' },
-                    { id: 'paper-inside', label: 'Inside Paper' },
+                    { id: 'sizes', label: 'Sizes & Custom Instructions' },
+                    { id: 'page-counts', label: 'Page Counts' },
+                    { id: 'paper-cover', label: 'Cover Paper Options' },
+                    { id: 'paper-inside', label: 'Inside Paper Options' },
                     { id: 'colors', label: 'Color Options' },
                     { id: 'finishing', label: 'Finishing Options' },
                     { id: 'quantities', label: 'Quantity Options' },
@@ -302,6 +340,7 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
             <div className="lg:col-span-3">
               <div className="bg-white rounded-lg shadow-sm border">
                 <div className="p-6 space-y-6">
+                  {/* General Tab */}
                   {activeTab === 'general' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">General Settings</h3>
@@ -314,21 +353,174 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
                           value={config.general?.title || ''}
                           onChange={(e) => updateNestedConfig('general.title', e.target.value)}
                           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          placeholder="Saddle Stitching Quote"
                         />
                       </div>
-                      {/* Add other general settings fields */}
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Form Description
+                        </label>
+                        <textarea
+                          value={config.general?.description || ''}
+                          onChange={(e) => updateNestedConfig('general.description', e.target.value)}
+                          rows={3}
+                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          placeholder="Configure your perfect booklet..."
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Submit Button Text
+                          </label>
+                          <input
+                            type="text"
+                            value={config.general?.submitButtonText || ''}
+                            onChange={(e) => updateNestedConfig('general.submitButtonText', e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="Add to Cart"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Shipping Button Text
+                          </label>
+                          <input
+                            type="text"
+                            value={config.general?.shippingButtonText || ''}
+                            onChange={(e) => updateNestedConfig('general.shippingButtonText', e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            placeholder="Calculate Shipping"
+                          />
+                        </div>
+                      </div>
                     </>
                   )}
 
+                  {/* Sizes Tab */}
                   {activeTab === 'sizes' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Sizes & Dimensions</h3>
                       {renderSimpleArray('Available Sizes', 'sizes', 'Enter size (e.g., 8.5 x 11)')}
+                      <div className="pt-4 border-t">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Custom Size Instructions
+                        </label>
+                        <textarea
+                          value={config.customSizeInstructions || ''}
+                          onChange={(e) => updateNestedConfig('customSizeInstructions', e.target.value)}
+                          rows={2}
+                          className="w-full p-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          placeholder="Minimum and Maximum dimensions for custom size."
+                        />
+                      </div>
                     </>
                   )}
 
-                  {/* Add other tabs for saddle stitching */}
-                  
+                  {/* Page Counts Tab */}
+                  {activeTab === 'page-counts' && (
+                    <>
+                      <h3 className="text-lg font-semibold text-gray-900">Page Counts</h3>
+                      <p className="text-sm text-gray-500">
+                        Saddle stitching typically requires page counts to be a multiple of 4 (e.g., 8, 12, 16...).
+                      </p>
+                      {renderSimpleArray('Available Page Counts', 'pageCounts', 'Enter page count (e.g., 8, 12, 96)')}
+                    </>
+                  )}
+
+                  {/* Paper Cover Tab */}
+                  {activeTab === 'paper-cover' && (
+                    <>
+                      <h3 className="text-lg font-semibold text-gray-900">Cover Paper Options</h3>
+                      {renderEditableArray('Cover Paper Types', 'paperOptions.cover', ['value', 'label', 'price'])}
+                    </>
+                  )}
+
+                  {/* Paper Inside Tab */}
+                  {activeTab === 'paper-inside' && (
+                    <>
+                      <h3 className="text-lg font-semibold text-gray-900">Inside Paper Options</h3>
+                      {renderEditableArray('Inside Paper Types', 'paperOptions.inside', ['value', 'label', 'price'])}
+                    </>
+                  )}
+
+                  {/* Colors Tab */}
+                  {activeTab === 'colors' && (
+                    <>
+                      <h3 className="text-lg font-semibold text-gray-900">Print Color Options</h3>
+                      {renderEditableArray('Available Print Colors', 'printColors', ['value', 'label', 'price'])}
+                    </>
+                  )}
+
+                  {/* Finishing Tab */}
+                  {activeTab === 'finishing' && (
+                    <>
+                      <h3 className="text-lg font-semibold text-gray-900">Finishing Options</h3>
+                      {renderEditableArray('Available Finishing Options', 'finishingOptions', ['value', 'label', 'price'])}
+                    </>
+                  )}
+
+                  {/* Quantities Tab */}
+                  {activeTab === 'quantities' && (
+                    <>
+                      <h3 className="text-lg font-semibold text-gray-900">Quantity Options</h3>
+                      {renderSimpleArray('Available Quantities', 'quantities', 'Enter quantity (e.g., 100, 5000)')}
+                    </>
+                  )}
+
+                  {/* Pricing Tab */}
+                  {activeTab === 'pricing' && (
+                    <>
+                      <h3 className="text-lg font-semibold text-gray-900">Pricing Settings</h3>
+                      <div className="space-y-4 md:grid md:grid-cols-2 md:gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Base Setup Cost ($)</label>
+                          <input
+                            type="number"
+                            value={config.pricing?.baseSetupCost || 0}
+                            onChange={(e) => updateNestedConfig('pricing.baseSetupCost', parseFloat(e.target.value) || 0)}
+                            className="w-full p-3 border border-gray-300 rounded-lg"
+                            placeholder="100"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Cost Per Page ($)</label>
+                          <input
+                            type="number"
+                            step="0.001"
+                            value={config.pricing?.costPerPage || 0}
+                            onChange={(e) => updateNestedConfig('pricing.costPerPage', parseFloat(e.target.value) || 0)}
+                            className="w-full p-3 border border-gray-300 rounded-lg"
+                            placeholder="0.03"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Custom Size Multiplier</label>
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={config.pricing?.customSizeMultiplier || 1.0}
+                            onChange={(e) => updateNestedConfig('pricing.customSizeMultiplier', parseFloat(e.target.value) || 1.0)}
+                            className="w-full p-3 border border-gray-300 rounded-lg"
+                            placeholder="1.1"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">Standard Size Multiplier</label>
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={config.pricing?.standardSizeMultiplier || 1.0}
+                            onChange={(e) => updateNestedConfig('pricing.standardSizeMultiplier', parseFloat(e.target.value) || 1.0)}
+                            className="w-full p-3 border border-gray-300 rounded-lg"
+                            placeholder="1.0"
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
