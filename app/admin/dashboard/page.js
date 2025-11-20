@@ -105,9 +105,10 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">Dashboard Overview</h1>
-          <p className="text-gray-600 mt-1">Welcome back! Here's what's happening with your site.</p>
-        </div>
+  <h1 className="text-3xl font-bold text-gray-800">Dashboard Overview</h1>
+  <p className="text-gray-600 mt-1">Welcome back! Here&apos;s what&apos;s happening with your site.</p>
+</div>
+
         <div className="flex items-center space-x-2 text-sm text-gray-500 mt-2 sm:mt-0">
           <Calendar size={16} />
           <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
