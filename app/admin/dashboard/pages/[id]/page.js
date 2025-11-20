@@ -1,3 +1,4 @@
+// app/admin/dashboard/pages/[id]/page.js
 'use client';
 import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';

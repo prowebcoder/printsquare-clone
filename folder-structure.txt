@@ -169,8 +169,10 @@
 │   │   ├── utils
 │   │   │   ├── componentDefaults.js
 │   │   │   └── componentUtils.js
+│   │   ├── ComponentEditorArea.js
 │   │   ├── ComponentItem.js
 │   │   ├── ComponentList.js
+│   │   ├── ComponentSidebar.js
 │   │   ├── ComponentToolbar.js
 │   │   ├── PageBuilder.js
 │   │   └── PageRenderer.js
@@ -405,6 +407,7 @@
 │   │   ├── sub2-backimg.jpg
 │   │   └── tutorials-banner
 │   ├── uploads
+│   │   ├── 067b6c13-397a-4b40-b9e8-4c18c0856be4.png
 │   │   ├── image-1763535064257.png
 │   │   ├── image-1763535242316.jpg
 │   │   ├── image-1763536514796.png
