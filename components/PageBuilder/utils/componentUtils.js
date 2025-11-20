@@ -2,7 +2,7 @@
 import { 
   Type, Image as ImageIcon, Layout, Text, FileText, Star, Zap, Users, 
   DollarSign, BookOpen, Megaphone, Video, ShoppingCart, 
-  Grid, Settings, FileText as FormIcon 
+  Grid, Settings, FileText as FormIcon, Table 
 } from 'lucide-react';
 
 export const getComponentIcon = (type) => {
@@ -13,6 +13,7 @@ export const getComponentIcon = (type) => {
     image: <ImageIcon size={16} />,
     aboutHero: <Users size={16} />,
     multiColumn: <Grid size={16} />,
+    multiTable: <Table size={16} />, // CHANGED: from tables to multiTable
     aboutUs: <BookOpen size={16} />,
     freeSample: <Zap size={16} />,
     heroBanner: <Layout size={16} />,
@@ -34,7 +35,7 @@ export const getComponentCategory = (type) => {
   if (['aboutHero', 'aboutUs', 'freeSample'].includes(type)) {
     return 'about';
   }
-  if (['heroBanner', 'multiColumn', 'imageBanner', 'imageBannerTwo', 'method', 'notice', 'orderProcess', 'portfolio', 'pricing', 'quickGuides', 'videoBanner'].includes(type)) {
+  if (['heroBanner', 'multiColumn', 'multiTable', 'imageBanner', 'imageBannerTwo', 'method', 'notice', 'orderProcess', 'portfolio', 'pricing', 'quickGuides', 'videoBanner'].includes(type)) {
     return 'home';
   }
   if (['form'].includes(type)) {
@@ -63,7 +64,8 @@ export const getComponentDisplayName = (type) => {
     'quickGuides': 'Quick Guides',
     'videoBanner': 'Video Banner',
     'form': 'Basic Form',
-    'multiColumn': 'Multi Column'
+    'multiColumn': 'Multi Column',
+    'multiTable': 'Tables' // CHANGED: from tables to multiTable
   };
   
   return nameMap[type] || type;

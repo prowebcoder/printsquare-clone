@@ -7,6 +7,7 @@ import ImageEditor from './ImageEditor';
 import AboutHeroEditor from './AboutHeroEditor';
 import AboutUsEditor from './AboutUsEditor';
 import MultiColumnEditor from './MultiColumnEditor';
+import MultiTableEditor from './MultiTableEditor';
 import FreeSampleEditor from './FreeSampleEditor';
 import HeroBannerEditor from './HeroBannerEditor';
 import ImageBannerEditor from './ImageBannerEditor';
@@ -29,6 +30,7 @@ const ComponentEditor = ({ component, onUpdateContent, onUpdateStyles }) => {
       case 'image': return <ImageEditor component={component} onUpdate={onUpdateContent} />;
       case 'aboutHero': return <AboutHeroEditor component={component} onUpdate={onUpdateContent} />;
       case 'multiColumn': return <MultiColumnEditor component={component} onUpdate={onUpdateContent} />;
+      case 'multiTable': return <MultiTableEditor component={component} onUpdate={onUpdateContent} />;
       case 'aboutUs': return <AboutUsEditor component={component} onUpdate={onUpdateContent} />;
       case 'freeSample': return <FreeSampleEditor component={component} onUpdate={onUpdateContent} />;
       case 'heroBanner': return <HeroBannerEditor component={component} onUpdate={onUpdateContent} />;

@@ -5,8 +5,8 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Header from '@/components/layout/header/header';
 import Footer from '@/components/layout/footer/footer';
-import { ArrowRight } from "lucide-react";
-// import AdvancedFormRenderer from '@/components/PageBuilder/renderers/AdvancedFormRenderer';
+import Link from 'next/link';
+import { ArrowRight, Download, ExternalLink, Star } from 'lucide-react';
 
 async function getPageData(slug) {
   try {
@@ -145,6 +145,14 @@ function renderMultiColumn(component, index) {
   
   console.log(`🎨 Rendering MultiColumn:`, content);
 
+  // Icon mapping
+  const iconMap = {
+    arrow: ArrowRight,
+    download: Download,
+    external: ExternalLink,
+    star: Star,
+  };
+
   // Grid classes based on configuration
   const gridClasses = {
     1: 'grid-cols-1',
@@ -159,37 +167,173 @@ function renderMultiColumn(component, index) {
     <section key={component.id || index} className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className={`grid ${gridClasses[columnsPerRowMobile]} ${gridClasses[columnsPerRowDesktop]} gap-8`}>
-          {columns.map((column, columnIndex) => (
+          {columns.map((column, columnIndex) => {
+            const IconComponent = column.buttonIcon ? iconMap[column.buttonIcon] : null;
+            
+            return (
+              <div 
+                key={columnIndex}
+                className="flex flex-col items-center group hover:transform hover:scale-105 transition-all duration-300"
+              >
+                {/* Image */}
+                {column.image && (
+                  <div className="mb-6 w-full">
+                    <div className="relative w-full h-64 overflow-hidden rounded-xl shadow-lg">
+                      <img
+                        src={column.image}
+                        alt={column.heading || 'Column image'}
+                        className="object-cover w-full h-full"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Content */}
+                <div className="text-center flex-1 flex flex-col w-full">
+                  {/* Heading */}
+                  {column.heading && (
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
+                      {column.heading}
+                    </h3>
+                  )}
+                  
+                  {/* Text */}
+                  {column.text && (
+                    <p className="text-gray-600 leading-relaxed mb-4">
+                      {column.text}
+                    </p>
+                  )}
+
+                  {/* Button */}
+                  {column.buttonText && column.buttonText.trim() !== '' && (
+                    <div className="mt-auto pt-4">
+                      <Link
+                        href={column.buttonLink || '#'}
+                        target={column.buttonLink?.startsWith('http') ? '_blank' : '_self'}
+                        rel={column.buttonLink?.startsWith('http') ? 'noopener noreferrer' : ''}
+                        className={`
+                          inline-flex items-center gap-2 px-6 py-3 font-medium rounded-lg transition-all duration-200
+                          ${column.buttonStyle === 'primary' ? 'shadow-lg hover:shadow-xl' : ''}
+                          ${column.buttonStyle === 'secondary' ? 'shadow-sm hover:shadow-md' : ''}
+                          ${column.buttonStyle === 'outline' ? 'border-2 bg-transparent hover:bg-opacity-10' : ''}
+                          ${column.buttonStyle === 'ghost' ? 'bg-transparent hover:bg-gray-100' : ''}
+                        `}
+                        style={{
+                          // Primary & Secondary styles
+                          ...(column.buttonStyle === 'primary' && {
+                            backgroundColor: column.buttonColor || '#3b82f6',
+                            color: column.buttonTextColor || '#ffffff',
+                          }),
+                          ...(column.buttonStyle === 'secondary' && {
+                            backgroundColor: column.buttonColor || '#6b7280',
+                            color: column.buttonTextColor || '#ffffff',
+                          }),
+                          // Outline style
+                          ...(column.buttonStyle === 'outline' && {
+                            borderColor: column.buttonColor || '#3b82f6',
+                            color: column.buttonColor || '#3b82f6',
+                            backgroundColor: 'transparent',
+                          }),
+                          // Ghost style
+                          ...(column.buttonStyle === 'ghost' && {
+                            color: column.buttonColor || '#3b82f6',
+                            backgroundColor: 'transparent',
+                          }),
+                        }}
+                      >
+                        {column.buttonText}
+                        {IconComponent && <IconComponent size={16} />}
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function renderMultiTable(component, index) {
+  const content = component.content || {};
+  const tables = content.tables || [];
+  const tablesPerRowDesktop = content.tablesPerRowDesktop || 1;
+  const tablesPerRowMobile = content.tablesPerRowMobile || 1;
+
+  console.log(`🎨 Rendering MultiTable:`, content);
+
+  // Grid classes based on configuration
+  const gridClasses = {
+    1: 'grid-cols-1',
+    2: 'grid-cols-1 md:grid-cols-2',
+    3: 'grid-cols-1 md:grid-cols-3',
+  };
+
+  return (
+    <section key={component.id || index} className="py-16 bg-white">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className={`grid ${gridClasses[tablesPerRowMobile]} ${gridClasses[tablesPerRowDesktop]} gap-8`}>
+          {tables.map((table, tableIndex) => (
             <div 
-              key={columnIndex}
-              className="flex flex-col items-center group hover:transform hover:scale-105 transition-all duration-300"
+              key={tableIndex}
+              className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200"
             >
-              {/* Image */}
-              {column.image && (
-  <div className="mb-6 w-full">
-    <div className="relative w-full h-64 overflow-hidden rounded-xl shadow-lg">
-      <AppImage
-        src={column.image}
-        alt={column.heading || 'Column image'}
-        fill
-        className="object-cover w-full h-full"
-      />
-    </div>
-  </div>
-)}
-              
-              {/* Heading */}
-              {column.heading && (
-                <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
-                  {column.heading}
-                </h3>
+              {/* Table Title */}
+              {table.title && (
+                <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                  <h3 className="text-xl font-bold text-gray-900 text-center">
+                    {table.title}
+                  </h3>
+                </div>
               )}
-              
-              {/* Text */}
-              {column.text && (
-                <p className="text-gray-600 leading-relaxed">
-                  {column.text}
-                </p>
+
+              {/* Table Content */}
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse">
+                  {/* Table Headers */}
+                  {table.headers && table.headers.length > 0 && (
+                    <thead>
+                      <tr className="bg-gray-100">
+                        {table.headers.map((header, headerIndex) => (
+                          <th 
+                            key={headerIndex}
+                            className="px-6 py-4 text-left text-sm font-semibold text-gray-900 border-b border-gray-200"
+                          >
+                            {header}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                  )}
+                  
+                  {/* Table Body */}
+                  <tbody>
+                    {table.rows?.map((row, rowIndex) => (
+                      <tr 
+                        key={rowIndex}
+                        className={rowIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                      >
+                        {row.map((cell, cellIndex) => (
+                          <td 
+                            key={cellIndex}
+                            className="px-6 py-4 text-sm text-gray-700 border-b border-gray-200"
+                          >
+                            {cell}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Empty State */}
+              {(!table.rows || table.rows.length === 0) && (
+                <div className="px-6 py-8 text-center text-gray-500">
+                  No data available
+                </div>
               )}
             </div>
           ))}
@@ -1223,6 +1367,8 @@ function renderComponent(component, index) {
         return renderImageBanner(component, index);
     case 'multiColumn':
         return renderMultiColumn(component, index);
+        case 'multiTable':
+        return renderMultiTable(component, index);
       case 'imageBannerTwo':
         return renderImageBannerTwo(component, index);
       case 'method':

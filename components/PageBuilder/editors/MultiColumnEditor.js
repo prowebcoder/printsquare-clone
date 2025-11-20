@@ -2,28 +2,34 @@
 "use client";
 
 import { useState, useRef } from 'react';
-import { Trash2, Plus } from 'lucide-react';
+import { Trash2, Plus, ArrowRight, Download, ExternalLink, Star } from 'lucide-react';
 
 const MultiColumnEditor = ({ component, onUpdate }) => {
   const [uploadingColumns, setUploadingColumns] = useState({});
   const fileInputRefs = useRef({});
 
+  // Icon options
+  const iconOptions = [
+    { value: '', label: 'No Icon' },
+    { value: 'arrow', label: 'Arrow Right', icon: ArrowRight },
+    { value: 'download', label: 'Download', icon: Download },
+    { value: 'external', label: 'External Link', icon: ExternalLink },
+    { value: 'star', label: 'Star', icon: Star },
+  ];
+
   const handleColumnImageUpload = async (index, file) => {
     if (!file) return;
 
-    // Check file type
     if (!file.type.startsWith('image/')) {
       alert('Please select an image file');
       return;
     }
 
-    // Check file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       alert('File size must be less than 5MB');
       return;
     }
 
-    // Set uploading state for this specific column
     setUploadingColumns(prev => ({ ...prev, [index]: true }));
 
     try {
@@ -38,7 +44,6 @@ const MultiColumnEditor = ({ component, onUpdate }) => {
       const result = await response.json();
 
       if (result.success) {
-        // Update the specific column with the new image URL
         const newColumns = [...(component.content?.columns || [])];
         newColumns[index] = { 
           ...newColumns[index], 
@@ -53,7 +58,6 @@ const MultiColumnEditor = ({ component, onUpdate }) => {
       alert('Upload failed. Please try again.');
     } finally {
       setUploadingColumns(prev => ({ ...prev, [index]: false }));
-      // Reset file input
       if (fileInputRefs.current[index]) {
         fileInputRefs.current[index].value = '';
       }
@@ -76,7 +80,13 @@ const MultiColumnEditor = ({ component, onUpdate }) => {
     const newColumns = [...(component.content?.columns || []), {
       image: '',
       heading: 'New Column',
-      text: 'Column description text...'
+      text: 'Column description text...',
+      buttonText: 'Learn More',
+      buttonLink: '#',
+      buttonIcon: '',
+      buttonStyle: 'primary',
+      buttonColor: '#3b82f6', // blue-600
+      buttonTextColor: '#ffffff' // white
     }];
     onUpdate(component.id, { columns: newColumns });
   };
@@ -90,6 +100,15 @@ const MultiColumnEditor = ({ component, onUpdate }) => {
     onUpdate(component.id, { 
       [field]: value 
     });
+  };
+
+  // Default color presets
+  const colorPresets = {
+    primary: '#3b82f6', // blue-600
+    secondary: '#6b7280', // gray-500
+    success: '#10b981', // emerald-500
+    danger: '#ef4444', // red-500
+    warning: '#f59e0b', // amber-500
   };
 
   return (
@@ -166,7 +185,6 @@ const MultiColumnEditor = ({ component, onUpdate }) => {
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">Image</label>
               
-              {/* Upload Button */}
               <div className="mb-2">
                 <input
                   type="file"
@@ -189,7 +207,6 @@ const MultiColumnEditor = ({ component, onUpdate }) => {
                 </p>
               </div>
 
-              {/* Image Preview and URL Input */}
               <div className="space-y-2">
                 {column.image && (
                   <div className="relative border rounded p-2 bg-gray-50">
@@ -214,7 +231,6 @@ const MultiColumnEditor = ({ component, onUpdate }) => {
                   </div>
                 )}
                 
-                {/* URL Input as fallback */}
                 <div>
                   <label className="block text-xs text-gray-500 mb-1">Or enter image URL:</label>
                   <input
@@ -241,7 +257,7 @@ const MultiColumnEditor = ({ component, onUpdate }) => {
             </div>
 
             {/* Column Text */}
-            <div>
+            <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700 mb-2">Text</label>
               <textarea
                 value={column.text || ''}
@@ -250,6 +266,152 @@ const MultiColumnEditor = ({ component, onUpdate }) => {
                 rows={4}
                 placeholder="Column description text"
               />
+            </div>
+
+            {/* Button Settings */}
+            <div className="space-y-4 border-2 border-dashed border-gray-300 p-4 rounded-lg">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Button Settings</label>
+              
+              {/* Button Text & Link */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Button Text</label>
+                  <input
+                    type="text"
+                    value={column.buttonText || ''}
+                    onChange={(e) => handleColumnChange(index, 'buttonText', e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded text-sm"
+                    placeholder="Learn more"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Button Link</label>
+                  <input
+                    type="text"
+                    value={column.buttonLink || ''}
+                    onChange={(e) => handleColumnChange(index, 'buttonLink', e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded text-sm"
+                    placeholder="https://example.com or /page"
+                  />
+                </div>
+              </div>
+
+              {/* Button Style & Icon */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Button Style</label>
+                  <select
+                    value={column.buttonStyle || 'primary'}
+                    onChange={(e) => handleColumnChange(index, 'buttonStyle', e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded text-sm"
+                  >
+                    <option value="primary">Primary</option>
+                    <option value="secondary">Secondary</option>
+                    <option value="outline">Outline</option>
+                    <option value="ghost">Ghost</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Button Icon</label>
+                  <select
+                    value={column.buttonIcon || ''}
+                    onChange={(e) => handleColumnChange(index, 'buttonIcon', e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded text-sm"
+                  >
+                    {iconOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Color Customization */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Button Color</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="color"
+                      value={column.buttonColor || '#3b82f6'}
+                      onChange={(e) => handleColumnChange(index, 'buttonColor', e.target.value)}
+                      className="w-10 h-10 rounded border border-gray-300"
+                    />
+                    <input
+                      type="text"
+                      value={column.buttonColor || '#3b82f6'}
+                      onChange={(e) => handleColumnChange(index, 'buttonColor', e.target.value)}
+                      className="flex-1 p-2 border border-gray-300 rounded text-sm"
+                      placeholder="#3b82f6"
+                    />
+                  </div>
+                  {/* Color Presets */}
+                  <div className="flex gap-1 mt-2">
+                    {Object.entries(colorPresets).map(([name, color]) => (
+                      <button
+                        key={name}
+                        type="button"
+                        onClick={() => handleColumnChange(index, 'buttonColor', color)}
+                        className="w-6 h-6 rounded border border-gray-300"
+                        style={{ backgroundColor: color }}
+                        title={name.charAt(0).toUpperCase() + name.slice(1)}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">Text Color</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="color"
+                      value={column.buttonTextColor || '#ffffff'}
+                      onChange={(e) => handleColumnChange(index, 'buttonTextColor', e.target.value)}
+                      className="w-10 h-10 rounded border border-gray-300"
+                    />
+                    <input
+                      type="text"
+                      value={column.buttonTextColor || '#ffffff'}
+                      onChange={(e) => handleColumnChange(index, 'buttonTextColor', e.target.value)}
+                      className="flex-1 p-2 border border-gray-300 rounded text-sm"
+                      placeholder="#ffffff"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Button Preview */}
+              {column.buttonText && (
+                <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                  <label className="block text-xs text-gray-500 mb-2">Button Preview:</label>
+                  <div className="flex justify-center">
+                    <button
+                      type="button"
+                      className={`
+                        inline-flex items-center gap-2 px-6 py-3 font-medium rounded-lg transition-colors duration-200
+                        ${column.buttonStyle === 'primary' ? 'shadow-sm' : ''}
+                        ${column.buttonStyle === 'outline' ? 'border-2 bg-transparent' : ''}
+                        ${column.buttonStyle === 'ghost' ? 'bg-transparent hover:bg-gray-100' : ''}
+                      `}
+                      style={{
+                        backgroundColor: column.buttonStyle !== 'outline' && column.buttonStyle !== 'ghost' ? column.buttonColor : undefined,
+                        color: column.buttonTextColor,
+                        borderColor: column.buttonStyle === 'outline' ? column.buttonColor : undefined,
+                      }}
+                    >
+                      {column.buttonText}
+                      {column.buttonIcon && (() => {
+                        const IconComponent = iconOptions.find(opt => opt.value === column.buttonIcon)?.icon;
+                        return IconComponent ? <IconComponent size={16} /> : null;
+                      })()}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <p className="text-xs text-gray-500">
+                Leave button text empty to hide the button
+              </p>
             </div>
           </div>
         ))}

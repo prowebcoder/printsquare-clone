@@ -8,6 +8,7 @@ import AboutUsRenderer from './renderers/AboutUsRenderer';
 import FreeSampleRenderer from './renderers/FreeSampleRenderer';
 import HeroBannerRenderer from './renderers/HeroBannerRenderer';
 import MultiColumnRenderer from './editors/MultiColumnRenderer';
+import MultiTableRenderer from './renderers/MultiTableRenderer';
 import ImageBannerRenderer from './renderers/ImageBannerRenderer';
 import ImageBannerTwoRenderer from './renderers/ImageBannerTwoRenderer';
 import MethodRenderer from './renderers/MethodRenderer';
@@ -48,6 +49,8 @@ const PageRenderer = ({ components }) => {
         return <AboutUsRenderer key={component.id} component={component} />;
         case 'multiColumn':
         return <MultiColumnRenderer key={component.id} component={component} />;
+      case 'multiTable':
+        return <MultiTableRenderer key={component.id} component={component} />;
       case 'freeSample':
         return <FreeSampleRenderer key={component.id} component={component} />;
       case 'heroBanner':

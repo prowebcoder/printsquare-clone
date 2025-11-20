@@ -46,7 +46,8 @@ const SortableComponentItem = ({
       'quickGuides': 'Quick Guides',
       'videoBanner': 'Video Banner',
       'form': 'Basic Form',
-      'multiColumn': 'Multi Column'
+      'multiColumn': 'Multi Column',
+      'multiTable': 'Tables',
     };
     
     return nameMap[component.type] || component.type;

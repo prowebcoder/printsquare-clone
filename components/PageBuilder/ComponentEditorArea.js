@@ -64,7 +64,8 @@ const getComponentIcon = (type) => {
     quickGuides: '📖',
     videoBanner: '🎬',
     form: '📄',
-    multiColumn: '📊'
+    multiColumn: '📊',
+    table: '📋'
   };
   return icons[type] || '📄';
 };

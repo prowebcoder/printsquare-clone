@@ -129,26 +129,75 @@ export const getDefaultContent = (type) => {
       },
 
       multiColumn: {
-  columnsPerRowDesktop: 3,
-  columnsPerRowMobile: 1,
-  columns: [
-    {
-      image: '',
-      heading: 'Feature One',
-      text: 'Description for feature one.'
-    },
-    {
-      image: '',
-      heading: 'Feature Two',
-      text: 'Description for feature two.'
-    },
-    {
-      image: '',
-      heading: 'Feature Three',
-      text: 'Description for feature three.'
-    }
-  ]
-},
+        columnsPerRowDesktop: 3,
+        columnsPerRowMobile: 1,
+        columns: [
+          {
+            image: '',
+            heading: 'Feature One',
+            text: 'Description for feature one.',
+            buttonText: 'Learn More', 
+            buttonLink: '/default',
+            buttonIcon: '',
+            buttonStyle: 'primary',
+            buttonColor: '#3b82f6',
+            buttonTextColor: '#ffffff'
+          },
+          {
+            image: '',
+            heading: 'Feature Two',
+            text: 'Description for feature two.',
+            buttonText: 'Learn More', 
+            buttonLink: '/default',
+            buttonIcon: '',
+            buttonStyle: 'primary',
+            buttonColor: '#3b82f6',
+            buttonTextColor: '#ffffff'
+          },
+          {
+            image: '',
+            heading: 'Feature Three',
+            text: 'Description for feature three.',
+            buttonText: 'Learn More', 
+            buttonLink: '/default',
+            buttonIcon: '',
+            buttonStyle: 'primary',
+            buttonColor: '#3b82f6',
+            buttonTextColor: '#ffffff'
+          }
+        ]
+      },
+
+      // NEW: MultiTable Component
+      multiTable: {
+        tablesPerRowDesktop: 2,
+        tablesPerRowMobile: 1,
+        tables: [
+          {
+            title: 'International Metric Paper Sizes - ISO Standard',
+            headers: ['ISO size', 'W × L (mm)', 'W × L (inch)'],
+            rows: [
+              ['A0', '841 × 1189', '33 × 46'],
+              ['A1', '594 × 841', '23.38 × 33'],
+              ['A2', '420 × 594', '16.5 × 23.38'],
+              ['A3', '297 × 420', '11.75 × 16.5'],
+              ['A4', '210 × 297', '8.25 × 11.75'],
+              ['A5', '148 × 210', '5.88 × 8.25'],
+              ['A6', '105 × 148', '4.13 × 6.88']
+            ]
+          },
+          {
+            title: 'Size commonly used in USA and Canada',
+            headers: ['American Size', 'W × L (mm)', 'W × L (inch)'],
+            rows: [
+              ['Letter', '216 × 279', '8.5 × 11'],
+              ['Legal', '216 × 356', '8.5 × 14'],
+              ['Executive', '190 × 254', '7.5 × 10'],
+              ['Ledger / Tabloid', '279 × 432', '11 × 17']
+            ]
+          }
+        ]
+      },
       
       portfolio: {
         title: 'Our',
@@ -297,6 +346,13 @@ export const getDefaultStyles = (type) => {
       textColor: '#1e293b',
       padding: 'large',
       borderRadius: 'lg'
+    },
+
+    multiTable: {
+      backgroundColor: '#ffffff',
+      textColor: '#1e293b',
+      padding: 'medium',
+      borderRadius: 'none'
     }
   };
 
