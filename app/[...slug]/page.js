@@ -483,15 +483,15 @@ function renderMethod(component, index) {
                 {content.method1?.title || "E-Proof"}
               </h3>
             </div>
-            <p className="text-[#2E3850] leading-relaxed text-base">
-              {content.method1?.description || (
-                <>
-                  Proceed with proofing through a digital proof file. It's{" "}
-                  <span className="font-medium text-[#E21B36]">free</span>, fast, and
-                  perfect for quick approvals.
-                </>
-              )}
-            </p>
+          <p className="text-[#2E3850] leading-relaxed text-base">
+  {content.method1?.description || (
+    <>
+      Proceed with proofing through a digital proof file. It&apos;s{" "}
+      <span className="font-medium text-[#E21B36]">free</span>, fast, and
+      perfect for quick approvals.
+    </>
+  )}
+</p>
           </div>
 
           {/* Method 2 */}
