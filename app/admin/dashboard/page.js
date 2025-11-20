@@ -215,9 +215,12 @@ export default function Dashboard() {
                 <div className="text-center py-4 text-gray-500">
                   <FileText size={32} className="mx-auto mb-2 text-gray-300" />
                   <p>No pages created yet</p>
-                  <a href="/admin/dashboard/pages/new" className="text-indigo-600 hover:text-indigo-800 text-sm">
-                    Create your first page
-                  </a>
+                  <Link
+    href="/admin/dashboard/pages/new"
+    className="text-indigo-600 hover:text-indigo-800 text-sm"
+  >
+    Create your first page
+  </Link>
                 </div>
               )}
             </div>
