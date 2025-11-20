@@ -1,35 +1,38 @@
-// app/api/admin/stats/route.js
-import { connectToDatabase } from '@/lib/mongodb';
+// printsquare-clone/app/api/admin/stats/route.js
+import { NextResponse } from 'next/server';
 import User from '@/models/User';
 import Page from '@/models/Page';
 import Media from '@/models/Media';
+import dbConnect from '@/lib/mongodb';
 
-export async function GET(request) {
+export async function GET() {
   try {
-    const { db } = await connectToDatabase();
+    await dbConnect();
     
-    const usersCount = await User.countDocuments();
-    const pagesCount = await Page.countDocuments();
-    const mediaCount = await Media.countDocuments();
-    
-    // Mock page views for now
-    const pageViews = Math.floor(Math.random() * 1000) + 500;
+    // Get counts from all collections
+    const [usersCount, pagesCount, mediaCount] = await Promise.all([
+      User.countDocuments(),
+      Page.countDocuments(),
+      Media.countDocuments()
+    ]);
 
-    return new Response(JSON.stringify({
+    // For page views, you might want to track this separately
+    // For now, we'll use a placeholder
+    const pageViews = 0;
+
+    const stats = {
       users: usersCount,
       pages: pagesCount,
       media: mediaCount,
-      pageViews: pageViews,
-    }), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+      pageViews: pageViews
+    };
+
+    return NextResponse.json(stats);
   } catch (error) {
-    console.error('Stats error:', error);
-    return new Response(JSON.stringify({ message: 'Internal server error' }), {
-      status: 500,
-    });
+    console.error('Error fetching stats:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch stats', details: error.message },
+      { status: 500 }
+    );
   }
 }

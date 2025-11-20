@@ -1,103 +1,78 @@
-// app/api/admin/pages/route.js
-import dbConnect from '@/lib/db';
+// printsquare-clone/app/api/admin/pages/route.js
+import { NextResponse } from 'next/server';
 import Page from '@/models/Page';
+import dbConnect from '@/lib/mongodb';
 
-export async function GET() {
+export async function GET(request) {
   try {
     await dbConnect();
+    console.log('📄 Fetching pages from database...');
     
-    const pages = await Page.find({}).sort({ updatedAt: -1 });
-    console.log('📖 Fetched pages:', pages.length);
+    // Get URL parameters
+    const { searchParams } = new URL(request.url);
+    const limit = searchParams.get('limit');
     
-    return new Response(JSON.stringify(pages), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    let query = Page.find({}).sort({ updatedAt: -1 });
+    
+    // Apply limit if provided
+    if (limit) {
+      query = query.limit(parseInt(limit));
+    }
+    
+    const pages = await query.exec();
+    console.log(`✅ Found ${pages.length} pages`);
+    
+    return NextResponse.json(pages);
   } catch (error) {
-    console.error('❌ Pages fetch error:', error);
-    return new Response(JSON.stringify({ 
-      error: 'Failed to fetch pages',
-      details: error.message 
-    }), { status: 500 });
+    console.error('❌ Error fetching pages:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch pages', details: error.message },
+      { status: 500 }
+    );
   }
 }
 
 export async function POST(request) {
   try {
     await dbConnect();
+    
     const body = await request.json();
-    console.log('🆕 Creating page with data:', JSON.stringify(body, null, 2));
+    const { title, slug, components, metaTitle, metaDescription, published } = body;
 
-    const { title, slug, components = [], metaTitle, metaDescription, published = false } = body;
+    console.log('📝 Creating new page:', { title, slug });
 
-    // Validation
-    if (!title || !slug) {
-      return new Response(JSON.stringify({ error: 'Title and slug are required' }), {
-        status: 400,
-      });
-    }
-
-    // Generate clean slug
-    const cleanSlug = slug
-      .toLowerCase()
-      .trim()
-      .replace(/\s+/g, '-')
-      .replace(/[^a-z0-9-]/g, '');
-
-    console.log('🔧 Cleaned slug:', cleanSlug);
-
-    // Check if slug exists
-    const existingPage = await Page.findOne({ slug: cleanSlug });
+    // Check if page with same slug already exists
+    const existingPage = await Page.findOne({ slug });
     if (existingPage) {
-      return new Response(JSON.stringify({ error: 'Slug already exists' }), {
-        status: 400,
-      });
+      return NextResponse.json(
+        { error: 'A page with this slug already exists' },
+        { status: 400 }
+      );
     }
 
-    // Process components to ensure they have proper structure
-    const processedComponents = components.map((comp, index) => {
-      console.log(`🔧 Processing component ${index}:`, comp.type, comp.content);
-      
-      // Ensure the component has all required fields
-      const processedComp = {
-        type: comp.type,
-        id: comp.id || `comp-${Date.now()}-${index}-${Math.random().toString(36).substr(2, 9)}`,
-        content: comp.content || {},
-        order: comp.order || index
-      };
-
-      return processedComp;
-    });
-
-    console.log('✅ Processed components:', processedComponents.length);
-
-    // Create page
     const page = new Page({
-      title: title.trim(),
-      slug: cleanSlug,
-      components: processedComponents,
-      metaTitle: metaTitle || title,
-      metaDescription: metaDescription || '',
-      published: Boolean(published),
+      title,
+      slug,
+      components: components || [],
+      metaTitle,
+      metaDescription,
+      published: published || false
     });
 
-    const savedPage = await page.save();
-    console.log('💾 Page created successfully:', savedPage._id);
-    console.log('📊 Saved components:', savedPage.components.length);
+    await page.save();
+    console.log('✅ Page created successfully:', page._id);
 
-    return new Response(JSON.stringify({ 
+    return NextResponse.json({ 
       success: true, 
-      page: savedPage 
-    }), {
-      status: 201,
-      headers: { 'Content-Type': 'application/json' },
+      message: 'Page created successfully',
+      page 
     });
 
   } catch (error) {
-    console.error('❌ Page creation error:', error);
-    return new Response(JSON.stringify({ 
-      error: 'Failed to create page',
-      details: error.message 
-    }), { status: 500 });
+    console.error('❌ Error creating page:', error);
+    return NextResponse.json(
+      { error: 'Failed to create page', details: error.message },
+      { status: 500 }
+    );
   }
 }

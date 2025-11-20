@@ -1,27 +1,59 @@
+// printsquare-clone/app/admin/dashboard/pages/page.js
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Search, Plus, Edit, Trash2, Eye, FileText, Copy } from 'lucide-react';
+import { Search, Plus, Edit, Trash2, Eye, FileText, Copy, RefreshCw, AlertCircle } from 'lucide-react';
 
 export default function PagesPage() {
   const [pages, setPages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [duplicating, setDuplicating] = useState(null);
+  const [error, setError] = useState('');
+  const [debugInfo, setDebugInfo] = useState('');
 
-  const fetchPages = async () => {
+  const fetchPages = async (showDebug = false) => {
     try {
+      setError('');
+      setLoading(true);
+      if (showDebug) setDebugInfo('🔄 Fetching pages...');
+      
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/admin/pages', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
 
+      console.log('🔄 Fetching pages from API...');
+      const res = await fetch('/api/admin/pages', {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Cache-Control': 'no-cache'
+        },
+      });
+      
+      console.log('📡 Pages response status:', res.status);
+      
       if (res.ok) {
         const data = await res.json();
+        console.log('✅ Pages data received:', data);
         setPages(data);
+        if (showDebug) setDebugInfo(`✅ Loaded ${data.length} pages`);
+      } else {
+        const errorText = await res.text();
+        console.error('❌ Pages fetch error:', errorText);
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch {
+          errorData = { error: errorText || `Status: ${res.status}` };
+        }
+        setError(errorData.error || `Server error: ${res.status}`);
+        if (showDebug) setDebugInfo(`❌ Error: ${errorData.error || res.status}`);
       }
     } catch (error) {
-      console.error('Error fetching pages:', error);
+      console.error('❌ Network error fetching pages:', error);
+      setError(`Network error: ${error.message}`);
+      if (showDebug) setDebugInfo(`❌ Network error: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -43,12 +75,15 @@ export default function PagesPage() {
 
       if (res.ok) {
         setPages((prev) => prev.filter((page) => page._id !== pageId));
+        setDebugInfo('✅ Page deleted successfully');
       } else {
-        alert('Failed to delete page');
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to delete page');
       }
     } catch (error) {
       console.error('Error deleting page:', error);
-      alert('Error deleting page');
+      alert(`Error deleting page: ${error.message}`);
+      setDebugInfo(`❌ Delete failed: ${error.message}`);
     }
   };
 
@@ -68,13 +103,15 @@ export default function PagesPage() {
 
       if (res.ok) {
         alert('Page duplicated successfully!');
-        fetchPages(); // Refresh the list
+        setDebugInfo('✅ Page duplicated');
+        fetchPages(true); // Refresh the list
       } else {
-        alert(data.error || 'Failed to duplicate page');
+        throw new Error(data.error || 'Failed to duplicate page');
       }
     } catch (error) {
       console.error('Error duplicating page:', error);
-      alert('Error duplicating page');
+      alert(`Error duplicating page: ${error.message}`);
+      setDebugInfo(`❌ Duplicate failed: ${error.message}`);
     } finally {
       setDuplicating(null);
     }
@@ -88,9 +125,10 @@ export default function PagesPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex items-center justify-center h-64 flex-col space-y-4">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-        <span className="ml-2">Loading pages...</span>
+        <span className="text-gray-600">Loading pages...</span>
+        {debugInfo && <span className="text-sm text-gray-500">{debugInfo}</span>}
       </div>
     );
   }
@@ -102,15 +140,72 @@ export default function PagesPage() {
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Pages</h1>
           <p className="text-gray-600 mt-1">Manage your website pages and content</p>
+          {debugInfo && (
+            <div className="text-sm text-blue-600 mt-2 flex items-center space-x-2">
+              <RefreshCw size={14} className="animate-spin" />
+              <span>{debugInfo}</span>
+            </div>
+          )}
         </div>
 
-        <Link
-          href="/admin/dashboard/pages/new"
-          className="flex items-center space-x-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all shadow-sm"
-        >
-          <Plus size={20} />
-          <span>Add New Page</span>
-        </Link>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => fetchPages(true)}
+            disabled={loading}
+            className="flex items-center space-x-2 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-all shadow-sm disabled:opacity-50"
+          >
+            <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
+            <span>Refresh</span>
+          </button>
+
+          <Link
+            href="/admin/dashboard/pages/new"
+            className="flex items-center space-x-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-2 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all shadow-sm"
+          >
+            <Plus size={20} />
+            <span>Add New Page</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* Error Display */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start space-x-3">
+          <AlertCircle size={20} className="flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <strong className="font-medium">Error:</strong>
+            <div className="mt-1 text-sm">{error}</div>
+            <div className="mt-2 text-xs opacity-75">
+              Check browser console (F12) and server terminal for detailed logs
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+        <div className="bg-white rounded-lg p-4 border">
+          <div className="text-2xl font-bold text-indigo-600">{pages.length}</div>
+          <div className="text-sm text-gray-600">Total Pages</div>
+        </div>
+        <div className="bg-white rounded-lg p-4 border">
+          <div className="text-2xl font-bold text-green-600">
+            {pages.filter(p => p.published).length}
+          </div>
+          <div className="text-sm text-gray-600">Published</div>
+        </div>
+        <div className="bg-white rounded-lg p-4 border">
+          <div className="text-2xl font-bold text-yellow-600">
+            {pages.filter(p => !p.published).length}
+          </div>
+          <div className="text-sm text-gray-600">Drafts</div>
+        </div>
+        <div className="bg-white rounded-lg p-4 border">
+          <div className="text-2xl font-bold text-blue-600">
+            {pages.reduce((total, page) => total + (page.components?.length || 0), 0)}
+          </div>
+          <div className="text-sm text-gray-600">Total Components</div>
+        </div>
       </div>
 
       {/* Table Container */}
@@ -245,16 +340,34 @@ export default function PagesPage() {
             <div className="text-gray-300 mb-4">
               <FileText size={64} className="mx-auto" />
             </div>
-            <p className="text-gray-500 text-lg mb-2">No pages found</p>
-            <p className="text-gray-400">
+            <p className="text-gray-500 text-lg mb-2">
+              {searchTerm ? 'No pages found' : 'No pages created yet'}
+            </p>
+            <p className="text-gray-400 mb-4">
               {searchTerm
                 ? 'Try adjusting your search terms'
                 : 'Get started by creating your first page'
               }
             </p>
+            {!searchTerm && (
+              <Link
+                href="/admin/dashboard/pages/new"
+                className="inline-flex items-center space-x-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors"
+              >
+                <Plus size={20} />
+                <span>Create Your First Page</span>
+              </Link>
+            )}
           </div>
         )}
       </div>
+
+      {/* Debug Info */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg text-sm">
+          <strong>Debug Info:</strong> Found {pages.length} total pages, {filteredPages.length} after filtering
+        </div>
+      )}
     </div>
   );
 }

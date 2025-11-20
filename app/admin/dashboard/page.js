@@ -1,3 +1,4 @@
+// printsquare-clone/app/admin/dashboard/page.js
 'use client';
 import { useEffect, useState } from 'react';
 import { Users, FileText, Image as ImageIcon, Eye, TrendingUp, Activity, Calendar } from 'lucide-react';
@@ -9,6 +10,7 @@ export default function Dashboard() {
     media: 0,
     pageViews: 0
   });
+  const [pages, setPages] = useState([]); // Add pages state
   const [loading, setLoading] = useState(true);
   const [recentActivity, setRecentActivity] = useState([]);
 
@@ -22,6 +24,33 @@ export default function Dashboard() {
       if (res.ok) {
         const data = await res.json();
         setStats(data);
+      }
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    }
+  };
+
+  const fetchRecentPages = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/admin/pages?limit=3', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setPages(data);
+      }
+    } catch (error) {
+      console.error('Error fetching recent pages:', error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      setLoading(true);
+      try {
+        await Promise.all([fetchStats(), fetchRecentPages()]);
         
         // Mock recent activity for now
         setRecentActivity([
@@ -29,16 +58,14 @@ export default function Dashboard() {
           { id: 2, action: 'Media uploaded', target: 'banner.jpg', user: 'Admin', time: '4 hours ago', type: 'upload' },
           { id: 3, action: 'Page updated', target: 'Homepage', user: 'Admin', time: '1 day ago', type: 'update' },
         ]);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error fetching stats:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  useEffect(() => {
-    fetchStats();
+    fetchDashboardData();
   }, []);
 
   const statCards = [
@@ -105,10 +132,9 @@ export default function Dashboard() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
         <div>
-  <h1 className="text-3xl font-bold text-gray-800">Dashboard Overview</h1>
-  <p className="text-gray-600 mt-1">Welcome back! Here&apos;s what&apos;s happening with your site.</p>
-</div>
-
+          <h1 className="text-3xl font-bold text-gray-800">Dashboard Overview</h1>
+          <p className="text-gray-600 mt-1">Welcome back! Here's what's happening with your site.</p>
+        </div>
         <div className="flex items-center space-x-2 text-sm text-gray-500 mt-2 sm:mt-0">
           <Calendar size={16} />
           <span>{new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
@@ -166,24 +192,34 @@ export default function Dashboard() {
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Recent Pages</h2>
             <div className="space-y-3">
-              {pages.slice(0, 3).map((page) => (
-                <div key={page._id} className="flex items-center justify-between p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center space-x-3">
-                    <FileText size={16} className="text-gray-400" />
-                    <div>
-                      <p className="font-medium text-gray-800">{page.title}</p>
-                      <p className="text-sm text-gray-500">/{page.slug}</p>
+              {pages && pages.length > 0 ? (
+                pages.slice(0, 3).map((page) => (
+                  <div key={page._id} className="flex items-center justify-between p-3 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div className="flex items-center space-x-3">
+                      <FileText size={16} className="text-gray-400" />
+                      <div>
+                        <p className="font-medium text-gray-800">{page.title}</p>
+                        <p className="text-sm text-gray-500">/{page.slug}</p>
+                      </div>
                     </div>
+                    <span className={`px-2 py-1 text-xs rounded-full ${
+                      page.published 
+                        ? 'bg-green-100 text-green-800' 
+                        : 'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {page.published ? 'Live' : 'Draft'}
+                    </span>
                   </div>
-                  <span className={`px-2 py-1 text-xs rounded-full ${
-                    page.published 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-yellow-100 text-yellow-800'
-                  }`}>
-                    {page.published ? 'Live' : 'Draft'}
-                  </span>
+                ))
+              ) : (
+                <div className="text-center py-4 text-gray-500">
+                  <FileText size={32} className="mx-auto mb-2 text-gray-300" />
+                  <p>No pages created yet</p>
+                  <a href="/admin/dashboard/pages/new" className="text-indigo-600 hover:text-indigo-800 text-sm">
+                    Create your first page
+                  </a>
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>

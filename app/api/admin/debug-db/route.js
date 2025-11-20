@@ -1,3 +1,4 @@
+// printsquare-clone/app/api/admin/debug-db/route.js
 import { NextResponse } from 'next/server';
 import Media from '@/models/Media';
 import dbConnect from '@/lib/mongodb';

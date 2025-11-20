@@ -1,154 +1,102 @@
-import dbConnect from '@/lib/db';
+// printsquare-clone/app/api/admin/pages/[id]/route.js
+import { NextResponse } from 'next/server';
 import Page from '@/models/Page';
+import dbConnect from '@/lib/mongodb';
 
 export async function GET(request, { params }) {
   try {
     await dbConnect();
-    console.log('🔍 Fetching page with ID:', params.id);
+    const { id } = params;
+
+    console.log('📄 Fetching page with ID:', id);
     
-    const page = await Page.findById(params.id);
+    const page = await Page.findById(id);
     
     if (!page) {
-      return new Response(JSON.stringify({ error: 'Page not found' }), {
-        status: 404,
-      });
+      console.log('❌ Page not found:', id);
+      return NextResponse.json({ error: 'Page not found' }, { status: 404 });
     }
 
-    return new Response(JSON.stringify(page), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    console.log('✅ Page found:', page.title);
+    return NextResponse.json(page);
+
   } catch (error) {
-    console.error('Page fetch error:', error);
-    return new Response(JSON.stringify({ 
-      error: 'Failed to fetch page',
-      details: error.message 
-    }), { status: 500 });
+    console.error('❌ Error fetching page:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch page', details: error.message },
+      { status: 500 }
+    );
   }
 }
 
 export async function PUT(request, { params }) {
   try {
     await dbConnect();
-    const body = await request.json();
+    const { id } = params;
+
+    console.log('📝 Updating page with ID:', id);
     
-    console.log('🔄 UPDATE REQUEST for page:', params.id);
-    console.log('📦 Received data:', {
-      title: body.title,
-      slug: body.slug,
-      componentsCount: body.components?.length,
-      hasComponents: !!body.components
-    });
+    const body = await request.json();
+    const { title, slug, components, metaTitle, metaDescription, published } = body;
 
-    // Validate required fields
-    if (!body.title || !body.slug) {
-      return new Response(JSON.stringify({ 
-        error: 'Title and slug are required' 
-      }), { status: 400 });
+    console.log('📦 Update data:', { title, slug, componentsCount: components?.length });
+
+    const page = await Page.findById(id);
+    if (!page) {
+      return NextResponse.json({ error: 'Page not found' }, { status: 404 });
     }
 
-    // Find the existing page
-    const existingPage = await Page.findById(params.id);
-    if (!existingPage) {
-      return new Response(JSON.stringify({ 
-        error: 'Page not found' 
-      }), { status: 404 });
-    }
+    // Update page fields
+    page.title = title;
+    page.slug = slug;
+    page.components = components || [];
+    page.metaTitle = metaTitle;
+    page.metaDescription = metaDescription;
+    page.published = published;
 
-    // Check for slug conflict with other pages
-    if (body.slug !== existingPage.slug) {
-      const slugExists = await Page.findOne({ 
-        slug: body.slug, 
-        _id: { $ne: params.id } 
-      });
-      if (slugExists) {
-        return new Response(JSON.stringify({ 
-          error: 'Slug already exists' 
-        }), { status: 400 });
-      }
-    }
+    await page.save();
+    console.log('✅ Page updated successfully:', page._id);
 
-    // Process components to ensure they have proper structure
-    const processedComponents = (body.components || []).map((comp, index) => {
-      return {
-        type: comp.type || 'text',
-        id: comp.id || `comp-${Date.now()}-${index}`,
-        content: comp.content || {},
-        order: comp.order || index
-      };
-    });
-
-    console.log('✅ Processed components:', processedComponents.length);
-    processedComponents.forEach((comp, idx) => {
-      console.log(`   ${idx + 1}. ${comp.type} - ${comp.id}`);
-    });
-
-    // Update the page
-    const updatedPage = await Page.findByIdAndUpdate(
-      params.id,
-      {
-        title: body.title,
-        slug: body.slug,
-        components: processedComponents,
-        metaTitle: body.metaTitle || body.title,
-        metaDescription: body.metaDescription || '',
-        published: body.published !== undefined ? body.published : existingPage.published
-      },
-      { 
-        new: true, // Return updated document
-        runValidators: true 
-      }
-    );
-
-    if (!updatedPage) {
-      return new Response(JSON.stringify({ 
-        error: 'Failed to update page' 
-      }), { status: 500 });
-    }
-
-    console.log('💾 Page updated successfully! Components:', updatedPage.components.length);
-
-    return new Response(JSON.stringify({ 
+    return NextResponse.json({ 
       success: true, 
       message: 'Page updated successfully',
-      page: updatedPage
-    }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      page 
     });
 
   } catch (error) {
-    console.error('❌ UPDATE ERROR:', error);
-    return new Response(JSON.stringify({ 
-      error: 'Failed to update page',
-      details: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    }), { status: 500 });
+    console.error('❌ Error updating page:', error);
+    return NextResponse.json(
+      { error: 'Failed to update page', details: error.message },
+      { status: 500 }
+    );
   }
 }
 
 export async function DELETE(request, { params }) {
   try {
     await dbConnect();
+    const { id } = params;
+
+    console.log('🗑️ Deleting page with ID:', id);
     
-    const page = await Page.findByIdAndDelete(params.id);
-    
+    const page = await Page.findById(id);
     if (!page) {
-      return new Response(JSON.stringify({ error: 'Page not found' }), {
-        status: 404,
-      });
+      return NextResponse.json({ error: 'Page not found' }, { status: 404 });
     }
 
-    return new Response(JSON.stringify({ 
-      success: true,
+    await Page.findByIdAndDelete(id);
+    console.log('✅ Page deleted successfully');
+
+    return NextResponse.json({ 
+      success: true, 
       message: 'Page deleted successfully' 
-    }), {
-      status: 200,
     });
+
   } catch (error) {
-    console.error('Delete error:', error);
-    return new Response(JSON.stringify({ 
-      error: 'Failed to delete page'
-    }), { status: 500 });
+    console.error('❌ Error deleting page:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete page', details: error.message },
+      { status: 500 }
+    );
   }
 }

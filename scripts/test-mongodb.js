@@ -1,3 +1,4 @@
+// printsquare-clone/scripts/test-mongodb.js
 const mongoose = require('mongoose');
 require('dotenv').config({ path: '.env' });
 

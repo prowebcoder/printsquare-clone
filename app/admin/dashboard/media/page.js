@@ -1,12 +1,13 @@
-// app/admin/dashboard/media/page.js
+// printsquare-clone/app/admin/dashboard/media/page.js
 'use client';
 import { useEffect, useState, useCallback } from 'react';
-import { Search, Upload, Image, File, Video, Download, Trash2, Copy, Filter, AlertCircle, RefreshCw } from 'lucide-react';
+import { Search, Upload, Image, File, Video, Download, Trash2, Copy, Filter, AlertCircle, RefreshCw, Database, FolderSync } from 'lucide-react';
 
 export default function MediaPage() {
   const [media, setMedia] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('all');
   const [error, setError] = useState('');
@@ -23,7 +24,7 @@ export default function MediaPage() {
         throw new Error('No authentication token found');
       }
 
-      console.log('🔄 Fetching media from API...');
+      console.log('🔄 Starting media fetch...');
       const res = await fetch('/api/admin/media', {
         headers: { 
           Authorization: `Bearer ${token}`,
@@ -31,21 +32,27 @@ export default function MediaPage() {
         },
       });
       
-      console.log('📡 Response status:', res.status);
+      console.log('📡 Fetch response status:', res.status);
       
       if (res.ok) {
         const data = await res.json();
-        console.log('✅ Media data received:', data.length, 'items');
+        console.log('✅ Media fetch successful:', data.length, 'items');
         setMedia(data);
         if (showDebug) setDebugInfo(`✅ Loaded ${data.length} media files`);
       } else {
-        const errorData = await res.json().catch(() => ({ error: 'Unknown error' }));
-        console.error('❌ Fetch error:', errorData);
+        const errorText = await res.text();
+        console.error('❌ Fetch error response:', errorText);
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch {
+          errorData = { error: errorText || `Status: ${res.status}` };
+        }
         setError(errorData.error || `Server error: ${res.status}`);
         if (showDebug) setDebugInfo(`❌ Error: ${errorData.error || res.status}`);
       }
     } catch (error) {
-      console.error('❌ Network error fetching media:', error);
+      console.error('❌ Network error:', error);
       setError(`Network error: ${error.message}`);
       if (showDebug) setDebugInfo(`❌ Network error: ${error.message}`);
     } finally {
@@ -56,6 +63,64 @@ export default function MediaPage() {
   useEffect(() => {
     fetchMedia();
   }, [fetchMedia]);
+
+  const testDatabaseConnection = async () => {
+    try {
+      setDebugInfo('🔗 Testing database connection...');
+      const token = localStorage.getItem('token');
+      
+      const res = await fetch('/api/admin/debug-db', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+      
+      const result = await res.json();
+      console.log('🔗 DB Test result:', result);
+      
+      if (result.success) {
+        setDebugInfo(`✅ ${result.message}`);
+      } else {
+        setDebugInfo(`❌ DB Error: ${result.error}`);
+      }
+    } catch (error) {
+      console.error('DB test error:', error);
+      setDebugInfo(`❌ DB Test failed: ${error.message}`);
+    }
+  };
+
+  const syncMediaFiles = async () => {
+    try {
+      setSyncing(true);
+      setError('');
+      setDebugInfo('🔄 Syncing media files from uploads folder...');
+      
+      const token = localStorage.getItem('token');
+      const res = await fetch('/api/admin/media/sync', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const result = await res.json();
+      console.log('🔄 Sync result:', result);
+
+      if (res.ok) {
+        setDebugInfo(`✅ ${result.message}`);
+        alert(`Media sync completed!\nAdded: ${result.results.added}, Skipped: ${result.results.skipped}, Errors: ${result.results.errors}`);
+        await fetchMedia(true); // Refresh the media list
+      } else {
+        throw new Error(result.error || 'Sync failed');
+      }
+    } catch (error) {
+      console.error('Sync error:', error);
+      setError(`Sync failed: ${error.message}`);
+      setDebugInfo(`❌ Sync failed: ${error.message}`);
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   const handleFileUpload = async (event) => {
     const files = Array.from(event.target.files);
@@ -73,18 +138,17 @@ export default function MediaPage() {
 
       const formData = new FormData();
       files.forEach(file => {
-        console.log('📤 Adding file to FormData:', file.name, file.size, file.type);
+        console.log('📤 Adding file:', file.name, file.size, file.type);
         formData.append('files', file);
       });
 
       console.log('🚀 Sending upload request...');
-      setDebugInfo('📤 Uploading files to server...');
+      setDebugInfo('📤 Uploading files...');
 
       const res = await fetch('/api/admin/media', {
         method: 'POST',
         headers: { 
           Authorization: `Bearer ${token}`,
-          // Let browser set Content-Type with boundary
         },
         body: formData,
       });
@@ -95,26 +159,26 @@ export default function MediaPage() {
 
       if (res.ok) {
         setDebugInfo(`✅ ${result.message}`);
-        alert(result.message || 'Files uploaded successfully!');
-        await fetchMedia(true); // Refresh with debug info
+        alert(result.message || 'Upload successful!');
+        await fetchMedia(true);
       } else {
-        const errorMsg = result.error || result.details || 'Upload failed';
+        const errorMsg = result.error || result.details || `Upload failed (${res.status})`;
         setDebugInfo(`❌ ${errorMsg}`);
         throw new Error(errorMsg);
       }
     } catch (error) {
-      console.error('❌ Upload error:', error);
+      console.error('❌ Upload process error:', error);
       setError(`Upload failed: ${error.message}`);
       setDebugInfo(`❌ Upload failed: ${error.message}`);
-      alert(`Error uploading files: ${error.message}`);
+      alert(`Upload error: ${error.message}`);
     } finally {
       setUploading(false);
-      event.target.value = ''; // Reset file input
+      event.target.value = '';
     }
   };
 
-  const handleDelete = async (mediaId) => {
-    if (!confirm('Are you sure you want to delete this file?')) return;
+  const handleDelete = async (mediaId, filename) => {
+    if (!confirm('Are you sure you want to delete this file? This will remove it from both the database and the uploads folder.')) return;
 
     try {
       const token = localStorage.getItem('token');
@@ -128,13 +192,13 @@ export default function MediaPage() {
       if (res.ok) {
         setMedia(prev => prev.filter(item => item._id !== mediaId));
         alert('File deleted successfully!');
-        setDebugInfo('✅ File deleted successfully');
+        setDebugInfo('✅ File deleted');
       } else {
-        throw new Error(result.error || 'Failed to delete file');
+        throw new Error(result.error || 'Delete failed');
       }
     } catch (error) {
-      console.error('Error deleting media:', error);
-      alert(`Error deleting file: ${error.message}`);
+      console.error('Delete error:', error);
+      alert(`Delete error: ${error.message}`);
       setDebugInfo(`❌ Delete failed: ${error.message}`);
     }
   };
@@ -202,7 +266,24 @@ export default function MediaPage() {
           )}
         </div>
         
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          <button
+            onClick={testDatabaseConnection}
+            className="flex items-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-all shadow-sm"
+          >
+            <Database size={20} />
+            <span>Test DB</span>
+          </button>
+
+          <button
+            onClick={syncMediaFiles}
+            disabled={syncing}
+            className="flex items-center space-x-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-all shadow-sm disabled:opacity-50"
+          >
+            <FolderSync size={20} className={syncing ? 'animate-spin' : ''} />
+            <span>{syncing ? 'Syncing...' : 'Sync Files'}</span>
+          </button>
+          
           <button
             onClick={() => fetchMedia(true)}
             disabled={loading}
@@ -236,21 +317,40 @@ export default function MediaPage() {
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-start space-x-3">
           <AlertCircle size={20} className="flex-shrink-0 mt-0.5" />
           <div className="flex-1">
-            <strong className="font-medium">Upload Error:</strong>
+            <strong className="font-medium">Error:</strong>
             <div className="mt-1 text-sm">{error}</div>
             <div className="mt-2 text-xs opacity-75">
-              Check browser console (F12) for detailed logs
+              Check browser console (F12) and server terminal for detailed logs
             </div>
           </div>
         </div>
       )}
 
-      {/* Debug Info */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg text-sm">
-          <strong>Debug Info:</strong> Check browser console (F12) for detailed upload logs
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        <div className="bg-white rounded-lg p-4 border">
+          <div className="text-2xl font-bold text-indigo-600">{media.length}</div>
+          <div className="text-sm text-gray-600">Database Files</div>
         </div>
-      )}
+        <div className="bg-white rounded-lg p-4 border">
+          <div className="text-2xl font-bold text-green-600">
+            {media.filter(m => m.mimetype.startsWith('image/')).length}
+          </div>
+          <div className="text-sm text-gray-600">Images</div>
+        </div>
+        <div className="bg-white rounded-lg p-4 border">
+          <div className="text-2xl font-bold text-purple-600">
+            {media.filter(m => m.mimetype.startsWith('video/')).length}
+          </div>
+          <div className="text-sm text-gray-600">Videos</div>
+        </div>
+        <div className="bg-white rounded-lg p-4 border">
+          <div className="text-2xl font-bold text-red-600">
+            {media.filter(m => m.mimetype === 'application/pdf').length}
+          </div>
+          <div className="text-sm text-gray-600">PDFs</div>
+        </div>
+      </div>
 
       {/* Filters and Search */}
       <div className="bg-white rounded-xl shadow-sm border p-4">
@@ -282,44 +382,25 @@ export default function MediaPage() {
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-        <div className="bg-white rounded-lg p-4 border">
-          <div className="text-2xl font-bold text-indigo-600">{media.length}</div>
-          <div className="text-sm text-gray-600">Total Files</div>
-        </div>
-        <div className="bg-white rounded-lg p-4 border">
-          <div className="text-2xl font-bold text-green-600">
-            {media.filter(m => m.mimetype.startsWith('image/')).length}
-          </div>
-          <div className="text-sm text-gray-600">Images</div>
-        </div>
-        <div className="bg-white rounded-lg p-4 border">
-          <div className="text-2xl font-bold text-purple-600">
-            {media.filter(m => m.mimetype.startsWith('video/')).length}
-          </div>
-          <div className="text-sm text-gray-600">Videos</div>
-        </div>
-        <div className="bg-white rounded-lg p-4 border">
-          <div className="text-2xl font-bold text-red-600">
-            {media.filter(m => m.mimetype === 'application/pdf').length}
-          </div>
-          <div className="text-sm text-gray-600">PDFs</div>
-        </div>
-      </div>
-
       {/* Media Grid */}
       <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
         {filteredMedia.length === 0 ? (
           <div className="text-center py-16">
             <Image size={64} className="mx-auto text-gray-300 mb-4" />
             <p className="text-gray-500 text-lg mb-2">No media files found</p>
-            <p className="text-gray-400">
+            <p className="text-gray-400 mb-4">
               {searchTerm || filterType !== 'all' 
                 ? 'Try adjusting your search or filter' 
                 : 'Upload your first file to get started'
               }
             </p>
+            <button
+              onClick={syncMediaFiles}
+              className="flex items-center space-x-2 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-all mx-auto"
+            >
+              <FolderSync size={20} />
+              <span>Sync Existing Files</span>
+            </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 p-6">
@@ -335,9 +416,6 @@ export default function MediaPage() {
                       src={item.url}
                       alt={item.originalName}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
                     />
                   ) : item.mimetype.startsWith('video/') ? (
                     <div className="text-center p-4">
@@ -374,7 +452,7 @@ export default function MediaPage() {
                       <Copy size={16} className="text-gray-700" />
                     </button>
                     <button
-                      onClick={() => handleDelete(item._id)}
+                      onClick={() => handleDelete(item._id, item.filename)}
                       className="p-2 bg-white rounded-full shadow-lg hover:bg-red-50 transition-colors"
                       title="Delete"
                     >
@@ -405,12 +483,12 @@ export default function MediaPage() {
         )}
       </div>
 
-      {/* Upload Progress */}
-      {uploading && (
+      {/* Upload/Sync Progress */}
+      {(uploading || syncing) && (
         <div className="fixed bottom-4 right-4 bg-gray-800 text-white px-4 py-2 rounded-lg shadow-lg">
           <div className="flex items-center space-x-2">
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-            <span>Uploading files...</span>
+            <span>{uploading ? 'Uploading files...' : 'Syncing files...'}</span>
           </div>
         </div>
       )}
