@@ -111,6 +111,20 @@ export const getDefaultContent = (type) => {
         buttonText: 'View All Notices',
         buttonLink: '#'
       },
+
+      weightConverter: {
+  title: 'Paper Weight Converter',
+  description: 'Convert between pounds (lbs) and grams per square meter (gsm) for different paper types.',
+  conversionOption: 'lbsToGsm',
+  weight: '',
+  results: {
+    text: '444.16',
+    cover: '811.44',
+    index: '542.35',
+    vellum: '658.27',
+    tag: '488.37'
+  }
+},
       
       orderProcess: {
         title: 'Process',

@@ -2,10 +2,12 @@
 "use client";
 
 import { useState } from 'react';
-import { Trash2, Plus, ChevronUp, ChevronDown } from 'lucide-react';
+import { Trash2, Plus, ChevronUp, ChevronDown, Rows, Columns } from 'lucide-react';
 
 const MultiTableEditor = ({ component, onUpdate }) => {
   const [expandedTables, setExpandedTables] = useState({});
+  const [bulkAddRows, setBulkAddRows] = useState({});
+  const [bulkAddColumns, setBulkAddColumns] = useState({});
 
   const toggleTableExpansion = (index) => {
     setExpandedTables(prev => ({
@@ -58,16 +60,21 @@ const MultiTableEditor = ({ component, onUpdate }) => {
     onUpdate(component.id, { tables: newTables });
   };
 
-  const addRow = (tableIndex) => {
+  const addRow = (tableIndex, count = 1) => {
     const newTables = [...(component.content?.tables || [])];
     const headersCount = newTables[tableIndex].headers?.length || 3;
-    const newRow = Array(headersCount).fill('New Data');
     
     if (!newTables[tableIndex].rows) {
       newTables[tableIndex].rows = [];
     }
-    newTables[tableIndex].rows.push(newRow);
+    
+    for (let i = 0; i < count; i++) {
+      const newRow = Array(headersCount).fill('New Data');
+      newTables[tableIndex].rows.push(newRow);
+    }
+    
     onUpdate(component.id, { tables: newTables });
+    setBulkAddRows(prev => ({ ...prev, [tableIndex]: '' }));
   };
 
   const removeRow = (tableIndex, rowIndex) => {
@@ -76,25 +83,30 @@ const MultiTableEditor = ({ component, onUpdate }) => {
     onUpdate(component.id, { tables: newTables });
   };
 
-  const addColumn = (tableIndex) => {
+  const addColumn = (tableIndex, count = 1) => {
     const newTables = [...(component.content?.tables || [])];
     
-    // Add header
+    // Add headers
     if (!newTables[tableIndex].headers) {
       newTables[tableIndex].headers = [];
     }
-    newTables[tableIndex].headers.push(`Header ${newTables[tableIndex].headers.length + 1}`);
     
-    // Add column to each row
+    const currentHeadersCount = newTables[tableIndex].headers.length;
+    for (let i = 0; i < count; i++) {
+      newTables[tableIndex].headers.push(`Header ${currentHeadersCount + i + 1}`);
+    }
+    
+    // Add columns to each row
     if (newTables[tableIndex].rows) {
       newTables[tableIndex].rows = newTables[tableIndex].rows.map(row => 
-        [...row, 'New Data']
+        [...row, ...Array(count).fill('New Data')]
       );
     } else {
       newTables[tableIndex].rows = [Array(newTables[tableIndex].headers.length).fill('New Data')];
     }
     
     onUpdate(component.id, { tables: newTables });
+    setBulkAddColumns(prev => ({ ...prev, [tableIndex]: '' }));
   };
 
   const removeColumn = (tableIndex, columnIndex) => {
@@ -119,6 +131,27 @@ const MultiTableEditor = ({ component, onUpdate }) => {
     onUpdate(component.id, { 
       [field]: value 
     });
+  };
+
+  const clearTable = (tableIndex) => {
+    const newTables = [...(component.content?.tables || [])];
+    newTables[tableIndex].rows = [];
+    onUpdate(component.id, { tables: newTables });
+  };
+
+  const duplicateRow = (tableIndex, rowIndex) => {
+    const newTables = [...(component.content?.tables || [])];
+    const rowToDuplicate = [...newTables[tableIndex].rows[rowIndex]];
+    newTables[tableIndex].rows.splice(rowIndex + 1, 0, rowToDuplicate);
+    onUpdate(component.id, { tables: newTables });
+  };
+
+  const moveRow = (tableIndex, fromIndex, toIndex) => {
+    const newTables = [...(component.content?.tables || [])];
+    const rows = newTables[tableIndex].rows;
+    const [movedRow] = rows.splice(fromIndex, 1);
+    rows.splice(toIndex, 0, movedRow);
+    onUpdate(component.id, { tables: newTables });
   };
 
   return (
@@ -186,21 +219,36 @@ const MultiTableEditor = ({ component, onUpdate }) => {
                 >
                   {expandedTables[tableIndex] ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                 </button>
-                <h4 className="font-medium text-gray-900">Table {tableIndex + 1}</h4>
+                <div>
+                  <h4 className="font-medium text-gray-900">Table {tableIndex + 1}</h4>
+                  <div className="text-xs text-gray-500">
+                    {table.headers?.length || 0} columns × {table.rows?.length || 0} rows
+                  </div>
+                </div>
               </div>
-              <button
-                type="button"
-                onClick={() => removeTable(tableIndex)}
-                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                title="Delete table"
-              >
-                <Trash2 size={16} />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => clearTable(tableIndex)}
+                  className="px-3 py-1 text-sm bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
+                  title="Clear all rows"
+                >
+                  Clear Rows
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeTable(tableIndex)}
+                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  title="Delete table"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
             </div>
 
             {/* Table Content - Collapsible */}
             {expandedTables[tableIndex] !== false && (
-              <div className="p-4 space-y-4">
+              <div className="p-4 space-y-6">
                 {/* Table Title */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Table Title</label>
@@ -213,92 +261,201 @@ const MultiTableEditor = ({ component, onUpdate }) => {
                   />
                 </div>
 
+                {/* Bulk Actions */}
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Bulk Add Rows */}
+                  <div className="bg-blue-50 p-4 rounded-lg">
+                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                      <Rows size={16} />
+                      Add Multiple Rows
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="number"
+                        min="1"
+                        max="50"
+                        value={bulkAddRows[tableIndex] || ''}
+                        onChange={(e) => setBulkAddRows(prev => ({ ...prev, [tableIndex]: e.target.value }))}
+                        className="flex-1 p-2 border border-gray-300 rounded text-sm"
+                        placeholder="Number of rows"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => addRow(tableIndex, parseInt(bulkAddRows[tableIndex]) || 1)}
+                        className="px-3 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors"
+                      >
+                        Add
+                      </button>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Add multiple rows at once (max 50)
+                    </p>
+                  </div>
+
+                  {/* Bulk Add Columns */}
+                  <div className="bg-green-50 p-4 rounded-lg">
+                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
+                      <Columns size={16} />
+                      Add Multiple Columns
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        type="number"
+                        min="1"
+                        max="20"
+                        value={bulkAddColumns[tableIndex] || ''}
+                        onChange={(e) => setBulkAddColumns(prev => ({ ...prev, [tableIndex]: e.target.value }))}
+                        className="flex-1 p-2 border border-gray-300 rounded text-sm"
+                        placeholder="Number of columns"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => addColumn(tableIndex, parseInt(bulkAddColumns[tableIndex]) || 1)}
+                        className="px-3 py-2 bg-green-600 text-white rounded text-sm hover:bg-green-700 transition-colors"
+                      >
+                        Add
+                      </button>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Add multiple columns at once (max 20)
+                    </p>
+                  </div>
+                </div>
+
                 {/* Headers */}
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <label className="block text-sm font-medium text-gray-700">Headers</label>
-                    <button
-                      type="button"
-                      onClick={() => addColumn(tableIndex)}
-                      className="flex items-center gap-1 px-2 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors"
-                    >
-                      <Plus size={14} />
-                      Add Column
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => addColumn(tableIndex)}
+                        className="flex items-center gap-1 px-2 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors"
+                      >
+                        <Plus size={14} />
+                        Add Column
+                      </button>
+                    </div>
                   </div>
-                  <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${table.headers?.length || 3}, 1fr) auto` }}>
-                    {table.headers?.map((header, headerIndex) => (
-                      <div key={headerIndex} className="flex gap-1">
-                        <input
-                          type="text"
-                          value={header || ''}
-                          onChange={(e) => handleHeaderChange(tableIndex, headerIndex, e.target.value)}
-                          className="flex-1 p-2 border border-gray-300 rounded text-sm"
-                          placeholder={`Header ${headerIndex + 1}`}
-                        />
-                        {table.headers.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => removeColumn(tableIndex, headerIndex)}
-                            className="px-2 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600 transition-colors"
-                            title="Remove column"
-                          >
-                            ×
-                          </button>
-                        )}
-                      </div>
-                    ))}
+                  <div className="overflow-x-auto">
+                    <div className="grid gap-2 min-w-max" style={{ gridTemplateColumns: `repeat(${table.headers?.length || 3}, minmax(120px, 1fr)) auto` }}>
+                      {table.headers?.map((header, headerIndex) => (
+                        <div key={headerIndex} className="flex gap-1">
+                          <input
+                            type="text"
+                            value={header || ''}
+                            onChange={(e) => handleHeaderChange(tableIndex, headerIndex, e.target.value)}
+                            className="flex-1 p-2 border border-gray-300 rounded text-sm"
+                            placeholder={`Header ${headerIndex + 1}`}
+                          />
+                          {table.headers.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => removeColumn(tableIndex, headerIndex)}
+                              className="px-2 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600 transition-colors flex-shrink-0"
+                              title="Remove column"
+                            >
+                              ×
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
                 {/* Rows */}
                 <div>
                   <div className="flex justify-between items-center mb-2">
-                    <label className="block text-sm font-medium text-gray-700">Rows</label>
-                    <button
-                      type="button"
-                      onClick={() => addRow(tableIndex)}
-                      className="flex items-center gap-1 px-2 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 transition-colors"
-                    >
-                      <Plus size={14} />
-                      Add Row
-                    </button>
+                    <label className="block text-sm font-medium text-gray-700">
+                      Rows ({table.rows?.length || 0})
+                    </label>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => addRow(tableIndex)}
+                        className="flex items-center gap-1 px-2 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 transition-colors"
+                      >
+                        <Plus size={14} />
+                        Add Row
+                      </button>
+                    </div>
                   </div>
-                  <div className="space-y-2">
-                    {table.rows?.map((row, rowIndex) => (
-                      <div key={rowIndex} className="flex items-center gap-2">
-                        <div 
-                          className="grid gap-2 flex-1"
-                          style={{ gridTemplateColumns: `repeat(${table.headers?.length || 3}, 1fr)` }}
-                        >
-                          {row.map((cell, cellIndex) => (
-                            <input
-                              key={cellIndex}
-                              type="text"
-                              value={cell || ''}
-                              onChange={(e) => handleRowChange(tableIndex, rowIndex, cellIndex, e.target.value)}
-                              className="p-2 border border-gray-300 rounded text-sm"
-                              placeholder={`Cell ${cellIndex + 1}`}
-                            />
-                          ))}
+                  
+                  <div className="max-h-96 overflow-y-auto border border-gray-200 rounded-lg">
+                    <div className="space-y-2 p-2">
+                      {table.rows?.map((row, rowIndex) => (
+                        <div key={rowIndex} className="flex items-center gap-2 p-2 bg-white border border-gray-200 rounded">
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            <span className="text-xs text-gray-500 w-6 text-center">{rowIndex + 1}</span>
+                            <div className="flex flex-col gap-1">
+                              <button
+                                type="button"
+                                onClick={() => duplicateRow(tableIndex, rowIndex)}
+                                className="px-2 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600 transition-colors"
+                                title="Duplicate row"
+                              >
+                                Copy
+                              </button>
+                              {rowIndex > 0 && (
+                                <button
+                                  type="button"
+                                  onClick={() => moveRow(tableIndex, rowIndex, rowIndex - 1)}
+                                  className="px-2 py-1 bg-gray-500 text-white rounded text-xs hover:bg-gray-600 transition-colors"
+                                  title="Move up"
+                                >
+                                  ↑
+                                </button>
+                              )}
+                              {rowIndex < table.rows.length - 1 && (
+                                <button
+                                  type="button"
+                                  onClick={() => moveRow(tableIndex, rowIndex, rowIndex + 1)}
+                                  className="px-2 py-1 bg-gray-500 text-white rounded text-xs hover:bg-gray-600 transition-colors"
+                                  title="Move down"
+                                >
+                                  ↓
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <div className="overflow-x-auto flex-1">
+                            <div 
+                              className="grid gap-2 min-w-max"
+                              style={{ gridTemplateColumns: `repeat(${table.headers?.length || 3}, minmax(120px, 1fr))` }}
+                            >
+                              {row.map((cell, cellIndex) => (
+                                <input
+                                  key={cellIndex}
+                                  type="text"
+                                  value={cell || ''}
+                                  onChange={(e) => handleRowChange(tableIndex, rowIndex, cellIndex, e.target.value)}
+                                  className="p-2 border border-gray-300 rounded text-sm min-w-0"
+                                  placeholder={`Cell ${cellIndex + 1}`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                          
+                          {table.rows.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => removeRow(tableIndex, rowIndex)}
+                              className="px-3 py-2 bg-red-500 text-white rounded text-sm hover:bg-red-600 transition-colors flex-shrink-0"
+                              title="Remove row"
+                            >
+                              ×
+                            </button>
+                          )}
                         </div>
-                        {table.rows.length > 1 && (
-                          <button
-                            type="button"
-                            onClick={() => removeRow(tableIndex, rowIndex)}
-                            className="px-2 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600 transition-colors flex-shrink-0"
-                            title="Remove row"
-                          >
-                            ×
-                          </button>
-                        )}
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
 
                 {(!table.rows || table.rows.length === 0) && (
-                  <div className="text-center py-4 border-2 border-dashed border-gray-300 rounded-lg">
+                  <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
                     <p className="text-gray-500 mb-2">No rows added yet</p>
                     <button
                       type="button"

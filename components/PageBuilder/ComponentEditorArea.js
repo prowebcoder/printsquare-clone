@@ -65,6 +65,7 @@ const getComponentIcon = (type) => {
     videoBanner: '🎬',
     form: '📄',
     multiColumn: '📊',
+    weightCalculator: '🧮',
     table: '📋'
   };
   return icons[type] || '📄';

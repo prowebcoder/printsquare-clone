@@ -24,6 +24,7 @@ const ComponentToolbar = ({ onAddComponent }) => {
       { type: 'quickGuides', name: 'Quick Guides', category: 'Resources' },
       { type: 'videoBanner', name: 'Video Banner', category: 'Home' },
       { type: 'multiColumn', name: 'Multi Column', category: 'Layout' },
+      { type: 'weightConverter', name: 'Weight Converter', category: 'Tools' },
       { type: 'multiTable', name: 'Tables', category: 'Layout' },
       
       // Form Components
