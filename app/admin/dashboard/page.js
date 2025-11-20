@@ -1,5 +1,6 @@
 // printsquare-clone/app/admin/dashboard/page.js
 'use client';
+import Link from "next/link";
 import { useEffect, useState } from 'react';
 import { Users, FileText, Image as ImageIcon, Eye, TrendingUp, Activity, Calendar } from 'lucide-react';
 
