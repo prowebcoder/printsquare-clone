@@ -1,20 +1,34 @@
 // app/[...slug]/components/renderers/premium/VideoBannerRenderer.js
 export default function VideoBannerRenderer({ component, index }) {
   const content = component.content || {};
+  
+  // Check if there's any content to show
+  const hasContent = content.highlightedText || 
+                    content.normalText || 
+                    content.description || 
+                    content.videoUrl;
+
+  // If no content, don't render anything
+  if (!hasContent) {
+    return null;
+  }
+
   return (
     <section
       key={component.id || index}
       className="relative w-full h-[80vh] md:h-[90vh] overflow-hidden flex items-center justify-center"
     >
-      {/* Background Video */}
-      <video
-        className="absolute inset-0 w-full h-full object-cover"
-        src={content.videoUrl || "/homepage/video/printing.mp4"}
-        autoPlay
-        muted
-        loop
-        playsInline
-      />
+      {/* Background Video - Only show if video exists */}
+      {content.videoUrl && (
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          src={content.videoUrl}
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+      )}
 
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70"></div>
@@ -25,24 +39,42 @@ export default function VideoBannerRenderer({ component, index }) {
 
       {/* Text Overlay */}
       <div className="relative z-10 text-center px-6 max-w-3xl">
-        <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
-          <span className="bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] bg-clip-text text-transparent">
-            {content.highlightedText || "High-Quality"}
-          </span>{" "}
-          <span className="text-white">
-            {content.normalText || "Printing at Affordable Prices"}
-          </span>
-        </h1>
-        <p className="text-base md:text-lg text-gray-300 leading-relaxed">
-          {content.description ||
-            "Print Seoul delivers premium book printing with advanced technology, flawless finishing, and exceptional value perfect for businesses and creators."}
-        </p>
+        {/* Title Section - Only show if highlightedText or normalText exists */}
+        {(content.highlightedText || content.normalText) && (
+          <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
+            {content.highlightedText && (
+              <span style={{ color: content.highlightedColor || '#E21B36' }}>
+                {content.highlightedText}
+              </span>
+            )}
+            {content.highlightedText && content.normalText && ' '}
+            {content.normalText && (
+              <span style={{ color: content.normalTextColor || '#FFFFFF' }}>
+                {content.normalText}
+              </span>
+            )}
+          </h1>
+        )}
+        
+        {/* Description - Only show if exists */}
+        {content.description && (
+          <p 
+            className="text-base md:text-lg leading-relaxed"
+            style={{ color: content.descriptionColor || '#D1D5DB' }}
+          >
+            {content.description}
+          </p>
+        )}
 
-        {/* Optional CTA Button */}
+        {/* Optional CTA Button - Only show if buttonText exists */}
         {content.buttonText && (
           <a
             href={content.buttonLink || "#"}
-            className="mt-8 inline-block bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+            className="mt-8 inline-block font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+            style={{
+              background: `linear-gradient(to right, ${content.buttonBgColor || '#E21B36'}, ${content.highlightedColor || '#FF4B2B'})`,
+              color: content.buttonTextColor || '#FFFFFF'
+            }}
           >
             {content.buttonText}
           </a>

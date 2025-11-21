@@ -68,35 +68,58 @@ export const getDefaultContent = (type) => {
 
       // Homepage Components
       heroBanner: {
-        title: 'Your printing partner that cares.',
-        subtitle: 'Quality prints. Fair prices. Print Seoul',
-        backgroundImage: '/homepage/main-bg.jpg'
-      },
+  title: 'Your printing partner that cares.',
+  subtitle: 'Quality prints. Fair prices. Print Seoul',
+  backgroundImage: '/homepage/main-bg.jpg',
+  backgroundType: 'image',
+  overlayColor: '#000000',
+  overlayOpacity: '40',
+  titleColor: '#FFFFFF',
+  titleSize: 'text-4xl md:text-6xl',
+  subtitleColor: '#FFFFFF',
+  subtitleSize: 'text-2xl md:text-3xl'
+},
       
       imageBanner: {
-        title: 'Find Your Perfect Paper Match!',
-        paragraphs: [
-          'Print Seoul gives you 19 high-quality paper choices, each designed to make your book stand out with style and substance.',
-          'Bring your imagination to life and design a book that truly reflects your style.',
-          'Explore Our Premium Paper Collection'
-        ],
-        buttonText: 'Click Me!',
-        image: '/homepage/paper.png',
-        imageAlt: 'High-quality paper'
-      },
+  title: 'Find Your Perfect Paper Match!',
+  paragraphs: [
+    'Print Seoul gives you 19 high-quality paper choices, each designed to make your book stand out with style and substance.',
+    'Bring your imagination to life and design a book that truly reflects your style.',
+    'Explore Our Premium Paper Collection'
+  ],
+  buttonText: 'Click Me!',
+  image: '/homepage/paper.png',
+  imageAlt: 'High-quality paper',
+  backgroundType: 'solid',
+  backgroundColor: '#0B1633',
+  titleColor: '#FFFFFF',
+  titleSize: 'text-3xl md:text-4xl',
+  buttonBgColor: '#E21B36',
+  buttonTextColor: '#FFFFFF',
+  paragraphColor: '#D6D9E0'
+},
       
       imageBannerTwo: {
-        title: 'Special Order Available',
-        highlightedTitle: 'Available',
-        paragraphs: [
-          'Would you like to make a special book other than the quote we provide? Don\'t worry — we\'ve got you covered.',
-          'Describe the book you want using the Custom Quote. Our printing experts at Print Seoul will bring your idea to life.',
-          'Want to create your own special edition book?'
-        ],
-        buttonText: 'Go to Custom Quote',
-        image: '/homepage/main-sec06-1.png',
-        imageAlt: 'Special order book'
-      },
+  title: 'Special Order',
+  highlightedTitle: 'Available',
+  paragraphs: [
+    'Would you like to make a special book other than the quote we provide? Don\'t worry — we\'ve got you covered.',
+    'Describe the book you want using the Custom Quote. Our printing experts at Print Seoul will bring your idea to life.',
+    'Want to create your own special edition book?'
+  ],
+  buttonText: 'Go to Custom Quote',
+  image: '/homepage/main-sec06-1.png',
+  imageAlt: 'Special order book',
+  backgroundType: 'solid',
+  backgroundColor: '#F8F9FB',
+  imagePosition: 'right',
+  titleColor: '#0B1633',
+  titleSize: 'text-3xl md:text-4xl',
+  highlightedColor: '#E21B36',
+  buttonBgColor: '#E21B36',
+  buttonTextColor: '#FFFFFF',
+  paragraphColor: '#2E3850'
+},
       
       method: {
   title: 'Selectable',
@@ -124,22 +147,32 @@ export const getDefaultContent = (type) => {
   badgeTextColor: '#FFFFFF'
 },
       notice: {
-        title: 'Latest Notices',
-        notices: [
-          {
-            title: '[Update] Notice on Delivery and Tariffs',
-            desc: 'At Print Seoul, all shipments are handled on a door-to-door basis unless customers specifically request a different delivery option. This ensures that your order will arrive directly at the ...',
-            date: '09.24.2025'
-          },
-          {
-            title: '[Update] Print Seoul\'s Homepage has been RE-DESIGNED!',
-            desc: 'Dear Client, Print Seoul has re-formed the homepage to make it more convenient for clients to place an order and easier to understand the advantages of PrintSquare. We pr...',
-            date: '08.23.2023'
-          }
-        ],
-        buttonText: 'View All Notices',
-        buttonLink: '#'
-      },
+  title: 'Latest Notices',
+  notices: [
+    {
+      title: '[Update] Notice on Delivery and Tariffs',
+      desc: 'At Print Seoul, all shipments are handled on a door-to-door basis unless customers specifically request a different delivery option. This ensures that your order will arrive directly at the ...',
+      date: '09.24.2025'
+    },
+    {
+      title: '[Update] Print Seoul\'s Homepage has been RE-DESIGNED!',
+      desc: 'Dear Client, Print Seoul has re-formed the homepage to make it more convenient for clients to place an order and easier to understand the advantages of PrintSquare. We pr...',
+      date: '08.23.2023'
+    }
+  ],
+  buttonText: 'View All Notices',
+  buttonLink: '#',
+  backgroundType: 'solid',
+  backgroundColor: '#FAFAFA',
+  titleColor: '#0B1633',
+  buttonBgColor: '#E21B36',
+  buttonTextColor: '#FFFFFF',
+  noticeBoxBgColor: '#FFFFFF',
+  noticeBoxHoverBgColor: '#FFE3E5',
+  noticeTitleColor: '#0B1633',
+  noticeDescColor: '#6B7280',
+  noticeDateColor: '#9CA3AF'
+},
 
       weightConverter: {
   conversionType: 'lbsToGsm',
@@ -148,20 +181,30 @@ export const getDefaultContent = (type) => {
 },
       
       orderProcess: {
-        title: 'Process',
-        highlightedTitle: 'Order',
-        description: 'Follow our simple 8-step process to get your printing done efficiently and hassle-free.',
-        steps: [
-          { id: "01", title: "Quote Check", desc: "Get an accurate quote for your book printing.", image: "/homepage/main-process1.jpg" },
-          { id: "02", title: "Order", desc: "Place your order easily online.", image: "/homepage/main-process2.jpg" },
-          { id: "03", title: "File Upload", desc: "Upload your files securely.", image: "/homepage/main-process3.jpg" },
-          { id: "04", title: "Proof Check", desc: "Check proofs to ensure perfection.", image: "/homepage/main-process4.jpg" },
-          { id: "05", title: "Payment", desc: "Make a secure payment.", image: "/homepage/main-process5.jpg" },
-          { id: "06", title: "Print", desc: "High-quality printing begins.", image: "/homepage/main-process6.jpg" },
-          { id: "07", title: "Shipping", desc: "Fast and safe delivery.", image: "/homepage/main-process7.jpg" },
-          { id: "08", title: "Customer Service", desc: "Continuous support throughout.", image: "/homepage/main-process8.jpg" }
-        ]
-      },
+  title: 'Process',
+  highlightedTitle: 'Order',
+  description: 'Follow our simple 8-step process to get your printing done efficiently and hassle-free.',
+  steps: [
+    { id: "01", title: "Quote Check", desc: "Get an accurate quote for your book printing.", image: "/homepage/main-process1.jpg" },
+    { id: "02", title: "Order", desc: "Place your order easily online.", image: "/homepage/main-process2.jpg" },
+    { id: "03", title: "File Upload", desc: "Upload your files securely.", image: "/homepage/main-process3.jpg" },
+    { id: "04", title: "Proof Check", desc: "Check proofs to ensure perfection.", image: "/homepage/main-process4.jpg" },
+    { id: "05", title: "Payment", desc: "Make a secure payment.", image: "/homepage/main-process5.jpg" },
+    { id: "06", title: "Print", desc: "High-quality printing begins.", image: "/homepage/main-process6.jpg" },
+    { id: "07", title: "Shipping", desc: "Fast and safe delivery.", image: "/homepage/main-process7.jpg" },
+    { id: "08", title: "Customer Service", desc: "Continuous support throughout.", image: "/homepage/main-process8.jpg" }
+  ],
+  backgroundType: 'solid',
+  backgroundColor: '#F8F9FB',
+  titleColor: '#0B1633',
+  titleSize: 'text-4xl md:text-5xl',
+  highlightedColor: '#E21B36',
+  descriptionColor: '#2E3850',
+  descriptionSize: 'text-lg md:text-base',
+  stepGradientFrom: '#E21B36',
+  stepGradientTo: '#FF4B2B',
+  stepNumberColor: '#FFFFFF'
+},
 
       multiColumn: {
         columnsPerRowDesktop: 3,
@@ -235,65 +278,104 @@ export const getDefaultContent = (type) => {
       },
       
       portfolio: {
-        title: 'Our',
-        highlightedTitle: 'Portfolio',
-        subtitle: 'Showcase',
-        buttonText: 'Learn More',
-        buttonLink: '/portfolio',
-        images: [
-          { key: 'portfolio-1', url: '/homepage/p1.jpg', alt: 'Portfolio 1' },
-          { key: 'portfolio-2', url: '/homepage/p2.jpg', alt: 'Portfolio 2' },
-          { key: 'portfolio-3', url: '/homepage/p3.jpg', alt: 'Portfolio 3' },
-          { key: 'portfolio-4', url: '/homepage/p4.jpg', alt: 'Portfolio 4' },
-          { key: 'portfolio-5', url: '/homepage/p5.jpg', alt: 'Portfolio 5' },
-          { key: 'portfolio-6', url: '/homepage/p6.jpg', alt: 'Portfolio 6' },
-          { key: 'portfolio-7', url: '/homepage/p7.jpg', alt: 'Portfolio 7' },
-          { key: 'portfolio-8', url: '/homepage/p8.jpg', alt: 'Portfolio 8' },
-          { key: 'portfolio-9', url: '/homepage/p9.jpg', alt: 'Portfolio 9' },
-          { key: 'portfolio-10', url: '/homepage/p10.jpg', alt: 'Portfolio 10' }
-        ]
-      },
+  title: 'Our',
+  highlightedTitle: 'Portfolio',
+  subtitle: 'Showcase',
+  buttonText: 'Learn More',
+  buttonLink: '/portfolio',
+  images: [
+    { key: 'portfolio-1', url: '/homepage/p1.jpg', alt: 'Portfolio 1' },
+    { key: 'portfolio-2', url: '/homepage/p2.jpg', alt: 'Portfolio 2' },
+    { key: 'portfolio-3', url: '/homepage/p3.jpg', alt: 'Portfolio 3' },
+    { key: 'portfolio-4', url: '/homepage/p4.jpg', alt: 'Portfolio 4' },
+    { key: 'portfolio-5', url: '/homepage/p5.jpg', alt: 'Portfolio 5' },
+    { key: 'portfolio-6', url: '/homepage/p6.jpg', alt: 'Portfolio 6' },
+    { key: 'portfolio-7', url: '/homepage/p7.jpg', alt: 'Portfolio 7' },
+    { key: 'portfolio-8', url: '/homepage/p8.jpg', alt: 'Portfolio 8' },
+    { key: 'portfolio-9', url: '/homepage/p9.jpg', alt: 'Portfolio 9' },
+    { key: 'portfolio-10', url: '/homepage/p10.jpg', alt: 'Portfolio 10' }
+  ],
+  backgroundType: 'solid',
+  backgroundColor: '#F8F9FB',
+  titleColor: '#0B1633',
+  titleSize: 'text-3xl md:text-5xl',
+  highlightedColor: '#E21B36',
+  subtitleColor: '#0B1633',
+  buttonBgColor: '#E21B36',
+  buttonTextColor: '#FFFFFF'
+},
       
-      pricing: {
-        title: 'Affordable Printing',
-        highlightedTitle: 'Prices',
-        description1: 'At Print Seoul, we bring your ideas to life with top-quality book printing powered by cutting-edge technology and fair pricing.',
-        description2: 'Experience premium materials, sharp detail, and a flawless finish perfect for professionals, authors, and brands.',
-        sampleTitle: 'Sample Specification',
-        specifications: [
-          { label: "Size", value: "8.5″ × 11″" },
-          { label: "Binding", value: "Perfect Binding" },
-          { label: "Cover", value: "250gsm Gloss, Full Color" },
-          { label: "Inside Pages", value: "110gsm Gloss, Full Color" },
-          { label: "Page Count", value: "100" }
-        ],
-        currencyNote: 'Standard currency:',
-        footerNote: '* For bulk orders, we recommend Ocean shipping / Split delivery to enjoy lower delivery costs.',
-        pricingTables: {
-          companyA: [
-            ["1,000 copies", "$8,201", "$8.2"],
-            ["5,000 copies", "$39,645", "$7.93"],
-            ["10,000 copies", "$75,000", "$7.5"],
-            ["50,000 copies", "$360,000", "$7.2"],
-            ["100,000 copies", "$710,000", "$7.1"]
-          ],
-          printSeoul: [
-            ["1,000 copies", "$3,050", "$3.05"],
-            ["5,000 copies", "$7,220", "$1.44"],
-            ["10,000 copies", "$12,460", "$1.25"],
-            ["50,000 copies", "$58,730", "$1.17"],
-            ["100,000 copies", "$116,010", "$1.16"]
-          ],
-          companyD: [
-            ["1,000 copies", "$6,061", "$6.06"],
-            ["5,000 copies", "$30,303", "$6.06"],
-            ["10,000 copies", "$57,000", "$5.7"],
-            ["50,000 copies", "$285,000", "$5.7"],
-            ["100,000 copies", "$570,000", "$5.7"]
-          ]
-        }
-      },
-      
+     pricing: {
+  title: 'Affordable Printing',
+  highlightedTitle: 'Prices',
+  description1: 'At Print Seoul, we bring your ideas to life with top-quality book printing powered by cutting-edge technology and fair pricing.',
+  description2: 'Experience premium materials, sharp detail, and a flawless finish perfect for professionals, authors, and brands.',
+  sampleTitle: 'Sample Specification',
+  specifications: [
+    { label: "Size", value: "8.5″ × 11″" },
+    { label: "Binding", value: "Perfect Binding" },
+    { label: "Cover", value: "250gsm Gloss, Full Color" },
+    { label: "Inside Pages", value: "110gsm Gloss, Full Color" },
+    { label: "Page Count", value: "100" }
+  ],
+  currencyNote: 'Standard currency: USD',
+  footerNote: '*For bulk orders, we recommend Ocean shipping / Split delivery to enjoy lower delivery costs.',
+  backgroundType: 'gradient',
+  gradientFrom: '#111827',
+  gradientTo: '#000000',
+  titleColor: '#FFFFFF',
+  titleSize: 'text-4xl md:text-5xl',
+  highlightedColor: '#E21B36',
+  stepGradientFrom: '#E21B36',
+  stepGradientTo: '#FF4B2B',
+  tables: [
+    {
+      id: 'company-a',
+      title: 'COMPANY "A"',
+      headers: ['Quantity', 'Price', 'Price/Copy'],
+      rows: [
+        ['1,000 copies', '$8,201', '$8.2'],
+        ['5,000 copies', '$39,645', '$7.93'],
+        ['10,000 copies', '$75,000', '$7.5'],
+        ['50,000 copies', '$360,000', '$7.2'],
+        ['100,000 copies', '$710,000', '$7.1']
+      ],
+      headerBgColor: '#E21B36',
+      headerTextColor: '#FFFFFF',
+      bodyTextColor: '#0B1633'
+    },
+    {
+      id: 'print-seoul',
+      title: 'PRINT SEOUL',
+      headers: ['Quantity', 'Price', 'Price/Copy'],
+      rows: [
+        ['1,000 copies', '$3,860', '$3.05'],
+        ['5,000 copies', '$7,220', '$1.44'],
+        ['10,000 copies', '$12,460', '$1.25'],
+        ['50,000 copies', '$58,730', '$1.17'],
+        ['100,000 copies', '$115,010', '$1.16']
+      ],
+      headerBgColor: '#E21B36',
+      headerTextColor: '#FFFFFF',
+      bodyTextColor: '#0B1633'
+    },
+    {
+      id: 'company-d',
+      title: 'COMPANY "D"',
+      headers: ['Quantity', 'Price', 'Price/Copy'],
+      rows: [
+        ['1,000 copies', '$6,051', '$6.06'],
+        ['5,000 copies', '$30,303', '$6.06'],
+        ['10,000 copies', '$57,000', '$5.7'],
+        ['50,000 copies', '$285,000', '$5.7'],
+        ['100,000 copies', '$570,000', '$5.7']
+      ],
+      headerBgColor: '#E21B36',
+      headerTextColor: '#FFFFFF',
+      bodyTextColor: '#0B1633'
+    }
+  ]
+},
       quickGuides: {
         title: 'Quick',
         highlightedTitle: 'Guides',
@@ -341,12 +423,17 @@ export const getDefaultContent = (type) => {
       },
       
       videoBanner: {
-        highlightedText: 'High-Quality',
-        normalText: 'Printing at Affordable Prices',
-        description: 'Print Seoul delivers premium book printing with advanced technology, flawless finishing, and exceptional value perfect for businesses and creators.',
-        videoUrl: '/homepage/video/printing.mp4',
-        videoAlt: 'Printing process video'
-      }
+  highlightedText: 'High-Quality',
+  normalText: 'Printing at Affordable Prices',
+  description: 'Print Seoul delivers premium book printing with advanced technology, flawless finishing, and exceptional value perfect for businesses and creators.',
+  videoUrl: '/homepage/video/printing.mp4',
+  videoAlt: 'Printing process video',
+  highlightedColor: '#E21B36',
+  normalTextColor: '#FFFFFF',
+  descriptionColor: '#D1D5DB',
+  buttonBgColor: '#E21B36',
+  buttonTextColor: '#FFFFFF'
+}
     };
   
   return defaults[type] || {};
