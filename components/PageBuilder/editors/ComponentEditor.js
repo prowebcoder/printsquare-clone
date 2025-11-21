@@ -31,8 +31,7 @@ const ComponentEditor = ({ component, onUpdateContent, onUpdateStyles }) => {
       case 'image': return <ImageEditor component={component} onUpdate={onUpdateContent} />;
       case 'aboutHero': return <AboutHeroEditor component={component} onUpdate={onUpdateContent} />;
       case 'multiColumn': return <MultiColumnEditor component={component} onUpdate={onUpdateContent} />;
-      case 'weightConverter':
-  return <WeightConverterEditor component={component} onUpdate={onUpdateContent} />;
+      case 'weightConverter': return <WeightConverterEditor component={component} onUpdate={onUpdateContent} />;
       case 'multiTable': return <MultiTableEditor component={component} onUpdate={onUpdateContent} />;
       case 'aboutUs': return <AboutUsEditor component={component} onUpdate={onUpdateContent} />;
       case 'freeSample': return <FreeSampleEditor component={component} onUpdate={onUpdateContent} />;

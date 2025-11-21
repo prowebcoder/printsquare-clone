@@ -1,4 +1,5 @@
 //src/app/layout.js
+import { CustomerAuthProvider } from '@/hooks/useCustomerAuth';
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -23,7 +24,9 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+          <CustomerAuthProvider>
         {children}
+         </CustomerAuthProvider>
       </body>
     </html>
   );

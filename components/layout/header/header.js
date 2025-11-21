@@ -6,12 +6,20 @@ import Image from "next/image";
 import MainMenu from "./header-menu";
 import MobileMenu from "./MobileMenu";
 import { FiMenu, FiX } from "react-icons/fi";
+import { useCustomerAuth } from '@/hooks/useCustomerAuth';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false); // mobile menu
   const [isSticky, setIsSticky] = useState(false);
+  const { customer, logout, loading } = useCustomerAuth();
 
   const toggleMenu = () => setIsOpen(!isOpen);
+
+  const handleLogout = async () => {
+    await logout();
+    // Optional: Redirect to home page after logout
+    // window.location.href = '/';
+  };
 
   useEffect(() => {
     const handleScroll = () => setIsSticky(window.scrollY > 50);
@@ -36,24 +44,52 @@ const Header = () => {
               <span>(415)-694-4593</span>
             </div>
             <div className="flex items-center space-x-2">
-              <Link
-                href="/sign-up"
-                className="border border-[#E21B36] text-white px-3 py-1 rounded hover:bg-[#E21B36] text-xs font-medium shadow-sm transition"
-              >
-                Join Us
-              </Link>
-              <Link
-                href="/login"
-                className="border border-[#E21B36] text-white px-3 py-1 rounded hover:bg-[#E21B36] text-xs font-medium shadow-sm transition"
-              >
-                Login
-              </Link>
-              <Link
-                href="/request-sample"
-                className="bg-[#E21B36] text-white px-3 py-1 rounded hover:bg-[#c8152d] text-xs font-medium shadow-sm transition"
-              >
-                Request Sample
-              </Link>
+              {customer ? (
+                // Show when customer is logged in
+                <div className="flex items-center space-x-3">
+                  <span className="text-sm">Welcome, {customer.name}</span>
+                  <Link
+                    href="/customer/account"
+                    className="border border-green-500 text-white px-3 py-1 rounded hover:bg-green-600 text-xs font-medium shadow-sm transition"
+                  >
+                    My Account
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="border border-gray-400 text-white px-3 py-1 rounded hover:bg-gray-600 text-xs font-medium shadow-sm transition"
+                  >
+                    Logout
+                  </button>
+                  <Link
+                    href="/request-sample"
+                    className="bg-[#E21B36] text-white px-3 py-1 rounded hover:bg-[#c8152d] text-xs font-medium shadow-sm transition"
+                  >
+                    Request Sample
+                  </Link>
+                </div>
+              ) : (
+                // Show when customer is not logged in
+                <>
+                  <Link
+                    href="/customer/join"
+                    className="border border-[#E21B36] text-white px-3 py-1 rounded hover:bg-[#E21B36] text-xs font-medium shadow-sm transition"
+                  >
+                    Join Us
+                  </Link>
+                  <Link
+                    href="/customer/login"
+                    className="border border-[#E21B36] text-white px-3 py-1 rounded hover:bg-[#E21B36] text-xs font-medium shadow-sm transition"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/request-sample"
+                    className="bg-[#E21B36] text-white px-3 py-1 rounded hover:bg-[#c8152d] text-xs font-medium shadow-sm transition"
+                  >
+                    Request Sample
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -83,6 +119,12 @@ const Header = () => {
 
             {/* Right Buttons */}
             <div className="hidden md:flex items-center space-x-4">
+              {customer && (
+                <div className="flex items-center space-x-3 mr-4">
+                  <span className="text-sm text-gray-300">Hi, {customer.name}</span>
+                  <div className="w-px h-4 bg-gray-400"></div>
+                </div>
+              )}
               <Link
                 href="/portfolio"
                 className="bg-[#E21B36] text-white px-4 py-2 rounded-lg hover:bg-[#c8152d] transition text-sm font-medium"
@@ -105,8 +147,13 @@ const Header = () => {
       {/* Spacer */}
       <div className="h-[130px] sm:h-[120px] md:h-[110px]"></div>
 
-      {/* Mobile Menu */}
-      <MobileMenu isOpen={isOpen} toggleMenu={toggleMenu} />
+      {/* Mobile Menu - Pass customer auth state */}
+      <MobileMenu 
+        isOpen={isOpen} 
+        toggleMenu={toggleMenu} 
+        customer={customer}
+        onLogout={handleLogout}
+      />
     </>
   );
 };

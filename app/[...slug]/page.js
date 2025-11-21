@@ -292,10 +292,6 @@ function renderWeightConverter(component, index) {
                 </label>
                 <select
                   value={conversionOption}
-                  onChange={(e) => {
-                    // This would be handled by the editor in practice
-                    console.log('Conversion option changed:', e.target.value);
-                  }}
                   className="w-full p-3 border border-gray-300 rounded-lg bg-white"
                   disabled
                 >
@@ -311,10 +307,6 @@ function renderWeightConverter(component, index) {
                 <input
                   type="number"
                   value={weight}
-                  onChange={(e) => {
-                    // This would be handled by the editor in practice
-                    console.log('Weight changed:', e.target.value);
-                  }}
                   className="w-full p-3 border border-gray-300 rounded-lg bg-white"
                   placeholder="Enter weight"
                   disabled
@@ -1478,7 +1470,8 @@ function renderComponent(component, index) {
         return renderImageBanner(component, index);
     case 'multiColumn':
         return renderMultiColumn(component, index);
-        case 'multiTable':
+        case 'weightConverter':
+        return renderWeightConverter(component, index);
           case 'multiTable':
         return renderMultiTable(component, index);
       case 'imageBannerTwo':
