@@ -1,5 +1,34 @@
 ├── app
 │   ├── [...slug]
+│   │   ├── components
+│   │   │   ├── renderers
+│   │   │   │   ├── basic
+│   │   │   │   │   ├── FormRenderer.js
+│   │   │   │   │   ├── HeadingRenderer.js
+│   │   │   │   │   ├── HeroRenderer.js
+│   │   │   │   │   ├── ImageRenderer.js
+│   │   │   │   │   └── TextRenderer.js
+│   │   │   │   ├── premium
+│   │   │   │   │   ├── AboutHeroRenderer.js
+│   │   │   │   │   ├── AboutUsRenderer.js
+│   │   │   │   │   ├── FreeSampleRenderer.js
+│   │   │   │   │   ├── HeroBannerRenderer.js
+│   │   │   │   │   ├── ImageBannerRenderer.js
+│   │   │   │   │   ├── ImageBannerTwoRenderer.js
+│   │   │   │   │   ├── MethodRenderer.js
+│   │   │   │   │   ├── MultiColumnRenderer.js
+│   │   │   │   │   ├── MultiTableRenderer.js
+│   │   │   │   │   ├── NoticeRenderer.js
+│   │   │   │   │   ├── OrderProcessRenderer.js
+│   │   │   │   │   ├── PortfolioRenderer.js
+│   │   │   │   │   ├── PricingRenderer.js
+│   │   │   │   │   ├── QuickGuidesRenderer.js
+│   │   │   │   │   ├── VideoBannerRenderer.js
+│   │   │   │   │   └── WeightConverterRenderer.js
+│   │   │   │   └── index.js
+│   │   │   └── AppImage.js
+│   │   ├── utils
+│   │   │   └── imageUtils.js
 │   │   └── page.js
 │   ├── about-us
 │   │   └── page.js
@@ -70,6 +99,16 @@
 │   │   │       ├── [id]
 │   │   │       │   └── route.js
 │   │   │       └── route.js
+│   │   ├── customer
+│   │   │   └── auth
+│   │   │       ├── login
+│   │   │       │   └── route.js
+│   │   │       ├── logout
+│   │   │       │   └── route.js
+│   │   │       ├── me
+│   │   │       │   └── route.js
+│   │   │       └── signup
+│   │   │           └── route.js
 │   │   ├── debug-config
 │   │   │   └── route.js
 │   │   ├── fix-pages
@@ -93,6 +132,13 @@
 │   │   └── page.js
 │   ├── contact-us
 │   │   └── page.js
+│   ├── customer
+│   │   ├── account
+│   │   │   └── page.js
+│   │   ├── join
+│   │   │   └── page.js
+│   │   └── login
+│   │       └── page.js
 │   ├── debug-pages
 │   │   └── page.js
 │   ├── faqs
@@ -261,7 +307,10 @@
 │   │   │   └── index.js
 │   │   └── tutorials
 │   │       └── index.js
-│   └── FolderStructureCreator.js
+│   ├── FolderStructureCreator.js
+│   └── ProtectedRoute.js
+├── hooks
+│   └── useCustomerAuth.js
 ├── lib
 │   ├── auth.js
 │   ├── db.js
@@ -269,6 +318,7 @@
 │   └── mongodb.js
 ├── models
 │   ├── Content.js
+│   ├── Customer.js
 │   ├── FormConfiguration.js
 │   ├── Media.js
 │   ├── Page.js

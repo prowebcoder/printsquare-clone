@@ -15,34 +15,54 @@ export const getDefaultContent = (type) => {
       
       // Pre-designed components
       aboutHero: {
-        title: 'About',
-        highlightedTitle: 'Us',
-        subtitle: 'Precision. Passion. Printing Excellence from South Korea.',
-        backgroundImage: '/about/about-banner.jpg'
-      },
+  title: 'About',
+  highlightedTitle: 'Us',
+  subtitle: 'Precision. Passion. Printing Excellence from South Korea.',
+  backgroundImage: '/about/about-banner.jpg',
+  titleTag: 'h1',
+  titleSize: 'text-3xl md:text-5xl',
+  titleColor: '#FFFFFF',
+  highlightedColor: '#E21B36',
+  subtitleColor: '#D6D9E0',
+  subtitleSize: 'text-sm md:text-base',
+  overlayColor: '#0B1633',
+  overlayOpacity: '70'
+},
       
-      aboutUs: {
-        title: 'About Print Seoul',
-        description1: 'Print Seoul is a leading publication printer based in South Korea, specializing in premium-quality printing for books, magazines, catalogs, and corporate publications.',
-        description2: 'With a perfect blend of traditional craftsmanship and modern printing technology, we bring creativity to life through precision and quality. Our Seoul-based facilities handle everything from design and prepress to high-resolution offset printing, binding, and finishing.',
-        description3: 'Whether you need small-batch art books or large-scale commercial runs, Print Seoul ensures consistent quality, timely delivery, and eco-conscious production — using sustainable materials and environmentally friendly inks.',
-        description4: 'Our mission is to make South Korean printing excellence accessible worldwide, providing creative professionals, publishers, and brands with a trusted partner for all publication needs.',
-        buttonText: 'Get a Quote',
-        buttonLink: '/quote',
-        image: '/about/About.jpg',
-        quote: 'Precision in every print — from Seoul to the world.'
-      },
+   aboutUs: {
+  title: 'About Print Seoul',
+  description1: 'Print Seoul is a leading publication printer based in South Korea, specializing in premium-quality printing for books, magazines, catalogs, and corporate publications.',
+  description2: 'With a perfect blend of traditional craftsmanship and modern printing technology, we bring creativity to life through precision and quality. Our Seoul-based facilities handle everything from design and prepress to high-resolution offset printing, binding, and finishing.',
+  description3: 'Whether you need small-batch art books or large-scale commercial runs, Print Seoul ensures consistent quality, timely delivery, and eco-conscious production — using sustainable materials and environmentally friendly inks.',
+  description4: 'Our mission is to make South Korean printing excellence accessible worldwide, providing creative professionals, publishers, and brands with a trusted partner for all publication needs.',
+  buttonText: 'Get a Quote',
+  buttonLink: '/quote',
+  image: '/about/About.jpg',
+  quote: 'Precision in every print — from Seoul to the world.',
+  titleColor: '#0B1633',
+  buttonBgColor: '#E21B36',
+  buttonTextColor: '#FFFFFF',
+  imagePosition: 'left',
+  quoteBgColor: '#FFFFFF',
+  quoteTextColor: '#121A2C'
+},
       
       freeSample: {
-        title: 'Free Sample Service',
-        description1: 'Curious about the paper texture or print quality before ordering? Experience it yourself with our free sample service.',
-        description2: 'Just share your preferred book type, paper, and contact details — and we\'ll send you a sample book to help you make the best choice.',
-        description3: 'Build your trust with Print Seoul — where quality meets precision.',
-        buttonText: 'Request a Free Sample',
-        buttonLink: 'mailto:support@printsquare.net',
-        email: 'support@printseoul.net',
-        image: '/homepage/main-sec07-1.jpg'
-      },
+  title: 'Free Sample Service',
+  description1: 'Curious about the paper texture or print quality before ordering? Experience it yourself with our free sample service.',
+  description2: 'Just share your preferred book type, paper, and contact details — and we\'ll send you a sample book to help you make the best choice.',
+  description3: 'Build your trust with Print Seoul — where quality meets precision.',
+  buttonText: 'Request a Free Sample',
+  buttonLink: 'mailto:support@printsquare.net',
+  email: 'support@printseoul.net',
+  image: '/homepage/main-sec07-1.jpg',
+  imagePosition: 'left',
+  titleColor: '#1F2937',
+  buttonBgColor: '#e21b36',
+  buttonTextColor: '#FFFFFF',
+  backgroundType: 'solid',
+  backgroundColor: '#FFFFFF'
+},
 
     
 
@@ -79,21 +99,30 @@ export const getDefaultContent = (type) => {
       },
       
       method: {
-        title: 'Selectable',
-        highlightedTitle: 'Proof Method',
-        description: 'Choose from two professional proofing methods that ensure accuracy and efficiency for every project.',
-        method1: {
-          title: 'E-Proof',
-          description: 'Proceed with proofing through a digital proof file. Its free, fast, and perfect for quick approvals.'
-        },
-        method2: {
-          title: 'Digital-Proof',
-          description: 'Get a printed version of your uploaded file for review. You will see the actual proof quality — though it requires extra time and cost.'
-        },
-        image: '/homepage/main-sec05-1.jpg',
-        imageAlt: 'Selectable Proof Method'
-      },
-      
+  title: 'Selectable',
+  highlightedTitle: 'Proof Method',
+  description: 'Choose from two professional proofing methods that ensure accuracy and efficiency for every project.',
+  method1: {
+    title: 'E-Proof',
+    description: 'Proceed with proofing through a digital proof file. Its free, fast, and perfect for quick approvals.'
+  },
+  method2: {
+    title: 'Digital-Proof',
+    description: 'Get a printed version of your uploaded file for review. You will see the actual proof quality — though it requires extra time and cost.'
+  },
+  image: '/homepage/main-sec05-1.jpg',
+  imageAlt: 'Selectable Proof Method',
+  backgroundType: 'solid',
+  backgroundColor: '#F8F9FB',
+  titleColor: '#0B1633',
+  titleSize: 'text-4xl md:text-5xl',
+  highlightedColor: '#E21B36',
+  descriptionColor: '#2E3850',
+  descriptionSize: 'text-lg',
+  badgeGradientFrom: '#E21B36',
+  badgeGradientTo: '#FF4B2B',
+  badgeTextColor: '#FFFFFF'
+},
       notice: {
         title: 'Latest Notices',
         notices: [

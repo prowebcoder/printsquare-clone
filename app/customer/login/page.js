@@ -180,7 +180,7 @@ export default function LoginPage() {
                 {/* Sign Up Link */}
                 <div className="text-center pt-6 border-t border-gray-200">
                   <p className="text-sm text-gray-600">
-                    Don't have an account?{' '}
+                    Don&apos;t have an account?{' '}
                     <Link 
                       href="/customer/join" 
                       className="font-semibold text-blue-600 hover:text-blue-500 transition-colors duration-200 inline-flex items-center space-x-1"

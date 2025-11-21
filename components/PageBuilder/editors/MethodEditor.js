@@ -54,12 +54,78 @@ const MethodEditor = ({ component, onUpdate }) => {
     }
   };
 
-  const handleImageUrlChange = (e) => {
-    onUpdate(component.id, { image: e.target.value });
-  };
-
   return (
-    <div className="space-y-3">
+    <div className="space-y-4 p-3">
+      {/* Background Options */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Section Background</label>
+        <select
+          value={component.content?.backgroundType || 'solid'}
+          onChange={(e) => onUpdate(component.id, { backgroundType: e.target.value })}
+          className="w-full p-2 border border-gray-300 rounded-lg mb-3"
+        >
+          <option value="solid">Solid Color</option>
+          <option value="gradient">Gradient</option>
+          <option value="none">None (Transparent)</option>
+        </select>
+
+        {component.content?.backgroundType === 'solid' && (
+          <div className="flex items-center gap-2">
+            <input
+              type="color"
+              value={component.content?.backgroundColor || '#F8F9FB'}
+              onChange={(e) => onUpdate(component.id, { backgroundColor: e.target.value })}
+              className="w-8 h-8 border border-gray-300 rounded cursor-pointer"
+            />
+            <input
+              type="text"
+              value={component.content?.backgroundColor || '#F8F9FB'}
+              onChange={(e) => onUpdate(component.id, { backgroundColor: e.target.value })}
+              className="flex-1 p-2 border border-gray-300 rounded text-sm"
+              placeholder="#F8F9FB"
+            />
+          </div>
+        )}
+
+        {component.content?.backgroundType === 'gradient' && (
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-600 w-16">From:</span>
+              <input
+                type="color"
+                value={component.content?.gradientFrom || '#E21B36'}
+                onChange={(e) => onUpdate(component.id, { gradientFrom: e.target.value })}
+                className="w-8 h-8 border border-gray-300 rounded cursor-pointer"
+              />
+              <input
+                type="text"
+                value={component.content?.gradientFrom || '#E21B36'}
+                onChange={(e) => onUpdate(component.id, { gradientFrom: e.target.value })}
+                className="flex-1 p-2 border border-gray-300 rounded text-sm"
+                placeholder="#E21B36"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-gray-600 w-16">To:</span>
+              <input
+                type="color"
+                value={component.content?.gradientTo || '#FF4B2B'}
+                onChange={(e) => onUpdate(component.id, { gradientTo: e.target.value })}
+                className="w-8 h-8 border border-gray-300 rounded cursor-pointer"
+              />
+              <input
+                type="text"
+                value={component.content?.gradientTo || '#FF4B2B'}
+                onChange={(e) => onUpdate(component.id, { gradientTo: e.target.value })}
+                className="flex-1 p-2 border border-gray-300 rounded text-sm"
+                placeholder="#FF4B2B"
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Title Section */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
         <input
@@ -69,6 +135,40 @@ const MethodEditor = ({ component, onUpdate }) => {
           className="w-full p-3 border border-gray-300 rounded-lg"
           placeholder="Main title"
         />
+        
+        <div className="grid grid-cols-2 gap-3 mt-2">
+          <div>
+            <label className="block text-xs text-gray-600 mb-1">Title Color</label>
+            <div className="flex items-center gap-2">
+              <input
+                type="color"
+                value={component.content?.titleColor || '#0B1633'}
+                onChange={(e) => onUpdate(component.id, { titleColor: e.target.value })}
+                className="w-8 h-8 border border-gray-300 rounded cursor-pointer"
+              />
+              <input
+                type="text"
+                value={component.content?.titleColor || '#0B1633'}
+                onChange={(e) => onUpdate(component.id, { titleColor: e.target.value })}
+                className="flex-1 p-1 border border-gray-300 rounded text-xs"
+                placeholder="#0B1633"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-xs text-gray-600 mb-1">Title Size</label>
+            <select
+              value={component.content?.titleSize || 'text-4xl md:text-5xl'}
+              onChange={(e) => onUpdate(component.id, { titleSize: e.target.value })}
+              className="w-full p-1 border border-gray-300 rounded text-xs"
+            >
+              <option value="text-3xl md:text-4xl">Small</option>
+              <option value="text-4xl md:text-5xl">Medium</option>
+              <option value="text-5xl md:text-6xl">Large</option>
+            </select>
+          </div>
+        </div>
       </div>
       
       <div>
@@ -80,6 +180,25 @@ const MethodEditor = ({ component, onUpdate }) => {
           className="w-full p-3 border border-gray-300 rounded-lg"
           placeholder="Highlighted title part"
         />
+        
+        <div className="mt-2">
+          <label className="block text-xs text-gray-600 mb-1">Highlighted Color</label>
+          <div className="flex items-center gap-2">
+            <input
+              type="color"
+              value={component.content?.highlightedColor || '#E21B36'}
+              onChange={(e) => onUpdate(component.id, { highlightedColor: e.target.value })}
+              className="w-8 h-8 border border-gray-300 rounded cursor-pointer"
+            />
+            <input
+              type="text"
+              value={component.content?.highlightedColor || '#E21B36'}
+              onChange={(e) => onUpdate(component.id, { highlightedColor: e.target.value })}
+              className="flex-1 p-2 border border-gray-300 rounded text-sm"
+              placeholder="#E21B36"
+            />
+          </div>
+        </div>
       </div>
       
       <div>
@@ -91,6 +210,103 @@ const MethodEditor = ({ component, onUpdate }) => {
           rows={3}
           placeholder="Section description"
         />
+        
+        <div className="grid grid-cols-2 gap-3 mt-2">
+          <div>
+            <label className="block text-xs text-gray-600 mb-1">Description Color</label>
+            <div className="flex items-center gap-2">
+              <input
+                type="color"
+                value={component.content?.descriptionColor || '#2E3850'}
+                onChange={(e) => onUpdate(component.id, { descriptionColor: e.target.value })}
+                className="w-8 h-8 border border-gray-300 rounded cursor-pointer"
+              />
+              <input
+                type="text"
+                value={component.content?.descriptionColor || '#2E3850'}
+                onChange={(e) => onUpdate(component.id, { descriptionColor: e.target.value })}
+                className="flex-1 p-1 border border-gray-300 rounded text-xs"
+                placeholder="#2E3850"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-xs text-gray-600 mb-1">Description Size</label>
+            <select
+              value={component.content?.descriptionSize || 'text-lg'}
+              onChange={(e) => onUpdate(component.id, { descriptionSize: e.target.value })}
+              className="w-full p-1 border border-gray-300 rounded text-xs"
+            >
+              <option value="text-base">Small</option>
+              <option value="text-lg">Medium</option>
+              <option value="text-xl">Large</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Badge Gradient Colors */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Badge Gradient Colors</label>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs text-gray-600 mb-1">Gradient From</label>
+            <div className="flex items-center gap-2">
+              <input
+                type="color"
+                value={component.content?.badgeGradientFrom || '#E21B36'}
+                onChange={(e) => onUpdate(component.id, { badgeGradientFrom: e.target.value })}
+                className="w-8 h-8 border border-gray-300 rounded cursor-pointer"
+              />
+              <input
+                type="text"
+                value={component.content?.badgeGradientFrom || '#E21B36'}
+                onChange={(e) => onUpdate(component.id, { badgeGradientFrom: e.target.value })}
+                className="flex-1 p-1 border border-gray-300 rounded text-xs"
+                placeholder="#E21B36"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-xs text-gray-600 mb-1">Gradient To</label>
+            <div className="flex items-center gap-2">
+              <input
+                type="color"
+                value={component.content?.badgeGradientTo || '#FF4B2B'}
+                onChange={(e) => onUpdate(component.id, { badgeGradientTo: e.target.value })}
+                className="w-8 h-8 border border-gray-300 rounded cursor-pointer"
+              />
+              <input
+                type="text"
+                value={component.content?.badgeGradientTo || '#FF4B2B'}
+                onChange={(e) => onUpdate(component.id, { badgeGradientTo: e.target.value })}
+                className="flex-1 p-1 border border-gray-300 rounded text-xs"
+                placeholder="#FF4B2B"
+              />
+            </div>
+          </div>
+        </div>
+        
+        <div className="mt-2">
+          <label className="block text-xs text-gray-600 mb-1">Badge Text Color</label>
+          <div className="flex items-center gap-2">
+            <input
+              type="color"
+              value={component.content?.badgeTextColor || '#FFFFFF'}
+              onChange={(e) => onUpdate(component.id, { badgeTextColor: e.target.value })}
+              className="w-8 h-8 border border-gray-300 rounded cursor-pointer"
+            />
+            <input
+              type="text"
+              value={component.content?.badgeTextColor || '#FFFFFF'}
+              onChange={(e) => onUpdate(component.id, { badgeTextColor: e.target.value })}
+              className="flex-1 p-1 border border-gray-300 rounded text-xs"
+              placeholder="#FFFFFF"
+            />
+          </div>
+        </div>
       </div>
       
       {/* Image Upload Section */}
@@ -120,43 +336,26 @@ const MethodEditor = ({ component, onUpdate }) => {
           </p>
         </div>
 
-        {/* Image Preview and URL Input */}
-        <div className="space-y-2">
-          {component.content?.image && (
-            <div className="relative border rounded-lg p-2 bg-gray-50">
-              <p className="text-xs text-gray-600 mb-2">Image Preview:</p>
-              <div className="relative h-32 w-full border rounded overflow-hidden">
-                <img 
-                  src={component.content.image} 
-                  alt="Method preview" 
-                  className="w-full h-full object-cover"
-                />
-                <button
-                  type="button"
-                  onClick={() => onUpdate(component.id, { image: '' })}
-                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
-                >
-                  ×
-                </button>
-              </div>
-              <p className="text-xs text-gray-500 mt-1 truncate">
-                Current: {component.content.image}
-              </p>
+        {/* Image Preview */}
+        {component.content?.image && (
+          <div className="relative border rounded-lg p-2 bg-gray-50">
+            <p className="text-xs text-gray-600 mb-2">Image Preview:</p>
+            <div className="relative h-32 w-full border rounded overflow-hidden">
+              <img 
+                src={component.content.image} 
+                alt="Method preview" 
+                className="w-full h-full object-cover"
+              />
+              <button
+                type="button"
+                onClick={() => onUpdate(component.id, { image: '' })}
+                className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600"
+              >
+                ×
+              </button>
             </div>
-          )}
-          
-          {/* URL Input as fallback */}
-          <div>
-            <label className="block text-xs text-gray-500 mb-1">Or enter image URL:</label>
-            <input
-              type="text"
-              value={component.content?.image || ''}
-              onChange={handleImageUrlChange}
-              className="w-full p-2 border border-gray-300 rounded text-sm"
-              placeholder="https://example.com/image.jpg"
-            />
           </div>
-        </div>
+        )}
         
         {/* Image Tips */}
         <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-700">
