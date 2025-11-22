@@ -10,7 +10,7 @@ import FreeSampleRenderer from './renderers/FreeSampleRenderer';
 import HeroBannerRenderer from './renderers/HeroBannerRenderer';
 import MultiColumnRenderer from './editors/MultiColumnRenderer';
 import WeightConverterRenderer from './renderers/WeightConverterRenderer';
-import VideoWithTextRenderer from './renderers/VideoWithTextRenderer';
+
 import MultiTableRenderer from './renderers/MultiTableRenderer';
 import ImageBannerRenderer from './renderers/ImageBannerRenderer';
 import ImageBannerTwoRenderer from './renderers/ImageBannerTwoRenderer';
