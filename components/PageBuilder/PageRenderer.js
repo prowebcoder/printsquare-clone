@@ -54,8 +54,6 @@ const PageRenderer = ({ components }) => {
         return <MultiColumnRenderer key={component.id} component={component} />;
       case 'weightConverter':
         return <WeightConverterRenderer key={component.id} component={component} />;
-        case 'videoWithText':
-        return <VideoWithTextRenderer key={component.id} component={component} />;
       case 'multiTable':
         return <MultiTableRenderer key={component.id} component={component} />;
       case 'freeSample':
