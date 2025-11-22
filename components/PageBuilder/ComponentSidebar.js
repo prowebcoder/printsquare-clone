@@ -45,6 +45,7 @@ const SortableComponentItem = ({
       'pricing': 'Pricing',
       'quickGuides': 'Quick Guides',
       'videoBanner': 'Video Banner',
+      'videoWithText': 'Video with Text',
       'form': 'Basic Form',
       'multiColumn': 'Multi Column',
       'multiTable': 'Tables',

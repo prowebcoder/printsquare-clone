@@ -11,6 +11,7 @@ export { default as MultiColumnRenderer } from './premium/MultiColumnRenderer';
 export { default as WeightConverterRenderer } from './premium/WeightConverterRenderer';
 export { default as MultiTableRenderer } from './premium/MultiTableRenderer';
 export { default as AboutUsRenderer } from './premium/AboutUsRenderer';
+export { default as VideoWithTextRenderer } from './premium/VideoWithTextRenderer';
 export { default as FreeSampleRenderer } from './premium/FreeSampleRenderer';
 export { default as HeroBannerRenderer } from './premium/HeroBannerRenderer';
 export { default as ImageBannerRenderer } from './premium/ImageBannerRenderer';

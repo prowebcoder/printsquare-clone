@@ -5,10 +5,12 @@ import HeroRenderer from './renderers/HeroRenderer';
 import ImageRenderer from './renderers/ImageRenderer';
 import AboutHeroRenderer from './renderers/AboutHeroRenderer';
 import AboutUsRenderer from './renderers/AboutUsRenderer';
+import VideoWithTextRenderer from './editors/VideoWithTextRenderer';
 import FreeSampleRenderer from './renderers/FreeSampleRenderer';
 import HeroBannerRenderer from './renderers/HeroBannerRenderer';
 import MultiColumnRenderer from './editors/MultiColumnRenderer';
 import WeightConverterRenderer from './renderers/WeightConverterRenderer';
+import VideoWithTextRenderer from './renderers/VideoWithTextRenderer';
 import MultiTableRenderer from './renderers/MultiTableRenderer';
 import ImageBannerRenderer from './renderers/ImageBannerRenderer';
 import ImageBannerTwoRenderer from './renderers/ImageBannerTwoRenderer';
@@ -52,12 +54,16 @@ const PageRenderer = ({ components }) => {
         return <MultiColumnRenderer key={component.id} component={component} />;
       case 'weightConverter':
         return <WeightConverterRenderer key={component.id} component={component} />;
+        case 'videoWithText':
+        return <VideoWithTextRenderer key={component.id} component={component} />;
       case 'multiTable':
         return <MultiTableRenderer key={component.id} component={component} />;
       case 'freeSample':
         return <FreeSampleRenderer key={component.id} component={component} />;
       case 'heroBanner':
         return <HeroBannerRenderer key={component.id} component={component} />;
+      case 'videoWithText':
+        return <VideoWithTextRenderer key={component.id} component={component} />;
       case 'imageBanner':
         return <ImageBannerRenderer key={component.id} component={component} />;
       case 'imageBannerTwo':

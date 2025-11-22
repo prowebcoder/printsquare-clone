@@ -63,6 +63,7 @@ const getComponentIcon = (type) => {
     pricing: '💰',
     quickGuides: '📖',
     videoBanner: '🎬',
+    videoWithText: '🎥',
     form: '📄',
     multiColumn: '📊',
     weightCalculator: '🧮',

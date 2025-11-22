@@ -2,8 +2,30 @@
 export const getDefaultContent = (type) => {
   const defaults = {
       // Basic components
-      text: { content: 'Enter your text here...' },
-      heading: { text: 'Heading Text', level: 'h2' },
+      text: { 
+  content: 'Enter your text here...',
+  textSize: 'text-base',
+  textColor: '#374151',
+  alignment: 'text-left',
+  fontWeight: 'font-normal',
+  lineHeight: 'leading-normal',
+  width: 'max-w-none',
+  padding: 'p-6',
+  margin: 'my-4',
+  backgroundColor: ''
+},
+heading: { 
+  text: 'Heading Text', 
+  level: 'h2',
+  fontSize: 'text-4xl',
+  textColor: '#1F2937',
+  alignment: 'text-center',
+  fontWeight: 'font-bold',
+  lineHeight: 'leading-normal',
+  margin: 'my-6',
+  padding: 'p-6',
+  backgroundColor: ''
+},
       hero: { 
         title: 'Hero Title', 
         subtitle: 'Hero Subtitle',
@@ -65,8 +87,28 @@ export const getDefaultContent = (type) => {
 },
 
     
-
-      // Homepage Components
+videoWithText: {
+  title: 'PrintSeoul Specializes in Magazine and Catalog Printing',
+  description: 'With years of experience, any client who trusts their printing needs with **PrintSeoul** will be impressed by the premium quality and outstanding service.\n\nWe pride ourselves on maintaining the highest standards of printing.\nPrintSeoul ensures precision, reliability, and a finish that meets international expectations.',
+  features: [
+    'High Quality Profile',
+    'Excellent Service'
+  ],
+  videoFile: '',
+  videoThumbnail: '',
+  videoThumbnailAlt: 'Video thumbnail',
+  videoPosition: 'left',
+  contentAlignment: 'left',
+  titleSize: 'text-5xl',
+  fontWeight: 'font-extrabold',
+  titleColor: '#1F2937',
+  textSize: 'text-lg',
+  textColor: '#4B5563',
+  featureBgColor: '#2563EB',
+  featureTextColor: '#FFFFFF',
+  backgroundColor: '#FFFFFF',
+  autoplay: false
+},
       heroBanner: {
   title: 'Your printing partner that cares.',
   subtitle: 'Quality prints. Fair prices. Print Seoul',
@@ -377,18 +419,28 @@ export const getDefaultContent = (type) => {
   ]
 },
       quickGuides: {
-        title: 'Quick',
-        highlightedTitle: 'Guides',
-        description: 'Learn essential printing tips, layout guidelines, and professional insights to help you prepare your perfect print-ready files efficiently and accurately.',
-        guides: [
-          { title: "Tips For Page Layout", href: "#" },
-          { title: "Bleed & Trimming Line", href: "#" },
-          { title: "Paper Selection", href: "#" },
-          { title: "Download Print-Ready Sample File", href: "#" }
-        ],
-        image: '/homepage/main-quick-1.jpg',
-        imageAlt: 'Quick Guide'
-      },
+  title: 'Quick',
+  highlightedTitle: 'Guides',
+  description: 'Learn essential printing tips, layout guidelines, and professional insights to help you prepare your perfect print-ready files efficiently and accurately.',
+  guides: [
+    { title: "Tips For Page Layout", href: "#" },
+    { title: "Bleed & Trimming Line", href: "#" },
+    { title: "Paper Selection", href: "#" },
+    { title: "Download Print-Ready Sample File", href: "#" }
+  ],
+  image: '/homepage/main-quick-1.jpg',
+  imageAlt: 'Quick Guide',
+  imagePosition: 'left',
+  titleColor: '#FFFFFF',
+  highlightedTitleColor: '#E21B36',
+  numberColor: '#E21B36',
+  buttonBgColor: '#121A2C',
+  buttonTextColor: '#D6D9E0',
+  hoverButtonBgColor: '#1A2438',
+  hoverButtonTextColor: '#FFFFFF',
+  backgroundType: 'solid',
+  backgroundColor: '#0B1633'
+},
 
       form: {
         fields: [

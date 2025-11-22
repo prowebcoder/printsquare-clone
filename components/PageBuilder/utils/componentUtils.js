@@ -27,6 +27,7 @@ export const getComponentIcon = (type) => {
     pricing: <DollarSign size={16} />,
     quickGuides: <BookOpen size={16} />,
     videoBanner: <Video size={16} />,
+    videoWithText: <Video size={16} />,
     form: <FormIcon size={16} />,
   };
   return icons[type] || <FileText size={16} />;
@@ -36,7 +37,7 @@ export const getComponentCategory = (type) => {
   if (['aboutHero', 'aboutUs', 'freeSample'].includes(type)) {
     return 'about';
   }
-  if (['heroBanner', 'multiColumn', 'multiTable', 'weightConverter', 'imageBanner', 'imageBannerTwo', 'method', 'notice', 'orderProcess', 'portfolio', 'pricing', 'quickGuides', 'videoBanner'].includes(type)) {
+  if (['heroBanner', 'multiColumn', 'multiTable',  'videoWithText', 'weightConverter', 'imageBanner', 'imageBannerTwo', 'method', 'notice', 'orderProcess', 'portfolio', 'pricing', 'quickGuides', 'videoBanner'].includes(type)) {
     return 'home';
   }
   if (['form'].includes(type)) {
@@ -53,6 +54,7 @@ export const getComponentDisplayName = (type) => {
     'image': 'Image',
     'aboutHero': 'About Hero',
     'aboutUs': 'About Us',
+    'videoWithText': 'Video with Text',
     'freeSample': 'Image with Text',
     'heroBanner': 'Hero Banner',
     'imageBanner': 'Image Banner',

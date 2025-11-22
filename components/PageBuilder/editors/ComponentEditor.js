@@ -7,6 +7,7 @@ import ImageEditor from './ImageEditor';
 import AboutHeroEditor from './AboutHeroEditor';
 import AboutUsEditor from './AboutUsEditor';
 import MultiColumnEditor from './MultiColumnEditor';
+import VideoWithTextEditor from './VideoWithTextEditor';
 import WeightConverterEditor from './WeightConverterEditor';
 import MultiTableEditor from './MultiTableEditor';
 import FreeSampleEditor from './FreeSampleEditor';
@@ -33,6 +34,7 @@ const ComponentEditor = ({ component, onUpdateContent, onUpdateStyles }) => {
       case 'multiColumn': return <MultiColumnEditor component={component} onUpdate={onUpdateContent} />;
       case 'weightConverter': return <WeightConverterEditor component={component} onUpdate={onUpdateContent} />;
       case 'multiTable': return <MultiTableEditor component={component} onUpdate={onUpdateContent} />;
+      case 'videoWithText': return <VideoWithTextEditor component={component} onUpdate={onUpdateContent} />;
       case 'aboutUs': return <AboutUsEditor component={component} onUpdate={onUpdateContent} />;
       case 'freeSample': return <FreeSampleEditor component={component} onUpdate={onUpdateContent} />;
       case 'heroBanner': return <HeroBannerEditor component={component} onUpdate={onUpdateContent} />;

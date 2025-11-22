@@ -22,6 +22,8 @@ const ComponentToolbar = ({ onAddComponent }) => {
       { type: 'portfolio', name: 'Portfolio', category: 'Showcase' },
       { type: 'pricing', name: 'Pricing', category: 'Services' },
       { type: 'quickGuides', name: 'Quick Guides', category: 'Resources' },
+      { type: 'videoWithText', name: 'Video with Text', category: 'Home' },
+
       { type: 'videoBanner', name: 'Video Banner', category: 'Home' },
       { type: 'multiColumn', name: 'Multi Column', category: 'Layout' },
       { type: 'weightConverter', name: 'Weight Converter', category: 'Tools' },

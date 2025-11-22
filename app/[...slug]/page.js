@@ -57,6 +57,7 @@ const componentMap = {
   'heroBanner': Renderers.HeroBannerRenderer,
   'imageBanner': Renderers.ImageBannerRenderer,
   'multiColumn': Renderers.MultiColumnRenderer,
+  'tabsGallery': Renderers.TabsGalleryRenderer,
   'weightConverter': Renderers.WeightConverterRenderer,
   'multiTable': Renderers.MultiTableRenderer,
   'imageBannerTwo': Renderers.ImageBannerTwoRenderer,
@@ -66,6 +67,7 @@ const componentMap = {
   'portfolio': Renderers.PortfolioRenderer,
   'pricing': Renderers.PricingRenderer,
   'quickGuides': Renderers.QuickGuidesRenderer,
+  'videoWithText': Renderers.VideoWithTextRenderer,
   'videoBanner': Renderers.VideoBannerRenderer,
 };
 
