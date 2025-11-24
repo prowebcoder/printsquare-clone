@@ -2,6 +2,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Save, Eye, Plus, Trash2 } from 'lucide-react';
+import Link from 'next/link';
 
 // Default configuration matching your existing form
 const DEFAULT_FORM_CONFIG = {
@@ -12,10 +13,10 @@ const DEFAULT_FORM_CONFIG = {
     shippingButtonText: "Calculate Shipping"
   },
   bindingTypes: [
-    { value: 'PERFECT', label: 'Perfect Binding' },
-    { value: 'SADDLE', label: 'Saddle Stitching' },
-    { value: 'HARDCOVER', label: 'Hardcover Book' },
-    { value: 'WIRE', label: 'Wire Binding' },
+    { value: 'PERFECT', label: 'Perfect Binding', link: '/perfect-binding' },
+  { value: 'SADDLE', label: 'Saddle Stitching', link: '/saddle-stitching' },
+  { value: 'HARDCOVER', label: 'Hardcover Book', link: '/hardcover-book' },
+  { value: 'WIRE', label: 'Wire Binding', link: '/wire-binding' },
   ],
   sizes: ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', '8.5 x 5.5', '10 x 7.5', '11 x 8.5', 'Custom Size'],
   bindingEdges: [
@@ -455,7 +456,7 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
                   {activeTab === 'binding' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Binding Options</h3>
-                      {renderEditableArray('Binding Types', 'bindingTypes', ['value', 'label'])}
+                      {renderEditableArray('Binding Types', 'bindingTypes', ['value', 'label', 'link'])}
                       {renderEditableArray('Binding Edges', 'bindingEdges', ['value', 'label', 'desc'])}
                     </>
                   )}

@@ -585,8 +585,8 @@ export default function SaddleStitchingForm() {
           </p>
         </div>
 
-        {/* Binding Type Selection */}
-        <div className="mb-12 bg-white rounded-2xl shadow-xl p-6 border-t-4 border-indigo-600">
+       {/* Binding Type Selection */}
+         {/*<div className="mb-12 bg-white rounded-2xl shadow-lg p-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
             Select Binding Type
           </h2>
@@ -605,10 +605,7 @@ export default function SaddleStitchingForm() {
               </button>
             ))}
           </div>
-          <p className="mt-4 text-center text-sm text-gray-500">
-            Currently selected: <span className="font-semibold text-indigo-600">{BINDING_TYPES.find(t => t.value === bindingType)?.label}</span>
-          </p>
-        </div>
+        </div>*/}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           

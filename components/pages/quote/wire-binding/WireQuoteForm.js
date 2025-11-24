@@ -643,7 +643,7 @@ const WireQuoteForm = () => {
         </div>
 
         {/* Binding Type Selection */}
-        <div className="mb-12 bg-white rounded-2xl shadow-lg p-6">
+         {/*<div className="mb-12 bg-white rounded-2xl shadow-lg p-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
             Select Binding Type
           </h2>
@@ -662,7 +662,7 @@ const WireQuoteForm = () => {
               </button>
             ))}
           </div>
-        </div>
+        </div>*/}
 
         {/* Unit Selection */}
         <div className="mb-12 bg-white rounded-2xl shadow-lg p-8">

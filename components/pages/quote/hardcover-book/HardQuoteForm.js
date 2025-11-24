@@ -1,6 +1,6 @@
 // components/pages/quote/perfect-binding/PrintQuoteForm.js
 import React, { useState, useCallback, useEffect } from 'react';
-
+import Link from 'next/link';
 // ===== DEFAULT CONSTANTS (Fallback) =====
 const DEFAULT_FORM_CONFIG = {
   general: {
@@ -10,11 +10,11 @@ const DEFAULT_FORM_CONFIG = {
     shippingButtonText: "Calculate Shipping"
   },
   bindingTypes: [
-    { value: 'PERFECT', label: 'Perfect Binding' },
-    { value: 'SADDLE', label: 'Saddle Stitching' },
-    { value: 'HARDCOVER', label: 'Hardcover Book' },
-    { value: 'WIRE', label: 'Wire Binding' },
-  ],
+  { value: 'PERFECT', label: 'Perfect Binding', link: '/perfect-binding' },
+  { value: 'SADDLE', label: 'Saddle Stitching', link: '/saddle-stitching' },
+  { value: 'HARDCOVER', label: 'Hardcover Book', link: '/hardcover-book' },
+  { value: 'WIRE', label: 'Wire Binding', link: '/wire-binding' },
+],
   sizes: ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', '8.5 x 5.5', '10 x 7.5', '11 x 8.5', 'Custom Size'],
   bindingEdges: [
     { value: 'LEFT', label: 'Left Side', desc: 'Binding on the left, most common' },
@@ -643,7 +643,7 @@ const HardQuoteForm = () => {
         </div>
 
         {/* Binding Type Selection */}
-        <div className="mb-12 bg-white rounded-2xl shadow-lg p-6">
+         {/*<div className="mb-12 bg-white rounded-2xl shadow-lg p-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
             Select Binding Type
           </h2>
@@ -662,7 +662,7 @@ const HardQuoteForm = () => {
               </button>
             ))}
           </div>
-        </div>
+        </div>*/}
 
         {/* Unit Selection */}
         <div className="mb-12 bg-white rounded-2xl shadow-lg p-8">
