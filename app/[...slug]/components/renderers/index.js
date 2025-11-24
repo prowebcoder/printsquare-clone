@@ -16,6 +16,7 @@ export { default as FreeSampleRenderer } from './premium/FreeSampleRenderer';
 export { default as HeroBannerRenderer } from './premium/HeroBannerRenderer';
 export { default as ImageBannerRenderer } from './premium/ImageBannerRenderer';
 export { default as ImageBannerTwoRenderer } from './premium/ImageBannerTwoRenderer';
+export { default as TabsGalleryRenderer } from './premium/TabsGalleryRenderer';
 export { default as MethodRenderer } from './premium/MethodRenderer';
 export { default as NoticeRenderer } from './premium/NoticeRenderer';
 export { default as OrderProcessRenderer } from './premium/OrderProcessRenderer';

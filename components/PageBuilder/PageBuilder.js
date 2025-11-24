@@ -79,14 +79,31 @@ export default function PageBuilder({ onComponentsChange, initialComponents = []
     setSelectedComponent(newComponent.id);
   }, [components.length]);
 
-  const updateComponentContent = useCallback((id, contentUpdates) => {
-    setComponents(prev => prev.map(comp => 
-      comp.id === id ? { 
-        ...comp, 
-        content: { ...comp.content, ...contentUpdates } 
-      } : comp
-    ));
-  }, []);
+ const updateComponentContent = useCallback((id, contentUpdates) => {
+  try {
+    setComponents(prev => {
+      if (!Array.isArray(prev)) {
+        console.error('Components state is not an array:', prev);
+        return prev;
+      }
+      
+      return prev.map(comp => {
+        if (comp.id === id) {
+          return {
+            ...comp,
+            content: {
+              ...(comp.content || {}),
+              ...contentUpdates
+            }
+          };
+        }
+        return comp;
+      });
+    });
+  } catch (error) {
+    console.error('Error updating component content:', error);
+  }
+}, []);
 
   const updateComponentStyles = useCallback((id, styleUpdates) => {
     setComponents(prev => prev.map(comp => 

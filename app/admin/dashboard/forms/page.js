@@ -35,6 +35,28 @@ export default function FormsList() {
       submissions: 18,
       lastSubmission: '2024-01-14',
       color: 'from-purple-500 to-pink-500'
+    },
+    {
+      _id: 'wire-quote',
+      name: 'Wire Binding Quote Form',
+      description: 'Book printing quote calculator with pricing options',
+      type: 'predefined',
+      status: 'published',
+      fieldsCount: 'Multiple Sections',
+      submissions: 24,
+      lastSubmission: '2024-01-15',
+      color: 'from-green-500 to-emerald-500'
+    },
+    {
+      _id: 'hard-quote',
+      name: 'Hardcover Quote Form',
+      description: 'Saddle stitching quote calculator with pricing options',
+      type: 'predefined',
+      status: 'published',
+      fieldsCount: 'Multiple Sections',
+      submissions: 18,
+      lastSubmission: '2024-01-14',
+      color: 'from-red-500 to-red-300'
     }
   ];
 

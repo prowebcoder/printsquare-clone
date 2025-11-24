@@ -221,6 +221,61 @@ videoWithText: {
   weight: '',
   results: {}
 },
+
+tabsGallery: {
+  title: 'Our Advanced Printing Facilities',
+  description: 'From small runs to large-scale printing, PrintSeoul delivers precision and quality at every stage.',
+  tabs: [
+    {
+      id: 'sheetfed',
+      label: 'Sheet-Fed Press',
+      images: [
+        '/printing-service/sfp1.png',
+        '/printing-service/sfp2.png',
+        '/printing-service/sfp3.png',
+        '/printing-service/sfp4.png',
+        '/printing-service/sfp5.png',
+        '/printing-service/sfp6.png'
+      ]
+    },
+    {
+      id: 'webfed',
+      label: 'Web-Fed Press',
+      images: [
+        '/printing-service/wfp1.png',
+        '/printing-service/wfp2.png'
+      ]
+    },
+    {
+      id: 'binding',
+      label: 'Binding Machines',
+      images: [
+        '/printing-service/bm1.png',
+        '/printing-service/bm2.png',
+        '/printing-service/bm3.png',
+        '/printing-service/bm4.png'
+      ]
+    },
+    {
+      id: 'smallprint',
+      label: 'From Small Print Run To Bulk Printing',
+      images: [
+        '/printing-service/spr1.png',
+        '/printing-service/spr2.png'
+      ]
+    }
+  ],
+  titleSize: 'text-5xl',
+  fontWeight: 'font-extrabold',
+  titleColor: '#1F2937',
+  textSize: 'text-lg',
+  textColor: '#6B7280',
+  activeTabBgColor: '#E21B36',
+  activeTabTextColor: '#FFFFFF',
+  inactiveTabBgColor: '#FFFFFF',
+  inactiveTabTextColor: '#6B7280',
+  backgroundColor: '#FFFFFF'
+},
       
       orderProcess: {
   title: 'Process',

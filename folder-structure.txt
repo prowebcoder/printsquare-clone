@@ -23,7 +23,9 @@
 │   │   │   │   │   ├── PortfolioRenderer.js
 │   │   │   │   │   ├── PricingRenderer.js
 │   │   │   │   │   ├── QuickGuidesRenderer.js
+│   │   │   │   │   ├── TabsGalleryRenderer.js
 │   │   │   │   │   ├── VideoBannerRenderer.js
+│   │   │   │   │   ├── VideoWithTextRenderer.js
 │   │   │   │   │   └── WeightConverterRenderer.js
 │   │   │   │   └── index.js
 │   │   │   └── AppImage.js
@@ -118,6 +120,8 @@
 │   │   ├── force-fix
 │   │   │   └── route.js
 │   │   ├── forms
+│   │   │   ├── [id]
+│   │   │   │   └── route.js
 │   │   │   ├── print-quote
 │   │   │   │   └── route.js
 │   │   │   └── saddle-quote
@@ -195,7 +199,6 @@
 │   │   ├── editors
 │   │   │   ├── AboutHeroEditor.js
 │   │   │   ├── AboutUsEditor.js
-│   │   │   ├── AdvancedFormEditor.js
 │   │   │   ├── ComponentEditor.js
 │   │   │   ├── FormEditor.js
 │   │   │   ├── FreeSampleEditor.js
@@ -215,8 +218,10 @@
 │   │   │   ├── PricingEditor.js
 │   │   │   ├── QuickGuidesEditor.js
 │   │   │   ├── StyleEditor.js
+│   │   │   ├── TabsGalleryEditor.js
 │   │   │   ├── TextEditor.js
 │   │   │   ├── VideoBannerEditor.js
+│   │   │   ├── VideoWithTextEditor.js
 │   │   │   └── WeightConverterEditor.js
 │   │   ├── renderers
 │   │   │   ├── AdvancedFormRenderer.js
@@ -507,7 +512,12 @@
 │   │   ├── image-1763703777457.jpg
 │   │   ├── image-1763703913419.jpg
 │   │   ├── image-1763703922393.PNG
-│   │   └── image-1763703928515.PNG
+│   │   ├── image-1763703928515.PNG
+│   │   ├── image-1763711988896.PNG
+│   │   ├── image-1763725220493.mp4
+│   │   ├── image-1763794421507.jpg
+│   │   ├── image-1763794428151.jpg
+│   │   └── image-1763797425639.mp4
 │   ├── file.svg
 │   ├── folder_structure.txt
 │   ├── folder-structure.txt

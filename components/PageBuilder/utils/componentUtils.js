@@ -29,6 +29,7 @@ export const getComponentIcon = (type) => {
     videoBanner: <Video size={16} />,
     videoWithText: <Video size={16} />,
     form: <FormIcon size={16} />,
+    tabsGallery: <Grid size={16} />,
   };
   return icons[type] || <FileText size={16} />;
 };
@@ -37,7 +38,7 @@ export const getComponentCategory = (type) => {
   if (['aboutHero', 'aboutUs', 'freeSample'].includes(type)) {
     return 'about';
   }
-  if (['heroBanner', 'multiColumn', 'multiTable',  'videoWithText', 'weightConverter', 'imageBanner', 'imageBannerTwo', 'method', 'notice', 'orderProcess', 'portfolio', 'pricing', 'quickGuides', 'videoBanner'].includes(type)) {
+  if (['heroBanner', 'multiColumn', 'multiTable', 'tabsGallery', 'videoWithText', 'weightConverter', 'imageBanner', 'imageBannerTwo', 'method', 'notice', 'orderProcess', 'portfolio', 'pricing', 'quickGuides', 'videoBanner'].includes(type)) {
     return 'home';
   }
   if (['form'].includes(type)) {
@@ -69,6 +70,7 @@ export const getComponentDisplayName = (type) => {
     'form': 'Basic Form',
     'multiColumn': 'Multi Column',
     'weightConverter': 'Weight Converter',
+    'tabsGallery': 'Tabs Gallery',
     'multiTable': 'Tables' 
   };
   

@@ -22,6 +22,7 @@ import PricingEditor from './PricingEditor';
 import QuickGuidesEditor from './QuickGuidesEditor';
 import VideoBannerEditor from './VideoBannerEditor';
 import FormEditor from './FormEditor';
+import TabsGalleryEditor from './TabsGalleryEditor';
 
 const ComponentEditor = ({ component, onUpdateContent, onUpdateStyles }) => {
   const renderContentEditor = () => {
@@ -48,6 +49,7 @@ const ComponentEditor = ({ component, onUpdateContent, onUpdateStyles }) => {
       case 'quickGuides': return <QuickGuidesEditor component={component} onUpdate={onUpdateContent} />;
       case 'videoBanner': return <VideoBannerEditor component={component} onUpdate={onUpdateContent} />;
       case 'form': return <FormEditor component={component} onUpdate={onUpdateContent} />;
+      case 'tabsGallery': return <TabsGalleryEditor component={component} onUpdate={onUpdateContent} />;
       default: return <DefaultEditor />;
     }
   };

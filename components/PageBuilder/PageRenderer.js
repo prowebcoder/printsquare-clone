@@ -1,17 +1,13 @@
 // components/PageBuilder/PageRenderer.js
+
 import TextRenderer from './renderers/TextRenderer';
 import HeadingRenderer from './renderers/HeadingRenderer';
 import HeroRenderer from './renderers/HeroRenderer';
 import ImageRenderer from './renderers/ImageRenderer';
 import AboutHeroRenderer from './renderers/AboutHeroRenderer';
 import AboutUsRenderer from './renderers/AboutUsRenderer';
-import VideoWithTextRenderer from './editors/VideoWithTextRenderer';
 import FreeSampleRenderer from './renderers/FreeSampleRenderer';
 import HeroBannerRenderer from './renderers/HeroBannerRenderer';
-import MultiColumnRenderer from './editors/MultiColumnRenderer';
-import WeightConverterRenderer from './renderers/WeightConverterRenderer';
-
-import MultiTableRenderer from './renderers/MultiTableRenderer';
 import ImageBannerRenderer from './renderers/ImageBannerRenderer';
 import ImageBannerTwoRenderer from './renderers/ImageBannerTwoRenderer';
 import MethodRenderer from './renderers/MethodRenderer';
@@ -21,8 +17,12 @@ import PortfolioRenderer from './renderers/PortfolioRenderer';
 import PricingRenderer from './renderers/PricingRenderer';
 import QuickGuidesRenderer from './renderers/QuickGuidesRenderer';
 import VideoBannerRenderer from './renderers/VideoBannerRenderer';
+import VideoWithTextRenderer from './renderers/VideoWithTextRenderer';
+import MultiColumnRenderer from './renderers/MultiColumnRenderer';
+import WeightConverterRenderer from './renderers/WeightConverterRenderer';
+import MultiTableRenderer from './renderers/MultiTableRenderer';
 import FormRenderer from './renderers/FormRenderer';
-import AdvancedFormRenderer from './renderers/AdvancedFormRenderer';
+import TabsGalleryRenderer from './renderers/TabsGalleryRenderer';
 
 const PageRenderer = ({ components }) => {
   if (!components || !Array.isArray(components)) {
@@ -38,7 +38,7 @@ const PageRenderer = ({ components }) => {
     const styleClasses = getStyleClasses(component.styles);
 
     switch (component.type) {
-      case 'text':
+     case 'text':
         return <TextRenderer key={component.id} component={component} />;
       case 'heading':
         return <HeadingRenderer key={component.id} component={component} />;
@@ -50,7 +50,7 @@ const PageRenderer = ({ components }) => {
         return <AboutHeroRenderer key={component.id} component={component} />;
       case 'aboutUs':
         return <AboutUsRenderer key={component.id} component={component} />;
-        case 'multiColumn':
+      case 'multiColumn':
         return <MultiColumnRenderer key={component.id} component={component} />;
       case 'weightConverter':
         return <WeightConverterRenderer key={component.id} component={component} />;
@@ -60,6 +60,8 @@ const PageRenderer = ({ components }) => {
         return <FreeSampleRenderer key={component.id} component={component} />;
       case 'heroBanner':
         return <HeroBannerRenderer key={component.id} component={component} />;
+      case 'tabsGallery':
+        return <TabsGalleryRenderer key={component.id} component={component} />;
       case 'videoWithText':
         return <VideoWithTextRenderer key={component.id} component={component} />;
       case 'imageBanner':
@@ -82,8 +84,6 @@ const PageRenderer = ({ components }) => {
         return <VideoBannerRenderer key={component.id} component={component} />;
       case 'form':
         return <FormRenderer key={component.id} component={component} />;
-      case 'advancedForm':
-        return <AdvancedFormRenderer key={component.id} component={component} />;
       default:
         return (
           <div key={component.id} className={`p-4 border border-yellow-300 bg-yellow-50 ${styleClasses}`}>
