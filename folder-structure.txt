@@ -23,7 +23,6 @@
 │   │   │   │   │   ├── PortfolioRenderer.js
 │   │   │   │   │   ├── PricingRenderer.js
 │   │   │   │   │   ├── QuickGuidesRenderer.js
-│   │   │   │   │   ├── TabsGalleryRenderer.js
 │   │   │   │   │   ├── VideoBannerRenderer.js
 │   │   │   │   │   ├── VideoWithTextRenderer.js
 │   │   │   │   │   └── WeightConverterRenderer.js
@@ -39,10 +38,16 @@
 │   │   │   ├── content
 │   │   │   │   └── page.js
 │   │   │   ├── forms
+│   │   │   │   ├── hard-quote
+│   │   │   │   │   └── edit
+│   │   │   │   │       └── page.js
 │   │   │   │   ├── print-quote
 │   │   │   │   │   └── edit
 │   │   │   │   │       └── page.js
 │   │   │   │   ├── saddle-quote
+│   │   │   │   │   └── edit
+│   │   │   │   │       └── page.js
+│   │   │   │   ├── wire-quote
 │   │   │   │   │   └── edit
 │   │   │   │   │       └── page.js
 │   │   │   │   └── page.js
@@ -120,8 +125,6 @@
 │   │   ├── force-fix
 │   │   │   └── route.js
 │   │   ├── forms
-│   │   │   ├── [id]
-│   │   │   │   └── route.js
 │   │   │   ├── print-quote
 │   │   │   │   └── route.js
 │   │   │   └── saddle-quote
@@ -147,6 +150,8 @@
 │   │   └── page.js
 │   ├── faqs
 │   │   └── page.js
+│   ├── hardcover-book
+│   │   └── page.js
 │   ├── perfect-binding
 │   │   └── page.js
 │   ├── portfolio
@@ -171,6 +176,8 @@
 │   │   └── page.js
 │   ├── web-fed-press
 │   │   └── page.js
+│   ├── wire-binding
+│   │   └── page.js
 │   ├── favicon.ico
 │   ├── globals.css
 │   ├── layout.js
@@ -178,10 +185,12 @@
 ├── components
 │   ├── admin
 │   │   ├── ContentEditor.js
+│   │   ├── HardQuoteFormEditor.js
 │   │   ├── Header.js
 │   │   ├── PrintQuoteFormEditor.js
 │   │   ├── SaddleQuoteFormEditor.js
-│   │   └── Sidebar.js
+│   │   ├── Sidebar.js
+│   │   └── WireQuoteFormEditor.js
 │   ├── data
 │   │   ├── adminUsers.json
 │   │   ├── FaqData.js
@@ -218,13 +227,11 @@
 │   │   │   ├── PricingEditor.js
 │   │   │   ├── QuickGuidesEditor.js
 │   │   │   ├── StyleEditor.js
-│   │   │   ├── TabsGalleryEditor.js
 │   │   │   ├── TextEditor.js
 │   │   │   ├── VideoBannerEditor.js
 │   │   │   ├── VideoWithTextEditor.js
 │   │   │   └── WeightConverterEditor.js
 │   │   ├── renderers
-│   │   │   ├── AdvancedFormRenderer.js
 │   │   │   ├── FormRenderer.js
 │   │   │   └── TextRenderer.js
 │   │   ├── utils
@@ -300,6 +307,11 @@
 │   │   │   ├── index.js
 │   │   │   └── PrintingServicesHero.js
 │   │   ├── quote
+│   │   │   ├── hardcover-book
+│   │   │   │   ├── HardQuoteForm.js
+│   │   │   │   ├── Heading.js
+│   │   │   │   ├── index.js
+│   │   │   │   └── Tabs.js
 │   │   │   ├── perfect-binding
 │   │   │   │   ├── Heading.js
 │   │   │   │   ├── index.js
@@ -309,6 +321,11 @@
 │   │   │   │   ├── Heading.js
 │   │   │   │   ├── index.js
 │   │   │   │   └── SaddleStitchingForm.js
+│   │   │   ├── wire-binding
+│   │   │   │   ├── Heading.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── Tabs.js
+│   │   │   │   └── WireQuoteForm.js
 │   │   │   └── index.js
 │   │   └── tutorials
 │   │       └── index.js

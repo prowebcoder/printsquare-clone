@@ -2,7 +2,7 @@
 import { 
   Type, Image as ImageIcon, Layout, Text, FileText, Star, Zap, Users, 
   DollarSign, BookOpen, Megaphone, Calculator, Video, ShoppingCart, 
-  Grid, Settings, FileText as FormIcon, Table 
+  Grid, Settings, FileText as FormIcon, Table, HelpCircle 
 } from 'lucide-react';
 
 export const getComponentIcon = (type) => {
@@ -29,7 +29,7 @@ export const getComponentIcon = (type) => {
     videoBanner: <Video size={16} />,
     videoWithText: <Video size={16} />,
     form: <FormIcon size={16} />,
-    tabsGallery: <Grid size={16} />,
+    tabsFaq: <HelpCircle size={16} />,
   };
   return icons[type] || <FileText size={16} />;
 };
@@ -38,7 +38,7 @@ export const getComponentCategory = (type) => {
   if (['aboutHero', 'aboutUs', 'freeSample'].includes(type)) {
     return 'about';
   }
-  if (['heroBanner', 'multiColumn', 'multiTable', 'tabsGallery', 'videoWithText', 'weightConverter', 'imageBanner', 'imageBannerTwo', 'method', 'notice', 'orderProcess', 'portfolio', 'pricing', 'quickGuides', 'videoBanner'].includes(type)) {
+  if (['heroBanner', 'multiColumn', 'multiTable', 'tabsFaq', 'videoWithText', 'weightConverter', 'imageBanner', 'imageBannerTwo', 'method', 'notice', 'orderProcess', 'portfolio', 'pricing', 'quickGuides', 'videoBanner', 'tabsFaq'].includes(type)) {
     return 'home';
   }
   if (['form'].includes(type)) {
@@ -70,8 +70,8 @@ export const getComponentDisplayName = (type) => {
     'form': 'Basic Form',
     'multiColumn': 'Multi Column',
     'weightConverter': 'Weight Converter',
-    'tabsGallery': 'Tabs Gallery',
-    'multiTable': 'Tables' 
+    'multiTable': 'Tables',
+    'tabsFaq': 'FAQ Tabs'
   };
   
   return nameMap[type] || type;

@@ -1,5 +1,3 @@
-// components/PageBuilder/PageRenderer.js
-
 import TextRenderer from './renderers/TextRenderer';
 import HeadingRenderer from './renderers/HeadingRenderer';
 import HeroRenderer from './renderers/HeroRenderer';
@@ -22,7 +20,7 @@ import MultiColumnRenderer from './renderers/MultiColumnRenderer';
 import WeightConverterRenderer from './renderers/WeightConverterRenderer';
 import MultiTableRenderer from './renderers/MultiTableRenderer';
 import FormRenderer from './renderers/FormRenderer';
-import TabsGalleryRenderer from './renderers/TabsGalleryRenderer';
+import TabsFaqRenderer from './renderers/TabsFaqRenderer';
 
 const PageRenderer = ({ components }) => {
   if (!components || !Array.isArray(components)) {
@@ -38,7 +36,7 @@ const PageRenderer = ({ components }) => {
     const styleClasses = getStyleClasses(component.styles);
 
     switch (component.type) {
-     case 'text':
+      case 'text':
         return <TextRenderer key={component.id} component={component} />;
       case 'heading':
         return <HeadingRenderer key={component.id} component={component} />;
@@ -60,8 +58,6 @@ const PageRenderer = ({ components }) => {
         return <FreeSampleRenderer key={component.id} component={component} />;
       case 'heroBanner':
         return <HeroBannerRenderer key={component.id} component={component} />;
-      case 'tabsGallery':
-        return <TabsGalleryRenderer key={component.id} component={component} />;
       case 'videoWithText':
         return <VideoWithTextRenderer key={component.id} component={component} />;
       case 'imageBanner':
@@ -84,6 +80,8 @@ const PageRenderer = ({ components }) => {
         return <VideoBannerRenderer key={component.id} component={component} />;
       case 'form':
         return <FormRenderer key={component.id} component={component} />;
+      case 'tabsFaq':
+        return <TabsFaqRenderer key={component.id} component={component} />;
       default:
         return (
           <div key={component.id} className={`p-4 border border-yellow-300 bg-yellow-50 ${styleClasses}`}>

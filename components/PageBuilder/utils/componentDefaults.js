@@ -188,6 +188,71 @@ videoWithText: {
   badgeGradientTo: '#FF4B2B',
   badgeTextColor: '#FFFFFF'
 },
+
+tabsFaq: {
+  title: 'Frequently Asked Questions',
+  tabs: [
+    {
+      title: 'ORDER',
+      faqs: [
+        {
+          question: 'How long does it take to complete my order?',
+          answer: 'The time required to complete your order depends on the complexity and quantity. Standard orders typically take 3-5 business days.'
+        },
+        {
+          question: 'Order Cancellation',
+          answer: 'Orders can be cancelled within 24 hours of placement. After this period, cancellation may not be possible as production may have started.'
+        }
+      ]
+    },
+    {
+      title: 'PROOF',
+      faqs: [
+        {
+          question: 'Do you guys check over the files before printing?',
+          answer: 'Yes, our team carefully reviews all files before printing to ensure quality and catch any potential issues.'
+        }
+      ]
+    },
+    {
+      title: 'PAYMENT',
+      faqs: [
+        {
+          question: 'What\'s your return policy?',
+          answer: 'We accept returns within 14 days of delivery for defective products. Custom orders may not be eligible for return.'
+        }
+      ]
+    },
+    {
+      title: 'SHIPPING',
+      faqs: [
+        {
+          question: 'Direct Mailing',
+          answer: 'We offer direct mailing services to ship your products directly to your customers.'
+        }
+      ]
+    },
+    {
+      title: 'CLAIM',
+      faqs: [
+        {
+          question: 'Will my order be defect free?',
+          answer: 'We strive for perfection in every order. Our quality control process ensures that your order meets the highest standards.'
+        }
+      ]
+    }
+  ],
+  backgroundType: 'solid',
+  backgroundColor: '#FAFAFA',
+  titleColor: '#0B1633',
+  tabBgColor: '#F3F4F6',
+  activeTabBgColor: '#FFFFFF',
+  tabTextColor: '#6B7280',
+  activeTabTextColor: '#0B1633',
+  questionColor: '#0B1633',
+  answerColor: '#6B7280'
+},
+
       notice: {
   title: 'Latest Notices',
   notices: [
@@ -222,60 +287,7 @@ videoWithText: {
   results: {}
 },
 
-tabsGallery: {
-  title: 'Our Advanced Printing Facilities',
-  description: 'From small runs to large-scale printing, PrintSeoul delivers precision and quality at every stage.',
-  tabs: [
-    {
-      id: 'sheetfed',
-      label: 'Sheet-Fed Press',
-      images: [
-        '/printing-service/sfp1.png',
-        '/printing-service/sfp2.png',
-        '/printing-service/sfp3.png',
-        '/printing-service/sfp4.png',
-        '/printing-service/sfp5.png',
-        '/printing-service/sfp6.png'
-      ]
-    },
-    {
-      id: 'webfed',
-      label: 'Web-Fed Press',
-      images: [
-        '/printing-service/wfp1.png',
-        '/printing-service/wfp2.png'
-      ]
-    },
-    {
-      id: 'binding',
-      label: 'Binding Machines',
-      images: [
-        '/printing-service/bm1.png',
-        '/printing-service/bm2.png',
-        '/printing-service/bm3.png',
-        '/printing-service/bm4.png'
-      ]
-    },
-    {
-      id: 'smallprint',
-      label: 'From Small Print Run To Bulk Printing',
-      images: [
-        '/printing-service/spr1.png',
-        '/printing-service/spr2.png'
-      ]
-    }
-  ],
-  titleSize: 'text-5xl',
-  fontWeight: 'font-extrabold',
-  titleColor: '#1F2937',
-  textSize: 'text-lg',
-  textColor: '#6B7280',
-  activeTabBgColor: '#E21B36',
-  activeTabTextColor: '#FFFFFF',
-  inactiveTabBgColor: '#FFFFFF',
-  inactiveTabTextColor: '#6B7280',
-  backgroundColor: '#FFFFFF'
-},
+
       
       orderProcess: {
   title: 'Process',

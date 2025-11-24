@@ -48,9 +48,9 @@ const SortableComponentItem = ({
       'videoWithText': 'Video with Text',
       'form': 'Basic Form',
       'multiColumn': 'Multi Column',
-      'tabsGallery': 'Tabs Gallery',
       'weightCalculator': 'Weight Calculator',
       'multiTable': 'Tables',
+      'tabsFaq': 'FAQ Tabs',
     };
     
     return nameMap[component.type] || component.type;

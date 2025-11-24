@@ -64,11 +64,11 @@ const getComponentIcon = (type) => {
     quickGuides: '📖',
     videoBanner: '🎬',
     videoWithText: '🎥',
-    tabsGallery: '📊',
     form: '📄',
     multiColumn: '📊',
     weightCalculator: '🧮',
-    table: '📋'
+    table: '📋',
+    tabsFaq: '❓'
   };
   return icons[type] || '📄';
 };

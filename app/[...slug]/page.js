@@ -7,6 +7,7 @@ import Footer from '@/components/layout/footer/footer';
 // Import all renderers
 import * as Renderers from './components/renderers';
 
+
 async function getPageData(slug) {
   try {
     await dbConnect();

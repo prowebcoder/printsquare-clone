@@ -1,4 +1,3 @@
-// components/PageBuilder/editors/ComponentEditor.js
 import StyleEditor from './StyleEditor';
 import TextEditor from './TextEditor';
 import HeadingEditor from './HeadingEditor';
@@ -22,7 +21,7 @@ import PricingEditor from './PricingEditor';
 import QuickGuidesEditor from './QuickGuidesEditor';
 import VideoBannerEditor from './VideoBannerEditor';
 import FormEditor from './FormEditor';
-import TabsGalleryEditor from './TabsGalleryEditor';
+import TabsFaqEditor from './TabsFaqEditor';
 
 const ComponentEditor = ({ component, onUpdateContent, onUpdateStyles }) => {
   const renderContentEditor = () => {
@@ -49,7 +48,7 @@ const ComponentEditor = ({ component, onUpdateContent, onUpdateStyles }) => {
       case 'quickGuides': return <QuickGuidesEditor component={component} onUpdate={onUpdateContent} />;
       case 'videoBanner': return <VideoBannerEditor component={component} onUpdate={onUpdateContent} />;
       case 'form': return <FormEditor component={component} onUpdate={onUpdateContent} />;
-      case 'tabsGallery': return <TabsGalleryEditor component={component} onUpdate={onUpdateContent} />;
+      case 'tabsFaq': return <TabsFaqEditor component={component} onUpdate={onUpdateContent} />;
       default: return <DefaultEditor />;
     }
   };
@@ -68,7 +67,6 @@ const ComponentEditor = ({ component, onUpdateContent, onUpdateStyles }) => {
 const DefaultEditor = () => (
   <div className="text-gray-500 text-sm p-4 bg-gray-50 rounded-lg border text-center">
    This component type doesn&apos;t have a custom editor yet. The content will be saved as configured.
-
   </div>
 );
 
