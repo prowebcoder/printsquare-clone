@@ -59,6 +59,7 @@ const componentMap = {
   'multiColumn': Renderers.MultiColumnRenderer,
   'weightConverter': Renderers.WeightConverterRenderer,
   'multiTable': Renderers.MultiTableRenderer,
+  'tabsGallery': Renderers.TabsGalleryRenderer,
   'imageBannerTwo': Renderers.ImageBannerTwoRenderer,
   'method': Renderers.MethodRenderer,
   'notice': Renderers.NoticeRenderer,
