@@ -1,6 +1,7 @@
 // components/pages/quote/wire-binding/WireQuoteForm.js
 import React, { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
+
 // ===== WIRE-BINDING-SPECIFIC DEFAULT CONFIG =====
 const WIREQUOTE_DEFAULT_CONFIG = {
   general: {
