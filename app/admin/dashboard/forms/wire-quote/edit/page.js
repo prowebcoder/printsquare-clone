@@ -1,4 +1,4 @@
-// app/admin/dashboard/forms/print-quote/edit/page.js
+//app/admin/dashboard/forms/wire-quote/edit/page.js
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -16,7 +16,7 @@ export default function WireQuoteFormEdit() {
   const fetchFormConfig = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/admin/forms/print-quote', {
+      const res = await fetch('/api/admin/forms/wire-quote', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -40,7 +40,7 @@ export default function WireQuoteFormEdit() {
   const saveFormConfig = async (config) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/admin/forms/print-quote', {
+      const res = await fetch('/api/admin/forms/wire-quote', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

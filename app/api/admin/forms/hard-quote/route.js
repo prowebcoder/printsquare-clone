@@ -6,14 +6,15 @@ export async function GET(request) {
   try {
     await dbConnect();
     
-    const config = await FormConfiguration.findOne({ name: 'print-quote' }).lean();
+    const config = await FormConfiguration.findOne({ name: 'hard-quote' }).lean();
     
     if (!config) {
+      // Create default config if doesn't exist
       const defaultConfig = {
-        name: 'print-quote',
+        name: 'hard-quote',
         type: 'predefined',
-        description: 'Perfect binding book printing quote calculator',
-        config: getPrintQuoteDefaultConfig(),
+        description: 'Hardcover book printing quote calculator',
+        config: getHardQuoteDefaultConfig(),
         status: 'published'
       };
       
@@ -23,8 +24,8 @@ export async function GET(request) {
     
     return NextResponse.json(config.config || {});
   } catch (error) {
-    console.error('Error fetching print-quote config:', error);
-    return NextResponse.json(getPrintQuoteDefaultConfig());
+    console.error('Error fetching hard-quote config:', error);
+    return NextResponse.json(getHardQuoteDefaultConfig());
   }
 }
 
@@ -34,12 +35,12 @@ export async function PUT(request) {
     const body = await request.json();
     
     const result = await FormConfiguration.findOneAndUpdate(
-      { name: 'print-quote' },
+      { name: 'hard-quote' },
       { 
         $set: {
-          name: 'print-quote',
+          name: 'hard-quote',
           type: 'predefined',
-          description: 'Perfect binding book printing quote calculator',
+          description: 'Hardcover book printing quote calculator',
           config: body,
           status: 'published',
           updatedAt: new Date()
@@ -54,24 +55,24 @@ export async function PUT(request) {
     
     return NextResponse.json({ 
       success: true,
-      message: 'Perfect binding configuration updated successfully',
+      message: 'Hardcover quote configuration updated successfully',
       data: result
     });
   } catch (error) {
-    console.error('Error saving print-quote config:', error);
+    console.error('Error saving hard-quote config:', error);
     return NextResponse.json({ 
       success: false,
-      error: 'Failed to update perfect binding form configuration',
+      error: 'Failed to update hardcover form configuration',
       details: error.message
     }, { status: 500 });
   }
 }
 
-function getPrintQuoteDefaultConfig() {
+function getHardQuoteDefaultConfig() {
   return {
     general: {
-      title: "Perfect Binding Book Printing Quote",
-      description: "Configure your perfect bound book with our professional printing services. Get instant pricing and add to cart in minutes.",
+      title: "Hardcover Book Printing Quote",
+      description: "Configure your perfect hardcover book with our professional printing services. Get instant pricing and add to cart in minutes.",
       submitButtonText: "Add to Cart",
       shippingButtonText: "Calculate Shipping"
     },
@@ -81,7 +82,7 @@ function getPrintQuoteDefaultConfig() {
       { value: 'HARDCOVER', label: 'Hardcover Book', link: '/hardcover-book' },
       { value: 'WIRE', label: 'Wire Binding', link: '/wire-binding' },
     ],
-    sizes: ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', 'Custom Size'],
+    sizes: ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', '8.5 x 5.5', '10 x 7.5', '11 x 8.5', 'Custom Size'],
     bindingEdges: [
       { value: 'LEFT', label: 'Left Side', desc: 'Binding on the left, most common' },
       { value: 'RIGHT', label: 'Right Side', desc: 'First inside page starts from the right' },

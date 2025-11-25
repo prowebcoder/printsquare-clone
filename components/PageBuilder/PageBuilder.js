@@ -66,18 +66,24 @@ export default function PageBuilder({ onComponentsChange, initialComponents = []
   }, [components, onComponentsChange, isInitialized]);
 
   const addComponent = useCallback((type) => {
-    const newComponent = {
-      id: `comp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      type: type,
-      content: getDefaultContent(type),
-      styles: getDefaultStyles(type),
-      order: components.length
-    };
-    
-    const updatedComponents = [...components, newComponent];
-    setComponents(updatedComponents);
-    setSelectedComponent(newComponent.id);
-  }, [components.length]);
+  console.log('🔄 Adding component type:', type);
+  console.log('📝 Default content for type:', getDefaultContent(type));
+  console.log('🎨 Default styles for type:', getDefaultStyles(type));
+  
+  const newComponent = {
+    id: `comp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    type: type,
+    content: getDefaultContent(type),
+    styles: getDefaultStyles(type),
+    order: components.length
+  };
+  
+  console.log('✅ New component created:', newComponent);
+  
+  const updatedComponents = [...components, newComponent];
+  setComponents(updatedComponents);
+  setSelectedComponent(newComponent.id);
+}, [components.length]);
 
  const updateComponentContent = useCallback((id, contentUpdates) => {
   try {

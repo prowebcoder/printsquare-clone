@@ -1,20 +1,20 @@
-// components/pages/quote/perfect-binding/PrintQuoteForm.js
 import React, { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
-// ===== DEFAULT CONSTANTS (Fallback) =====
-const DEFAULT_FORM_CONFIG = {
+
+// ===== HARDCOVER-SPECIFIC DEFAULT CONFIG =====
+const HARDQUOTE_DEFAULT_CONFIG = {
   general: {
-    title: "Book Printing Quote",
-    description: "Configure your perfect book with our professional printing services. Get instant pricing and add to cart in minutes.",
+    title: "Hardcover Book Printing Quote",
+    description: "Configure your perfect hardcover book with our professional printing services. Get instant pricing and add to cart in minutes.",
     submitButtonText: "Add to Cart",
     shippingButtonText: "Calculate Shipping"
   },
   bindingTypes: [
-  { value: 'PERFECT', label: 'Perfect Binding', link: '/perfect-binding' },
-  { value: 'SADDLE', label: 'Saddle Stitching', link: '/saddle-stitching' },
-  { value: 'HARDCOVER', label: 'Hardcover Book', link: '/hardcover-book' },
-  { value: 'WIRE', label: 'Wire Binding', link: '/wire-binding' },
-],
+    { value: 'PERFECT', label: 'Perfect Binding', link: '/perfect-binding' },
+    { value: 'SADDLE', label: 'Saddle Stitching', link: '/saddle-stitching' },
+    { value: 'HARDCOVER', label: 'Hardcover Book', link: '/hardcover-book' },
+    { value: 'WIRE', label: 'Wire Binding', link: '/wire-binding' },
+  ],
   sizes: ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', '8.5 x 5.5', '10 x 7.5', '11 x 8.5', 'Custom Size'],
   bindingEdges: [
     { value: 'LEFT', label: 'Left Side', desc: 'Binding on the left, most common' },
@@ -149,9 +149,7 @@ const RadioGroup = ({ label, name, options, selected, onChange, className = "" }
   </div>
 );
 
-// ===== FIXED: Completely rewrote SelectDropdown to handle objects safely =====
 const SelectDropdown = ({ label, options, selected, onChange, className = "", disabled = false }) => {
-  // Convert selected value to string safely
   const getStringValue = (value) => {
     if (typeof value === 'string') return value;
     if (typeof value === 'number') return value.toString();
@@ -171,7 +169,6 @@ const SelectDropdown = ({ label, options, selected, onChange, className = "", di
         className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
       >
         {options && options.map((option, index) => {
-          // Handle both string options and object options
           let value, labelText;
           
           if (typeof option === 'string') {
@@ -185,7 +182,6 @@ const SelectDropdown = ({ label, options, selected, onChange, className = "", di
             labelText = option;
           }
 
-          // Ensure both are strings
           value = String(value);
           labelText = String(labelText);
 
@@ -217,7 +213,6 @@ const ToggleOption = ({ label, enabled, onToggle, children, className = "" }) =>
   </div>
 );
 
-// ===== SUBSCRIPTION CARD COMPONENT =====
 const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, positions }) => {
   const handleChange = (field, value) => {
     onUpdate(index, { ...card, [field]: value });
@@ -245,7 +240,6 @@ const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, position
       </div>
 
       <div className="space-y-6">
-        {/* Size */}
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-3">Size</label>
           <div className="grid grid-cols-2 gap-4">
@@ -271,7 +265,6 @@ const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, position
           </div>
         </div>
 
-        {/* Position */}
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-3">Position</label>
           <div className="grid grid-cols-2 gap-4">
@@ -294,7 +287,6 @@ const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, position
           </div>
         </div>
 
-        {/* Paper */}
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-3">Paper</label>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -321,7 +313,6 @@ const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, position
           </div>
         </div>
 
-        {/* Print Color */}
         <div>
           <label className="block text-sm font-semibold text-gray-700 mb-3">Print Color</label>
           <SelectDropdown
@@ -338,12 +329,12 @@ const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, position
 // ===== MAIN COMPONENT =====
 const HardQuoteForm = () => {
   // Configuration state
-  const [formConfig, setFormConfig] = useState(DEFAULT_FORM_CONFIG);
+  const [formConfig, setFormConfig] = useState(HARDQUOTE_DEFAULT_CONFIG);
   const [loading, setLoading] = useState(true);
   const [configVersion, setConfigVersion] = useState(0);
 
   // Form State Management
-  const [bindingType, setBindingType] = useState('PERFECT');
+  const [bindingType, setBindingType] = useState('HARDCOVER');
   const [sizeUnit, setSizeUnit] = useState('INCH');
   const [paperUnit, setPaperUnit] = useState('US');
   const [selectedSize, setSelectedSize] = useState('8.5 x 11');
@@ -385,49 +376,49 @@ const HardQuoteForm = () => {
   // ===== FIXED: Fetch form configuration =====
   const fetchFormConfig = async () => {
     try {
-      console.log('🔄 Fetching form configuration from API...');
-      const res = await fetch('/api/forms/print-quote');
+      console.log('🔄 Fetching hardcover form configuration from API...');
+      const res = await fetch('/api/forms/hard-quote'); // Hard quote endpoint
       
       if (res.ok) {
         const apiConfig = await res.json();
-        console.log('📥 API Response received');
+        console.log('📥 Hardcover API Response received');
         
         if (apiConfig && Object.keys(apiConfig).length > 0) {
-          console.log('✅ Using API configuration');
+          console.log('✅ Using hardcover API configuration');
           
           const mergedConfig = {
-            ...DEFAULT_FORM_CONFIG,
+            ...HARDQUOTE_DEFAULT_CONFIG,
             ...apiConfig,
             general: {
-              ...DEFAULT_FORM_CONFIG.general,
+              ...HARDQUOTE_DEFAULT_CONFIG.general,
               ...apiConfig.general
             },
             paperOptions: {
-              ...DEFAULT_FORM_CONFIG.paperOptions,
+              ...HARDQUOTE_DEFAULT_CONFIG.paperOptions,
               ...apiConfig.paperOptions
             },
             additionalOptions: {
-              ...DEFAULT_FORM_CONFIG.additionalOptions,
+              ...HARDQUOTE_DEFAULT_CONFIG.additionalOptions,
               ...apiConfig.additionalOptions
             },
             pricing: {
-              ...DEFAULT_FORM_CONFIG.pricing,
+              ...HARDQUOTE_DEFAULT_CONFIG.pricing,
               ...apiConfig.pricing
             }
           };
           
           setFormConfig(mergedConfig);
         } else {
-          console.log('⚠️ API returned empty, using defaults');
-          setFormConfig(DEFAULT_FORM_CONFIG);
+          console.log('⚠️ API returned empty, using hardcover defaults');
+          setFormConfig(HARDQUOTE_DEFAULT_CONFIG);
         }
       } else {
-        console.log('❌ API error, using defaults');
-        setFormConfig(DEFAULT_FORM_CONFIG);
+        console.log('❌ API error, using hardcover defaults');
+        setFormConfig(HARDQUOTE_DEFAULT_CONFIG);
       }
     } catch (error) {
-      console.error('❌ Error fetching form configuration:', error);
-      setFormConfig(DEFAULT_FORM_CONFIG);
+      console.error('❌ Error fetching hardcover form configuration:', error);
+      setFormConfig(HARDQUOTE_DEFAULT_CONFIG);
     } finally {
       setLoading(false);
     }
@@ -437,31 +428,30 @@ const HardQuoteForm = () => {
     fetchFormConfig();
   }, [configVersion]);
 
-  // ===== FIXED: Configuration constants moved BEFORE useEffect =====
-  const BINDING_TYPES = formConfig?.bindingTypes || DEFAULT_FORM_CONFIG.bindingTypes;
-  const SIZES = formConfig?.sizes || DEFAULT_FORM_CONFIG.sizes;
-  const BINDING_EDGES = formConfig?.bindingEdges || DEFAULT_FORM_CONFIG.bindingEdges;
-  const PAPER_OPTIONS = formConfig?.paperOptions || DEFAULT_FORM_CONFIG.paperOptions;
-  const PRINT_COLORS = formConfig?.printColors || DEFAULT_FORM_CONFIG.printColors;
-  const COVER_FINISHES = formConfig?.coverFinishes || DEFAULT_FORM_CONFIG.coverFinishes;
-  const COVER_FOLDS = formConfig?.coverFolds || DEFAULT_FORM_CONFIG.coverFolds;
-  const ADDITIONAL_OPTIONS = formConfig?.additionalOptions || DEFAULT_FORM_CONFIG.additionalOptions;
-  const POSITIONS = formConfig?.positions || DEFAULT_FORM_CONFIG.positions;
-  const PAGE_COUNTS = formConfig?.pageCounts || DEFAULT_FORM_CONFIG.pageCounts;
-  const WEIGHT_OPTIONS = formConfig?.weightOptions || DEFAULT_FORM_CONFIG.weightOptions;
-  const QUANTITIES = formConfig?.quantities || DEFAULT_FORM_CONFIG.quantities;
+  // Configuration constants
+  const BINDING_TYPES = formConfig?.bindingTypes || HARDQUOTE_DEFAULT_CONFIG.bindingTypes;
+  const SIZES = formConfig?.sizes || HARDQUOTE_DEFAULT_CONFIG.sizes;
+  const BINDING_EDGES = formConfig?.bindingEdges || HARDQUOTE_DEFAULT_CONFIG.bindingEdges;
+  const PAPER_OPTIONS = formConfig?.paperOptions || HARDQUOTE_DEFAULT_CONFIG.paperOptions;
+  const PRINT_COLORS = formConfig?.printColors || HARDQUOTE_DEFAULT_CONFIG.printColors;
+  const COVER_FINISHES = formConfig?.coverFinishes || HARDQUOTE_DEFAULT_CONFIG.coverFinishes;
+  const COVER_FOLDS = formConfig?.coverFolds || HARDQUOTE_DEFAULT_CONFIG.coverFolds;
+  const ADDITIONAL_OPTIONS = formConfig?.additionalOptions || HARDQUOTE_DEFAULT_CONFIG.additionalOptions;
+  const POSITIONS = formConfig?.positions || HARDQUOTE_DEFAULT_CONFIG.positions;
+  const PAGE_COUNTS = formConfig?.pageCounts || HARDQUOTE_DEFAULT_CONFIG.pageCounts;
+  const WEIGHT_OPTIONS = formConfig?.weightOptions || HARDQUOTE_DEFAULT_CONFIG.weightOptions;
+  const QUANTITIES = formConfig?.quantities || HARDQUOTE_DEFAULT_CONFIG.quantities;
 
-  const generalSettings = formConfig?.general || DEFAULT_FORM_CONFIG.general;
-  const customSizeInstructions = formConfig?.customSizeInstructions || DEFAULT_FORM_CONFIG.customSizeInstructions;
-  const spineWidth = formConfig?.spineWidth || DEFAULT_FORM_CONFIG.spineWidth;
+  const generalSettings = formConfig?.general || HARDQUOTE_DEFAULT_CONFIG.general;
+  const customSizeInstructions = formConfig?.customSizeInstructions || HARDQUOTE_DEFAULT_CONFIG.customSizeInstructions;
+  const spineWidth = formConfig?.spineWidth || HARDQUOTE_DEFAULT_CONFIG.spineWidth;
 
-  // ===== FIXED: Debug effect - now generalSettings is defined =====
   useEffect(() => {
     console.log('🔍 DEBUG - Current Configuration:', {
       title: generalSettings.title,
       description: generalSettings.description,
-      hasCustomConfig: formConfig !== DEFAULT_FORM_CONFIG,
-      configSource: formConfig === DEFAULT_FORM_CONFIG ? 'DEFAULT' : 'API'
+      hasCustomConfig: formConfig !== HARDQUOTE_DEFAULT_CONFIG,
+      configSource: formConfig === HARDQUOTE_DEFAULT_CONFIG ? 'DEFAULT' : 'API'
     });
   }, [formConfig, generalSettings]);
 
@@ -621,7 +611,7 @@ const HardQuoteForm = () => {
         <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <div className="flex justify-between items-center">
             <span className="text-sm text-blue-700">
-              {formConfig === DEFAULT_FORM_CONFIG ? 'Using default configuration' : 'Using live configuration from editor'}
+              {formConfig === HARDQUOTE_DEFAULT_CONFIG ? 'Using default configuration' : 'Using live configuration from editor'}
             </span>
             <button 
               onClick={refreshConfig}
@@ -641,28 +631,6 @@ const HardQuoteForm = () => {
             {generalSettings.description}
           </p>
         </div>
-
-        {/* Binding Type Selection */}
-         {/*<div className="mb-12 bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-            Select Binding Type
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {BINDING_TYPES.map((option) => (
-              <button
-                key={option.value}
-                onClick={() => setBindingType(option.value)}
-                className={`p-4 rounded-xl border-2 transition-all duration-200 font-semibold text-sm ${
-                  bindingType === option.value
-                    ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-md scale-105'
-                    : 'border-gray-200 bg-white text-gray-700 hover:border-indigo-300 hover:shadow-sm'
-                }`}
-              >
-                {option.label}
-              </button>
-            ))}
-          </div>
-        </div>*/}
 
         {/* Unit Selection */}
         <div className="mb-12 bg-white rounded-2xl shadow-lg p-8">

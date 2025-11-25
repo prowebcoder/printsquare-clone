@@ -1,10 +1,11 @@
-//components/pages/quote/saddle-stitching/index.js
+//components/pages/quote/perfect-binding/index.js
 "use client";
 import Head from "next/head";
 import Header from "../../../layout/header/header";
 import Heading from "./Heading";
-import SaddleStitchingForm from "./SaddleStitchingForm";
+import Tabs from "./Tabs";
 import Footer from "../../../layout/footer/footer";
+import SaddleQuoteForm from "./SaddleQuoteForm";
 
 export default function SaddleStitchingFormPage() {
   return (
@@ -18,7 +19,8 @@ export default function SaddleStitchingFormPage() {
       </Head> 
       <Header />
       <Heading />
-<SaddleStitchingForm />
+      <SaddleQuoteForm />
+      <Tabs />
       <Footer />
     </>
   );

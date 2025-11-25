@@ -1,3 +1,4 @@
+// components/PageBuilder/editors/TabsFaqEditor.js
 "use client";
 
 import { Trash2, Plus } from 'lucide-react';

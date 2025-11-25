@@ -1,4 +1,4 @@
-// components/admin/PrintQuoteFormEditor.js
+// components/admin/HardQuoteFormEditor.js
 'use client';
 import { useState, useEffect } from 'react';
 import { Save, Eye, Plus, Trash2 } from 'lucide-react';

@@ -1,4 +1,3 @@
-// app/api/forms/saddle-quote/route.js
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import FormConfiguration from '@/models/FormConfiguration';

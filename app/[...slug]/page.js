@@ -1,3 +1,4 @@
+// app/[...slug]/page.js
 import dbConnect from '@/lib/db';
 import Page from '@/models/Page';
 import { notFound } from 'next/navigation';
@@ -60,7 +61,6 @@ const componentMap = {
   'multiColumn': Renderers.MultiColumnRenderer,
   'weightConverter': Renderers.WeightConverterRenderer,
   'multiTable': Renderers.MultiTableRenderer,
-  'tabsGallery': Renderers.TabsGalleryRenderer,
   'imageBannerTwo': Renderers.ImageBannerTwoRenderer,
   'method': Renderers.MethodRenderer,
   'notice': Renderers.NoticeRenderer,
@@ -70,6 +70,7 @@ const componentMap = {
   'quickGuides': Renderers.QuickGuidesRenderer,
   'videoWithText': Renderers.VideoWithTextRenderer,
   'videoBanner': Renderers.VideoBannerRenderer,
+  'tabsFaq': Renderers.TabsFaqRenderer,
 };
 
 function renderComponent(component, index) {

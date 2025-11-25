@@ -189,69 +189,69 @@ videoWithText: {
   badgeTextColor: '#FFFFFF'
 },
 
-tabsFaq: {
-  title: 'Frequently Asked Questions',
-  tabs: [
-    {
-      title: 'ORDER',
-      faqs: [
+ tabsFaq: {
+      title: 'Frequently Asked Questions',
+      tabs: [
         {
-          question: 'How long does it take to complete my order?',
-          answer: 'The time required to complete your order depends on the complexity and quantity. Standard orders typically take 3-5 business days.'
+          title: 'ORDER',
+          faqs: [
+            {
+              question: 'How long does it take to complete my order?',
+              answer: 'The time required to complete your order depends on the complexity and quantity. Standard orders typically take 3-5 business days.'
+            },
+            {
+              question: 'Order Cancellation',
+              answer: 'Orders can be cancelled within 24 hours of placement. After this period, cancellation may not be possible as production may have started.'
+            }
+          ]
         },
         {
-          question: 'Order Cancellation',
-          answer: 'Orders can be cancelled within 24 hours of placement. After this period, cancellation may not be possible as production may have started.'
-        }
-      ]
-    },
-    {
-      title: 'PROOF',
-      faqs: [
+          title: 'PROOF',
+          faqs: [
+            {
+              question: 'Do you guys check over the files before printing?',
+              answer: 'Yes, our team carefully reviews all files before printing to ensure quality and catch any potential issues.'
+            }
+          ]
+        },
         {
-          question: 'Do you guys check over the files before printing?',
-          answer: 'Yes, our team carefully reviews all files before printing to ensure quality and catch any potential issues.'
-        }
-      ]
-    },
-    {
-      title: 'PAYMENT',
-      faqs: [
+          title: 'PAYMENT',
+          faqs: [
+            {
+              question: 'What\'s your return policy?',
+              answer: 'We accept returns within 14 days of delivery for defective products. Custom orders may not be eligible for return.'
+            }
+          ]
+        },
         {
-          question: 'What\'s your return policy?',
-          answer: 'We accept returns within 14 days of delivery for defective products. Custom orders may not be eligible for return.'
-        }
-      ]
-    },
-    {
-      title: 'SHIPPING',
-      faqs: [
+          title: 'SHIPPING',
+          faqs: [
+            {
+              question: 'Direct Mailing',
+              answer: 'We offer direct mailing services to ship your products directly to your customers.'
+            }
+          ]
+        },
         {
-          question: 'Direct Mailing',
-          answer: 'We offer direct mailing services to ship your products directly to your customers.'
+          title: 'CLAIM',
+          faqs: [
+            {
+              question: 'Will my order be defect free?',
+              answer: 'We strive for perfection in every order. Our quality control process ensures that your order meets the highest standards.'
+            }
+          ]
         }
-      ]
+      ],
+      backgroundType: 'solid',
+      backgroundColor: '#FAFAFA',
+      titleColor: '#0B1633',
+      tabBgColor: '#F3F4F6',
+      activeTabBgColor: '#FFFFFF',
+      tabTextColor: '#6B7280',
+      activeTabTextColor: '#0B1633',
+      questionColor: '#0B1633',
+      answerColor: '#6B7280'
     },
-    {
-      title: 'CLAIM',
-      faqs: [
-        {
-          question: 'Will my order be defect free?',
-          answer: 'We strive for perfection in every order. Our quality control process ensures that your order meets the highest standards.'
-        }
-      ]
-    }
-  ],
-  backgroundType: 'solid',
-  backgroundColor: '#FAFAFA',
-  titleColor: '#0B1633',
-  tabBgColor: '#F3F4F6',
-  activeTabBgColor: '#FFFFFF',
-  tabTextColor: '#6B7280',
-  activeTabTextColor: '#0B1633',
-  questionColor: '#0B1633',
-  answerColor: '#6B7280'
-},
 
       notice: {
   title: 'Latest Notices',

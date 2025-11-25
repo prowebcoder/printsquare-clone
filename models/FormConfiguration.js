@@ -1,59 +1,31 @@
-// models/FormConfiguration.js
 import mongoose from 'mongoose';
 
-const formConfigurationSchema = new mongoose.Schema({
+const formConfigSchema = new mongoose.Schema({
   name: { 
     type: String, 
-    required: true,
-    unique: true 
+    required: true, 
+    unique: true,
+    enum: ['print-quote', 'saddle-quote', 'wire-quote', 'hard-quote']
   },
   type: { 
     type: String, 
     enum: ['predefined', 'custom'], 
-    default: 'custom' 
+    default: 'predefined' 
   },
   description: String,
-  config: {
-    type: mongoose.Schema.Types.Mixed,
-    default: {}
-  },
+  config: { type: mongoose.Schema.Types.Mixed, default: {} },
   status: { 
     type: String, 
     enum: ['draft', 'published'], 
     default: 'draft' 
   },
-  submissions: { 
-    type: Number, 
-    default: 0 
-  },
-  createdAt: { 
-    type: Date, 
-    default: Date.now 
-  },
-  updatedAt: { 
-    type: Date, 
-    default: Date.now 
-  }
-}, {
-  // Disable auto-indexing to prevent conflicts
-  autoIndex: false
+  submissions: { type: Number, default: 0 },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
 });
 
-// Create indexes manually
-formConfigurationSchema.index({ name: 1 }, { unique: true });
+// Create compound index for better query performance
+formConfigSchema.index({ name: 1, type: 1 });
 
-// Update the updatedAt field before saving
-formConfigurationSchema.pre('save', function(next) {
-  this.updatedAt = Date.now();
-  next();
-});
-
-// Update the updatedAt field before updating
-formConfigurationSchema.pre('findOneAndUpdate', function(next) {
-  this.set({ updatedAt: Date.now() });
-  next();
-});
-
-// Check if model exists to prevent OverwriteModelError
 export default mongoose.models.FormConfiguration || 
-  mongoose.model('FormConfiguration', formConfigurationSchema);
+       mongoose.model('FormConfiguration', formConfigSchema);

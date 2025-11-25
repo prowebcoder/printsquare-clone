@@ -1,10 +1,12 @@
-import React, { useState, useCallback, useEffect } from 'react';
 
-// ===== PERFECT-BINDING-SPECIFIC DEFAULT CONFIG =====
-const PRINTQUOTE_DEFAULT_CONFIG = {
+import React, { useState, useCallback, useEffect } from 'react';
+import Link from 'next/link';
+
+// ===== SADDLE-STITCHING-SPECIFIC DEFAULT CONFIG =====
+const SADDLEQUOTE_DEFAULT_CONFIG = {
   general: {
-    title: "Perfect Binding Book Printing Quote",
-    description: "Configure your perfect bound book with our professional printing services. Get instant pricing and add to cart in minutes.",
+    title: "Saddle Stitching Book Printing Quote",
+    description: "Configure your perfect saddle stitched book with our professional printing services. Get instant pricing and add to cart in minutes.",
     submitButtonText: "Add to Cart",
     shippingButtonText: "Calculate Shipping"
   },
@@ -14,7 +16,7 @@ const PRINTQUOTE_DEFAULT_CONFIG = {
     { value: 'HARDCOVER', label: 'Hardcover Book', link: '/hardcover-book' },
     { value: 'WIRE', label: 'Wire Binding', link: '/wire-binding' },
   ],
-  sizes: ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', 'Custom Size'],
+  sizes: ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', '8.5 x 5.5', '10 x 7.5', '11 x 8.5', 'Custom Size'],
   bindingEdges: [
     { value: 'LEFT', label: 'Left Side', desc: 'Binding on the left, most common' },
     { value: 'RIGHT', label: 'Right Side', desc: 'First inside page starts from the right' },
@@ -326,14 +328,14 @@ const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, position
 };
 
 // ===== MAIN COMPONENT =====
-const PrintQuoteForm = () => {
+const SaddleQuoteForm = () => {
   // Configuration state
-  const [formConfig, setFormConfig] = useState(PRINTQUOTE_DEFAULT_CONFIG);
+  const [formConfig, setFormConfig] = useState(SADDLEQUOTE_DEFAULT_CONFIG);
   const [loading, setLoading] = useState(true);
   const [configVersion, setConfigVersion] = useState(0);
 
   // Form State Management
-  const [bindingType, setBindingType] = useState('PERFECT');
+  const [bindingType, setBindingType] = useState('SADDLE');
   const [sizeUnit, setSizeUnit] = useState('INCH');
   const [paperUnit, setPaperUnit] = useState('US');
   const [selectedSize, setSelectedSize] = useState('8.5 x 11');
@@ -375,49 +377,49 @@ const PrintQuoteForm = () => {
   // ===== FIXED: Fetch form configuration =====
   const fetchFormConfig = async () => {
     try {
-      console.log('🔄 Fetching perfect binding form configuration from API...');
-      const res = await fetch('/api/forms/print-quote'); // Print quote endpoint
+      console.log('🔄 Fetching saddle form configuration from API...');
+      const res = await fetch('/api/forms/saddle-quote'); // Saddle quote endpoint
       
       if (res.ok) {
         const apiConfig = await res.json();
-        console.log('📥 Perfect binding API Response received');
+        console.log('📥 Saddle API Response received');
         
         if (apiConfig && Object.keys(apiConfig).length > 0) {
-          console.log('✅ Using perfect binding API configuration');
+          console.log('✅ Using saddle API configuration');
           
           const mergedConfig = {
-            ...PRINTQUOTE_DEFAULT_CONFIG,
+            ...SADDLEQUOTE_DEFAULT_CONFIG,
             ...apiConfig,
             general: {
-              ...PRINTQUOTE_DEFAULT_CONFIG.general,
+              ...SADDLEQUOTE_DEFAULT_CONFIG.general,
               ...apiConfig.general
             },
             paperOptions: {
-              ...PRINTQUOTE_DEFAULT_CONFIG.paperOptions,
+              ...SADDLEQUOTE_DEFAULT_CONFIG.paperOptions,
               ...apiConfig.paperOptions
             },
             additionalOptions: {
-              ...PRINTQUOTE_DEFAULT_CONFIG.additionalOptions,
+              ...SADDLEQUOTE_DEFAULT_CONFIG.additionalOptions,
               ...apiConfig.additionalOptions
             },
             pricing: {
-              ...PRINTQUOTE_DEFAULT_CONFIG.pricing,
+              ...SADDLEQUOTE_DEFAULT_CONFIG.pricing,
               ...apiConfig.pricing
             }
           };
           
           setFormConfig(mergedConfig);
         } else {
-          console.log('⚠️ API returned empty, using perfect binding defaults');
-          setFormConfig(PRINTQUOTE_DEFAULT_CONFIG);
+          console.log('⚠️ API returned empty, using saddle defaults');
+          setFormConfig(SADDLEQUOTE_DEFAULT_CONFIG);
         }
       } else {
-        console.log('❌ API error, using perfect binding defaults');
-        setFormConfig(PRINTQUOTE_DEFAULT_CONFIG);
+        console.log('❌ API error, using saddle defaults');
+        setFormConfig(SADDLEQUOTE_DEFAULT_CONFIG);
       }
     } catch (error) {
-      console.error('❌ Error fetching perfect binding form configuration:', error);
-      setFormConfig(PRINTQUOTE_DEFAULT_CONFIG);
+      console.error('❌ Error fetching saddle form configuration:', error);
+      setFormConfig(SADDLEQUOTE_DEFAULT_CONFIG);
     } finally {
       setLoading(false);
     }
@@ -428,29 +430,29 @@ const PrintQuoteForm = () => {
   }, [configVersion]);
 
   // Configuration constants
-  const BINDING_TYPES = formConfig?.bindingTypes || PRINTQUOTE_DEFAULT_CONFIG.bindingTypes;
-  const SIZES = formConfig?.sizes || PRINTQUOTE_DEFAULT_CONFIG.sizes;
-  const BINDING_EDGES = formConfig?.bindingEdges || PRINTQUOTE_DEFAULT_CONFIG.bindingEdges;
-  const PAPER_OPTIONS = formConfig?.paperOptions || PRINTQUOTE_DEFAULT_CONFIG.paperOptions;
-  const PRINT_COLORS = formConfig?.printColors || PRINTQUOTE_DEFAULT_CONFIG.printColors;
-  const COVER_FINISHES = formConfig?.coverFinishes || PRINTQUOTE_DEFAULT_CONFIG.coverFinishes;
-  const COVER_FOLDS = formConfig?.coverFolds || PRINTQUOTE_DEFAULT_CONFIG.coverFolds;
-  const ADDITIONAL_OPTIONS = formConfig?.additionalOptions || PRINTQUOTE_DEFAULT_CONFIG.additionalOptions;
-  const POSITIONS = formConfig?.positions || PRINTQUOTE_DEFAULT_CONFIG.positions;
-  const PAGE_COUNTS = formConfig?.pageCounts || PRINTQUOTE_DEFAULT_CONFIG.pageCounts;
-  const WEIGHT_OPTIONS = formConfig?.weightOptions || PRINTQUOTE_DEFAULT_CONFIG.weightOptions;
-  const QUANTITIES = formConfig?.quantities || PRINTQUOTE_DEFAULT_CONFIG.quantities;
+  const BINDING_TYPES = formConfig?.bindingTypes || SADDLEQUOTE_DEFAULT_CONFIG.bindingTypes;
+  const SIZES = formConfig?.sizes || SADDLEQUOTE_DEFAULT_CONFIG.sizes;
+  const BINDING_EDGES = formConfig?.bindingEdges || SADDLEQUOTE_DEFAULT_CONFIG.bindingEdges;
+  const PAPER_OPTIONS = formConfig?.paperOptions || SADDLEQUOTE_DEFAULT_CONFIG.paperOptions;
+  const PRINT_COLORS = formConfig?.printColors || SADDLEQUOTE_DEFAULT_CONFIG.printColors;
+  const COVER_FINISHES = formConfig?.coverFinishes || SADDLEQUOTE_DEFAULT_CONFIG.coverFinishes;
+  const COVER_FOLDS = formConfig?.coverFolds || SADDLEQUOTE_DEFAULT_CONFIG.coverFolds;
+  const ADDITIONAL_OPTIONS = formConfig?.additionalOptions || SADDLEQUOTE_DEFAULT_CONFIG.additionalOptions;
+  const POSITIONS = formConfig?.positions || SADDLEQUOTE_DEFAULT_CONFIG.positions;
+  const PAGE_COUNTS = formConfig?.pageCounts || SADDLEQUOTE_DEFAULT_CONFIG.pageCounts;
+  const WEIGHT_OPTIONS = formConfig?.weightOptions || SADDLEQUOTE_DEFAULT_CONFIG.weightOptions;
+  const QUANTITIES = formConfig?.quantities || SADDLEQUOTE_DEFAULT_CONFIG.quantities;
 
-  const generalSettings = formConfig?.general || PRINTQUOTE_DEFAULT_CONFIG.general;
-  const customSizeInstructions = formConfig?.customSizeInstructions || PRINTQUOTE_DEFAULT_CONFIG.customSizeInstructions;
-  const spineWidth = formConfig?.spineWidth || PRINTQUOTE_DEFAULT_CONFIG.spineWidth;
+  const generalSettings = formConfig?.general || SADDLEQUOTE_DEFAULT_CONFIG.general;
+  const customSizeInstructions = formConfig?.customSizeInstructions || SADDLEQUOTE_DEFAULT_CONFIG.customSizeInstructions;
+  const spineWidth = formConfig?.spineWidth || SADDLEQUOTE_DEFAULT_CONFIG.spineWidth;
 
   useEffect(() => {
     console.log('🔍 DEBUG - Current Configuration:', {
       title: generalSettings.title,
       description: generalSettings.description,
-      hasCustomConfig: formConfig !== PRINTQUOTE_DEFAULT_CONFIG,
-      configSource: formConfig === PRINTQUOTE_DEFAULT_CONFIG ? 'DEFAULT' : 'API'
+      hasCustomConfig: formConfig !== SADDLEQUOTE_DEFAULT_CONFIG,
+      configSource: formConfig === SADDLEQUOTE_DEFAULT_CONFIG ? 'DEFAULT' : 'API'
     });
   }, [formConfig, generalSettings]);
 
@@ -610,7 +612,7 @@ const PrintQuoteForm = () => {
         <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <div className="flex justify-between items-center">
             <span className="text-sm text-blue-700">
-              {formConfig === PRINTQUOTE_DEFAULT_CONFIG ? 'Using default configuration' : 'Using live configuration from editor'}
+              {formConfig === SADDLEQUOTE_DEFAULT_CONFIG ? 'Using default configuration' : 'Using live configuration from editor'}
             </span>
             <button 
               onClick={refreshConfig}
@@ -1091,4 +1093,4 @@ const PrintQuoteForm = () => {
   );
 };
 
-export default PrintQuoteForm;
+export default SaddleQuoteForm;

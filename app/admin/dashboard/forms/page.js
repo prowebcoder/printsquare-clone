@@ -16,7 +16,7 @@ export default function FormsList() {
   const predefinedForms = [
     {
       _id: 'print-quote',
-      name: 'Print Quote Form',
+      name: 'Perfect Binding Quote Form',
       description: 'Book printing quote calculator with pricing options',
       type: 'predefined',
       status: 'published',
@@ -27,7 +27,7 @@ export default function FormsList() {
     },
     {
       _id: 'saddle-quote',
-      name: 'Saddle Stitching Quote Form',
+      name: 'Saddle Stiching Quote Form',
       description: 'Saddle stitching quote calculator with pricing options',
       type: 'predefined',
       status: 'published',

@@ -1,4 +1,4 @@
-// app/admin/dashboard/forms/print-quote/edit/page.js
+//app/admin/dashboard/forms/hard-quote/edit/page.js
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -15,7 +15,7 @@ export default function HardQuoteFormEdit() {
   const fetchFormConfig = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/admin/forms/print-quote', {
+      const res = await fetch('/api/admin/forms/hard-quote', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -39,7 +39,7 @@ export default function HardQuoteFormEdit() {
   const saveFormConfig = async (config) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('/api/admin/forms/print-quote', {
+      const res = await fetch('/api/admin/forms/hard-quote', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

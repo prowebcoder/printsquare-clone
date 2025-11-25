@@ -1,3 +1,4 @@
+// components/PageBuilder/PageRenderer.js
 import TextRenderer from './renderers/TextRenderer';
 import HeadingRenderer from './renderers/HeadingRenderer';
 import HeroRenderer from './renderers/HeroRenderer';

@@ -1,4 +1,4 @@
-//components/pages/quote/saddle-stitching/Heading.js
+//components/pages/quote/perfect-binding/Heading.js
 "use client";
 import React from "react";
 

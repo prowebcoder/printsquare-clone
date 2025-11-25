@@ -1,3 +1,4 @@
+// app/[...slug]/components/renderers/premium/TabsFaqRenderer.js
 "use client";
 
 import { useState } from 'react';

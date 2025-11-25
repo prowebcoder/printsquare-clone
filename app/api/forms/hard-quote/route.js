@@ -6,7 +6,7 @@ export async function GET() {
   try {
     await dbConnect();
     
-    const config = await FormConfiguration.findOne({ name: 'print-quote' }).lean();
+    const config = await FormConfiguration.findOne({ name: 'hard-quote' }).lean();
     
     if (!config || !config.config) {
       return NextResponse.json({});
@@ -14,7 +14,7 @@ export async function GET() {
     
     return NextResponse.json(config.config);
   } catch (error) {
-    console.error('Error in public print-quote API:', error);
+    console.error('Error in public hard-quote API:', error);
     return NextResponse.json({});
   }
 }
