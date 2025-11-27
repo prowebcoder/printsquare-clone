@@ -1,69 +1,88 @@
-// components/admin/PrintQuoteFormEditor.js
 'use client';
 import { useState, useEffect } from 'react';
 import { Save, Eye, Plus, Trash2 } from 'lucide-react';
 
-// Default configuration matching your existing form
 const DEFAULT_FORM_CONFIG = {
   general: {
-    title: "Book Printing Quote",
-    description: "Configure your perfect book with our professional printing services. Get instant pricing and add to cart in minutes.",
+    title: "Wire Binding Printing Quote",
+    description: "Configure your professional wire-bound documents with our instant quoting system. Perfect for reports, manuals, and presentations.",
     submitButtonText: "Add to Cart",
     shippingButtonText: "Calculate Shipping"
   },
   bindingTypes: [
-    { value: 'PERFECT', label: 'Perfect Binding' },
-    { value: 'SADDLE', label: 'Saddle Stitching' },
-    { value: 'HARDCOVER', label: 'Hardcover Book' },
-    { value: 'WIRE', label: 'Wire Binding' },
+    { value: 'PERFECT', label: 'Perfect Binding', link: '/perfect-binding' },
+    { value: 'SADDLE', label: 'Saddle Stitching', link: '/saddle-stitching' },
+    { value: 'HARDCOVER', label: 'Hardcover Book', link: '/hardcover-book' },
+    { value: 'WIRE', label: 'Wire Binding', link: '/wire-binding' },
   ],
-  sizes: ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', '8.5 x 5.5', '10 x 7.5', '11 x 8.5', 'Custom Size'],
+  sizes: [
+    { value: '8.5x11-letter', label: '8.5" x 11" (Letter)' },
+    { value: '8.5x11-standard', label: '8.5" x 11"' },
+    { value: '5.5x8.5', label: '5.5" x 8.5" (Half Letter)' },
+    { value: '6x9', label: '6" x 9"' },
+    { value: '7x10', label: '7" x 10"' },
+    { value: '9x12', label: '9" x 12"' },
+    { value: 'custom', label: 'Custom Size' }
+  ],
   bindingEdges: [
-    { value: 'LEFT', label: 'Left Side', desc: 'Binding on the left, most common' },
-    { value: 'RIGHT', label: 'Right Side', desc: 'First inside page starts from the right' },
-    { value: 'TOP', label: 'Top Side', desc: 'Binding on the top, a.k.a calendar binding' },
+    { 
+      value: 'LEFT', 
+      label: 'Left Side', 
+      desc: 'Binding on the left, most common',
+      image: '/asset/images/quote/edge01.png'
+    },
+    { 
+      value: 'RIGHT', 
+      label: 'Right Side', 
+      desc: 'First inside page starts from the right',
+      image: '/asset/images/quote/edge02.png'
+    },
+    { 
+      value: 'TOP', 
+      label: 'Top Side', 
+      desc: 'Binding on the top, a.k.a calendar binding',
+      image: '/asset/images/quote/edge03.png'
+    },
+  ],
+  wireColors: [
+    { value: 'BLACK', label: 'Black', color: '#000000', image: '/asset/images/quote/color_paper/wire_black.png' },
+    { value: 'WHITE', label: 'White', color: '#ffffff', image: '/asset/images/quote/color_paper/wire_white.png' },
+    { value: 'SILVER', label: 'Silver', color: '#c0c0c0', image: '/asset/images/quote/color_paper/wire_silver.png' },
+    { value: 'GOLD', label: 'Gold', color: '#ffd700', image: '/asset/images/quote/color_paper/wire_gold.png' },
+    { value: 'TBD', label: 'To be determined', color: '#cccccc' }
   ],
   paperOptions: {
     cover: [
-      { value: 'MATTE', label: 'Matte', price: 0 },
-      { value: 'GLOSS', label: 'Gloss', price: 0 },
-      { value: 'HI-PLUS', label: 'Hi-Plus', price: 50 },
-      { value: 'HI-QMATTE', label: 'Hi-Q Matte', price: 100 },
-      { value: 'PREMIUM', label: 'Premium', price: 150 },
+      { value: 'MATTE', label: 'Matte', gsm: ['200', '250', '300'] },
+      { value: 'GLOSS', label: 'Gloss', gsm: ['200', '250', '300'] },
+      { value: 'HI-QMYSTIC', label: 'Hi-Q Mystic', gsm: ['200', '250'] },
+      { value: 'UNCOATED_W', label: 'Uncoated White', gsm: ['200', '250'] }
     ],
     inside: [
-      { value: 'GLOSS', label: 'Gloss', price: 0 },
-      { value: 'MATTE', label: 'Matte', price: 0 },
-      { value: 'HI-PLUS', label: 'Hi-Plus', price: 25 },
-      { value: 'UNCOATED', label: 'Uncoated', price: 0 },
-      { value: 'TEXTBOOK', label: 'Textbook', price: 30 },
-      { value: 'COLORED', label: 'Colored', price: 40 },
-    ],
-    subscription: [
-      { value: 'MATTE', label: 'Matte', price: 0 },
-      { value: 'HI-QMATTE', label: 'Hi-Q Matte', price: 25 },
-      { value: 'UNCOATED_W', label: 'Uncoated', price: 0 },
-      { value: 'MONTBLANC_EW', label: 'Premium', price: 50 },
+      { value: 'MATTE', label: 'Matte', gsm: ['80', '100', '120'] },
+      { value: 'GLOSS', label: 'Gloss', gsm: ['80', '100', '120'] },
+      { value: 'HI-PLUS', label: 'Hi-Plus', gsm: ['80', '100'] },
+      { value: 'UNCOATED_W', label: 'Uncoated White', gsm: ['80', '100'] }
     ]
   },
   printColors: [
-    { value: 'CMYK', label: 'Full color', price: 0 },
-    { value: 'CMYK_PMS1', label: 'Full color + 1 Spot color', price: 75 },
-    { value: 'CMYK_PMS2', label: 'Full color + 2 Spot color', price: 150 },
-    { value: 'BW', label: 'Black only', price: -100 },
-    { value: 'BW_PMS1', label: 'Black + 1 Spot color', price: -25 },
-    { value: 'BW_PMS2', label: 'Black + 2 Spot color', price: 50 },
+    { value: 'CMYK', label: 'Full color', description: 'Full color' },
+    { value: 'CMYK_PMS1', label: 'Full color + 1 Spot color', description: 'Full color + 1 Spot color' },
+    { value: 'CMYK_PMS2', label: 'Full color + 2 Spot color', description: 'Full color + 2 Spot color' },
+    { value: 'BW', label: 'Black only', description: 'Black only' },
+    { value: 'BW_PMS1', label: 'Black + 1 Spot color', description: 'Black + 1 Spot color' },
+    { value: 'BW_PMS2', label: 'Black + 2 Spot color', description: 'Black + 2 Spot color' }
   ],
   coverFinishes: [
-    { value: 'MATTE', label: 'Matte lamination', price: 50 },
-    { value: 'GLOSS', label: 'Gloss lamination', price: 50 },
     { value: 'NONE', label: 'None', price: 0 },
+    { value: 'MATTE', label: 'Matte Lamination', price: 40 },
+    { value: 'GLOSS', label: 'Gloss Lamination', price: 40 },
   ],
   coverFolds: [
-    { value: 'NONE', label: 'No fold', price: 0 },
-    { value: 'FRONT', label: 'Front cover fold', price: 25 },
-    { value: 'BACK', label: 'Back cover fold', price: 25 },
-    { value: 'BOTH', label: 'Both cover folds', price: 40 },
+    { value: '', label: 'No fold' },
+    { value: 'FRONT', label: 'Front cover fold' },
+    { value: 'BACK', label: 'Back cover fold' },
+    { value: 'BOTH', label: 'Both cover folds' },
   ],
   additionalOptions: {
     proof: [
@@ -71,12 +90,11 @@ const DEFAULT_FORM_CONFIG = {
       { value: 'DIGITAL', label: 'Digital Proof', price: 50 },
     ],
     holePunch: [
-      { value: '6', label: '0.236" (6mm) drill', price: 15 },
-      { value: '8', label: '0.315" (8mm) drill', price: 20 },
-      { value: '9.5', label: '0.374" (9.5mm) drill', price: 25 },
+      { value: '6', label: '0.236"(6mm) drill - Most commonly used size for wall calendar', price: 15 },
+      { value: '8', label: '0.315"(8mm) drill - Most selected for binder holes', price: 20 },
+      { value: '9.5', label: '0.374"(9.5mm) drill - Used for binders and etc.', price: 25 },
     ],
     slipcase: [
-      { value: 'NONE', label: 'None', price: 0 },
       { value: 'CASE', label: 'Slipcase only', price: 80 },
       { value: 'CASEPRINT', label: 'Slipcase + printing', price: 150 },
     ],
@@ -92,19 +110,19 @@ const DEFAULT_FORM_CONFIG = {
   },
   positions: [
     { value: 'FRONT', label: 'Before page 1' },
-    { value: 'BACK', label: 'After page 96' },
+    { value: 'BACK', label: 'After last page' },
     { value: 'SELECT', label: 'Front of page no.' },
   ],
-  pageCounts: Array.from({ length: (880 - 24) / 2 + 1 }, (_, i) => 24 + i * 2),
-  weightOptions: ['100', '120', '150', '250', '300'],
-  quantities: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
+  pageCounts: [24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 148, 152, 156, 160],
+  weightOptions: ['80', '100', '120', '150', '200', '250', '300'],
+  quantities: [200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000],
   customSizeInstructions: "📏 Minimum: 4\" × 4\" | Maximum: 11.8\" × 14.3\"",
-  spineWidth: '0.178"',
   pricing: {
     baseSetupCost: 200,
-    costPerPage: 0.05,
+    costPerPage: 0.06,
     customSizeMultiplier: 1.2,
-    standardSizeMultiplier: 1.1
+    standardSizeMultiplier: 1.1,
+    wireBindingBaseCost: 80
   }
 };
 
@@ -114,13 +132,12 @@ export default function WireQuoteFormEditor({ formConfig, onSave }) {
   const [preview, setPreview] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Initialize with saved config or defaults
   useEffect(() => {
     if (formConfig && Object.keys(formConfig).length > 0) {
-      console.log('📥 Loading saved config:', formConfig);
+      console.log('📥 Loading saved wire binding config:', formConfig);
       setConfig(formConfig);
     } else {
-      console.log('📥 Loading default config');
+      console.log('📥 Loading default wire binding config');
       setConfig(DEFAULT_FORM_CONFIG);
     }
   }, [formConfig]);
@@ -196,22 +213,20 @@ export default function WireQuoteFormEditor({ formConfig, onSave }) {
     });
   };
 
- const handleSave = async () => {
+  const handleSave = async () => {
     if (saving) return;
     
     setSaving(true);
     try {
-      console.log('💾 Saving config:', config);
+      console.log('💾 Saving wire binding config:', config);
       await onSave(config);
     } catch (error) {
-      console.error('Error saving:', error);
+      console.error('Error saving wire binding config:', error);
       alert('Error saving configuration');
     } finally {
       setSaving(false);
     }
   };
-
-  
 
   const renderEditableArray = (title, path, fields) => (
     <div className="space-y-4">
@@ -226,84 +241,112 @@ export default function WireQuoteFormEditor({ formConfig, onSave }) {
         </button>
       </div>
       <div className="space-y-3">
-        {config[path]?.map((item, index) => (
-          <div key={index} className="flex space-x-3 p-4 border border-gray-200 rounded-lg bg-gray-50">
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
-              {fields.map(field => (
-                <div key={field}>
-                  <label className="block text-xs font-medium text-gray-500 mb-1 capitalize">
-                    {field}
-                  </label>
-                  <input
-                    type={field === 'price' ? 'number' : 'text'}
-                    value={item[field] || ''}
-                    onChange={(e) => updateArrayItem(path, index, field, 
-                      field === 'price' ? parseFloat(e.target.value) || 0 : e.target.value
-                    )}
-                    className="w-full p-2 border border-gray-300 rounded text-sm"
-                    placeholder={`Enter ${field}`}
-                  />
-                </div>
-              ))}
+        {(() => {
+          const keys = path.split('.');
+          let current = config;
+          for (const key of keys) {
+            current = current?.[key];
+          }
+          return current?.map((item, index) => (
+            <div key={index} className="flex space-x-3 p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+                {fields.map(field => (
+                  <div key={field}>
+                    <label className="block text-xs font-medium text-gray-500 mb-1 capitalize">
+                      {field}
+                    </label>
+                    <input
+                      type={field === 'price' || field === 'gsm' ? 'text' : 'text'}
+                      value={item[field] || ''}
+                      onChange={(e) => updateArrayItem(path, index, field, e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded text-sm"
+                      placeholder={`Enter ${field}`}
+                    />
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={() => removeArrayItem(path, index)}
+                className="p-2 text-red-600 hover:bg-red-50 rounded self-start"
+                title="Remove"
+              >
+                <Trash2 size={16} />
+              </button>
             </div>
-            <button
-              onClick={() => removeArrayItem(path, index)}
-              className="p-2 text-red-600 hover:bg-red-50 rounded self-start"
-              title="Remove"
-            >
-              <Trash2 size={16} />
-            </button>
-          </div>
-        ))}
+          ));
+        })()}
       </div>
     </div>
   );
 
-  const renderSimpleArray = (title, path, placeholder = "Enter value") => (
+  const renderPaperOptions = (type) => (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h4 className="font-medium text-gray-700">{title}</h4>
-        <button
-          onClick={() => addArrayItem(path, '')}
-          className="flex items-center px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700"
-        >
-          <Plus size={14} className="mr-1" />
-          Add New
-        </button>
-      </div>
-      <div className="space-y-2">
-        {config[path]?.map((item, index) => (
-          <div key={index} className="flex space-x-2">
-            <input
-              type="text"
-              value={item}
-              onChange={(e) => {
-                const newArray = [...config[path]];
-                newArray[index] = e.target.value;
-                updateNestedConfig(path, newArray);
-              }}
-              className="flex-1 p-2 border border-gray-300 rounded text-sm"
-              placeholder={placeholder}
-            />
-            <button
-              onClick={() => removeArrayItem(path, index)}
-              className="p-2 text-red-600 hover:bg-red-50 rounded"
-            >
-              <Trash2 size={16} />
-            </button>
+      <h4 className="font-medium text-gray-700 capitalize">{type} Paper Options</h4>
+      {config.paperOptions?.[type]?.map((paper, index) => (
+        <div key={index} className="flex space-x-3 p-4 border border-gray-200 rounded-lg bg-gray-50">
+          <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Value</label>
+              <input
+                type="text"
+                value={paper.value || ''}
+                onChange={(e) => updateArrayItem(`paperOptions.${type}`, index, 'value', e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded text-sm"
+                placeholder="e.g., MATTE"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Label</label>
+              <input
+                type="text"
+                value={paper.label || ''}
+                onChange={(e) => updateArrayItem(`paperOptions.${type}`, index, 'label', e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded text-sm"
+                placeholder="e.g., Matte"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-500 mb-1">GSM Options (comma separated)</label>
+              <input
+                type="text"
+                value={paper.gsm?.join(', ') || ''}
+                onChange={(e) => updateArrayItem(`paperOptions.${type}`, index, 'gsm', e.target.value.split(',').map(s => s.trim()))}
+                className="w-full p-2 border border-gray-300 rounded text-sm"
+                placeholder="e.g., 200, 250, 300"
+              />
+            </div>
           </div>
-        ))}
-      </div>
+          <button
+            onClick={() => removeArrayItem(`paperOptions.${type}`, index)}
+            className="p-2 text-red-600 hover:bg-red-50 rounded self-start"
+          >
+            <Trash2 size={16} />
+          </button>
+        </div>
+      ))}
+      <button
+        onClick={() => addArrayItem(`paperOptions.${type}`, { value: '', label: '', gsm: [] })}
+        className="flex items-center px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700"
+      >
+        <Plus size={14} className="mr-1" />
+        Add Paper Type
+      </button>
+    </div>
+  );
+
+  const renderAdditionalOptions = (type) => (
+    <div className="space-y-4">
+      <h4 className="font-medium text-gray-700 capitalize">{type.replace(/([A-Z])/g, ' $1')}</h4>
+      {renderEditableArray('', `additionalOptions.${type}`, ['value', 'label', 'price'])}
     </div>
   );
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-white border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <h1 className="text-2xl font-bold text-gray-900">Print Quote Form Editor</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Wire Binding Quote Form Editor</h1>
             <div className="flex space-x-3">
               <button
                 onClick={() => setPreview(!preview)}
@@ -314,20 +357,20 @@ export default function WireQuoteFormEditor({ formConfig, onSave }) {
               </button>
               <button
                 onClick={handleSave}
-                className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                disabled={saving}
+                className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
               >
                 <Save size={16} className="mr-2" />
-                Save Changes
+                {saving ? 'Saving...' : 'Save Changes'}
               </button>
             </div>
           </div>
 
-          {/* Tabs */}
           <div className="flex space-x-8 overflow-x-auto">
             {[
-              'general', 'binding', 'sizes', 'paper-cover', 'paper-inside', 
-              'paper-subscription', 'colors', 'finishes', 'folds', 'additional',
-              'positions', 'quantities', 'pricing'
+              'general', 'binding', 'wire-colors', 'sizes', 'paper-cover', 'paper-inside', 
+              'colors', 'finishes', 'cover-folds', 'additional',
+              'page-counts', 'quantities', 'pricing'
             ].map(tab => (
               <button
                 key={tab}
@@ -348,17 +391,16 @@ export default function WireQuoteFormEditor({ formConfig, onSave }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {preview ? (
           <div className="bg-white rounded-lg shadow-sm border p-6">
-            <h3 className="text-lg font-semibold mb-4">Form Preview</h3>
+            <h3 className="text-lg font-semibold mb-4">Wire Binding Form Preview</h3>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-              <p className="text-gray-500">Form preview would be rendered here</p>
+              <p className="text-gray-500">Wire binding form preview would be rendered here</p>
               <p className="text-sm text-gray-400 mt-2">
-                The actual form component would be rendered using the current configuration
+                Configuration changes will be reflected in the actual wire binding form
               </p>
             </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            {/* Navigation */}
             <div className="lg:col-span-1">
               <div className="bg-white rounded-lg shadow-sm border p-4 sticky top-6">
                 <h3 className="font-semibold text-gray-900 mb-3">Form Sections</h3>
@@ -366,15 +408,15 @@ export default function WireQuoteFormEditor({ formConfig, onSave }) {
                   {[
                     { id: 'general', label: 'General Settings' },
                     { id: 'binding', label: 'Binding Options' },
-                    { id: 'sizes', label: 'Sizes & Dimensions' },
+                    { id: 'wire-colors', label: 'Wire Colors' },
+                    { id: 'sizes', label: 'Size Options' },
                     { id: 'paper-cover', label: 'Cover Paper' },
                     { id: 'paper-inside', label: 'Inside Paper' },
-                    { id: 'paper-subscription', label: 'Subscription Paper' },
                     { id: 'colors', label: 'Color Options' },
                     { id: 'finishes', label: 'Cover Finishes' },
-                    { id: 'folds', label: 'Cover Folds' },
+                    { id: 'cover-folds', label: 'Cover Fold Options' },
                     { id: 'additional', label: 'Additional Services' },
-                    { id: 'positions', label: 'Card Positions' },
+                    { id: 'page-counts', label: 'Page Count Options' },
                     { id: 'quantities', label: 'Quantity Options' },
                     { id: 'pricing', label: 'Pricing Settings' },
                   ].map(section => (
@@ -394,7 +436,6 @@ export default function WireQuoteFormEditor({ formConfig, onSave }) {
               </div>
             </div>
 
-            {/* Editor Content */}
             <div className="lg:col-span-3">
               <div className="bg-white rounded-lg shadow-sm border">
                 <div className="p-6 space-y-6">
@@ -409,10 +450,9 @@ export default function WireQuoteFormEditor({ formConfig, onSave }) {
                           type="text"
                           value={config.general?.title || ''}
                           onChange={(e) => updateNestedConfig('general.title', e.target.value)}
-                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          className="w-full p-3 border border-gray-300 rounded-lg"
                         />
                       </div>
-
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Form Description
@@ -421,10 +461,9 @@ export default function WireQuoteFormEditor({ formConfig, onSave }) {
                           value={config.general?.description || ''}
                           onChange={(e) => updateNestedConfig('general.description', e.target.value)}
                           rows={3}
-                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          className="w-full p-3 border border-gray-300 rounded-lg"
                         />
                       </div>
-
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -434,7 +473,7 @@ export default function WireQuoteFormEditor({ formConfig, onSave }) {
                             type="text"
                             value={config.general?.submitButtonText || ''}
                             onChange={(e) => updateNestedConfig('general.submitButtonText', e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            className="w-full p-3 border border-gray-300 rounded-lg"
                           />
                         </div>
                         <div>
@@ -445,7 +484,7 @@ export default function WireQuoteFormEditor({ formConfig, onSave }) {
                             type="text"
                             value={config.general?.shippingButtonText || ''}
                             onChange={(e) => updateNestedConfig('general.shippingButtonText', e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            className="w-full p-3 border border-gray-300 rounded-lg"
                           />
                         </div>
                       </div>
@@ -455,15 +494,22 @@ export default function WireQuoteFormEditor({ formConfig, onSave }) {
                   {activeTab === 'binding' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Binding Options</h3>
-                      {renderEditableArray('Binding Types', 'bindingTypes', ['value', 'label'])}
-                      {renderEditableArray('Binding Edges', 'bindingEdges', ['value', 'label', 'desc'])}
+                      {renderEditableArray('Binding Types', 'bindingTypes', ['value', 'label', 'link'])}
+                      {renderEditableArray('Binding Edges', 'bindingEdges', ['value', 'label', 'desc', 'image'])}
+                    </>
+                  )}
+
+                  {activeTab === 'wire-colors' && (
+                    <>
+                      <h3 className="text-lg font-semibold text-gray-900">Wire Color Options</h3>
+                      {renderEditableArray('Wire Colors', 'wireColors', ['value', 'label', 'color', 'image'])}
                     </>
                   )}
 
                   {activeTab === 'sizes' && (
                     <>
-                      <h3 className="text-lg font-semibold text-gray-900">Sizes & Dimensions</h3>
-                      {renderSimpleArray('Available Sizes', 'sizes', 'Enter size (e.g., 8.5 x 11)')}
+                      <h3 className="text-lg font-semibold text-gray-900">Size Options</h3>
+                      {renderEditableArray('Available Sizes', 'sizes', ['value', 'label'])}
                       
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -473,49 +519,19 @@ export default function WireQuoteFormEditor({ formConfig, onSave }) {
                           type="text"
                           value={config.customSizeInstructions || ''}
                           onChange={(e) => updateNestedConfig('customSizeInstructions', e.target.value)}
-                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Spine Width Display
-                        </label>
-                        <input
-                          type="text"
-                          value={config.spineWidth || ''}
-                          onChange={(e) => updateNestedConfig('spineWidth', e.target.value)}
-                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          className="w-full p-3 border border-gray-300 rounded-lg"
                         />
                       </div>
                     </>
                   )}
 
-                  {activeTab === 'paper-cover' && (
-                    <>
-                      <h3 className="text-lg font-semibold text-gray-900">Cover Paper Options</h3>
-                      {renderEditableArray('Cover Paper Types', 'paperOptions.cover', ['value', 'label', 'price'])}
-                    </>
-                  )}
-
-                  {activeTab === 'paper-inside' && (
-                    <>
-                      <h3 className="text-lg font-semibold text-gray-900">Inside Paper Options</h3>
-                      {renderEditableArray('Inside Paper Types', 'paperOptions.inside', ['value', 'label', 'price'])}
-                    </>
-                  )}
-
-                  {activeTab === 'paper-subscription' && (
-                    <>
-                      <h3 className="text-lg font-semibold text-gray-900">Subscription Paper Options</h3>
-                      {renderEditableArray('Subscription Paper Types', 'paperOptions.subscription', ['value', 'label', 'price'])}
-                    </>
-                  )}
+                  {activeTab === 'paper-cover' && renderPaperOptions('cover')}
+                  {activeTab === 'paper-inside' && renderPaperOptions('inside')}
 
                   {activeTab === 'colors' && (
                     <>
-                      <h3 className="text-lg font-semibold text-gray-900">Print Color Options</h3>
-                      {renderEditableArray('Print Colors', 'printColors', ['value', 'label', 'price'])}
+                      <h3 className="text-lg font-semibold text-gray-900">Color Options</h3>
+                      {renderEditableArray('Print Colors', 'printColors', ['value', 'label', 'description'])}
                     </>
                   )}
 
@@ -526,59 +542,100 @@ export default function WireQuoteFormEditor({ formConfig, onSave }) {
                     </>
                   )}
 
-                  {activeTab === 'folds' && (
+                  {activeTab === 'cover-folds' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Cover Fold Options</h3>
-                      {renderEditableArray('Cover Folds', 'coverFolds', ['value', 'label', 'price'])}
+                      {renderEditableArray('Cover Folds', 'coverFolds', ['value', 'label'])}
                     </>
                   )}
 
                   {activeTab === 'additional' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Additional Services</h3>
-                      
                       <div className="space-y-6">
-                        <div>
-                          <h4 className="font-medium text-gray-700 mb-3">Proof Options</h4>
-                          {renderEditableArray('additionalOptions.proof', 'additionalOptions.proof', ['value', 'label', 'price'])}
-                        </div>
-
-                        <div>
-                          <h4 className="font-medium text-gray-700 mb-3">Hole Punch Options</h4>
-                          {renderEditableArray('additionalOptions.holePunch', 'additionalOptions.holePunch', ['value', 'label', 'price'])}
-                        </div>
-
-                        <div>
-                          <h4 className="font-medium text-gray-700 mb-3">Slipcase Options</h4>
-                          {renderEditableArray('additionalOptions.slipcase', 'additionalOptions.slipcase', ['value', 'label', 'price'])}
-                        </div>
-
-                        <div>
-                          <h4 className="font-medium text-gray-700 mb-3">Shrink Wrap Options</h4>
-                          {renderEditableArray('additionalOptions.shrinkWrap', 'additionalOptions.shrinkWrap', ['value', 'label', 'price'])}
-                        </div>
-
-                        <div>
-                          <h4 className="font-medium text-gray-700 mb-3">Direct Mail Options</h4>
-                          {renderEditableArray('additionalOptions.directMail', 'additionalOptions.directMail', ['value', 'label', 'price'])}
-                        </div>
+                        {renderAdditionalOptions('proof')}
+                        {renderAdditionalOptions('holePunch')}
+                        {renderAdditionalOptions('slipcase')}
+                        {renderAdditionalOptions('shrinkWrap')}
+                        {renderAdditionalOptions('directMail')}
                       </div>
                     </>
                   )}
 
-                  {activeTab === 'positions' && (
+                  {activeTab === 'page-counts' && (
                     <>
-                      <h3 className="text-lg font-semibold text-gray-900">Subscription Card Positions</h3>
-                      {renderEditableArray('Card Positions', 'positions', ['value', 'label'])}
-                      
-                      <div className="mt-6">
-                        <h4 className="font-medium text-gray-700 mb-3">Page Count Options</h4>
-                        {renderSimpleArray('Page Counts', 'pageCounts', 'Enter page count')}
+                      <h3 className="text-lg font-semibold text-gray-900">Page Count Options</h3>
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                          <h4 className="font-medium text-gray-700">Page Counts</h4>
+                          <button
+                            onClick={() => addArrayItem('pageCounts', '')}
+                            className="flex items-center px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700"
+                          >
+                            <Plus size={14} className="mr-1" />
+                            Add Page Count
+                          </button>
+                        </div>
+                        <div className="space-y-2">
+                          {config.pageCounts?.map((count, index) => (
+                            <div key={index} className="flex space-x-2">
+                              <input
+                                type="number"
+                                value={count}
+                                onChange={(e) => {
+                                  const newArray = [...config.pageCounts];
+                                  newArray[index] = parseInt(e.target.value) || 0;
+                                  updateNestedConfig('pageCounts', newArray);
+                                }}
+                                className="w-32 p-2 border border-gray-300 rounded text-sm"
+                                placeholder="Page count"
+                              />
+                              <button
+                                onClick={() => removeArrayItem('pageCounts', index)}
+                                className="p-2 text-red-600 hover:bg-red-50 rounded"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
                       </div>
 
                       <div className="mt-6">
                         <h4 className="font-medium text-gray-700 mb-3">Weight Options</h4>
-                        {renderSimpleArray('Weight Options', 'weightOptions', 'Enter weight (gsm)')}
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm text-gray-600">Available GSM weights</span>
+                          <button
+                            onClick={() => addArrayItem('weightOptions', '')}
+                            className="flex items-center px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700"
+                          >
+                            <Plus size={14} className="mr-1" />
+                            Add Weight
+                          </button>
+                        </div>
+                        <div className="space-y-2">
+                          {config.weightOptions?.map((weight, index) => (
+                            <div key={index} className="flex space-x-2">
+                              <input
+                                type="text"
+                                value={weight}
+                                onChange={(e) => {
+                                  const newArray = [...config.weightOptions];
+                                  newArray[index] = e.target.value;
+                                  updateNestedConfig('weightOptions', newArray);
+                                }}
+                                className="w-32 p-2 border border-gray-300 rounded text-sm"
+                                placeholder="e.g., 120"
+                              />
+                              <button
+                                onClick={() => removeArrayItem('weightOptions', index)}
+                                className="p-2 text-red-600 hover:bg-red-50 rounded"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </>
                   )}
@@ -586,14 +643,47 @@ export default function WireQuoteFormEditor({ formConfig, onSave }) {
                   {activeTab === 'quantities' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Quantity Options</h3>
-                      {renderSimpleArray('Available Quantities', 'quantities', 'Enter quantity')}
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                          <h4 className="font-medium text-gray-700">Available Quantities</h4>
+                          <button
+                            onClick={() => addArrayItem('quantities', '')}
+                            className="flex items-center px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700"
+                          >
+                            <Plus size={14} className="mr-1" />
+                            Add Quantity
+                          </button>
+                        </div>
+                        <div className="space-y-2">
+                          {config.quantities?.map((qty, index) => (
+                            <div key={index} className="flex space-x-2">
+                              <input
+                                type="number"
+                                value={qty}
+                                onChange={(e) => {
+                                  const newArray = [...config.quantities];
+                                  newArray[index] = parseInt(e.target.value) || 0;
+                                  updateNestedConfig('quantities', newArray);
+                                }}
+                                className="w-32 p-2 border border-gray-300 rounded text-sm"
+                                placeholder="Quantity"
+                              />
+                              <button
+                                onClick={() => removeArrayItem('quantities', index)}
+                                className="p-2 text-red-600 hover:bg-red-50 rounded"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </>
                   )}
 
                   {activeTab === 'pricing' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Pricing Settings</h3>
-                      
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -606,7 +696,6 @@ export default function WireQuoteFormEditor({ formConfig, onSave }) {
                             className="w-full p-3 border border-gray-300 rounded-lg"
                           />
                         </div>
-
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             Cost Per Page ($)
@@ -619,7 +708,17 @@ export default function WireQuoteFormEditor({ formConfig, onSave }) {
                             className="w-full p-3 border border-gray-300 rounded-lg"
                           />
                         </div>
-
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Wire Binding Base Cost ($)
+                          </label>
+                          <input
+                            type="number"
+                            value={config.pricing?.wireBindingBaseCost || 0}
+                            onChange={(e) => updateNestedConfig('pricing.wireBindingBaseCost', parseFloat(e.target.value) || 0)}
+                            className="w-full p-3 border border-gray-300 rounded-lg"
+                          />
+                        </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             Custom Size Multiplier
@@ -632,7 +731,6 @@ export default function WireQuoteFormEditor({ formConfig, onSave }) {
                             className="w-full p-3 border border-gray-300 rounded-lg"
                           />
                         </div>
-
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
                             Standard Size Multiplier

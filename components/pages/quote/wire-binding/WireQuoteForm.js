@@ -1,12 +1,10 @@
-// components/pages/quote/wire-binding/WireQuoteForm.js
-import React, { useState, useCallback, useEffect } from 'react';
-import Link from 'next/link';
+'use client';
+import { useState, useCallback, useEffect } from 'react';
 
-// ===== WIRE-BINDING-SPECIFIC DEFAULT CONFIG =====
 const WIREQUOTE_DEFAULT_CONFIG = {
   general: {
-    title: "Wire Binding Book Printing Quote",
-    description: "Configure your perfect wire bound book with our professional printing services. Get instant pricing and add to cart in minutes.",
+    title: "Wire Binding Printing Quote",
+    description: "Configure your professional wire-bound documents with our instant quoting system. Perfect for reports, manuals, and presentations.",
     submitButtonText: "Add to Cart",
     shippingButtonText: "Calculate Shipping"
   },
@@ -16,53 +14,74 @@ const WIREQUOTE_DEFAULT_CONFIG = {
     { value: 'HARDCOVER', label: 'Hardcover Book', link: '/hardcover-book' },
     { value: 'WIRE', label: 'Wire Binding', link: '/wire-binding' },
   ],
-  sizes: ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', '8.5 x 5.5', '10 x 7.5', '11 x 8.5', 'Custom Size'],
+  sizes: [
+    { value: '8.5x11-letter', label: '8.5" x 11" (Letter)' },
+    { value: '8.5x11-standard', label: '8.5" x 11"' },
+    { value: '5.5x8.5', label: '5.5" x 8.5" (Half Letter)' },
+    { value: '6x9', label: '6" x 9"' },
+    { value: '7x10', label: '7" x 10"' },
+    { value: '9x12', label: '9" x 12"' },
+    { value: 'custom', label: 'Custom Size' }
+  ],
   bindingEdges: [
-    { value: 'LEFT', label: 'Left Side', desc: 'Binding on the left, most common' },
-    { value: 'RIGHT', label: 'Right Side', desc: 'First inside page starts from the right' },
-    { value: 'TOP', label: 'Top Side', desc: 'Binding on the top, a.k.a calendar binding' },
+    { 
+      value: 'LEFT', 
+      label: 'Left Side', 
+      desc: 'Binding on the left, most common',
+      image: '/asset/images/quote/edge01.png'
+    },
+    { 
+      value: 'RIGHT', 
+      label: 'Right Side', 
+      desc: 'First inside page starts from the right',
+      image: '/asset/images/quote/edge02.png'
+    },
+    { 
+      value: 'TOP', 
+      label: 'Top Side', 
+      desc: 'Binding on the top, a.k.a calendar binding',
+      image: '/asset/images/quote/edge03.png'
+    },
+  ],
+  wireColors: [
+    { value: 'BLACK', label: 'Black', color: '#000000', image: '/asset/images/quote/color_paper/wire_black.png' },
+    { value: 'WHITE', label: 'White', color: '#ffffff', image: '/asset/images/quote/color_paper/wire_white.png' },
+    { value: 'SILVER', label: 'Silver', color: '#c0c0c0', image: '/asset/images/quote/color_paper/wire_silver.png' },
+    { value: 'GOLD', label: 'Gold', color: '#ffd700', image: '/asset/images/quote/color_paper/wire_gold.png' },
+    { value: 'TBD', label: 'To be determined', color: '#cccccc' }
   ],
   paperOptions: {
     cover: [
-      { value: 'MATTE', label: 'Matte', price: 0 },
-      { value: 'GLOSS', label: 'Gloss', price: 0 },
-      { value: 'HI-PLUS', label: 'Hi-Plus', price: 50 },
-      { value: 'HI-QMATTE', label: 'Hi-Q Matte', price: 100 },
-      { value: 'PREMIUM', label: 'Premium', price: 150 },
+      { value: 'MATTE', label: 'Matte', gsm: ['200', '250', '300'] },
+      { value: 'GLOSS', label: 'Gloss', gsm: ['200', '250', '300'] },
+      { value: 'HI-QMYSTIC', label: 'Hi-Q Mystic', gsm: ['200', '250'] },
+      { value: 'UNCOATED_W', label: 'Uncoated White', gsm: ['200', '250'] }
     ],
     inside: [
-      { value: 'GLOSS', label: 'Gloss', price: 0 },
-      { value: 'MATTE', label: 'Matte', price: 0 },
-      { value: 'HI-PLUS', label: 'Hi-Plus', price: 25 },
-      { value: 'UNCOATED', label: 'Uncoated', price: 0 },
-      { value: 'TEXTBOOK', label: 'Textbook', price: 30 },
-      { value: 'COLORED', label: 'Colored', price: 40 },
-    ],
-    subscription: [
-      { value: 'MATTE', label: 'Matte', price: 0 },
-      { value: 'HI-QMATTE', label: 'Hi-Q Matte', price: 25 },
-      { value: 'UNCOATED_W', label: 'Uncoated', price: 0 },
-      { value: 'MONTBLANC_EW', label: 'Premium', price: 50 },
+      { value: 'MATTE', label: 'Matte', gsm: ['80', '100', '120'] },
+      { value: 'GLOSS', label: 'Gloss', gsm: ['80', '100', '120'] },
+      { value: 'HI-PLUS', label: 'Hi-Plus', gsm: ['80', '100'] },
+      { value: 'UNCOATED_W', label: 'Uncoated White', gsm: ['80', '100'] }
     ]
   },
   printColors: [
-    { value: 'CMYK', label: 'Full color', price: 0 },
-    { value: 'CMYK_PMS1', label: 'Full color + 1 Spot color', price: 75 },
-    { value: 'CMYK_PMS2', label: 'Full color + 2 Spot color', price: 150 },
-    { value: 'BW', label: 'Black only', price: -100 },
-    { value: 'BW_PMS1', label: 'Black + 1 Spot color', price: -25 },
-    { value: 'BW_PMS2', label: 'Black + 2 Spot color', price: 50 },
+    { value: 'CMYK', label: 'Full color', description: 'Full color' },
+    { value: 'CMYK_PMS1', label: 'Full color + 1 Spot color', description: 'Full color + 1 Spot color' },
+    { value: 'CMYK_PMS2', label: 'Full color + 2 Spot color', description: 'Full color + 2 Spot color' },
+    { value: 'BW', label: 'Black only', description: 'Black only' },
+    { value: 'BW_PMS1', label: 'Black + 1 Spot color', description: 'Black + 1 Spot color' },
+    { value: 'BW_PMS2', label: 'Black + 2 Spot color', description: 'Black + 2 Spot color' }
   ],
   coverFinishes: [
-    { value: 'MATTE', label: 'Matte lamination', price: 50 },
-    { value: 'GLOSS', label: 'Gloss lamination', price: 50 },
     { value: 'NONE', label: 'None', price: 0 },
+    { value: 'MATTE', label: 'Matte Lamination', price: 40 },
+    { value: 'GLOSS', label: 'Gloss Lamination', price: 40 },
   ],
   coverFolds: [
-    { value: 'NONE', label: 'No fold', price: 0 },
-    { value: 'FRONT', label: 'Front cover fold', price: 25 },
-    { value: 'BACK', label: 'Back cover fold', price: 25 },
-    { value: 'BOTH', label: 'Both cover folds', price: 40 },
+    { value: '', label: 'No fold' },
+    { value: 'FRONT', label: 'Front cover fold' },
+    { value: 'BACK', label: 'Back cover fold' },
+    { value: 'BOTH', label: 'Both cover folds' },
   ],
   additionalOptions: {
     proof: [
@@ -70,12 +89,11 @@ const WIREQUOTE_DEFAULT_CONFIG = {
       { value: 'DIGITAL', label: 'Digital Proof', price: 50 },
     ],
     holePunch: [
-      { value: '6', label: '0.236" (6mm) drill', price: 15 },
-      { value: '8', label: '0.315" (8mm) drill', price: 20 },
-      { value: '9.5', label: '0.374" (9.5mm) drill', price: 25 },
+      { value: '6', label: '0.236"(6mm) drill - Most commonly used size for wall calendar', price: 15 },
+      { value: '8', label: '0.315"(8mm) drill - Most selected for binder holes', price: 20 },
+      { value: '9.5', label: '0.374"(9.5mm) drill - Used for binders and etc.', price: 25 },
     ],
     slipcase: [
-      { value: 'NONE', label: 'None', price: 0 },
       { value: 'CASE', label: 'Slipcase only', price: 80 },
       { value: 'CASEPRINT', label: 'Slipcase + printing', price: 150 },
     ],
@@ -91,30 +109,29 @@ const WIREQUOTE_DEFAULT_CONFIG = {
   },
   positions: [
     { value: 'FRONT', label: 'Before page 1' },
-    { value: 'BACK', label: 'After page 96' },
+    { value: 'BACK', label: 'After last page' },
     { value: 'SELECT', label: 'Front of page no.' },
   ],
-  pageCounts: Array.from({ length: (880 - 24) / 2 + 1 }, (_, i) => 24 + i * 2),
-  weightOptions: ['100', '120', '150', '250', '300'],
-  quantities: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
+  pageCounts: [24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 148, 152, 156, 160],
+  weightOptions: ['80', '100', '120', '150', '200', '250', '300'],
+  quantities: [200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000],
   customSizeInstructions: "📏 Minimum: 4\" × 4\" | Maximum: 11.8\" × 14.3\"",
-  spineWidth: '0.178"',
   pricing: {
     baseSetupCost: 200,
-    costPerPage: 0.05,
+    costPerPage: 0.06,
     customSizeMultiplier: 1.2,
-    standardSizeMultiplier: 1.1
+    standardSizeMultiplier: 1.1,
+    wireBindingBaseCost: 80
   }
 };
 
-// ===== UTILITY FUNCTIONS =====
-const getPricingData = (basePrice = 2340) => {
-  const quantities = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+const getPricingData = (basePrice = 1200) => {
+  const quantities = [200, 300, 400, 500, 600, 700, 800, 900, 1000];
   return quantities.map((qty, index) => ({
     quantity: qty,
-    price: `$${Math.round(basePrice * (1 + index * 0.05)).toLocaleString()}`,
-    pricePerCopy: `$${(Math.round(basePrice * (1 + index * 0.05)) / qty).toFixed(2)}`,
-    time: '5 business days'
+    price: `$${Math.round(basePrice * (1 + index * 0.04)).toLocaleString()}`,
+    pricePerCopy: `$${(Math.round(basePrice * (1 + index * 0.04)) / qty).toFixed(2)}`,
+    time: '10-12 business days'
   }));
 };
 
@@ -126,7 +143,6 @@ const getOptionPrice = (options, selectedValue) => {
 
 const formatCurrency = (amount) => `$${amount.toFixed(2)}`;
 
-// ===== REUSABLE COMPONENTS =====
 const RadioGroup = ({ label, name, options, selected, onChange, className = "" }) => (
   <div className={`flex items-center space-x-4 ${className}`}>
     <p className="text-sm font-semibold text-gray-700 min-w-20">{label}:</p>
@@ -169,6 +185,7 @@ const SelectDropdown = ({ label, options, selected, onChange, className = "", di
         disabled={disabled}
         className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
       >
+        <option value="">Choose...</option>
         {options && options.map((option, index) => {
           let value, labelText;
           
@@ -214,171 +231,80 @@ const ToggleOption = ({ label, enabled, onToggle, children, className = "" }) =>
   </div>
 );
 
-const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, positions }) => {
-  const handleChange = (field, value) => {
-    onUpdate(index, { ...card, [field]: value });
-  };
-
-  const handleNumberInput = (field, value) => {
-    if (value === '' || /^\d*\.?\d*$/.test(value)) {
-      handleChange(field, value);
-    }
-  };
-
-  return (
-    <div className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-xl border border-gray-200 shadow-sm mt-6">
-      <div className="flex justify-between items-center mb-6">
-        <h4 className="text-lg font-bold text-gray-800">Subscription Card {index + 1}</h4>
-        <button 
-          onClick={() => onRemove(index)}
-          className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-          aria-label="Remove subscription card"
+const BindingEdgeSelector = ({ label, options, selected, onChange, className = "" }) => (
+  <div className={className}>
+    {label && <p className="text-sm font-semibold mb-3 text-gray-700">{label}</p>}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {options && options.map((option) => (
+        <div
+          key={option.value}
+          className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+            selected === option.value
+              ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-500 ring-opacity-20'
+              : 'border-gray-200 hover:border-gray-300'
+          }`}
+          onClick={() => onChange({ target: { value: option.value } })}
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-
-      <div className="space-y-6">
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-3">Size</label>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <input
-                type="text"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                placeholder="Width"
-                value={card.width}
-                onChange={(e) => handleNumberInput('width', e.target.value)}
+          <div className="flex items-center space-x-3">
+            {option.image && (
+              <img 
+                src={option.image} 
+                alt={option.label}
+                className="w-12 h-12 object-contain"
               />
-            </div>
-            <div>
-              <input
-                type="text"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                placeholder="Height"
-                value={card.height}
-                onChange={(e) => handleNumberInput('height', e.target.value)}
-              />
-              <p className="text-xs text-gray-500 mt-1">Enter dimensions in inches</p>
+            )}
+            <div className="flex-1">
+              <p className="font-semibold text-gray-900 text-sm">{option.label}</p>
+              <p className="text-xs text-gray-600 mt-1">{option.desc}</p>
             </div>
           </div>
         </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-3">Position</label>
-          <div className="grid grid-cols-2 gap-4">
-            <SelectDropdown
-              options={positions && positions.map(opt => ({
-                ...opt,
-                label: opt.value === 'BACK' ? `After page ${pageCount}` : opt.label
-              }))}
-              selected={card.position}
-              onChange={(e) => handleChange('position', e.target.value)}
-            />
-            <input
-              type="text"
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition disabled:bg-gray-100"
-              placeholder="Page number"
-              value={card.selectedPage}
-              onChange={(e) => handleNumberInput('selectedPage', e.target.value)}
-              disabled={card.position !== 'SELECT'}
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-3">Paper</label>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <SelectDropdown
-              options={[{ value: '', label: 'Paper Type' }]}
-              selected={card.paper}
-              onChange={(e) => handleChange('paper', e.target.value)}
-            />
-            <SelectDropdown
-              options={[{ value: '', label: 'Paper Type' }]}
-              selected={card.subname}
-              onChange={(e) => handleChange('subname', e.target.value)}
-            />
-            <SelectDropdown
-              options={[{ value: '', label: 'Color' }]}
-              selected={card.color}
-              onChange={(e) => handleChange('color', e.target.value)}
-            />
-            <SelectDropdown
-              options={[{ value: '', label: 'GSM' }]}
-              selected={card.gsm}
-              onChange={(e) => handleChange('gsm', e.target.value)}
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-3">Print Color</label>
-          <SelectDropdown
-            options={[{ value: 'CMYK', label: 'Full Color' }]}
-            selected={card.printColor}
-            onChange={(e) => handleChange('printColor', e.target.value)}
-          />
-        </div>
-      </div>
+      ))}
     </div>
-  );
-};
+  </div>
+);
 
-// ===== MAIN COMPONENT =====
 const WireQuoteForm = () => {
-  // Configuration state
   const [formConfig, setFormConfig] = useState(WIREQUOTE_DEFAULT_CONFIG);
   const [loading, setLoading] = useState(true);
   const [configVersion, setConfigVersion] = useState(0);
 
-  // Form State Management
-  const [bindingType, setBindingType] = useState('WIRE');
   const [sizeUnit, setSizeUnit] = useState('INCH');
   const [paperUnit, setPaperUnit] = useState('US');
-  const [selectedSize, setSelectedSize] = useState('8.5 x 11');
+  const [selectedSize, setSelectedSize] = useState('8.5x11-standard');
   const [customWidth, setCustomWidth] = useState('');
   const [customHeight, setCustomHeight] = useState('');
   const [bindingEdge, setBindingEdge] = useState('LEFT');
+  const [wireColor, setWireColor] = useState('BLACK');
   
-  // Cover State
   const [coverPaper, setCoverPaper] = useState('MATTE');
-  const [coverWeight, setCoverWeight] = useState('250');
+  const [coverWeight, setCoverWeight] = useState('300');
   const [coverColor, setCoverColor] = useState('CMYK');
-  const [coverFinish, setCoverFinish] = useState('MATTE');
-  const [coverFold, setCoverFold] = useState('NONE');
+  const [coverFinish, setCoverFinish] = useState('NONE');
+  const [coverFold, setCoverFold] = useState('');
   const [foldWidth, setFoldWidth] = useState('');
-  const [isDustCoverEnabled, setIsDustCoverEnabled] = useState(false);
-
-  // Inside Page State
+  
   const [pageCount, setPageCount] = useState(96);
   const [insidePaper, setInsidePaper] = useState('MATTE');
   const [insideWeight, setInsideWeight] = useState('100');
   const [insideColor, setInsideColor] = useState('CMYK');
   
-  // Subscription Cards State
-  const [subscriptionCards, setSubscriptionCards] = useState([]);
-
-  // Quantity & Options State
   const [quantity, setQuantity] = useState(200);
-  const [selectedQuantityIndex, setSelectedQuantityIndex] = useState(1);
+  const [selectedQuantityIndex, setSelectedQuantityIndex] = useState(0);
   const [proof, setProof] = useState('ONLINE');
   const [holePunching, setHolePunching] = useState({ enabled: false, type: '6' });
-  const [slipcase, setSlipcase] = useState('NONE');
+  const [slipcase, setSlipcase] = useState('');
   const [shrinkWrapping, setShrinkWrapping] = useState({ enabled: false, type: '1' });
   const [directMailing, setDirectMailing] = useState({ enabled: false, type: 'ALL' });
+  const [isDustCoverEnabled, setIsDustCoverEnabled] = useState(false);
 
-  // Derived State
-  const isCustomSize = selectedSize === 'Custom Size';
+  const isCustomSize = selectedSize === 'custom';
   const [pricingData, setPricingData] = useState(getPricingData());
 
-  // ===== FIXED: Fetch form configuration =====
   const fetchFormConfig = async () => {
     try {
       console.log('🔄 Fetching wire binding form configuration from API...');
-      const res = await fetch('/api/forms/wire-quote'); // Wire quote endpoint
+      const res = await fetch('/api/admin/forms/wire-quote');
       
       if (res.ok) {
         const apiConfig = await res.json();
@@ -429,26 +355,24 @@ const WireQuoteForm = () => {
     fetchFormConfig();
   }, [configVersion]);
 
-  // Configuration constants
   const BINDING_TYPES = formConfig?.bindingTypes || WIREQUOTE_DEFAULT_CONFIG.bindingTypes;
   const SIZES = formConfig?.sizes || WIREQUOTE_DEFAULT_CONFIG.sizes;
   const BINDING_EDGES = formConfig?.bindingEdges || WIREQUOTE_DEFAULT_CONFIG.bindingEdges;
+  const WIRE_COLORS = formConfig?.wireColors || WIREQUOTE_DEFAULT_CONFIG.wireColors;
   const PAPER_OPTIONS = formConfig?.paperOptions || WIREQUOTE_DEFAULT_CONFIG.paperOptions;
   const PRINT_COLORS = formConfig?.printColors || WIREQUOTE_DEFAULT_CONFIG.printColors;
   const COVER_FINISHES = formConfig?.coverFinishes || WIREQUOTE_DEFAULT_CONFIG.coverFinishes;
   const COVER_FOLDS = formConfig?.coverFolds || WIREQUOTE_DEFAULT_CONFIG.coverFolds;
   const ADDITIONAL_OPTIONS = formConfig?.additionalOptions || WIREQUOTE_DEFAULT_CONFIG.additionalOptions;
-  const POSITIONS = formConfig?.positions || WIREQUOTE_DEFAULT_CONFIG.positions;
   const PAGE_COUNTS = formConfig?.pageCounts || WIREQUOTE_DEFAULT_CONFIG.pageCounts;
   const WEIGHT_OPTIONS = formConfig?.weightOptions || WIREQUOTE_DEFAULT_CONFIG.weightOptions;
   const QUANTITIES = formConfig?.quantities || WIREQUOTE_DEFAULT_CONFIG.quantities;
 
   const generalSettings = formConfig?.general || WIREQUOTE_DEFAULT_CONFIG.general;
   const customSizeInstructions = formConfig?.customSizeInstructions || WIREQUOTE_DEFAULT_CONFIG.customSizeInstructions;
-  const spineWidth = formConfig?.spineWidth || WIREQUOTE_DEFAULT_CONFIG.spineWidth;
 
   useEffect(() => {
-    console.log('🔍 DEBUG - Current Configuration:', {
+    console.log('🔍 DEBUG - Current Wire Binding Configuration:', {
       title: generalSettings.title,
       description: generalSettings.description,
       hasCustomConfig: formConfig !== WIREQUOTE_DEFAULT_CONFIG,
@@ -457,11 +381,10 @@ const WireQuoteForm = () => {
   }, [formConfig, generalSettings]);
 
   const refreshConfig = () => {
-    console.log('🔄 Manually refreshing configuration...');
+    console.log('🔄 Manually refreshing wire binding configuration...');
     setConfigVersion(prev => prev + 1);
   };
 
-  // Handlers
   const handleNumberInput = (setter) => (e) => {
     const value = e.target.value;
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
@@ -495,50 +418,26 @@ const WireQuoteForm = () => {
     setQuantity(pricingData[index].quantity);
   };
 
-  // Subscription Card Management
-  const addSubscriptionCard = () => {
-    if (subscriptionCards.length < 10) {
-      const newCard = {
-        id: Date.now(),
-        width: '', height: '', position: '', selectedPage: '',
-        paper: '', subname: '', color: '', gsm: '', printColor: 'CMYK'
-      };
-      setSubscriptionCards([...subscriptionCards, newCard]);
-    }
-  };
-
-  const updateSubscriptionCard = (index, updatedCard) => {
-    const updatedCards = [...subscriptionCards];
-    updatedCards[index] = updatedCard;
-    setSubscriptionCards(updatedCards);
-  };
-
-  const removeSubscriptionCard = (index) => {
-    setSubscriptionCards(subscriptionCards.filter((_, i) => i !== index));
-  };
-
-  // Price Calculation
   const calculatePricing = useCallback(() => {
-    const baseCostPerPage = formConfig?.pricing?.costPerPage || 0.05;
+    const baseCostPerPage = formConfig?.pricing?.costPerPage || 0.06;
     const baseSetupCost = formConfig?.pricing?.baseSetupCost || 200;
+    const wireBindingBaseCost = formConfig?.pricing?.wireBindingBaseCost || 80;
     const customSizeMultiplier = formConfig?.pricing?.customSizeMultiplier || 1.2;
     const standardSizeMultiplier = formConfig?.pricing?.standardSizeMultiplier || 1.1;
     
-    let basePrintCost = baseSetupCost + (pageCount * baseCostPerPage * quantity);
+    let basePrintCost = baseSetupCost + wireBindingBaseCost + (pageCount * baseCostPerPage * quantity);
     
     if (isCustomSize) basePrintCost *= customSizeMultiplier;
-    else if (selectedSize !== '8.5 x 11') basePrintCost *= standardSizeMultiplier;
+    else if (selectedSize !== '8.5x11-standard') basePrintCost *= standardSizeMultiplier;
     
-    const coverPaperCost = getOptionPrice(PAPER_OPTIONS.cover, coverPaper);
-    const insidePaperCost = getOptionPrice(PAPER_OPTIONS.inside, insidePaper);
+    const coverPaperCost = 0;
+    const insidePaperCost = 0;
     const coverColorCost = getOptionPrice(PRINT_COLORS, coverColor);
     const insideColorCost = getOptionPrice(PRINT_COLORS, insideColor);
     const coverFinishCost = getOptionPrice(COVER_FINISHES, coverFinish);
-    const coverFoldCost = getOptionPrice(COVER_FOLDS, coverFold);
     const proofCost = getOptionPrice(ADDITIONAL_OPTIONS.proof, proof);
     const holePunchCost = holePunching.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.holePunch, holePunching.type) : 0;
-    const dustCoverCost = isDustCoverEnabled ? 100 + (quantity * 0.25) : 0;
-    const subscriptionCardCost = subscriptionCards.length * (25 + (quantity * 0.02));
+    const dustCoverCost = isDustCoverEnabled ? 80 + (quantity * 0.20) : 0;
     const slipcaseCost = getOptionPrice(ADDITIONAL_OPTIONS.slipcase, slipcase);
     const shrinkWrapUnitCost = shrinkWrapping.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.shrinkWrap, shrinkWrapping.type) : 0;
     const shrinkWrapCost = shrinkWrapping.enabled ? quantity * shrinkWrapUnitCost : 0;
@@ -546,60 +445,53 @@ const WireQuoteForm = () => {
     const directMailCost = directMailing.enabled ? quantity * directMailUnitCost : 0;
 
     const materialCost = coverPaperCost + insidePaperCost;
-    const colorCost = coverColorCost + insideColorCost;
-    const coverCost = coverFinishCost + coverFoldCost;
-    const additionalServicesCost = proofCost + holePunchCost + dustCoverCost + subscriptionCardCost + 
-                                 slipcaseCost + shrinkWrapCost + directMailCost;
+    const colorCost = coverColorCost + insideColorCost + coverFinishCost;
+    const additionalServicesCost = proofCost + holePunchCost + dustCoverCost + slipcaseCost + shrinkWrapCost + directMailCost;
 
-    const totalAmount = basePrintCost + materialCost + colorCost + coverCost + additionalServicesCost;
+    const totalAmount = basePrintCost + materialCost + colorCost + additionalServicesCost;
 
     return {
       basePrinting: basePrintCost,
       materials: materialCost,
       color: colorCost,
-      cover: coverCost,
       proof: proofCost,
       holePunching: holePunchCost,
       dustCover: dustCoverCost,
-      subscriptionCards: subscriptionCardCost,
       slipcase: slipcaseCost,
       shrinkWrapping: shrinkWrapCost,
       directMailing: directMailCost,
       total: totalAmount,
     };
-  }, [pageCount, quantity, selectedSize, isCustomSize, coverPaper, insidePaper, 
-      coverColor, insideColor, coverFinish, coverFold, proof, holePunching,
-      isDustCoverEnabled, subscriptionCards.length, slipcase, shrinkWrapping, directMailing, formConfig]);
+  }, [pageCount, quantity, selectedSize, isCustomSize, coverColor, insideColor, coverFinish, proof, holePunching, isDustCoverEnabled, slipcase, shrinkWrapping, directMailing, formConfig]);
 
   const prices = calculatePricing();
 
   useEffect(() => {
-    const newBasePrice = 1000 + (pageCount * 3) + (quantity * 0.8);
+    const newBasePrice = 800 + (pageCount * 3) + (quantity * 0.8);
     setPricingData(getPricingData(newBasePrice));
   }, [pageCount, quantity]);
 
   const handleAddToCart = () => {
     const formData = {
-      bindingType, sizeUnit, paperUnit, selectedSize,
+      sizeUnit, paperUnit, selectedSize,
       customSize: isCustomSize ? { width: customWidth, height: customHeight } : null,
-      bindingEdge, spineWidth,
-      cover: { paper: coverPaper, weight: coverWeight, color: coverColor, finish: coverFinish, 
-               fold: coverFold, foldWidth, dustCover: isDustCoverEnabled },
-      inside: { pageCount, paper: insidePaper, weight: insideWeight, color: insideColor, subscriptionCards },
+      bindingEdge, wireColor,
+      cover: { paper: coverPaper, weight: coverWeight, color: coverColor, finish: coverFinish, fold: coverFold, foldWidth },
+      inside: { pageCount, paper: insidePaper, weight: insideWeight, color: insideColor },
       quantity,
-      options: { proof, holePunching, slipcase, shrinkWrapping, directMailing },
+      options: { proof, holePunching, slipcase, shrinkWrapping, directMailing, dustCover: isDustCoverEnabled },
       totalAmount: prices.total.toFixed(2),
     };
     
-    console.log("Form Data Submitted:", formData);
-    alert(`Order added to cart! Total Price: ${formatCurrency(prices.total)}`);
+    console.log("Wire Binding Form Data Submitted:", formData);
+    alert(`Wire-bound document added to cart! Total Price: ${formatCurrency(prices.total)}`);
   };
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-8 border-b-2 border-indigo-600"></div>
-        <p className="ml-4 text-gray-600">Loading form configuration...</p>
+        <p className="ml-4 text-gray-600">Loading wire binding form configuration...</p>
       </div>
     );
   }
@@ -608,11 +500,10 @@ const WireQuoteForm = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-7xl mx-auto">
         
-        {/* Configuration Status */}
         <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
           <div className="flex justify-between items-center">
             <span className="text-sm text-blue-700">
-              {formConfig === WIREQUOTE_DEFAULT_CONFIG ? 'Using default configuration' : 'Using live configuration from editor'}
+              {formConfig === WIREQUOTE_DEFAULT_CONFIG ? 'Using default wire binding configuration' : 'Using live configuration from editor'}
             </span>
             <button 
               onClick={refreshConfig}
@@ -623,7 +514,6 @@ const WireQuoteForm = () => {
           </div>
         </div>
 
-        {/* Header Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             {generalSettings.title}
@@ -633,7 +523,6 @@ const WireQuoteForm = () => {
           </p>
         </div>
 
-        {/* Unit Selection */}
         <div className="mb-12 bg-white rounded-2xl shadow-lg p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Measurement Units</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -651,7 +540,7 @@ const WireQuoteForm = () => {
                 { value: 'GSM', label: 'Grammage (gsm)' },
                 { value: 'US', label: 'US Weight (lb)' },
                 { value: 'PT', label: 'Caliper (point)' },
-                { value: 'JAPAN', label: 'Japan Weight (kg)' },
+                { value: 'KG', label: 'Japan Weight (kg)' },
               ]}
               selected={paperUnit}
               onChange={(e) => setPaperUnit(e.target.value)}
@@ -660,13 +549,9 @@ const WireQuoteForm = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
-          {/* Left & Middle Columns */}
           <div className="lg:col-span-2 space-y-8">
             
-            {/* Size & Binding Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Size Selection */}
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                   <svg className="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -676,11 +561,11 @@ const WireQuoteForm = () => {
                 </h3>
                 <SelectDropdown
                   label="Select Standard Size"
-                  options={SIZES.map(s => ({ value: s, label: s }))}
+                  options={SIZES}
                   selected={selectedSize}
                   onChange={(e) => {
                     setSelectedSize(e.target.value);
-                    if (e.target.value !== 'Custom Size') {
+                    if (e.target.value !== 'custom') {
                       setCustomWidth('');
                       setCustomHeight('');
                     }
@@ -719,7 +604,6 @@ const WireQuoteForm = () => {
                 )}
               </div>
 
-              {/* Binding Edge */}
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                   <svg className="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -727,21 +611,25 @@ const WireQuoteForm = () => {
                   </svg>
                   Binding Details
                 </h3>
-                <SelectDropdown
+                
+                <BindingEdgeSelector
                   label="Binding Edge"
                   options={BINDING_EDGES}
                   selected={bindingEdge}
                   onChange={(e) => setBindingEdge(e.target.value)}
                 />
-                <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                  <p className="text-sm text-blue-800">
-                    <span className="font-semibold">Spine Width:</span> {spineWidth}
-                  </p>
+
+                <div className="mt-4">
+                  <SelectDropdown
+                    label="Wire Color"
+                    options={WIRE_COLORS}
+                    selected={wireColor}
+                    onChange={(e) => setWireColor(e.target.value)}
+                  />
                 </div>
               </div>
             </div>
 
-            {/* Cover Section */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b border-gray-200">
                 <h3 className="text-2xl font-bold text-gray-900 flex items-center">
@@ -760,7 +648,7 @@ const WireQuoteForm = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 <SelectDropdown 
                   label="Paper Type" 
                   options={PAPER_OPTIONS.cover} 
@@ -769,9 +657,10 @@ const WireQuoteForm = () => {
                 />
                 <SelectDropdown 
                   label="Paper Weight" 
-                  options={WEIGHT_OPTIONS.map(w => ({ value: w, label: `${w} gsm` }))} 
+                  options={(PAPER_OPTIONS.cover.find(p => p.value === coverPaper)?.gsm || []).map(w => ({ value: w, label: `${w} gsm` }))} 
                   selected={coverWeight} 
                   onChange={(e) => setCoverWeight(e.target.value)} 
+                  disabled={!coverPaper}
                 />
                 <SelectDropdown 
                   label="Print Color" 
@@ -779,33 +668,36 @@ const WireQuoteForm = () => {
                   selected={coverColor} 
                   onChange={(e) => setCoverColor(e.target.value)} 
                 />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <SelectDropdown 
                   label="Cover Finish" 
                   options={COVER_FINISHES} 
                   selected={coverFinish} 
                   onChange={(e) => setCoverFinish(e.target.value)} 
                 />
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <SelectDropdown 
-                  label="Cover Fold" 
-                  options={COVER_FOLDS} 
-                  selected={coverFold} 
-                  onChange={(e) => setCoverFold(e.target.value)} 
-                />
-                {coverFold !== 'NONE' && (
-                  <div>
-                    <label className="text-sm font-semibold mb-2 text-gray-700">Fold Width</label>
-                    <input
-                      type="text"
-                      placeholder="Enter fold width"
-                      value={foldWidth}
-                      onChange={handleNumberInput(setFoldWidth)}
-                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                    />
-                  </div>
-                )}
+                
+                <div className="grid grid-cols-2 gap-3">
+                  <SelectDropdown 
+                    label="Cover Fold" 
+                    options={COVER_FOLDS} 
+                    selected={coverFold} 
+                    onChange={(e) => setCoverFold(e.target.value)} 
+                  />
+                  <input
+                    type="text"
+                    value={coverFold ? foldWidth : ''}
+                    onChange={handleNumberInput(setFoldWidth)}
+                    placeholder="Fold width"
+                    className={`p-3 border rounded-lg text-sm transition-all ${
+                      coverFold 
+                        ? 'bg-white border-gray-300' 
+                        : 'bg-gray-100 border-gray-300 text-gray-500'
+                    }`}
+                    readOnly={!coverFold}
+                  />
+                </div>
               </div>
 
               <div className="flex flex-wrap gap-4">
@@ -825,7 +717,6 @@ const WireQuoteForm = () => {
               </div>
             </div>
 
-            {/* Inside Page Section */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b border-gray-200">
                 <h3 className="text-2xl font-bold text-gray-900 flex items-center">
@@ -834,16 +725,9 @@ const WireQuoteForm = () => {
                   </svg>
                   Inside Pages
                 </h3>
-                <button 
-                  onClick={addSubscriptionCard}
-                  disabled={subscriptionCards.length >= 10}
-                  className="mt-2 sm:mt-0 px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-                >
-                  + Add Subscription Card
-                </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                 <SelectDropdown
                   label="Page Count"
                   options={PAGE_COUNTS.map(c => ({ value: c, label: `${c} pages` }))}
@@ -858,19 +742,23 @@ const WireQuoteForm = () => {
                 />
                 <SelectDropdown 
                   label="Paper Weight" 
-                  options={WEIGHT_OPTIONS.map(w => ({ value: w, label: `${w} gsm` }))} 
+                  options={(PAPER_OPTIONS.inside.find(p => p.value === insidePaper)?.gsm || []).map(w => ({ value: w, label: `${w} gsm` }))} 
                   selected={insideWeight} 
                   onChange={(e) => setInsideWeight(e.target.value)} 
+                  disabled={!insidePaper}
                 />
+              </div>
+
+              <div className="mb-6">
                 <SelectDropdown 
                   label="Print Color" 
-                  options={PRINT_COLORS} 
+                  options={PRINT_COLORS.filter(opt => opt.value !== 'NOCOLOR')} 
                   selected={insideColor} 
                   onChange={(e) => setInsideColor(e.target.value)} 
                 />
               </div>
 
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
                 <p className="text-sm text-yellow-800 flex items-center">
                   <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
@@ -878,38 +766,10 @@ const WireQuoteForm = () => {
                   Please select only the inside page count. Cover pages are calculated separately.
                 </p>
               </div>
-
-              {/* Subscription Cards */}
-              {subscriptionCards.map((card, index) => (
-                <SubscriptionCard
-                  key={card.id}
-                  card={card}
-                  index={index}
-                  onUpdate={updateSubscriptionCard}
-                  onRemove={removeSubscriptionCard}
-                  pageCount={pageCount}
-                  positions={POSITIONS}
-                />
-              ))}
-
-              <div className="flex flex-wrap gap-4 mt-6">
-                <button className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
-                  Edit Page Layout
-                </button>
-                <button className="px-6 py-3 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors">
-                  View Paper Gallery
-                </button>
-                <button className="px-6 py-3 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors">
-                  Download Guide
-                </button>
-              </div>
             </div>
           </div>
 
-          {/* Right Column - Pricing & Options */}
           <div className="space-y-8">
-            
-            {/* Quantity Input */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                 <svg className="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -926,7 +786,6 @@ const WireQuoteForm = () => {
               />
             </div>
 
-            {/* Pricing Table */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <h3 className="text-xl font-bold text-gray-900 mb-4">Volume Pricing</h3>
               
@@ -983,7 +842,6 @@ const WireQuoteForm = () => {
               </div>
             </div>
 
-            {/* Additional Options */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <h3 className="text-xl font-bold text-gray-900 mb-6 pb-4 border-b border-gray-200">
                 Additional Services
@@ -1041,19 +899,15 @@ const WireQuoteForm = () => {
                 </ToggleOption>
               </div>
 
-              {/* Price Breakdown */}
               <div className="mt-8 border-t pt-6">
                 <h4 className="text-lg font-bold text-gray-900 mb-4">Price Breakdown</h4>
                 <div className="space-y-3 text-sm">
                   {[
                     { label: 'Base Printing', value: prices.basePrinting },
-                    { label: 'Premium Materials', value: prices.materials, show: prices.materials > 0 },
                     { label: 'Color Options', value: prices.color, show: prices.color > 0 },
-                    { label: 'Cover Finishes', value: prices.cover, show: prices.cover > 0 },
                     { label: 'Digital Proof', value: prices.proof, show: prices.proof > 0 },
                     { label: 'Hole Punching', value: prices.holePunching, show: prices.holePunching > 0 },
                     { label: 'Dust Cover', value: prices.dustCover, show: prices.dustCover > 0 },
-                    { label: `Subscription Cards (${subscriptionCards.length})`, value: prices.subscriptionCards, show: prices.subscriptionCards > 0 },
                     { label: 'Slipcase', value: prices.slipcase, show: prices.slipcase > 0 },
                     { label: 'Shrink Wrapping', value: prices.shrinkWrapping, show: prices.shrinkWrapping > 0 },
                     { label: 'Direct Mailing', value: prices.directMailing, show: prices.directMailing > 0 },
@@ -1073,7 +927,6 @@ const WireQuoteForm = () => {
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
                 <button className="flex-1 px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-sm">
                   {generalSettings.shippingButtonText}

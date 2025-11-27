@@ -94,6 +94,7 @@ function getHardQuoteDefaultConfig() {
       { value: 'SQUARE', label: 'Square Spine', desc: 'Standard square spine' },
       { value: 'ROUNDED', label: 'Rounded Spine', desc: 'Premium rounded spine' },
     ],
+
     paperOptions: {
       cover: [
         { value: 'MATTE', label: 'Matte', gsm: ['120', '150', '200'] },
@@ -107,6 +108,7 @@ function getHardQuoteDefaultConfig() {
         { value: 'UNCOATED', label: 'Uncoated', gsm: ['80', '100'] }
       ]
     },
+    
     printColors: [
       { value: 'NOCOLOR', label: 'No Print', description: 'No Print' },
       { value: 'CMYK', label: 'Full color', description: 'Full color' },
