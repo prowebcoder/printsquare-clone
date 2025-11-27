@@ -5,6 +5,7 @@ import Header from "../../../layout/header/header";
 import Heading from "./Heading";
 import Tabs from "./Tabs";
 import Footer from "../../../layout/footer/footer";
+import FormTabs from "./FormTabs";
 import HardQuoteForm from "./HardQuoteForm";
 
 export default function HardcoverFormPage() {
@@ -19,6 +20,7 @@ export default function HardcoverFormPage() {
       </Head> 
       <Header />
       <Heading />
+      <FormTabs />  
       <HardQuoteForm />
       <Tabs />
       <Footer />

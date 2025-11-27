@@ -5,6 +5,7 @@ import Header from "../../../layout/header/header";
 import Heading from "./Heading";
 import Tabs from "./Tabs";
 import Footer from "../../../layout/footer/footer";
+import FormTabs from "./FormTabs";
 import WireQuoteForm from "./WireQuoteForm";
 
 export default function WireBindingFormPage() {
@@ -19,6 +20,7 @@ export default function WireBindingFormPage() {
       </Head> 
       <Header />
       <Heading />
+      <FormTabs />  
       <WireQuoteForm />
       <Tabs />
       <Footer />

@@ -5,6 +5,7 @@ import Header from "../../../layout/header/header";
 import Heading from "./Heading";
 import Tabs from "./Tabs";
 import Footer from "../../../layout/footer/footer";
+import FormTabs from "./FormTabs";
 import SaddleQuoteForm from "./SaddleQuoteForm";
 
 export default function SaddleStitchingFormPage() {
@@ -19,6 +20,7 @@ export default function SaddleStitchingFormPage() {
       </Head> 
       <Header />
       <Heading />
+      <FormTabs />  
       <SaddleQuoteForm />
       <Tabs />
       <Footer />

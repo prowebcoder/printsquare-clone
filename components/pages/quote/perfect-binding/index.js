@@ -5,6 +5,7 @@ import Header from "../../../layout/header/header";
 import Heading from "./Heading";
 import Tabs from "./Tabs";
 import Footer from "../../../layout/footer/footer";
+import FormTabs from "./FormTabs";
 import PrintQuoteForm from "./PrintQuoteForm";
 
 export default function PerfectBindingFormPage() {
@@ -19,6 +20,7 @@ export default function PerfectBindingFormPage() {
       </Head> 
       <Header />
       <Heading />
+      <FormTabs />  
       <PrintQuoteForm />
       <Tabs />
       <Footer />
