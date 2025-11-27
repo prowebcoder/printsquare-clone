@@ -9,7 +9,6 @@ export async function GET(request) {
     const config = await FormConfiguration.findOne({ name: 'hard-quote' }).lean();
     
     if (!config) {
-      // Create default config if doesn't exist
       const defaultConfig = {
         name: 'hard-quote',
         type: 'predefined',
@@ -82,66 +81,68 @@ function getHardQuoteDefaultConfig() {
       { value: 'HARDCOVER', label: 'Hardcover Book', link: '/hardcover-book' },
       { value: 'WIRE', label: 'Wire Binding', link: '/wire-binding' },
     ],
-    sizes: ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', '8.5 x 5.5', '10 x 7.5', '11 x 8.5', 'Custom Size'],
+    sizes: [
+      { value: '5.5x8.5', label: '5.5" x 8.5" (Half Letter)' },
+      { value: '6x9', label: '6" x 9"' },
+      { value: '7x10', label: '7" x 10"' },
+      { value: '8.5x11-letter', label: '8.5" x 11" (Letter)' },
+      { value: '8.5x11-standard', label: '8.5" x 11"' },
+      { value: '9x12', label: '9" x 12"' },
+      { value: 'custom', label: 'Custom Size' }
+    ],
     bindingEdges: [
-      { value: 'LEFT', label: 'Left Side', desc: 'Binding on the left, most common' },
-      { value: 'RIGHT', label: 'Right Side', desc: 'First inside page starts from the right' },
-      { value: 'TOP', label: 'Top Side', desc: 'Binding on the top, a.k.a calendar binding' },
+      { value: 'SQUARE', label: 'Square Spine', desc: 'Standard square spine' },
+      { value: 'ROUNDED', label: 'Rounded Spine', desc: 'Premium rounded spine' },
     ],
     paperOptions: {
       cover: [
-        { value: 'MATTE', label: 'Matte', price: 0 },
-        { value: 'GLOSS', label: 'Gloss', price: 0 },
-        { value: 'HI-PLUS', label: 'Hi-Plus', price: 50 },
-        { value: 'HI-QMATTE', label: 'Hi-Q Matte', price: 100 },
-        { value: 'PREMIUM', label: 'Premium', price: 150 },
+        { value: 'MATTE', label: 'Matte', gsm: ['120', '150', '200'] },
+        { value: 'GLOSS', label: 'Gloss', gsm: ['120', '150', '200'] },
+        { value: 'UNCOATED', label: 'Uncoated', gsm: ['120', '150'] },
+        { value: 'PAPERCLOTH_GLOSS', label: 'Papercloth Gloss', gsm: [] }
       ],
       inside: [
-        { value: 'GLOSS', label: 'Gloss', price: 0 },
-        { value: 'MATTE', label: 'Matte', price: 0 },
-        { value: 'HI-PLUS', label: 'Hi-Plus', price: 25 },
-        { value: 'UNCOATED', label: 'Uncoated', price: 0 },
-        { value: 'TEXTBOOK', label: 'Textbook', price: 30 },
-        { value: 'COLORED', label: 'Colored', price: 40 },
-      ],
-      subscription: [
-        { value: 'MATTE', label: 'Matte', price: 0 },
-        { value: 'HI-QMATTE', label: 'Hi-Q Matte', price: 25 },
-        { value: 'UNCOATED_W', label: 'Uncoated', price: 0 },
-        { value: 'MONTBLANC_EW', label: 'Premium', price: 50 },
+        { value: 'MATTE', label: 'Matte', gsm: ['80', '100', '120'] },
+        { value: 'GLOSS', label: 'Gloss', gsm: ['80', '100', '120'] },
+        { value: 'UNCOATED', label: 'Uncoated', gsm: ['80', '100'] }
       ]
     },
     printColors: [
-      { value: 'CMYK', label: 'Full color', price: 0 },
-      { value: 'CMYK_PMS1', label: 'Full color + 1 Spot color', price: 75 },
-      { value: 'CMYK_PMS2', label: 'Full color + 2 Spot color', price: 150 },
-      { value: 'BW', label: 'Black only', price: -100 },
-      { value: 'BW_PMS1', label: 'Black + 1 Spot color', price: -25 },
-      { value: 'BW_PMS2', label: 'Black + 2 Spot color', price: 50 },
+      { value: 'NOCOLOR', label: 'No Print', description: 'No Print' },
+      { value: 'CMYK', label: 'Full color', description: 'Full color' },
+      { value: 'CMYK_PMS1', label: 'Full color + 1 Spot color', description: 'Full color + 1 Spot color' },
+      { value: 'CMYK_PMS2', label: 'Full color + 2 Spot color', description: 'Full color + 2 Spot color' },
+      { value: 'BW', label: 'Black only', description: 'Black only' },
+      { value: 'BW_PMS1', label: 'Black + 1 Spot color', description: 'Black + 1 Spot color' },
+      { value: 'BW_PMS2', label: 'Black + 2 Spot color', description: 'Black + 2 Spot color' }
     ],
     coverFinishes: [
-      { value: 'MATTE', label: 'Matte lamination', price: 50 },
-      { value: 'GLOSS', label: 'Gloss lamination', price: 50 },
       { value: 'NONE', label: 'None', price: 0 },
+      { value: 'MATTE', label: 'Matte Lamination', price: 50 },
+      { value: 'GLOSS', label: 'Gloss Lamination', price: 50 },
     ],
-    coverFolds: [
-      { value: 'NONE', label: 'No fold', price: 0 },
-      { value: 'FRONT', label: 'Front cover fold', price: 25 },
-      { value: 'BACK', label: 'Back cover fold', price: 25 },
-      { value: 'BOTH', label: 'Both cover folds', price: 40 },
+    headbandColors: [
+      { value: 'RD30', label: 'Red', color: '#ff0000' },
+      { value: 'BL30', label: 'Blue', color: '#0000ff' },
+      { value: 'GN30', label: 'Green', color: '#00ff00' },
+      { value: 'BK30', label: 'Black', color: '#000000' },
+      { value: 'GY30', label: 'Gray', color: '#808080' }
+    ],
+    bookmarkOptions: [
+      { value: '', label: 'None' },
+      { value: 'Y', label: 'Add: same color as headband' }
     ],
     additionalOptions: {
       proof: [
-        { value: 'ONLINE', label: 'E-Proof (PDF proof, free)', price: 0 },
+        { value: 'ONLINE', label: 'E-Proof(PDF proof, free)', price: 0 },
         { value: 'DIGITAL', label: 'Digital Proof', price: 50 },
       ],
       holePunch: [
-        { value: '6', label: '0.236" (6mm) drill', price: 15 },
-        { value: '8', label: '0.315" (8mm) drill', price: 20 },
-        { value: '9.5', label: '0.374" (9.5mm) drill', price: 25 },
+        { value: '6', label: '0.236"(6mm) drill - Most commonly used size for wall calendar', price: 15 },
+        { value: '8', label: '0.315"(8mm) drill - Most selected for binder holes', price: 20 },
+        { value: '9.5', label: '0.374"(9.5mm) drill - Used for binders and etc.', price: 25 },
       ],
       slipcase: [
-        { value: 'NONE', label: 'None', price: 0 },
         { value: 'CASE', label: 'Slipcase only', price: 80 },
         { value: 'CASEPRINT', label: 'Slipcase + printing', price: 150 },
       ],
@@ -157,19 +158,20 @@ function getHardQuoteDefaultConfig() {
     },
     positions: [
       { value: 'FRONT', label: 'Before page 1' },
-      { value: 'BACK', label: 'After page 96' },
+      { value: 'BACK', label: 'After last page' },
       { value: 'SELECT', label: 'Front of page no.' },
     ],
-    pageCounts: Array.from({ length: (880 - 24) / 2 + 1 }, (_, i) => 24 + i * 2),
-    weightOptions: ['100', '120', '150', '250', '300'],
+    pageCounts: [36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 148, 152, 156, 160],
+    weightOptions: ['80', '100', '120', '150', '200'],
     quantities: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
     customSizeInstructions: "📏 Minimum: 4\" × 4\" | Maximum: 11.8\" × 14.3\"",
     spineWidth: '0.178"',
     pricing: {
-      baseSetupCost: 200,
-      costPerPage: 0.05,
-      customSizeMultiplier: 1.2,
-      standardSizeMultiplier: 1.1
+      baseSetupCost: 300,
+      costPerPage: 0.08,
+      customSizeMultiplier: 1.3,
+      standardSizeMultiplier: 1.2,
+      hardcoverBaseCost: 150
     }
   };
 }

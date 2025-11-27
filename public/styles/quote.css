@@ -1,0 +1,268 @@
+/* styles/quote.css */
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+.font-pretendard {
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+}
+
+/* Basic font styles */
+.font-p1 {
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 30px;
+  color: #333333;
+}
+
+.font-p2 {
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #333333;
+}
+
+/* Text shadow */
+.text-shadow-lg {
+  text-shadow: 2px 2px 2px rgba(0,0,0,.7);
+}
+
+/* Common background image */
+.common-sec-backimg {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Button styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 0;
+  transition: all 0.15s ease-in-out;
+  text-decoration: none;
+  cursor: pointer;
+  font-family: 'Pretendard', sans-serif;
+}
+
+.btn-lg {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.125rem;
+}
+
+.btn-white {
+  background-color: #ffffff;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.btn-white:hover {
+  background-color: #f9fafb;
+  border-color: #9ca3af;
+}
+
+.btn-default {
+  background-color: #e21b36;
+  border-color: #e21b36;
+  color: #ffffff;
+}
+
+.btn-default:hover {
+  background-color: #151134;
+  border-color: #151134;
+}
+
+.btn-dark {
+  background-color: #151134;
+  border-color: #151134;
+  color: #ffffff;
+}
+
+.btn-dark:hover {
+  background-color: #1f2937;
+  border-color: #1f2937;
+}
+
+/* Selection dropdown styles */
+.selection {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.selection.style_0 select {
+  width: 100%;
+  height: 45px;
+  background: #FFFFFF;
+  border: 1px solid #969696;
+  padding: 0 12px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+  cursor: pointer;
+}
+
+.selection.style_0 select:focus {
+  outline: none;
+  border-color: #e21b36;
+}
+
+.selection.disabled select {
+  background-color: #f3f4f6;
+  border-color: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+/* Table styles */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  font-weight: 600;
+  text-align: left;
+}
+
+.table td, .table th {
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.bordertop {
+  border-top: 2px solid #4E4E4E !important;
+}
+
+.borderbottom {
+  border-bottom: 2px solid #4E4E4E !important;
+}
+
+.bordertop-g {
+  border-top: 1px solid #4E4E4E !important;
+}
+
+.borderbottom-g {
+  border-bottom: 1px solid #4E4E4E !important;
+}
+
+/* Form section styles */
+.instantq1-wrap .instantq1-wrap-in .instantq1-radio {
+  border: 3px solid #DDDDDD;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.instantq1-wrap .instantq1-wrap-in .instantq1-input1 {
+  background: #F6F5F4;
+  padding: 50px 16px;
+}
+
+.instantq1-wrap .instantq1-wrap-in .first-btn button {
+  min-width: 200px;
+  height: 52px;
+}
+
+/* Input styles */
+input[type="text"], input[type="number"], select, textarea {
+  font-family: 'Pretendard', sans-serif;
+  border: 1px solid #CCCCCC;
+  padding: 8px 12px;
+  font-size: 16px;
+  transition: border-color 0.15s ease-in-out;
+}
+
+input[type="text"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #e21b36;
+}
+
+/* Checkbox and radio styles */
+input[type="checkbox"], input[type="radio"] {
+  accent-color: #e21b36;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .instantq1-wrap .instantq1-wrap-in .first-btn {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .instantq1-wrap .instantq1-wrap-in .first-btn button {
+    width: 100%;
+    margin-left: 0;
+  }
+  
+  .instantq1-input1 {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+/* Custom scrollbar for dropdowns */
+select::-webkit-scrollbar {
+  width: 8px;
+}
+
+select::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+select::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+select::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Tooltip styles (if needed) */
+.tool-tip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+}
+
+.tool-tip::before {
+  content: "?";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: #cd1c23;
+  color: white;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Price table highlighting */
+.chk_qty_point {
+  background-color: #f7f5f4 !important;
+  font-weight: 500;
+}
+
+/* Grey background for disabled elements */
+.grey-cont {
+  color: #767676;
+}
+
+/* Black content for emphasized text */
+.black-cont {
+  font-weight: 600;
+  font-size: 25px;
+  line-height: 38px;
+  color: #333333;
+}

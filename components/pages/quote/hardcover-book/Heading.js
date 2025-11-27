@@ -1,4 +1,4 @@
-//components/pages/quote/perfect-binding/Heading.js
+//components/pages/quote/hardcover-book/Heading.js
 "use client";
 import React from "react";
 

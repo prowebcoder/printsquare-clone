@@ -1,3 +1,4 @@
+// components/pages/quote/perfect-binding/PrintQuoteForm.js
 import React, { useState, useCallback, useEffect } from 'react';
 
 // ===== PERFECT-BINDING-SPECIFIC DEFAULT CONFIG =====
