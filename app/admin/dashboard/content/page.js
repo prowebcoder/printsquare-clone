@@ -15,9 +15,15 @@ export default function ContentPage() {
   const staticPages = [
     { value: 'home', label: 'Home Page', description: 'Main landing page content', icon: Layout },
     { value: 'about', label: 'About Page', description: 'Company information and story', icon: FileText },
-    { value: 'contact', label: 'Contact Page', description: 'Contact information and form', icon: Edit },
-    { value: 'privacy', label: 'Privacy Policy', description: 'Privacy policy content', icon: Eye },
-    { value: 'terms', label: 'Terms & Conditions', description: 'Terms of service content', icon: FileText },
+    { value: 'tour-our-facilities', label: 'Facilities Page', description: 'Company information and story', icon: FileText },
+    { value: 'printing', label: 'Printing Page', description: 'Company information and services', icon: FileText },
+    { value: 'sheet-fed-press', label: 'Sheet Fed Press Page', description: 'Company information and services', icon: FileText },
+    { value: 'web-fed-press', label: 'Web Fed Press Page', description: 'Company information and services', icon: FileText },
+    { value: 'binding-and-finishing', label: 'Binding and Finishing Page', description: 'Company information and services', icon: FileText },
+    { value: 'quick-guide-for-art-files', label: 'Quick Guide for Art Files', description: 'Company information and tutorials', icon: FileText },
+    { value: 'contact-us', label: 'Contact Page', description: 'Contact information and form', icon: Edit },
+    { value: 'privacy-policy', label: 'Privacy Policy', description: 'Privacy policy content', icon: Eye },
+    { value: 'terms-conditions', label: 'Terms & Conditions', description: 'Terms of service content', icon: FileText },
   ];
 
   useEffect(() => {

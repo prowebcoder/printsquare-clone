@@ -607,20 +607,7 @@ const PrintQuoteForm = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-7xl mx-auto">
         
-        {/* Configuration Status */}
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-blue-700">
-              {formConfig === PRINTQUOTE_DEFAULT_CONFIG ? 'Using default configuration' : 'Using live configuration from editor'}
-            </span>
-            <button 
-              onClick={refreshConfig}
-              className="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded hover:bg-blue-200 transition-colors"
-            >
-              🔄 Refresh Config
-            </button>
-          </div>
-        </div>
+       
 
         {/* Header Section */}
         <div className="text-center mb-12">
@@ -635,7 +622,7 @@ const PrintQuoteForm = () => {
         {/* Unit Selection */}
         <div className="mb-12 bg-white rounded-2xl shadow-lg p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Measurement Units</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="flex gap-8">
             <RadioGroup
               label="Size Unit"
               name="size_type_sel"
