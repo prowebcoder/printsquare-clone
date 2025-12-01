@@ -489,7 +489,7 @@ const WireQuoteForm = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-8 border-b-2 border-indigo-600"></div>
         <p className="ml-4 text-gray-600">Loading wire binding form configuration...</p>
       </div>
@@ -497,7 +497,7 @@ const WireQuoteForm = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 py-8 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-7xl mx-auto">
         
        
