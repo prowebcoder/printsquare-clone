@@ -1,5 +1,9 @@
 // app/[...slug]/components/renderers/index.js
 // Basic components
+"use client";
+
+import dynamic from 'next/dynamic';
+
 export { default as TextRenderer } from './basic/TextRenderer';
 export { default as HeadingRenderer } from './basic/HeadingRenderer';
 export { default as HeroRenderer } from './basic/HeroRenderer';
@@ -24,4 +28,11 @@ export { default as PortfolioRenderer } from './premium/PortfolioRenderer';
 export { default as PricingRenderer } from './premium/PricingRenderer';
 export { default as QuickGuidesRenderer } from './premium/QuickGuidesRenderer';
 export { default as VideoBannerRenderer } from './premium/VideoBannerRenderer';
-export { default as TabsFaqRenderer } from './premium/TabsFaqRenderer';
+
+export const TabsFaqRenderer = dynamic(
+  () => import('./premium/TabsFaqRenderer'),
+  { 
+    ssr: false,
+    loading: () => <div className="p-8 text-center">Loading FAQs...</div>
+  }
+);

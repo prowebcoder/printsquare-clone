@@ -1,3 +1,4 @@
+// models/Page.js
 import mongoose from 'mongoose';
 
 const componentSchema = new mongoose.Schema({
@@ -52,8 +53,13 @@ const pageSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Clear the mongoose model cache to ensure fresh schema
-delete mongoose.connections[0].models.Page;
-delete mongoose.models.Page;
+// Add this line ONLY if you want to add the static method
+// pageSchema.statics.findBySlug = async function(slug) {
+//   return this.findOne({ slug, published: true }).lean();
+// };
+
+// Remove these lines - they cause issues:
+// delete mongoose.connections[0].models.Page;
+// delete mongoose.models.Page;
 
 export default mongoose.models.Page || mongoose.model('Page', pageSchema);

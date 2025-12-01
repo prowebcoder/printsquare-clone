@@ -1,16 +1,16 @@
 // components/PageBuilder/editors/TabsFaqEditor.js
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
 
 const TabsFaqEditor = ({ component, onUpdate }) => {
   const [activeTab, setActiveTab] = useState(0);
-  const [isInitialized, setIsInitialized] = useState(false);
+  const hasInitializedRef = useRef(false);
 
-  // Initialize with default data only once when component is first created
+  // Initialize only once on mount
   useEffect(() => {
-    if (!isInitialized && (!component.content?.tabs || component.content.tabs.length === 0)) {
+    if (!hasInitializedRef.current && (!component.content?.tabs || component.content.tabs.length === 0)) {
       const defaultTabs = [
         {
           name: 'ORDER',
@@ -23,26 +23,29 @@ const TabsFaqEditor = ({ component, onUpdate }) => {
         }
       ];
       onUpdate(component.id, { tabs: defaultTabs });
-      setIsInitialized(true);
+      hasInitializedRef.current = true;
     }
-  }, [component.content?.tabs, component.id, onUpdate, isInitialized]);
+  }, []); // Empty dependency array - run once on mount
 
-  const handleTabChange = (tabIndex, field, value) => {
+  // Memoized handlers to prevent unnecessary re-renders
+  const handleTabChange = useCallback((tabIndex, field, value) => {
     const tabs = [...(component.content?.tabs || [])];
     tabs[tabIndex] = { ...tabs[tabIndex], [field]: value };
     onUpdate(component.id, { tabs });
-  };
+  }, [component.content?.tabs, component.id, onUpdate]);
 
-  const handleFaqChange = (tabIndex, faqIndex, field, value) => {
+  const handleFaqChange = useCallback((tabIndex, faqIndex, field, value) => {
     const tabs = [...(component.content?.tabs || [])];
-    tabs[tabIndex].faqs[faqIndex] = { 
-      ...tabs[tabIndex].faqs[faqIndex], 
-      [field]: value 
-    };
-    onUpdate(component.id, { tabs });
-  };
+    if (tabs[tabIndex]?.faqs?.[faqIndex]) {
+      tabs[tabIndex].faqs[faqIndex] = { 
+        ...tabs[tabIndex].faqs[faqIndex], 
+        [field]: value 
+      };
+      onUpdate(component.id, { tabs });
+    }
+  }, [component.content?.tabs, component.id, onUpdate]);
 
-  const addTab = () => {
+  const addTab = useCallback(() => {
     const tabs = [...(component.content?.tabs || [])];
     tabs.push({
       name: `Tab ${tabs.length + 1}`,
@@ -50,39 +53,47 @@ const TabsFaqEditor = ({ component, onUpdate }) => {
     });
     onUpdate(component.id, { tabs });
     setActiveTab(tabs.length - 1);
-  };
+  }, [component.content?.tabs, component.id, onUpdate]);
 
-  const removeTab = (index) => {
+  const removeTab = useCallback((index) => {
     const tabs = [...(component.content?.tabs || [])];
     tabs.splice(index, 1);
     onUpdate(component.id, { tabs });
     if (activeTab >= tabs.length) {
       setActiveTab(Math.max(0, tabs.length - 1));
     }
-  };
+  }, [component.content?.tabs, component.id, onUpdate, activeTab]);
 
-  const addFaq = (tabIndex) => {
+  const addFaq = useCallback((tabIndex) => {
     const tabs = [...(component.content?.tabs || [])];
-    tabs[tabIndex].faqs.push({
-      question: 'New question?',
-      answer: 'Answer goes here...'
-    });
-    onUpdate(component.id, { tabs });
-  };
+    if (tabs[tabIndex]) {
+      tabs[tabIndex].faqs = tabs[tabIndex].faqs || [];
+      tabs[tabIndex].faqs.push({
+        question: 'New question?',
+        answer: 'Answer goes here...'
+      });
+      onUpdate(component.id, { tabs });
+    }
+  }, [component.content?.tabs, component.id, onUpdate]);
 
-  const removeFaq = (tabIndex, faqIndex) => {
+  const removeFaq = useCallback((tabIndex, faqIndex) => {
     const tabs = [...(component.content?.tabs || [])];
-    tabs[tabIndex].faqs.splice(faqIndex, 1);
-    onUpdate(component.id, { tabs });
-  };
+    if (tabs[tabIndex]?.faqs?.[faqIndex]) {
+      tabs[tabIndex].faqs.splice(faqIndex, 1);
+      onUpdate(component.id, { tabs });
+    }
+  }, [component.content?.tabs, component.id, onUpdate]);
 
-  const moveFaq = (tabIndex, fromIndex, toIndex) => {
+  const moveFaq = useCallback((tabIndex, fromIndex, toIndex) => {
     const tabs = [...(component.content?.tabs || [])];
-    const faqs = tabs[tabIndex].faqs;
-    const [movedFaq] = faqs.splice(fromIndex, 1);
-    faqs.splice(toIndex, 0, movedFaq);
-    onUpdate(component.id, { tabs });
-  };
+    const faqs = tabs[tabIndex]?.faqs || [];
+    if (fromIndex >= 0 && fromIndex < faqs.length && 
+        toIndex >= 0 && toIndex < faqs.length) {
+      const [movedFaq] = faqs.splice(fromIndex, 1);
+      faqs.splice(toIndex, 0, movedFaq);
+      onUpdate(component.id, { tabs });
+    }
+  }, [component.content?.tabs, component.id, onUpdate]);
 
   const tabs = component.content?.tabs || [];
 
@@ -301,11 +312,11 @@ const TabsFaqEditor = ({ component, onUpdate }) => {
           </button>
         </div>
 
-        {/* Tab Headers - FIXED: No nested buttons */}
+        {/* Tab Headers */}
         <div className="flex flex-wrap gap-2 mb-4">
           {tabs.map((tab, index) => (
             <div
-              key={index}
+              key={`tab-header-${index}`}
               className={`flex items-center gap-0 rounded-full font-medium text-sm transition-all ${
                 activeTab === index
                   ? 'bg-blue-100 text-blue-700 border border-blue-300'
@@ -318,12 +329,14 @@ const TabsFaqEditor = ({ component, onUpdate }) => {
               >
                 {tab.name}
               </button>
-              <button
-                onClick={() => removeTab(index)}
-                className="px-2 py-2 rounded-r-full hover:bg-red-100 hover:text-red-700 flex items-center"
-              >
-                <Trash2 size={14} />
-              </button>
+              {tabs.length > 1 && (
+                <button
+                  onClick={() => removeTab(index)}
+                  className="px-2 py-2 rounded-r-full hover:bg-red-100 hover:text-red-700 flex items-center"
+                >
+                  <Trash2 size={14} />
+                </button>
+              )}
             </div>
           ))}
         </div>
@@ -355,8 +368,8 @@ const TabsFaqEditor = ({ component, onUpdate }) => {
               </div>
 
               <div className="space-y-3">
-                {tabs[activeTab].faqs.map((faq, faqIndex) => (
-                  <div key={faqIndex} className="border rounded-lg p-4 bg-gray-50">
+                {tabs[activeTab].faqs?.map((faq, faqIndex) => (
+                  <div key={`faq-${activeTab}-${faqIndex}`} className="border rounded-lg p-4 bg-gray-50">
                     <div className="flex items-start gap-3 mb-3">
                       <div className="flex items-center gap-1 text-gray-400 mt-2">
                         <GripVertical size={16} />
@@ -400,7 +413,7 @@ const TabsFaqEditor = ({ component, onUpdate }) => {
                           Move Up
                         </button>
                       )}
-                      {faqIndex < tabs[activeTab].faqs.length - 1 && (
+                      {faqIndex < (tabs[activeTab].faqs?.length || 0) - 1 && (
                         <button
                           onClick={() => moveFaq(activeTab, faqIndex, faqIndex + 1)}
                           className="text-xs text-blue-600 hover:text-blue-800"

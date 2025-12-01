@@ -8,6 +8,62 @@ import Footer from '@/components/layout/footer/footer';
 // Import all renderers
 import * as Renderers from './components/renderers';
 
+/**
+ * Safely serialize data for React Server Components
+ * Removes Mongoose circular references
+ */
+function serializeForRSC(data) {
+  if (!data || typeof data !== 'object') {
+    return data;
+  }
+  
+  // Handle arrays
+  if (Array.isArray(data)) {
+    return data.map(item => serializeForRSC(item));
+  }
+  
+  // Handle plain objects
+  const result = {};
+  for (const key in data) {
+    // Skip Mongoose internal properties
+    if (key.startsWith('$') || key === '__v' || key === '_id') {
+      continue;
+    }
+    
+    try {
+      // Skip Mongoose document methods and internal properties
+      if (key === '$__' || key === '$isNew' || key === 'save' || key === 'validate') {
+        continue;
+      }
+      
+      const value = data[key];
+      
+      // Handle nested objects/arrays
+      if (value && typeof value === 'object') {
+        // Check for circular reference by looking for $__ (Mongoose document)
+        if (value.$__) {
+          // This is a Mongoose document, convert to plain object
+          try {
+            result[key] = serializeForRSC(value.toObject ? value.toObject() : {});
+          } catch {
+            result[key] = {};
+          }
+        } else if (Array.isArray(value)) {
+          result[key] = value.map(item => serializeForRSC(item));
+        } else {
+          result[key] = serializeForRSC(value);
+        }
+      } else {
+        result[key] = value;
+      }
+    } catch (error) {
+      console.warn(`Could not serialize key "${key}":`, error.message);
+      result[key] = null;
+    }
+  }
+  
+  return result;
+}
 
 async function getPageData(slug) {
   try {
@@ -16,24 +72,15 @@ async function getPageData(slug) {
     const pageSlug = Array.isArray(slug) ? slug.join('/') : slug;
     console.log('🔍 Looking for page with slug:', pageSlug);
     
+    // Use lean() to get plain objects, not Mongoose documents
     const page = await Page.findOne({ 
       slug: pageSlug,
       published: true 
-    });
+    }).lean();
     
     console.log('📄 Page found:', page ? 'Yes' : 'No');
     if (page) {
-      console.log('📊 Page components:', page.components);
-      console.log('🔢 Components count:', page.components?.length || 0);
-      
-      page.components?.forEach((comp, index) => {
-        console.log(`📦 Component ${index}:`, {
-          type: comp.type,
-          id: comp.id,
-          order: comp.order,
-          contentKeys: Object.keys(comp.content || {})
-        });
-      });
+      console.log('📊 Page components count:', page.components?.length || 0);
     }
     
     return page;
@@ -74,21 +121,26 @@ const componentMap = {
 };
 
 function renderComponent(component, index) {
-  console.log(`🔄 Rendering component ${index}:`, component.type, component.id, component.content);
-  
   try {
     const RendererComponent = componentMap[component.type];
     
     if (RendererComponent) {
-      return <RendererComponent key={component.id || index} component={component} index={index} />;
+      // Ensure component content is serialized
+      const safeComponent = {
+        ...component,
+        content: component.content ? serializeForRSC(component.content) : {}
+      };
+      
+      return <RendererComponent 
+        key={component.id || `comp-${index}`} 
+        component={safeComponent} 
+        index={index} 
+      />;
     } else {
       console.warn(`❌ Unknown component type: ${component.type}`);
       return (
         <div key={component.id || index} className="p-6 bg-yellow-50 border border-yellow-200 rounded-lg my-4">
           <p className="text-yellow-800 font-semibold">Unsupported Component: {component.type}</p>
-          <pre className="text-xs mt-2 overflow-auto">
-            {JSON.stringify(component.content, null, 2)}
-          </pre>
         </div>
       );
     }
@@ -104,7 +156,8 @@ function renderComponent(component, index) {
 }
 
 export default async function DynamicPage({ params }) {
-  const { slug } = params;
+  // In Next.js 15, params is a Promise, so we need to await it
+  const { slug } = await params;
   
   console.log('🚀 Dynamic page requested with slug:', slug);
   
@@ -115,12 +168,11 @@ export default async function DynamicPage({ params }) {
     notFound();
   }
 
-  const componentsToRender = page.components || [];
+  // Serialize the entire page data
+  const safePageData = serializeForRSC(page);
+  const componentsToRender = safePageData.components || [];
   
   console.log('🎯 Components to render:', componentsToRender.length);
-  componentsToRender.forEach((comp, index) => {
-    console.log(`   ${index + 1}. ${comp.type} (id: ${comp.id})`);
-  });
 
   return (
     <div className="min-h-screen bg-white">
@@ -139,17 +191,6 @@ export default async function DynamicPage({ params }) {
               <p className="text-gray-600 text-lg max-w-2xl mx-auto">
                 This page is currently being built. Please check back later for content.
               </p>
-              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg max-w-2xl mx-auto">
-                <p className="text-blue-800 text-sm">
-                  <strong>Admin Info:</strong> This page exists but has no components yet. 
-                  <a 
-                    href={`/admin/dashboard/pages/${page._id}`}
-                    className="ml-2 text-blue-600 hover:text-blue-800 underline"
-                  >
-                    Edit this page in admin
-                  </a>
-                </p>
-              </div>
             </div>
           </div>
         )}
@@ -157,4 +198,14 @@ export default async function DynamicPage({ params }) {
       <Footer />
     </div>
   );
+}
+
+// If you want to generate static params for dynamic routes
+export async function generateStaticParams() {
+  await dbConnect();
+  const pages = await Page.find({ published: true }).select('slug').lean();
+  
+  return pages.map((page) => ({
+    slug: page.slug.split('/'),
+  }));
 }

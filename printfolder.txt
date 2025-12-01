@@ -1,0 +1,666 @@
+├── app
+│   ├── [...slug]
+│   │   ├── components
+│   │   │   ├── renderers
+│   │   │   │   ├── basic
+│   │   │   │   │   ├── FormRenderer.js
+│   │   │   │   │   ├── HeadingRenderer.js
+│   │   │   │   │   ├── HeroRenderer.js
+│   │   │   │   │   ├── ImageRenderer.js
+│   │   │   │   │   └── TextRenderer.js
+│   │   │   │   ├── premium
+│   │   │   │   │   ├── AboutHeroRenderer.js
+│   │   │   │   │   ├── AboutUsRenderer.js
+│   │   │   │   │   ├── FreeSampleRenderer.js
+│   │   │   │   │   ├── HeroBannerRenderer.js
+│   │   │   │   │   ├── ImageBannerRenderer.js
+│   │   │   │   │   ├── ImageBannerTwoRenderer.js
+│   │   │   │   │   ├── MethodRenderer.js
+│   │   │   │   │   ├── MultiColumnRenderer.js
+│   │   │   │   │   ├── MultiTableRenderer.js
+│   │   │   │   │   ├── NoticeRenderer.js
+│   │   │   │   │   ├── OrderProcessRenderer.js
+│   │   │   │   │   ├── PortfolioRenderer.js
+│   │   │   │   │   ├── PricingRenderer.js
+│   │   │   │   │   ├── QuickGuidesRenderer.js
+│   │   │   │   │   ├── TabsFaqRenderer.js
+│   │   │   │   │   ├── VideoBannerRenderer.js
+│   │   │   │   │   ├── VideoWithTextRenderer.js
+│   │   │   │   │   └── WeightConverterRenderer.js
+│   │   │   │   └── index.js
+│   │   │   └── AppImage.js
+│   │   ├── utils
+│   │   │   └── imageUtils.js
+│   │   └── page.js
+│   ├── about-us
+│   │   └── page.js
+│   ├── admin
+│   │   ├── dashboard
+│   │   │   ├── content
+│   │   │   │   └── page.js
+│   │   │   ├── forms
+│   │   │   │   ├── hard-quote
+│   │   │   │   │   └── edit
+│   │   │   │   │       └── page.js
+│   │   │   │   ├── print-quote
+│   │   │   │   │   └── edit
+│   │   │   │   │       └── page.js
+│   │   │   │   ├── saddle-quote
+│   │   │   │   │   └── edit
+│   │   │   │   │       └── page.js
+│   │   │   │   ├── wire-quote
+│   │   │   │   │   └── edit
+│   │   │   │   │       └── page.js
+│   │   │   │   └── page.js
+│   │   │   ├── media
+│   │   │   │   └── page.js
+│   │   │   ├── pages
+│   │   │   │   ├── [id]
+│   │   │   │   │   └── page.js
+│   │   │   │   ├── new
+│   │   │   │   │   └── page.js
+│   │   │   │   └── page.js
+│   │   │   ├── users
+│   │   │   │   └── page.js
+│   │   │   ├── layout.js
+│   │   │   └── page.js
+│   │   └── login
+│   │       └── page.js
+│   ├── api
+│   │   ├── admin
+│   │   │   ├── auth
+│   │   │   │   ├── login
+│   │   │   │   │   └── route.js
+│   │   │   │   └── verify
+│   │   │   │       └── route.js
+│   │   │   ├── content
+│   │   │   │   └── route.js
+│   │   │   ├── create-admin
+│   │   │   │   └── route.js
+│   │   │   ├── debug-db
+│   │   │   │   └── route.js
+│   │   │   ├── forms
+│   │   │   │   ├── hard-quote
+│   │   │   │   │   └── route.js
+│   │   │   │   ├── print-quote
+│   │   │   │   │   └── route.js
+│   │   │   │   ├── saddle-quote
+│   │   │   │   │   └── route.js
+│   │   │   │   ├── wire-quote
+│   │   │   │   │   └── route.js
+│   │   │   │   └── route.js
+│   │   │   ├── login
+│   │   │   │   └── route.js
+│   │   │   ├── media
+│   │   │   │   ├── [id]
+│   │   │   │   │   └── route.js
+│   │   │   │   ├── sync
+│   │   │   │   │   └── route.js
+│   │   │   │   └── route.js
+│   │   │   ├── pages
+│   │   │   │   ├── [id]
+│   │   │   │   │   ├── duplicate
+│   │   │   │   │   │   └── route.js
+│   │   │   │   │   └── route.js
+│   │   │   │   └── route.js
+│   │   │   ├── setup
+│   │   │   │   └── route.js
+│   │   │   ├── stats
+│   │   │   │   └── route.js
+│   │   │   └── users
+│   │   │       ├── [id]
+│   │   │       │   └── route.js
+│   │   │       └── route.js
+│   │   ├── customer
+│   │   │   └── auth
+│   │   │       ├── login
+│   │   │       │   └── route.js
+│   │   │       ├── logout
+│   │   │       │   └── route.js
+│   │   │       ├── me
+│   │   │       │   └── route.js
+│   │   │       └── signup
+│   │   │           └── route.js
+│   │   ├── debug-config
+│   │   │   └── route.js
+│   │   ├── fix-pages
+│   │   │   └── route.js
+│   │   ├── folder-structure
+│   │   │   └── route.js
+│   │   ├── force-fix
+│   │   │   └── route.js
+│   │   ├── forms
+│   │   │   ├── hard-quote
+│   │   │   │   └── route.js
+│   │   │   ├── print-quote
+│   │   │   │   └── route.js
+│   │   │   ├── saddle-quote
+│   │   │   │   └── route.js
+│   │   │   └── wire-quote
+│   │   │       └── route.js
+│   │   ├── reset-pages
+│   │   │   └── route.js
+│   │   ├── test-form-config
+│   │   │   └── route.js
+│   │   └── upload
+│   │       └── route.js
+│   ├── binding-and-finishing-2
+│   │   └── page.js
+│   ├── contact-us
+│   │   └── page.js
+│   ├── customer
+│   │   ├── account
+│   │   │   └── page.js
+│   │   ├── join
+│   │   │   └── page.js
+│   │   └── login
+│   │       └── page.js
+│   ├── debug-pages
+│   │   └── page.js
+│   ├── faqs
+│   │   └── page.js
+│   ├── hardcover-book
+│   │   └── page.js
+│   ├── perfect-binding
+│   │   └── page.js
+│   ├── portfolio
+│   │   └── page.js
+│   ├── printing
+│   │   └── page.js
+│   ├── privacy-policy
+│   │   └── page.js
+│   ├── saddle-stitching
+│   │   └── page.js
+│   ├── sheet-fed-press-2
+│   │   └── page.js
+│   ├── sitemap
+│   │   └── page.js
+│   ├── terms-conditions
+│   │   └── page.js
+│   ├── test-connection
+│   │   └── page.js
+│   ├── test-form-config
+│   │   └── page.js
+│   ├── tour-our-facilities
+│   │   └── page.js
+│   ├── web-fed-press-2
+│   │   └── page.js
+│   ├── wire-binding
+│   │   └── page.js
+│   ├── favicon.ico
+│   ├── globals.css
+│   ├── layout.js
+│   └── page.js
+├── components
+│   ├── admin
+│   │   ├── ContentEditor.js
+│   │   ├── HardQuoteFormEditor.js
+│   │   ├── Header.js
+│   │   ├── PrintQuoteFormEditor.js
+│   │   ├── SaddleQuoteFormEditor.js
+│   │   ├── Sidebar.js
+│   │   └── WireQuoteFormEditor.js
+│   ├── data
+│   │   ├── adminUsers.json
+│   │   ├── FaqData.js
+│   │   └── PortfolioData.js
+│   ├── layout
+│   │   ├── footer
+│   │   │   └── footer.js
+│   │   ├── header
+│   │   │   ├── header-menu.js
+│   │   │   ├── header.js
+│   │   │   ├── MobileMenu.js
+│   │   │   └── RequestingSample.js
+│   │   └── Popup.js
+│   ├── PageBuilder
+│   │   ├── editors
+│   │   │   ├── AboutHeroEditor.js
+│   │   │   ├── AboutUsEditor.js
+│   │   │   ├── ComponentEditor.js
+│   │   │   ├── FormEditor.js
+│   │   │   ├── FreeSampleEditor.js
+│   │   │   ├── HeadingEditor.js
+│   │   │   ├── HeroBannerEditor.js
+│   │   │   ├── HeroEditor.js
+│   │   │   ├── ImageBannerEditor.js
+│   │   │   ├── ImageBannerTwoEditor.js
+│   │   │   ├── ImageEditor.js
+│   │   │   ├── MethodEditor.js
+│   │   │   ├── MultiColumnEditor.js
+│   │   │   ├── MultiTableEditor.js
+│   │   │   ├── NoticeEditor.js
+│   │   │   ├── OrderProcessEditor.js
+│   │   │   ├── PerfectBindingFormEditor.js
+│   │   │   ├── PortfolioEditor.js
+│   │   │   ├── PricingEditor.js
+│   │   │   ├── QuickGuidesEditor.js
+│   │   │   ├── StyleEditor.js
+│   │   │   ├── TabsFaqEditor.js
+│   │   │   ├── TextEditor.js
+│   │   │   ├── VideoBannerEditor.js
+│   │   │   ├── VideoWithTextEditor.js
+│   │   │   └── WeightConverterEditor.js
+│   │   ├── renderers
+│   │   │   ├── FormRenderer.js
+│   │   │   └── TextRenderer.js
+│   │   ├── utils
+│   │   │   ├── componentDefaults.js
+│   │   │   └── componentUtils.js
+│   │   ├── ComponentEditorArea.js
+│   │   ├── ComponentItem.js
+│   │   ├── ComponentList.js
+│   │   ├── ComponentSidebar.js
+│   │   ├── ComponentToolbar.js
+│   │   ├── PageBuilder.js
+│   │   └── PageRenderer.js
+│   ├── pages
+│   │   ├── about
+│   │   │   ├── tour-our-facilities
+│   │   │   │   └── index.js
+│   │   │   ├── AboutHero.js
+│   │   │   ├── AboutUs.js
+│   │   │   ├── BottomBanner.js
+│   │   │   └── index.js
+│   │   ├── api
+│   │   │   └── admin
+│   │   │       ├── pages
+│   │   │       │   ├── [id]
+│   │   │       │   │   └── route.js
+│   │   │       │   └── route.js
+│   │   │       ├── login.js
+│   │   │       ├── stats.js
+│   │   │       └── users.js
+│   │   ├── contact
+│   │   │   ├── ContactUs.js
+│   │   │   └── index.js
+│   │   ├── faqs
+│   │   │   ├── Faq.js
+│   │   │   └── index.js
+│   │   ├── home
+│   │   │   ├── FreeSampleSection.js
+│   │   │   ├── HeroBanner.js
+│   │   │   ├── ImageBanner.js
+│   │   │   ├── ImageBannerTwo.js
+│   │   │   ├── ImagesWithText.js
+│   │   │   ├── index.js
+│   │   │   ├── Method.js
+│   │   │   ├── Notice.js
+│   │   │   ├── OrderProcess.js
+│   │   │   ├── Portfolio.js
+│   │   │   ├── Pricing.js
+│   │   │   ├── QuickGuides.js
+│   │   │   └── VideoBanner.js
+│   │   ├── portfolio
+│   │   │   ├── index.js
+│   │   │   └── PortfolioShowcase.js
+│   │   ├── printing-service
+│   │   │   ├── binding-and-finishing
+│   │   │   │   ├── BindingFinishingText.js
+│   │   │   │   ├── ImagesWithText.js
+│   │   │   │   └── index.js
+│   │   │   ├── printing
+│   │   │   │   ├── EquipmentList.js
+│   │   │   │   ├── ImageCoulmn.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── Intro.js
+│   │   │   │   ├── TabsGallery.js
+│   │   │   │   └── TextAndVideo.js
+│   │   │   ├── sheet-fed-press
+│   │   │   │   ├── CustomSheetFedText.JS
+│   │   │   │   ├── ImagesWithText.js
+│   │   │   │   └── index.js
+│   │   │   ├── web-fed-press
+│   │   │   │   ├── ImagesWithText.js
+│   │   │   │   ├── index.js
+│   │   │   │   └── WebFedPressText.js
+│   │   │   ├── index.js
+│   │   │   └── PrintingServicesHero.js
+│   │   ├── quote
+│   │   │   ├── hardcover-book
+│   │   │   │   ├── FormTabs.js
+│   │   │   │   ├── HardQuoteForm.js
+│   │   │   │   ├── Heading.js
+│   │   │   │   ├── index.js
+│   │   │   │   └── Tabs.js
+│   │   │   ├── perfect-binding
+│   │   │   │   ├── FormTabs.js
+│   │   │   │   ├── Heading.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── PrintQuoteForm.js
+│   │   │   │   └── Tabs.js
+│   │   │   ├── saddle-stitching
+│   │   │   │   ├── FormTabs.js
+│   │   │   │   ├── Heading.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── SaddleQuoteForm.js
+│   │   │   │   └── Tabs.js
+│   │   │   ├── wire-binding
+│   │   │   │   ├── FormTabs.js
+│   │   │   │   ├── Heading.js
+│   │   │   │   ├── index.js
+│   │   │   │   ├── Tabs.js
+│   │   │   │   └── WireQuoteForm.js
+│   │   │   └── index.js
+│   │   ├── signup
+│   │   └── tutorials
+│   │       └── index.js
+│   ├── FolderStructureCreator.js
+│   └── ProtectedRoute.js
+├── hooks
+│   └── useCustomerAuth.js
+├── lib
+│   ├── auth.js
+│   ├── db.js
+│   ├── formConfigStorage.js
+│   └── mongodb.js
+├── models
+│   ├── Content.js
+│   ├── Customer.js
+│   ├── FormConfiguration.js
+│   ├── Media.js
+│   ├── Page.js
+│   ├── PageContent.js
+│   └── User.js
+├── public
+│   ├── about
+│   │   ├── about-banner.jpg
+│   │   ├── About.jpg
+│   │   └── pexels-shkrabaanthony-6620992.jpg
+│   ├── footer
+│   │   ├── main-footer-1.png
+│   │   ├── main-footer-2.png
+│   │   ├── main-footer-3.png
+│   │   ├── main-footer-4.png
+│   │   ├── main-footer-5.png
+│   │   └── main-footer-logo.png
+│   ├── forms
+│   │   ├── 3.png
+│   │   ├── d1.png
+│   │   ├── d2.png
+│   │   ├── d4.png
+│   │   ├── d5.png
+│   │   ├── d6.png
+│   │   ├── edge01.png
+│   │   ├── edge02.png
+│   │   └── edge03.png
+│   ├── homepage
+│   │   ├── video
+│   │   │   └── printing.mp4
+│   │   ├── books.webp
+│   │   ├── bottom-banner.png
+│   │   ├── bottom-banner.webp
+│   │   ├── Gemini_Generated_Image_pgi6xnpgi6xnpgi6.png
+│   │   ├── logo-main.png
+│   │   ├── logo.jpg
+│   │   ├── logo.png
+│   │   ├── main-bg.jpg
+│   │   ├── main-process1.jpg
+│   │   ├── main-process2.jpg
+│   │   ├── main-process3.jpg
+│   │   ├── main-process4.jpg
+│   │   ├── main-process5.jpg
+│   │   ├── main-process6.jpg
+│   │   ├── main-process7.jpg
+│   │   ├── main-process8.jpg
+│   │   ├── main-quick-1.jpg
+│   │   ├── main-quick-12.jpg
+│   │   ├── main-sec03-1.jpg
+│   │   ├── main-sec04-1.png
+│   │   ├── main-sec05-1.jpg
+│   │   ├── main-sec06-1.png
+│   │   ├── main-sec07-1.jpg
+│   │   ├── main-sec08-1.jpg
+│   │   ├── main-sec08-2.jpg
+│   │   ├── main-sec09-1.jpg
+│   │   ├── Order.png
+│   │   ├── p1.jpg
+│   │   ├── p10.jpg
+│   │   ├── p2.jpg
+│   │   ├── p3.jpg
+│   │   ├── p4.jpg
+│   │   ├── p5.jpg
+│   │   ├── p6.jpg
+│   │   ├── p7.jpg
+│   │   ├── p8.jpg
+│   │   ├── p9.jpg
+│   │   ├── paper-480538_1280.jpg
+│   │   ├── paper.png
+│   │   └── Print.png
+│   ├── portfolio
+│   │   ├── 24.jpg
+│   │   ├── p1.jpg
+│   │   ├── p10.jpg
+│   │   ├── p11.jpg
+│   │   ├── p12.jpg
+│   │   ├── p13.jpg
+│   │   ├── p14.jpg
+│   │   ├── p15.jpg
+│   │   ├── p16.jpg
+│   │   ├── p17.jpg
+│   │   ├── p18.jpg
+│   │   ├── p19.jpg
+│   │   ├── p2.jpg
+│   │   ├── p20.jpg
+│   │   ├── p21.jpg
+│   │   ├── p22.jpg
+│   │   ├── p23.jpg
+│   │   ├── p24.jpg
+│   │   ├── p25.jpg
+│   │   ├── p26.jpg
+│   │   ├── p27.jpg
+│   │   ├── p28.jpg
+│   │   ├── p29.jpg
+│   │   ├── p3.jpg
+│   │   ├── p4.jpg
+│   │   ├── p5.jpg
+│   │   ├── p6.jpg
+│   │   ├── p7.jpg
+│   │   ├── p8.jpg
+│   │   └── p9.jpg
+│   ├── printing-service
+│   │   ├── bm1.png
+│   │   ├── bm2.png
+│   │   ├── bm3.png
+│   │   ├── bm4.png
+│   │   ├── ps1.png
+│   │   ├── ps2.png
+│   │   ├── ps3.png
+│   │   ├── ps4.png
+│   │   ├── sfp1.png
+│   │   ├── sfp2.png
+│   │   ├── sfp3.png
+│   │   ├── sfp4.png
+│   │   ├── sfp5.png
+│   │   ├── sfp6.png
+│   │   ├── spr1.png
+│   │   ├── spr2.png
+│   │   ├── sub1-02-1.png
+│   │   ├── sub1-02-2.png
+│   │   ├── sub1-02-3.png
+│   │   ├── sub1-02-4.png
+│   │   ├── sub1-03-1.png
+│   │   ├── sub1-03-2.png
+│   │   ├── sub1-03-3.png
+│   │   ├── sub1-04-1.jpg
+│   │   ├── sub1-05-1-1.png
+│   │   ├── sub1-05-1.png
+│   │   ├── sub1-05-2.png
+│   │   ├── sub1-05-3.png
+│   │   ├── sub1-05-4.png
+│   │   ├── sub1-05-5.png
+│   │   ├── sub1-05-6.png
+│   │   ├── wfp1.png
+│   │   └── wfp2.png
+│   ├── styles
+│   │   └── quote.css
+│   ├── tutorials
+│   │   ├── ao1.PNG
+│   │   ├── ao2.PNG
+│   │   ├── sub2-01-1.png
+│   │   ├── sub2-01-3.png
+│   │   ├── sub2-01-4.png
+│   │   ├── sub2-02-1.png
+│   │   ├── sub2-02-2.png
+│   │   ├── sub2-02-3.png
+│   │   ├── sub2-02-45.png
+│   │   ├── sub2-02-7.png
+│   │   ├── sub2-02-8.png
+│   │   ├── sub2-03-1.png
+│   │   ├── sub2-03-2.png
+│   │   ├── sub2-04-1.png
+│   │   ├── sub2-04-2.png
+│   │   ├── sub2-backimg.jpg
+│   │   └── tutorials-banner
+│   ├── uploads
+│   │   ├── 067b6c13-397a-4b40-b9e8-4c18c0856be4.png
+│   │   ├── 1eabdb41-963d-419d-9684-dc4d4024128d.jpg
+│   │   ├── 53951273-813c-48b3-b031-4da82521dcda.png
+│   │   ├── 90e16369-501a-47d8-8cf4-8abc7e5bac2f.jpg
+│   │   ├── 94e64bcc-1ac4-41d4-91a8-d2f03d9f3f9f.png
+│   │   ├── a5ee9f0e-548a-4389-abfb-f940e60ea572.jpg
+│   │   ├── image-1763535064257.png
+│   │   ├── image-1763535242316.jpg
+│   │   ├── image-1763536514796.png
+│   │   ├── image-1763536603212.png
+│   │   ├── image-1763540448779.png
+│   │   ├── image-1763540451879.png
+│   │   ├── image-1763540455133.png
+│   │   ├── image-1763545734496.jpg
+│   │   ├── image-1763545792789.png
+│   │   ├── image-1763546148332.png
+│   │   ├── image-1763546199097.png
+│   │   ├── image-1763546424498.png
+│   │   ├── image-1763546595459.png
+│   │   ├── image-1763546612681.png
+│   │   ├── image-1763616687798.png
+│   │   ├── image-1763616734326.png
+│   │   ├── image-1763616769746.png
+│   │   ├── image-1763622045487.png
+│   │   ├── image-1763622179001.png
+│   │   ├── image-1763622183015.png
+│   │   ├── image-1763622279025.png
+│   │   ├── image-1763622682458.png
+│   │   ├── image-1763622732709.png
+│   │   ├── image-1763632149173.png
+│   │   ├── image-1763632157549.png
+│   │   ├── image-1763703777457.jpg
+│   │   ├── image-1763703913419.jpg
+│   │   ├── image-1763703922393.PNG
+│   │   ├── image-1763703928515.PNG
+│   │   ├── image-1763711988896.PNG
+│   │   ├── image-1763725220493.mp4
+│   │   ├── image-1763794421507.jpg
+│   │   ├── image-1763794428151.jpg
+│   │   ├── image-1763797425639.mp4
+│   │   ├── image-1764563465363.jpg
+│   │   ├── image-1764563562863.png
+│   │   ├── image-1764563576854.png
+│   │   ├── image-1764563634575.png
+│   │   ├── image-1764563823555.png
+│   │   ├── image-1764563866161.png
+│   │   ├── image-1764563899415.png
+│   │   ├── image-1764564139674.jpg
+│   │   ├── image-1764564164577.png
+│   │   ├── image-1764564232617.png
+│   │   ├── image-1764564274346.png
+│   │   ├── image-1764564304269.png
+│   │   ├── image-1764564354799.png
+│   │   └── image-1764564401451.png
+│   ├── file.svg
+│   ├── folder_structure.txt
+│   ├── folder-structure.txt
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
+├── scripts
+│   ├── fix-database.js
+│   ├── fixAdmin.js
+│   ├── resetAuth.js
+│   ├── seed-fixed.js
+│   ├── seed.js
+│   ├── seedAdmin.js
+│   ├── seedFormConfig.js
+│   ├── seedPages.js
+│   ├── test-mongodb.js
+│   └── testAuth.js
+├── src
+│   └── app
+│       ├── about-us
+│       │   └── page.js
+│       ├── admin
+│       │   ├── dashboard
+│       │   │   └── page.js
+│       │   ├── login
+│       │   │   └── page.js
+│       │   └── pages
+│       │       └── [pages]
+│       │           └── page.js
+│       ├── api
+│       │   ├── admin
+│       │   │   ├── content
+│       │   │   │   └── [page]
+│       │   │   │       └── route.js
+│       │   │   ├── forms
+│       │   │   │   └── [formId]
+│       │   │   │       └── route.js
+│       │   │   ├── login
+│       │   │   │   └── route.js
+│       │   │   └── logout
+│       │   │       └── route.js
+│       │   ├── content
+│       │   │   └── [page]
+│       │   │       └── route.js
+│       │   ├── debug
+│       │   │   └── content
+│       │   │       └── route.js
+│       │   ├── folder-structure
+│       │   │   └── route.js
+│       │   ├── forms
+│       │   │   └── [formId]
+│       │   │       └── route.js
+│       │   ├── test-auth
+│       │   │   └── route.js
+│       │   └── test-connection
+│       │       └── route.js
+│       ├── binding-and-finishing
+│       │   └── page.js
+│       ├── contact-us
+│       │   └── page.js
+│       ├── faqs
+│       │   └── page.js
+│       ├── perfect-binding
+│       │   └── page.js
+│       ├── portfolio
+│       │   └── page.js
+│       ├── printing
+│       │   └── page.js
+│       ├── privacy-policy
+│       │   └── page.js
+│       ├── saddle-stitching
+│       │   └── page.js
+│       ├── sheet-fed-press
+│       │   └── page.js
+│       ├── sitemap
+│       │   └── page.js
+│       ├── terms-conditions
+│       │   └── page.js
+│       ├── tour-our-facilities
+│       │   └── page.js
+│       ├── web-fed-press
+│       │   └── page.js
+│       ├── favicon.ico
+│       ├── globals.css
+│       ├── layout.js
+│       └── page.js
+├── eslint.config.mjs
+├── folder-structure.txt
+├── jsconfig.json
+├── litstructure.txt
+├── middleware.js
+├── next.config.mjs
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+└── README.md

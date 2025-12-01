@@ -1,9 +1,9 @@
 // app/[...slug]/components/renderers/premium/TabsFaqRenderer.js
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 
-export default function TabsFaqRenderer({ component }) {
+function TabsFaqRenderer({ component }) {
   const content = component.content || {};
   const tabs = content.tabs || [];
 
@@ -59,7 +59,7 @@ export default function TabsFaqRenderer({ component }) {
           <div className="flex flex-wrap justify-center gap-3 mb-10">
             {tabs.map((tab, tabIndex) => (
               <button
-                key={tabIndex}
+                key={`tab-${tabIndex}`}
                 onClick={() => {
                   setActiveTab(tabIndex);
                   setOpenIndex(null);
@@ -88,7 +88,7 @@ export default function TabsFaqRenderer({ component }) {
         {tabs[activeTab]?.faqs?.length > 0 ? (
           <div className="bg-white rounded-2xl shadow-lg divide-y">
             {tabs[activeTab].faqs.map((item, faqIndex) => (
-              <div key={faqIndex} className="p-5">
+              <div key={`faq-${activeTab}-${faqIndex}`} className="p-5">
                 <button
                   className="flex justify-between w-full text-left text-lg font-semibold"
                   style={{ color: content.questionColor || "#1f2937" }}
@@ -140,3 +140,8 @@ export default function TabsFaqRenderer({ component }) {
     </section>
   );
 }
+
+// Use memo to prevent unnecessary re-renders
+export default memo(TabsFaqRenderer, (prevProps, nextProps) => {
+  return JSON.stringify(prevProps.component.content) === JSON.stringify(nextProps.component.content);
+});
