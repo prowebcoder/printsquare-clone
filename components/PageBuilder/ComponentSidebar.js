@@ -51,6 +51,10 @@ const SortableComponentItem = ({
       'weightCalculator': 'Weight Calculator',
       'multiTable': 'Tables',
       'tabsFaq': 'FAQ Tabs',
+      'tabsGallery': 'Tabs Gallery',
+      'serviceBox': 'Service Box',
+      'textBox': 'Text Box',
+      'contactUs': 'Contact Us',
     };
     
     return nameMap[component.type] || component.type;

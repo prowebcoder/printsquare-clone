@@ -69,6 +69,10 @@ const getComponentIcon = (type) => {
     weightConverter: '🧮',
     multiTable: '📋',
     tabsFaq: '❓',
+    tabsGallery: '� tabs',
+    serviceBox: '🗂️',
+    textBox: '📄',
+    contactUs: '📞',
   };
   return icons[type] || '📄';
 };

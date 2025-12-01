@@ -446,6 +446,388 @@ videoWithText: {
     }
   ]
 },
+
+serviceBox: {
+  // Header content
+  title: "Our Equipment & Technology",
+  titleColor: "#FFFFFF",
+  titleSize: "text-4xl sm:text-5xl",
+  description: "We're powered by precision — from prepress to finishing — equipped with cutting-edge machines that ensure top-tier quality and consistency.",
+  descriptionColor: "#D6D9E0",
+  descriptionSize: "text-base sm:text-lg",
+  descriptionMaxWidth: "42rem",
+  
+  // Layout settings
+  boxesPerRow: 4,
+  showDecorativeElements: true,
+  itemHoverEffect: true,
+  
+  // Background settings
+  backgroundType: "solid",
+  backgroundColor: "#0B1633",
+  gradientFrom: "#0B1633",
+  gradientTo: "#1a2239",
+  
+  // Default styling
+  boxBorderRadius: "1rem",
+  iconBorderRadius: "0.5rem",
+  iconSize: "w-6 h-6",
+  iconColor1: "#E21B36",
+  iconColor2: "#FF4B2B",
+  itemBorderColor: "#2E3850",
+  itemHoverBorderColor: "#E21B36",
+  itemHoverTextColor: "#FF4B2B",
+  itemTextColor: "#D6D9E0",
+  itemFontSize: "0.875rem",
+  
+  // Boxes data
+  boxes: [
+    {
+      title: "Prepress",
+      icon: "wrench",
+      items: [
+        "ElecRoc (PDF Workflow)",
+        "CTF Tanto 6120",
+        "CTP PlateRite 8800Z",
+        "Canon iPF8000"
+      ],
+      boxBgType: "solid",
+      boxSolidColor: "#121A2C",
+      boxGradientFrom: "#121A2C",
+      boxGradientTo: "#1a2239",
+      borderColor: "#2E3850",
+      borderWidth: "1px",
+      titleColor: "#FFFFFF",
+      iconColor: "#E21B36",
+      iconBgColor: "rgba(226, 27, 54, 0.1)"
+    },
+    {
+      title: "Sheet-Fed Press",
+      icon: "printer",
+      items: [
+        "Komori LS440SP",
+        "Komori LS540",
+        "Komori LS440",
+        "Komori LS240SP"
+      ],
+      boxBgType: "solid",
+      boxSolidColor: "#121A2C",
+      boxGradientFrom: "#121A2C",
+      boxGradientTo: "#1a2239",
+      borderColor: "#2E3850",
+      borderWidth: "1px",
+      titleColor: "#FFFFFF",
+      iconColor: "#FF4B2B",
+      iconBgColor: "rgba(255, 75, 43, 0.1)"
+    },
+    {
+      title: "Web-Fed Press",
+      icon: "layers",
+      items: [
+        "Komori System 38S (50,000 IPH) – 2 Set",
+        "Komori System 35S (48,000 IPH) – 2 Set"
+      ],
+      boxBgType: "solid",
+      boxSolidColor: "#121A2C",
+      boxGradientFrom: "#121A2C",
+      boxGradientTo: "#1a2239",
+      borderColor: "#2E3850",
+      borderWidth: "1px",
+      titleColor: "#FFFFFF",
+      iconColor: "#E21B36",
+      iconBgColor: "rgba(226, 27, 54, 0.1)"
+    },
+    {
+      title: "Finishing",
+      icon: "settings",
+      items: [
+        "Stacker Bundler – 6 Set",
+        "Muller Martini Bolero Perfect Binding Line – 2 Set",
+        "Tener Saddle Stitcher – 2 Set",
+        "Heidelberg Stahl Folder KH66 – 3 Set",
+        "Polar 115 Paper Cutter – 2 Set",
+        "Fuji-Ace Robot Palletizer – 3 Set"
+      ],
+      boxBgType: "solid",
+      boxSolidColor: "#121A2C",
+      boxGradientFrom: "#121A2C",
+      boxGradientTo: "#1a2239",
+      borderColor: "#2E3850",
+      borderWidth: "1px",
+      titleColor: "#FFFFFF",
+      iconColor: "#FF4B2B",
+      iconBgColor: "rgba(255, 75, 43, 0.1)"
+    }
+  ]
+},
+
+contactUs: {
+  // General settings
+  showContactCards: true,
+  showForm: true,
+  showMap: true,
+  showDecorativeElements: true,
+  cardsPerRow: 3,
+  
+  // Background settings
+  backgroundType: 'solid',
+  backgroundColor: '#F9FAFB',
+  gradientFrom: '#F9FAFB',
+  gradientTo: '#FFFFFF',
+  
+  // Header settings
+  title: 'Contact Us',
+  description: "We'd love to hear from you! Whether it's an inquiry, feedback, or partnership opportunity, our team is ready to assist.",
+  descriptionColor: '#6B7280',
+  descriptionSize: 'text-base',
+  descriptionMaxWidth: '42rem',
+  
+  heroTitleGradient: true,
+  heroGradientFrom: '#0B1633',
+  heroGradientTo: '#FF4B2B',
+  heroTitleColor: '#1F2937',
+  heroTitleSize: 'text-4xl md:text-5xl',
+  
+  // Contact cards
+  contactCards: [
+    {
+      title: 'Our Office',
+      icon: 'mapPin',
+      content: "Print Seoul Headquarters<br />105, Seoul Printing Avenue,<br />Mapo-gu, Seoul, South Korea",
+      bgColor: '#FFFFFF',
+      borderColor: 'transparent',
+      iconBgColor: 'rgba(255, 75, 43, 0.2)',
+      iconColor: '#FF4B2B',
+      titleColor: '#1F2937',
+      textColor: '#6B7280'
+    },
+    {
+      title: 'Call Us',
+      icon: 'phone',
+      content: "+82 10-3456-7890<br />Mon–Fri, 9:00 AM–6:00 PM",
+      bgColor: '#FFFFFF',
+      borderColor: 'transparent',
+      iconBgColor: 'rgba(255, 75, 43, 0.2)',
+      iconColor: '#FF4B2B',
+      titleColor: '#1F2937',
+      textColor: '#6B7280'
+    },
+    {
+      title: 'Email Us',
+      icon: 'mail',
+      content: "support@printseoul.com<br />info@printseoul.com",
+      bgColor: '#FFFFFF',
+      borderColor: 'transparent',
+      iconBgColor: 'rgba(255, 75, 43, 0.2)',
+      iconColor: '#FF4B2B',
+      titleColor: '#1F2937',
+      textColor: '#6B7280'
+    }
+  ],
+  
+  // Card styling
+  cardHoverEffect: true,
+  cardBorderRadius: '1rem',
+  cardBgColor: '#FFFFFF',
+  cardTitleColor: '#1F2937',
+  cardTextColor: '#6B7280',
+  cardShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)',
+  
+  // Icon styling
+  iconBorderRadius: '9999px',
+  iconColor: '#FF4B2B',
+  iconBgColor: 'rgba(255, 75, 43, 0.2)',
+  
+  // Form settings
+  formTitle: 'Send Us a Message',
+  formTitleColor: '#1F2937',
+  formAction: '',
+  
+  // Default form fields (if no custom fields specified)
+  formFields: [],
+  
+  // Form styling
+  formBgColor: '#FFFFFF',
+  formBorderRadius: '1rem',
+  formShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+  
+  // Form messages
+  successMessage: 'Thank you! Your message has been sent successfully.',
+  errorMessage: 'Sorry, there was an error sending your message. Please try again.',
+  
+  // Button styling
+  buttonText: 'Send Message',
+  buttonIcon: 'send',
+  buttonGradient: true,
+  buttonGradientFrom: '#E21B36',
+  buttonGradientTo: '#FF4B2B',
+  buttonSolidColor: '#E21B36',
+  buttonTextColor: '#FFFFFF',
+  
+  // Map settings
+  mapEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3165.278273548117!2d126.97796931531146!3d37.5665359797989!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357ca2f7e52b0b69%3A0x1234abcd5678!2sSeoul%2C%20South%20Korea!5e0!3m2!1sen!2sin!4v1696811000000!5m2!1sen!2sin',
+  mapHeight: '288px',
+  mapBorderRadius: '1rem',
+  mapCaption: 'Our location in Seoul, South Korea',
+  mapCaptionColor: '#6B7280'
+},
+
+textBox: {
+  // General settings
+  showIcon: true,
+  showDecorativeElements: true,
+  containerMaxWidth: 'max-w-5xl',
+  paddingY: 'py-20',
+  paddingX: 'px-6 sm:px-10',
+  
+  // Background settings
+  backgroundType: 'solid',
+  backgroundColor: '#F8F9FB',
+  gradientFrom: '#F8F9FB',
+  gradientTo: '#FFFFFF',
+  
+  // Decorative elements
+  decorativeType: 'gradient',
+  decorativeGradientFrom: '#E21B36',
+  decorativeGradientTo: '#FF4B2B',
+  decorativeColor: '#E21B36',
+  decorativeOpacity: 0.2,
+  
+  // Container settings
+  containerBgColor: '#FFFFFF',
+  containerBorderColor: '#EAEAEA',
+  containerBorderRadius: '1.5rem',
+  containerBorderWidth: '1px',
+  containerShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+  containerPadding: 'p-10 sm:p-14',
+  
+  // Icon settings
+  icon: 'printer',
+  iconSize: '2rem',
+  iconBgType: 'gradient',
+  iconGradientFrom: '#E21B36',
+  iconGradientTo: '#FF4B2B',
+  iconSolidColor: '#E21B36',
+  iconBorderRadius: '9999px',
+  
+  // Text settings
+  title: 'Professional Printing Excellence',
+  titleGradient: true,
+  titleGradientFrom: '#E21B36',
+  titleGradientTo: '#FF4B2B',
+  titleColor: '#1F2937',
+  titleSize: 'text-4xl sm:text-5xl',
+  
+  description: "Over the years, Print Seoul has earned the trust of magazine publishers, designers, and printing brokers by consistently delivering outstanding quality and reliable service. Our clients return time and again — confident their printing needs are in expert hands.",
+  descriptionColor: '#4B5563',
+  descriptionSize: 'text-base sm:text-lg',
+  descriptionMaxWidth: '42rem',
+  
+  brandHighlightColor: '#1F2937',
+  brandHighlightWeight: 600,
+  
+  // Highlights settings
+  showHighlightIcons: true,
+  highlightIcon: 'star',
+  highlightsLayout: 'horizontal',
+  highlightTextSize: 'text-sm',
+  highlightBgColor: '#FFE8E8',
+  highlightTextColor: '#E21B36',
+  highlightBorderColor: '#F5C2C2',
+  highlightBorderRadius: '9999px',
+  
+  // Highlights data
+  highlights: [
+    {
+      text: "Trusted Quality",
+      bgColor: '#FFE8E8',
+      textColor: '#E21B36',
+      borderColor: '#F5C2C2',
+      iconColor: '#E21B36',
+      bgType: 'solid'
+    },
+    {
+      text: "Repeat Clients",
+      bgColor: '#FFE8E8',
+      textColor: '#FF4B2B',
+      borderColor: '#F5C2C2',
+      iconColor: '#FF4B2B',
+      bgType: 'solid'
+    },
+    {
+      text: "Premium Finish",
+      bgColor: '#FFE8E8',
+      textColor: '#E21B36',
+      borderColor: '#F5C2C2',
+      iconColor: '#E21B36',
+      bgType: 'solid'
+    }
+  ]
+},
+
+tabsGallery: {
+  title: "Our Advanced Printing Facilities",
+  titleColor: "#1F2937",
+  titleSize: "text-4xl sm:text-5xl",
+  description: "From small runs to large-scale printing, Printseoul delivers precision and quality at every stage.",
+  descriptionColor: "#4B5563",
+  descriptionSize: "text-base sm:text-lg",
+  highlightColor: "#E21B36",
+  
+  // Tabs configuration
+  tabs: [
+    { id: "sheetfed", label: "Sheet-Fed Press" },
+    { id: "webfed", label: "Web-Fed Press" },
+    { id: "binding", label: "Binding Machines" },
+    { id: "smallprint", label: "From Small Print Run To Bulk Printing" }
+  ],
+  
+  // Active tab styling
+  activeTabBgType: "gradient",
+  activeTabGradientFrom: "#E21B36",
+  activeTabGradientTo: "#FF4B2B",
+  activeTabSolidColor: "#E21B36",
+  activeTabTextColor: "#FFFFFF",
+  
+  // Inactive tab styling
+  inactiveTabBgColor: "#FFFFFF",
+  inactiveTabTextColor: "#000000",
+  inactiveTabBorderColor: "#E5E7EB",
+  
+  // Gallery images
+  galleries: {
+    sheetfed: [
+      { url: "/printing-service/sfp1.png", alt: "Sheet-Fed Press 1" },
+      { url: "/printing-service/sfp2.png", alt: "Sheet-Fed Press 2" },
+      { url: "/printing-service/sfp3.png", alt: "Sheet-Fed Press 3" },
+      { url: "/printing-service/sfp4.png", alt: "Sheet-Fed Press 4" },
+      { url: "/printing-service/sfp5.png", alt: "Sheet-Fed Press 5" },
+      { url: "/printing-service/sfp6.png", alt: "Sheet-Fed Press 6" }
+    ],
+    webfed: [
+      { url: "/printing-service/wfp1.png", alt: "Web-Fed Press 1" },
+      { url: "/printing-service/wfp2.png", alt: "Web-Fed Press 2" }
+    ],
+    binding: [
+      { url: "/printing-service/bm1.png", alt: "Binding Machine 1" },
+      { url: "/printing-service/bm2.png", alt: "Binding Machine 2" },
+      { url: "/printing-service/bm3.png", alt: "Binding Machine 3" },
+      { url: "/printing-service/bm4.png", alt: "Binding Machine 4" }
+    ],
+    smallprint: [
+      { url: "/printing-service/spr1.png", alt: "Small Print Run 1" },
+      { url: "/printing-service/spr2.png", alt: "Small Print Run 2" }
+    ]
+  },
+  
+  // Background styling
+  backgroundType: "solid",
+  backgroundColor: "#FFFFFF",
+  gradientFrom: "#FFFFFF",
+  gradientTo: "#F8F9FB",
+  showDecorativeElements: true,
+  imageBorderRadius: "1rem"
+},
       quickGuides: {
   title: 'Quick',
   highlightedTitle: 'Guides',

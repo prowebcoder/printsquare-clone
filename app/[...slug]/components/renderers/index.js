@@ -28,6 +28,10 @@ export { default as PortfolioRenderer } from './premium/PortfolioRenderer';
 export { default as PricingRenderer } from './premium/PricingRenderer';
 export { default as QuickGuidesRenderer } from './premium/QuickGuidesRenderer';
 export { default as VideoBannerRenderer } from './premium/VideoBannerRenderer';
+export { default as TabsGalleryRenderer } from './premium/TabsGalleryRenderer';
+export { default as ServiceBoxRenderer } from './premium/ServiceBoxRenderer';
+export { default as TextBoxRenderer } from './premium/TextBoxRenderer';
+export { default as ContactUsRenderer } from './premium/ContactUsRenderer';
 
 export const TabsFaqRenderer = dynamic(
   () => import('./premium/TabsFaqRenderer'),

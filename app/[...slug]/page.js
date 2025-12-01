@@ -118,6 +118,10 @@ const componentMap = {
   'videoWithText': Renderers.VideoWithTextRenderer,
   'videoBanner': Renderers.VideoBannerRenderer,
   'tabsFaq': Renderers.TabsFaqRenderer,
+  'tabsGallery': Renderers.TabsGalleryRenderer,
+  'serviceBox': Renderers.ServiceBoxRenderer,
+  'textBox': Renderers.TextBoxRenderer,
+  'contactUs': Renderers.ContactUsRenderer,
 };
 
 function renderComponent(component, index) {

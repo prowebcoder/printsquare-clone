@@ -22,6 +22,10 @@ import WeightConverterRenderer from './renderers/WeightConverterRenderer';
 import MultiTableRenderer from './renderers/MultiTableRenderer';
 import FormRenderer from './renderers/FormRenderer';
 import TabsFaqRenderer from './renderers/TabsFaqRenderer';
+import TabsGalleryRenderer from './renderers/TabsGalleryRenderer';
+import ServiceBoxRenderer from './renderers/ServiceBoxRenderer';
+import TextBoxRenderer from './renderers/TextBoxRenderer';
+import ContactUsRenderer from './renderers/ContactUsRenderer';
 
 const PageRenderer = ({ components }) => {
   if (!components || !Array.isArray(components)) {
@@ -82,6 +86,10 @@ const PageRenderer = ({ components }) => {
       case 'form':
         return <FormRenderer key={component.id} component={component} />;
         case 'tabsFaq': return <TabsFaqRenderer key={component.id} component={component} />;
+        case 'tabsGallery': return <TabsGalleryRenderer key={component.id} component={component} />;
+        case 'serviceBox': return <ServiceBoxRenderer key={component.id} component={component} />;
+        case 'textBox': return <TextBoxRenderer key={component.id} component={component} />;
+        case 'contactUs': return <ContactUsRenderer key={component.id} component={component} />;
       default:
         return (
           <div key={component.id} className={`p-4 border border-yellow-300 bg-yellow-50 ${styleClasses}`}>

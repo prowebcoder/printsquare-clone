@@ -28,6 +28,10 @@ const ComponentToolbar = ({ onAddComponent }) => {
       { type: 'weightConverter', name: 'Weight Converter', category: 'Tools' },
       { type: 'multiTable', name: 'Tables', category: 'Layout' },
       { type: 'tabsFaq', name: 'FAQ Tabs', category: 'Content' },
+      { type: 'tabsGallery', name: 'Tabs Gallery', category: 'Content' },
+      { type: 'serviceBox', name: 'Service Box', category: 'Services' },
+      { type: 'textBox', name: 'Text Box', category: 'Content' },
+      { type: 'contactUs', name: 'Contact Us', category: 'Forms' },
       
       // Form Components
       { type: 'form', name: 'Basic Form', category: 'Forms' },

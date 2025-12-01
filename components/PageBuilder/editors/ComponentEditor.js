@@ -23,6 +23,10 @@ import QuickGuidesEditor from './QuickGuidesEditor';
 import VideoBannerEditor from './VideoBannerEditor';
 import FormEditor from './FormEditor';
 import TabsFaqEditor from './TabsFaqEditor';
+import TabsGalleryEditor from './TabsGalleryEditor';
+import ServiceBoxEditor from './ServiceBoxEditor';
+import TextBoxEditor from './TextBoxEditor';
+import ContactUsEditor from './ContactUsEditor';
 
 const ComponentEditor = ({ component, onUpdateContent, onUpdateStyles }) => {
   const renderContentEditor = () => {
@@ -50,6 +54,10 @@ const ComponentEditor = ({ component, onUpdateContent, onUpdateStyles }) => {
       case 'videoBanner': return <VideoBannerEditor component={component} onUpdate={onUpdateContent} />;
       case 'form': return <FormEditor component={component} onUpdate={onUpdateContent} />;
       case 'tabsFaq': return <TabsFaqEditor component={component} onUpdate={onUpdateContent} />;
+      case 'tabsGallery': return <TabsGalleryEditor component={component} onUpdate={onUpdateContent} />;
+      case 'serviceBox': return <ServiceBoxEditor component={component} onUpdate={onUpdateContent} />;
+      case 'textBox': return <TextBoxEditor component={component} onUpdate={onUpdateContent} />;
+      case 'contactUs': return <ContactUsEditor component={component} onUpdate={onUpdateContent} />;
       default: return <DefaultEditor />;
     }
   };
