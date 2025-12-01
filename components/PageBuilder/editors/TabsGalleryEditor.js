@@ -508,8 +508,8 @@ const TabsGalleryEditor = ({ component, onUpdate }) => {
 
             {(!content.galleries?.[tab.id] || content.galleries[tab.id].length === 0) && (
               <div className="text-center py-4 text-gray-400 text-sm">
-                No images added yet. Click "Add Image" to add images.
-              </div>
+  No images added yet. Click &quot;Add Image&quot; to add images.
+</div>
             )}
           </div>
         ))}

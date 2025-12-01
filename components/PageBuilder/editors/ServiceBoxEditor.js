@@ -726,8 +726,8 @@ const ServiceBoxEditor = ({ component, onUpdate }) => {
                       
                       {(!box.items || box.items.length === 0) && (
                         <div className="text-center py-4 text-gray-400 text-sm border-2 border-dashed border-gray-200 rounded">
-                          No items added. Click "Add Item" to add items.
-                        </div>
+  No items added. Click &quot;Add Item&quot; to add items.
+</div>
                       )}
                     </div>
                   </div>
