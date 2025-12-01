@@ -33,7 +33,7 @@ export default function PageBuilder({ onComponentsChange, initialComponents = []
   );
 
   // Initialize components properly
-  useEffect(() => {
+   useEffect(() => {
     if (!isInitialized && initialComponents) {
       console.log('🔄 Initializing PageBuilder with:', initialComponents);
       
@@ -66,24 +66,41 @@ export default function PageBuilder({ onComponentsChange, initialComponents = []
   }, [components, onComponentsChange, isInitialized]);
 
   const addComponent = useCallback((type) => {
-  console.log('🔄 Adding component type:', type);
-  console.log('📝 Default content for type:', getDefaultContent(type));
-  console.log('🎨 Default styles for type:', getDefaultStyles(type));
+    console.log('🔄 Adding component type:', type);
+    
+    const defaultContent = getDefaultContent(type);
+    const defaultStyles = getDefaultStyles(type);
+
+    if (type === 'tabsFaq') {
+      if (!defaultContent.tabs || defaultContent.tabs.length === 0) {
+        defaultContent.tabs = [
+          {
+            name: 'ORDER',
+            faqs: [
+              {
+                question: 'Terms of Portfolio usage agreement',
+                answer: 'All designs and content submitted for printing remain the intellectual property of the client. Print Seoul only uses them for printing and delivery purposes.'
+              }
+            ]
+          }
+        ];
+      }
+    }
   
   const newComponent = {
-    id: `comp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-    type: type,
-    content: getDefaultContent(type),
-    styles: getDefaultStyles(type),
-    order: components.length
-  };
-  
-  console.log('✅ New component created:', newComponent);
-  
-  const updatedComponents = [...components, newComponent];
-  setComponents(updatedComponents);
-  setSelectedComponent(newComponent.id);
-}, [components.length]);
+      id: `comp-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      type: type,
+      content: defaultContent,
+      styles: defaultStyles,
+      order: components.length
+    };
+    
+    console.log('✅ New component created:', newComponent);
+    
+    const updatedComponents = [...components, newComponent];
+    setComponents(updatedComponents);
+    setSelectedComponent(newComponent.id);
+  }, [components.length]);
 
  const updateComponentContent = useCallback((id, contentUpdates) => {
   try {

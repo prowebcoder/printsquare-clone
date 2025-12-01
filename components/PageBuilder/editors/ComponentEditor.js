@@ -1,3 +1,4 @@
+// components/PageBuilder/editors/ComponentEditor.js
 import StyleEditor from './StyleEditor';
 import TextEditor from './TextEditor';
 import HeadingEditor from './HeadingEditor';

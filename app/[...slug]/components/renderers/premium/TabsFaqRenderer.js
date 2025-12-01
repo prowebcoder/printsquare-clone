@@ -1,152 +1,141 @@
 // app/[...slug]/components/renderers/premium/TabsFaqRenderer.js
 "use client";
 
-import { useState } from 'react';
-import { Plus, Minus } from 'lucide-react';
+import React, { useState } from "react";
 
 export default function TabsFaqRenderer({ component }) {
   const content = component.content || {};
+  const tabs = content.tabs || [];
+
   const [activeTab, setActiveTab] = useState(0);
-  const [openFaqs, setOpenFaqs] = useState({});
+  const [openIndex, setOpenIndex] = useState(null);
 
-  const toggleFaq = (tabIndex, faqIndex) => {
-    setOpenFaqs(prev => ({
-      ...prev,
-      [`${tabIndex}-${faqIndex}`]: !prev[`${tabIndex}-${faqIndex}`]
-    }));
-  };
+  // Return nothing if section has no content
+  if (!content.title && tabs.length === 0) return null;
 
-  // Check if there's any content to show
-  const hasContent = content.title || content.tabs?.length > 0;
-
-  // If no content, don't render anything
-  if (!hasContent) {
-    return null;
-  }
-
-  // Determine background style
+  // Background styling function
   const getBackgroundStyle = () => {
-    switch (content.backgroundType) {
-      case 'solid':
-        return { backgroundColor: content.backgroundColor || '#FAFAFA' };
-      case 'gradient':
-        return { 
-          background: `linear-gradient(to right, ${content.gradientFrom || '#FAFAFA'}, ${content.gradientTo || '#FFFFFF'})` 
-        };
-      case 'none':
-      default:
-        return {};
+    if (content.backgroundType === "solid") {
+      return { backgroundColor: content.backgroundColor || "#f5f3ef" };
     }
+    if (content.backgroundType === "gradient") {
+      return {
+        background: `linear-gradient(to bottom, ${
+          content.gradientFrom || "#f5f3ef"
+        }, ${content.gradientTo || "#e8e3dd"})`,
+      };
+    }
+    return {};
   };
+
+  // Title split logic (safe for single-word titles)
+  const titleWords = content.title ? content.title.split(" ") : [];
+  const mainTitle = titleWords.slice(0, -1).join(" ");
+  const lastWord = titleWords.slice(-1)[0];
 
   return (
     <section
-      className="py-20 relative overflow-hidden"
+      className="py-20 px-4"
       style={getBackgroundStyle()}
     >
-      {/* Decorative gradient circles */}
-      {content.backgroundType !== 'gradient' && (
-        <>
-          <div className="absolute top-[-5rem] left-[-5rem] w-96 h-96 bg-[#E21B36]/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-[-6rem] right-[-4rem] w-96 h-96 bg-[#FF4B2B]/10 rounded-full blur-3xl" />
-        </>
-      )}
+      <div className="max-w-5xl mx-auto">
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-        {/* Section Heading */}
+        {/* Section Title */}
         {content.title && (
-          <div className="text-center mb-14">
-            <h2 
-              className="text-4xl md:text-5xl font-bold tracking-wide"
-              style={{ color: content.titleColor || '#0B1633' }}
-            >
-              {content.title}
-            </h2>
-            <div 
-              className="w-24 h-1 mx-auto mt-4 rounded-full"
-              style={{
-                background: `linear-gradient(to right, ${content.tabBgColor || '#F3F4F6'}, ${content.activeTabBgColor || '#FFFFFF'})`
-              }}
-            ></div>
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
+              <span style={{ color: content.titleColor || "#0B1633" }}>
+                {mainTitle}
+              </span>{" "}
+              <span style={{ color: content.highlightedColor || "#FF4B2B" }}>
+                {lastWord}
+              </span>
+            </h1>
           </div>
         )}
 
-        {/* Tabs and Content */}
-        {content.tabs && content.tabs.length > 0 && (
-          <div className="max-w-6xl mx-auto">
-            {/* Tabs Navigation */}
-            <div className="flex flex-wrap gap-2 mb-12 justify-center">
-              {content.tabs.map((tab, tabIndex) => (
+        {/* Tabs */}
+        {tabs.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-3 mb-10">
+            {tabs.map((tab, tabIndex) => (
+              <button
+                key={tabIndex}
+                onClick={() => {
+                  setActiveTab(tabIndex);
+                  setOpenIndex(null);
+                }}
+                className="px-5 py-2 rounded-full font-semibold transition-all"
+                style={{
+                  backgroundColor:
+                    activeTab === tabIndex
+                      ? content.activeTabBg || "#e21b36"
+                      : content.inactiveTabBg || "#ffffff",
+                  color:
+                    activeTab === tabIndex
+                      ? content.activeTabText || "#ffffff"
+                      : content.inactiveTabText || "#666666",
+                  boxShadow:
+                    activeTab === tabIndex ? "0 0 10px rgba(0,0,0,0.15)" : "none",
+                }}
+              >
+                {tab.name}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* FAQ Accordion */}
+        {tabs[activeTab]?.faqs?.length > 0 ? (
+          <div className="bg-white rounded-2xl shadow-lg divide-y">
+            {tabs[activeTab].faqs.map((item, faqIndex) => (
+              <div key={faqIndex} className="p-5">
                 <button
-                  key={tabIndex}
-                  onClick={() => setActiveTab(tabIndex)}
-                  className={`px-6 py-3 rounded-full text-sm font-semibold transition-all duration-300 ${
-                    activeTab === tabIndex 
-                      ? 'shadow-lg' 
-                      : 'hover:shadow-md'
-                  }`}
-                  style={{
-                    backgroundColor: activeTab === tabIndex 
-                      ? (content.activeTabBgColor || '#FFFFFF')
-                      : (content.tabBgColor || '#F3F4F6'),
-                    color: activeTab === tabIndex
-                      ? (content.activeTabTextColor || '#0B1633')
-                      : (content.tabTextColor || '#6B7280'),
-                  }}
+                  className="flex justify-between w-full text-left text-lg font-semibold"
+                  style={{ color: content.questionColor || "#1f2937" }}
+                  onClick={() =>
+                    setOpenIndex(openIndex === faqIndex ? null : faqIndex)
+                  }
                 >
-                  {tab.title}
-                </button>
-              ))}
-            </div>
+                  {item.question}
 
-            {/* Tab Content */}
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              {content.tabs[activeTab]?.faqs?.map((faq, faqIndex) => (
-                <div
-                  key={faqIndex}
-                  className="border-b border-gray-200 last:border-b-0"
-                >
-                  <button
-                    onClick={() => toggleFaq(activeTab, faqIndex)}
-                    className="w-full py-6 text-left flex justify-between items-center hover:bg-gray-50 px-4 rounded-lg transition-colors"
+                  <span
+                    className={`transition-transform text-2xl leading-none ${
+                      openIndex === faqIndex ? "rotate-45" : ""
+                    }`}
+                    style={{
+                      color: content.highlightedColor || "#e21b36",
+                      transformOrigin: "center",
+                    }}
                   >
-                    <h3 
-                      className="text-lg font-semibold pr-4"
-                      style={{ color: content.questionColor || '#0B1633' }}
-                    >
-                      {faq.question}
-                    </h3>
-                    <div 
-                      className="flex-shrink-0 p-1 rounded-full"
-                      style={{ backgroundColor: content.tabBgColor || '#F3F4F6' }}
-                    >
-                      {openFaqs[`${activeTab}-${faqIndex}`] ? (
-                        <Minus size={20} style={{ color: content.activeTabTextColor || '#0B1633' }} />
-                      ) : (
-                        <Plus size={20} style={{ color: content.tabTextColor || '#6B7280' }} />
-                      )}
-                    </div>
-                  </button>
-                  
-                  {openFaqs[`${activeTab}-${faqIndex}`] && (
-                    <div 
-                      className="px-4 pb-6"
-                      style={{ color: content.answerColor || '#6B7280' }}
-                    >
-                      <p className="leading-relaxed">{faq.answer}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
+                    +
+                  </span>
+                </button>
 
-              {(!content.tabs[activeTab]?.faqs || content.tabs[activeTab]?.faqs.length === 0) && (
-                <div className="text-center py-12 text-gray-500">
-                  <p>No FAQs added to this tab yet.</p>
+                <div
+                  className={`overflow-hidden transition-all duration-300 ${
+                    openIndex === faqIndex ? "max-h-40 mt-3" : "max-h-0"
+                  }`}
+                >
+                  <p
+                    className="text-gray-600"
+                    style={{ color: content.answerColor || "#6b7280" }}
+                  >
+                    {item.answer}
+                  </p>
                 </div>
-              )}
-            </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          /* Empty State */
+          <div className="text-center py-12 bg-white rounded-2xl shadow-lg">
+            <p className="text-gray-500 text-lg">No FAQs added to this tab yet.</p>
+            <p className="text-gray-400 text-sm mt-2">
+              Add questions and answers in the editor.
+            </p>
           </div>
         )}
+
       </div>
     </section>
   );

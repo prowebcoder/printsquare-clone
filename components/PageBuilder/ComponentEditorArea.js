@@ -66,9 +66,9 @@ const getComponentIcon = (type) => {
     videoWithText: '🎥',
     form: '📄',
     multiColumn: '📊',
-    weightCalculator: '🧮',
-    table: '📋',
-    tabsFaq: '❓'
+    weightConverter: '🧮',
+    multiTable: '📋',
+    tabsFaq: '❓',
   };
   return icons[type] || '📄';
 };

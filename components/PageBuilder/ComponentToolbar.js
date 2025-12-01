@@ -23,11 +23,11 @@ const ComponentToolbar = ({ onAddComponent }) => {
       { type: 'pricing', name: 'Pricing', category: 'Services' },
       { type: 'quickGuides', name: 'Quick Guides', category: 'Resources' },
       { type: 'videoWithText', name: 'Video with Text', category: 'Home' },
-      { type: 'tabsFaq', name: 'FAQ Tabs', category: 'Content' },
       { type: 'videoBanner', name: 'Video Banner', category: 'Home' },
       { type: 'multiColumn', name: 'Multi Column', category: 'Layout' },
       { type: 'weightConverter', name: 'Weight Converter', category: 'Tools' },
       { type: 'multiTable', name: 'Tables', category: 'Layout' },
+      { type: 'tabsFaq', name: 'FAQ Tabs', category: 'Content' },
       
       // Form Components
       { type: 'form', name: 'Basic Form', category: 'Forms' },

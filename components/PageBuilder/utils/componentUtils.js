@@ -2,7 +2,7 @@
 import { 
   Type, Image as ImageIcon, Layout, Text, FileText, Star, Zap, Users, 
   DollarSign, BookOpen, Megaphone, Calculator, Video, ShoppingCart, 
-  Grid, Settings, FileText as FormIcon, Table, HelpCircle 
+  Grid,  FileText as FormIcon, Table, HelpCircle 
 } from 'lucide-react';
 
 export const getComponentIcon = (type) => {
@@ -38,7 +38,7 @@ export const getComponentCategory = (type) => {
   if (['aboutHero', 'aboutUs', 'freeSample'].includes(type)) {
     return 'about';
   }
-  if (['heroBanner', 'multiColumn', 'multiTable', 'tabsFaq', 'videoWithText', 'weightConverter', 'imageBanner', 'imageBannerTwo', 'method', 'notice', 'orderProcess', 'portfolio', 'pricing', 'quickGuides', 'videoBanner', 'tabsFaq'].includes(type)) {
+  if (['heroBanner', 'multiColumn', 'multiTable',  'videoWithText', 'weightConverter', 'imageBanner', 'imageBannerTwo', 'method', 'notice', 'orderProcess', 'portfolio', 'pricing', 'quickGuides', 'videoBanner', 'tabsFaq'].includes(type)) {
     return 'home';
   }
   if (['form'].includes(type)) {
@@ -71,7 +71,7 @@ export const getComponentDisplayName = (type) => {
     'multiColumn': 'Multi Column',
     'weightConverter': 'Weight Converter',
     'multiTable': 'Tables',
-    'tabsFaq': 'FAQ Tabs'
+    'tabsFaq': 'FAQ Tabs',
   };
   
   return nameMap[type] || type;

@@ -68,7 +68,31 @@ heading: {
   quoteBgColor: '#FFFFFF',
   quoteTextColor: '#121A2C'
 },
-      
+      tabsFaq: {
+      title: 'Frequently Asked Questions',
+      tabs: [
+        {
+          name: 'ORDER',
+          faqs: [
+            {
+              question: 'Terms of Portfolio usage agreement',
+              answer: 'All designs and content submitted for printing remain the intellectual property of the client. Print Seoul only uses them for printing and delivery purposes.'
+            }
+          ]
+        }
+      ],
+      backgroundType: 'gradient',
+      gradientFrom: '#f5f3ef',
+      gradientTo: '#e8e3dd',
+      titleColor: '#0B1633',
+      highlightedColor: '#FF4B2B',
+      activeTabBg: '#e21b36',
+      activeTabText: '#ffffff',
+      inactiveTabBg: '#ffffff',
+      inactiveTabText: '#666666',
+      questionColor: '#1f2937',
+      answerColor: '#6b7280'
+    },
       freeSample: {
   title: 'Free Sample Service',
   description1: 'Curious about the paper texture or print quality before ordering? Experience it yourself with our free sample service.',
@@ -189,69 +213,6 @@ videoWithText: {
   badgeTextColor: '#FFFFFF'
 },
 
- tabsFaq: {
-      title: 'Frequently Asked Questions',
-      tabs: [
-        {
-          title: 'ORDER',
-          faqs: [
-            {
-              question: 'How long does it take to complete my order?',
-              answer: 'The time required to complete your order depends on the complexity and quantity. Standard orders typically take 3-5 business days.'
-            },
-            {
-              question: 'Order Cancellation',
-              answer: 'Orders can be cancelled within 24 hours of placement. After this period, cancellation may not be possible as production may have started.'
-            }
-          ]
-        },
-        {
-          title: 'PROOF',
-          faqs: [
-            {
-              question: 'Do you guys check over the files before printing?',
-              answer: 'Yes, our team carefully reviews all files before printing to ensure quality and catch any potential issues.'
-            }
-          ]
-        },
-        {
-          title: 'PAYMENT',
-          faqs: [
-            {
-              question: 'What\'s your return policy?',
-              answer: 'We accept returns within 14 days of delivery for defective products. Custom orders may not be eligible for return.'
-            }
-          ]
-        },
-        {
-          title: 'SHIPPING',
-          faqs: [
-            {
-              question: 'Direct Mailing',
-              answer: 'We offer direct mailing services to ship your products directly to your customers.'
-            }
-          ]
-        },
-        {
-          title: 'CLAIM',
-          faqs: [
-            {
-              question: 'Will my order be defect free?',
-              answer: 'We strive for perfection in every order. Our quality control process ensures that your order meets the highest standards.'
-            }
-          ]
-        }
-      ],
-      backgroundType: 'solid',
-      backgroundColor: '#FAFAFA',
-      titleColor: '#0B1633',
-      tabBgColor: '#F3F4F6',
-      activeTabBgColor: '#FFFFFF',
-      tabTextColor: '#6B7280',
-      activeTabTextColor: '#0B1633',
-      questionColor: '#0B1633',
-      answerColor: '#6B7280'
-    },
 
       notice: {
   title: 'Latest Notices',
@@ -503,10 +464,9 @@ videoWithText: {
   numberColor: '#E21B36',
   buttonBgColor: '#121A2C',
   buttonTextColor: '#D6D9E0',
-  hoverButtonBgColor: '#1A2438',
-  hoverButtonTextColor: '#FFFFFF',
-  backgroundType: 'solid',
-  backgroundColor: '#0B1633'
+  backgroundType: 'gradient',
+  gradientFrom: '#0B1633',
+  gradientTo: '#1C2333'
 },
 
       form: {

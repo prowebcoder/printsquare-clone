@@ -81,8 +81,7 @@ const PageRenderer = ({ components }) => {
         return <VideoBannerRenderer key={component.id} component={component} />;
       case 'form':
         return <FormRenderer key={component.id} component={component} />;
-      case 'tabsFaq':
-        return <TabsFaqRenderer key={component.id} component={component} />;
+        case 'tabsFaq': return <TabsFaqRenderer key={component.id} component={component} />;
       default:
         return (
           <div key={component.id} className={`p-4 border border-yellow-300 bg-yellow-50 ${styleClasses}`}>
