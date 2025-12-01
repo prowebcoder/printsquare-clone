@@ -916,8 +916,8 @@ const ContactUsEditor = ({ component, onUpdate }) => {
               placeholder="https://maps.google.com/embed?pb=..."
             />
             <p className="text-xs text-gray-500 mt-1">
-              Paste your Google Maps embed URL. You can get this by clicking "Share" → "Embed a map" on Google Maps.
-            </p>
+  Paste your Google Maps embed URL. You can get this by clicking &quot;Share&quot; &rarr; &quot;Embed a map&quot; on Google Maps.
+</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -328,7 +328,9 @@ const FaqEditor = ({ component, onUpdate }) => {
         {(!content.faqItems || content.faqItems.length === 0) && (
           <div className="text-center p-6 border-2 border-dashed border-gray-300 rounded-lg">
             <p className="text-gray-500">No FAQ items added yet.</p>
-            <p className="text-sm text-gray-400 mt-1">Click "Add FAQ" to create your first question</p>
+            <p className="text-sm text-gray-400 mt-1">
+  Click &quot;Add FAQ&quot; to create your first question
+</p>
           </div>
         )}
 
