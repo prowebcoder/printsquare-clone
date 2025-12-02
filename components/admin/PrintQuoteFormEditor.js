@@ -696,8 +696,8 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                       <div className="mt-6">
                         <h4 className="font-medium text-gray-700 mb-3">Dust Cover Paper Options</h4>
                         <p className="text-sm text-gray-500 mb-4">
-                          Dust cover uses the same paper options as regular cover. You can edit them in the "Cover Paper" tab.
-                        </p>
+  Dust cover uses the same paper options as regular cover. You can edit them in the &quot;Cover Paper&quot; tab.
+</p>
                       </div>
                     </>
                   )}
