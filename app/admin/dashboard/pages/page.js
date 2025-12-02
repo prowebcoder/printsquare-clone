@@ -1,14 +1,18 @@
-// printsquare-clone/app/admin/dashboard/pages/page.js
+// app/admin/dashboard/pages/page.js 
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Search, Plus, Edit, Trash2, Eye, FileText, Copy, RefreshCw, AlertCircle } from 'lucide-react';
+import { 
+  Search, Plus, Edit, Trash2, Eye, FileText, Copy, 
+  RefreshCw, AlertCircle, Home, Star, Check 
+} from 'lucide-react';
 
 export default function PagesPage() {
   const [pages, setPages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [duplicating, setDuplicating] = useState(null);
+  const [settingHomepage, setSettingHomepage] = useState(null);
   const [error, setError] = useState('');
   const [debugInfo, setDebugInfo] = useState('');
 
@@ -117,11 +121,45 @@ export default function PagesPage() {
     }
   };
 
+  const handleSetHomepage = async (pageId) => {
+    if (!confirm('Set this page as homepage? The current homepage will be unset.')) return;
+
+    setSettingHomepage(pageId);
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`/api/admin/pages/${pageId}/set-homepage`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert('Page set as homepage successfully!');
+        setDebugInfo('✅ Homepage updated');
+        fetchPages(true); // Refresh the list
+      } else {
+        throw new Error(data.error || 'Failed to set homepage');
+      }
+    } catch (error) {
+      console.error('Error setting homepage:', error);
+      alert(`Error: ${error.message}`);
+      setDebugInfo(`❌ Set homepage failed: ${error.message}`);
+    } finally {
+      setSettingHomepage(null);
+    }
+  };
+
   const filteredPages = pages.filter(
     (page) =>
       page.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       page.slug.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Find current homepage
+  const currentHomepage = pages.find(page => page.isHomepage);
 
   if (loading) {
     return (
@@ -140,6 +178,12 @@ export default function PagesPage() {
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Pages</h1>
           <p className="text-gray-600 mt-1">Manage your website pages and content</p>
+          {currentHomepage && (
+            <div className="mt-2 flex items-center space-x-2 text-sm text-indigo-600">
+              <Home size={16} />
+              <span>Current Homepage: <strong>{currentHomepage.title}</strong></span>
+            </div>
+          )}
           {debugInfo && (
             <div className="text-sm text-blue-600 mt-2 flex items-center space-x-2">
               <RefreshCw size={14} className="animate-spin" />
@@ -183,7 +227,7 @@ export default function PagesPage() {
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 text-center">
         <div className="bg-white rounded-lg p-4 border">
           <div className="text-2xl font-bold text-indigo-600">{pages.length}</div>
           <div className="text-sm text-gray-600">Total Pages</div>
@@ -205,6 +249,12 @@ export default function PagesPage() {
             {pages.reduce((total, page) => total + (page.components?.length || 0), 0)}
           </div>
           <div className="text-sm text-gray-600">Total Components</div>
+        </div>
+        <div className="bg-white rounded-lg p-4 border">
+          <div className="text-2xl font-bold text-purple-600">
+            {currentHomepage ? 1 : 0}
+          </div>
+          <div className="text-sm text-gray-600">Homepage Set</div>
         </div>
       </div>
 
@@ -233,7 +283,7 @@ export default function PagesPage() {
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                {['Title', 'Slug', 'Status', 'Last Updated', 'Actions'].map((header) => (
+                {['Title', 'Slug', 'Homepage', 'Status', 'Last Updated', 'Actions'].map((header) => (
                   <th
                     key={header}
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -249,7 +299,11 @@ export default function PagesPage() {
                 <tr key={page._id} className="hover:bg-gray-50 transition-all duration-200">
                   <td className="px-6 py-4">
                     <div className="flex items-center space-x-3">
-                      <FileText size={16} className="text-gray-400" />
+                      {page.isHomepage ? (
+                        <Home size={16} className="text-yellow-500" />
+                      ) : (
+                        <FileText size={16} className="text-gray-400" />
+                      )}
                       <div>
                         <div className="text-sm font-medium text-gray-900">{page.title}</div>
                         {page.metaTitle && (
@@ -262,7 +316,32 @@ export default function PagesPage() {
                   </td>
 
                   <td className="px-6 py-4 text-sm text-gray-500">
-                    <code className="bg-gray-100 px-2 py-1 rounded text-xs">/{page.slug}</code>
+                    <code className="bg-gray-100 px-2 py-1 rounded text-xs">
+                      {page.isHomepage ? '/' : `/${page.slug}`}
+                    </code>
+                  </td>
+
+                  <td className="px-6 py-4">
+                    {page.isHomepage ? (
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                        <Star size={12} className="mr-1" /> Homepage
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => handleSetHomepage(page._id)}
+                        disabled={settingHomepage === page._id}
+                        className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors disabled:opacity-50"
+                      >
+                        {settingHomepage === page._id ? (
+                          <>
+                            <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-gray-600 mr-1"></div>
+                            Setting...
+                          </>
+                        ) : (
+                          'Set as Home'
+                        )}
+                      </button>
+                    )}
                   </td>
 
                   <td className="px-6 py-4">
@@ -317,7 +396,7 @@ export default function PagesPage() {
 
                       {page.published && (
                         <a
-                          href={`/${page.slug}`}
+                          href={page.isHomepage ? '/' : `/${page.slug}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"

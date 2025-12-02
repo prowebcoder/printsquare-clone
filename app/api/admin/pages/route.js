@@ -1,4 +1,4 @@
-// printsquare-clone/app/api/admin/pages/route.js
+// app/api/admin/pages/route.js
 import { NextResponse } from 'next/server';
 import Page from '@/models/Page';
 import dbConnect from '@/lib/mongodb';

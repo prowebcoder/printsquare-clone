@@ -1,4 +1,4 @@
-// printsquare-clone/app/api/admin/pages/[id]/route.js
+// app/api/admin/pages/[id]/route.js
 import { NextResponse } from 'next/server';
 import Page from '@/models/Page';
 import dbConnect from '@/lib/mongodb';
@@ -37,22 +37,49 @@ export async function PUT(request, { params }) {
     console.log('📝 Updating page with ID:', id);
     
     const body = await request.json();
-    const { title, slug, components, metaTitle, metaDescription, published } = body;
+    const { title, slug, components, metaTitle, metaDescription, published, isHomepage } = body;
 
-    console.log('📦 Update data:', { title, slug, componentsCount: components?.length });
+    console.log('📦 Update data:', { 
+      title, 
+      slug, 
+      isHomepage,
+      componentsCount: components?.length 
+    });
 
+    // Find the page
     const page = await Page.findById(id);
     if (!page) {
       return NextResponse.json({ error: 'Page not found' }, { status: 404 });
     }
 
-    // Update page fields
-    page.title = title;
-    page.slug = slug;
-    page.components = components || [];
-    page.metaTitle = metaTitle;
-    page.metaDescription = metaDescription;
-    page.published = published;
+    // Handle homepage logic
+    if (isHomepage === true) {
+      console.log('🏠 Setting page as homepage');
+      
+      // Clear any existing homepage first
+      await Page.updateMany(
+        { _id: { $ne: id }, isHomepage: true },
+        { $set: { isHomepage: false } }
+      );
+      
+      // Update this page
+      page.title = title;
+      page.isHomepage = true;
+      page.slug = ''; // Homepage has empty slug
+      page.components = components || [];
+      page.metaTitle = metaTitle;
+      page.metaDescription = metaDescription;
+      page.published = published;
+    } else {
+      // Regular page update
+      page.title = title;
+      page.isHomepage = false;
+      page.slug = slug;
+      page.components = components || [];
+      page.metaTitle = metaTitle;
+      page.metaDescription = metaDescription;
+      page.published = published;
+    }
 
     await page.save();
     console.log('✅ Page updated successfully:', page._id);
@@ -66,7 +93,11 @@ export async function PUT(request, { params }) {
   } catch (error) {
     console.error('❌ Error updating page:', error);
     return NextResponse.json(
-      { error: 'Failed to update page', details: error.message },
+      { 
+        error: 'Failed to update page', 
+        details: error.message,
+        validationErrors: error.errors 
+      },
       { status: 500 }
     );
   }
@@ -82,6 +113,14 @@ export async function DELETE(request, { params }) {
     const page = await Page.findById(id);
     if (!page) {
       return NextResponse.json({ error: 'Page not found' }, { status: 404 });
+    }
+
+    // Don't delete if it's the homepage
+    if (page.isHomepage) {
+      return NextResponse.json(
+        { error: 'Cannot delete the homepage. Set another page as homepage first.' },
+        { status: 400 }
+      );
     }
 
     await Page.findByIdAndDelete(id);

@@ -1,7 +1,7 @@
 // app/[...slug]/page.js
 import dbConnect from '@/lib/db';
 import Page from '@/models/Page';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Header from '@/components/layout/header/header';
 import Footer from '@/components/layout/footer/footer';
 
@@ -10,39 +10,31 @@ import * as Renderers from './components/renderers';
 
 /**
  * Safely serialize data for React Server Components
- * Removes Mongoose circular references
  */
 function serializeForRSC(data) {
   if (!data || typeof data !== 'object') {
     return data;
   }
   
-  // Handle arrays
   if (Array.isArray(data)) {
     return data.map(item => serializeForRSC(item));
   }
   
-  // Handle plain objects
   const result = {};
   for (const key in data) {
-    // Skip Mongoose internal properties
     if (key.startsWith('$') || key === '__v' || key === '_id') {
       continue;
     }
     
     try {
-      // Skip Mongoose document methods and internal properties
       if (key === '$__' || key === '$isNew' || key === 'save' || key === 'validate') {
         continue;
       }
       
       const value = data[key];
       
-      // Handle nested objects/arrays
       if (value && typeof value === 'object') {
-        // Check for circular reference by looking for $__ (Mongoose document)
         if (value.$__) {
-          // This is a Mongoose document, convert to plain object
           try {
             result[key] = serializeForRSC(value.toObject ? value.toObject() : {});
           } catch {
@@ -72,15 +64,27 @@ async function getPageData(slug) {
     const pageSlug = Array.isArray(slug) ? slug.join('/') : slug;
     console.log('🔍 Looking for page with slug:', pageSlug);
     
-    // Use lean() to get plain objects, not Mongoose documents
-    const page = await Page.findOne({ 
-      slug: pageSlug,
-      published: true 
-    }).lean();
+    // Handle empty slug (homepage) - should not happen here as homepage is handled by app/page.js
+    let query = {};
+    if (pageSlug === '' || pageSlug === 'home') {
+      // Redirect to root if someone tries to access /home
+      console.log('🏠 Redirecting /home to /');
+      return null;
+    } else {
+      // Regular page
+      query = { 
+        slug: pageSlug,
+        published: true 
+      };
+    }
     
-    console.log('📄 Page found:', page ? 'Yes' : 'No');
+    const page = await Page.findOne(query).lean();
+    
+    console.log('📄 Page found:', page ? `Yes - ${page.title}` : 'No');
     if (page) {
-      console.log('📊 Page components count:', page.components?.length || 0);
+      console.log('📊 Page slug:', page.slug);
+      console.log('📊 Page metaTitle:', page.metaTitle);
+      console.log('📊 Page metaDescription:', page.metaDescription);
     }
     
     return page;
@@ -92,14 +96,11 @@ async function getPageData(slug) {
 
 // Component mapping
 const componentMap = {
-  // Basic Components
   'text': Renderers.TextRenderer,
   'heading': Renderers.HeadingRenderer,
   'hero': Renderers.HeroRenderer,
   'image': Renderers.ImageRenderer,
   'form': Renderers.FormRenderer,
-  
-  // Premium Components
   'aboutHero': Renderers.AboutHeroRenderer,
   'aboutUs': Renderers.AboutUsRenderer,
   'freeSample': Renderers.FreeSampleRenderer,
@@ -129,7 +130,6 @@ function renderComponent(component, index) {
     const RendererComponent = componentMap[component.type];
     
     if (RendererComponent) {
-      // Ensure component content is serialized
       const safeComponent = {
         ...component,
         content: component.content ? serializeForRSC(component.content) : {}
@@ -159,11 +159,90 @@ function renderComponent(component, index) {
   }
 }
 
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  
+  await dbConnect();
+  
+  const pageSlug = Array.isArray(slug) ? slug.join('/') : slug;
+  
+  // Handle homepage - shouldn't happen as homepage is handled by app/page.js
+  if (!pageSlug || pageSlug === 'home') {
+    // Fetch homepage
+    const homepage = await Page.findOne({ 
+      $or: [
+        { slug: '' },
+        { isHomepage: true }
+      ],
+      published: true 
+    }).lean();
+    
+    if (!homepage) {
+      return {
+        title: 'Home - Printing Services',
+        description: 'Professional printing services for all your needs'
+      };
+    }
+    
+    return {
+      title: homepage.metaTitle || homepage.title || 'Home - Printing Services',
+      description: homepage.metaDescription || 'Professional printing services for all your needs',
+      openGraph: {
+        title: homepage.metaTitle || homepage.title || 'Home - Printing Services',
+        description: homepage.metaDescription || 'Professional printing services for all your needs',
+        type: 'website',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: homepage.metaTitle || homepage.title || 'Home - Printing Services',
+        description: homepage.metaDescription || 'Professional printing services for all your needs',
+      }
+    };
+  }
+  
+  // Regular page
+  const page = await Page.findOne({ 
+    slug: pageSlug,
+    published: true 
+  }).lean();
+  
+  if (!page) {
+    return {
+      title: 'Page Not Found',
+      description: 'The requested page could not be found.'
+    };
+  }
+  
+  return {
+    title: page.metaTitle || page.title || 'Page',
+    description: page.metaDescription || '',
+    openGraph: {
+      title: page.metaTitle || page.title || 'Page',
+      description: page.metaDescription || '',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: page.metaTitle || page.title || 'Page',
+      description: page.metaDescription || '',
+    }
+  };
+}
+
 export default async function DynamicPage({ params }) {
-  // In Next.js 15, params is a Promise, so we need to await it
   const { slug } = await params;
   
   console.log('🚀 Dynamic page requested with slug:', slug);
+  
+  if (!slug || slug.length === 0) {
+    console.log('⚠️ Empty slug, redirecting to home');
+    redirect('/');
+  }
+  
+  if (slug === 'home' || (Array.isArray(slug) && slug[0] === 'home')) {
+    console.log('🏠 Redirecting /home to /');
+    redirect('/');
+  }
   
   const page = await getPageData(slug);
   
@@ -172,7 +251,6 @@ export default async function DynamicPage({ params }) {
     notFound();
   }
 
-  // Serialize the entire page data
   const safePageData = serializeForRSC(page);
   const componentsToRender = safePageData.components || [];
   
@@ -204,10 +282,12 @@ export default async function DynamicPage({ params }) {
   );
 }
 
-// If you want to generate static params for dynamic routes
 export async function generateStaticParams() {
   await dbConnect();
-  const pages = await Page.find({ published: true }).select('slug').lean();
+  const pages = await Page.find({ 
+    published: true,
+    slug: { $ne: '' } // Exclude homepage (empty slug)
+  }).select('slug').lean();
   
   return pages.map((page) => ({
     slug: page.slug.split('/'),
