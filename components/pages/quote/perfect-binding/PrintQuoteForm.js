@@ -213,6 +213,110 @@ const ToggleOption = ({ label, enabled, onToggle, children, className = "" }) =>
   </div>
 );
 
+// ===== DUST COVER COMPONENT =====
+const DustCoverSettings = ({ dustCover, onUpdate, onRemove }) => {
+  const handleChange = (field, value) => {
+    onUpdate({ ...dustCover, [field]: value });
+  };
+
+  const handleNumberInput = (field, value) => {
+    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      handleChange(field, value);
+    }
+  };
+
+  return (
+    <div className="bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border-2 border-blue-200 shadow-sm mt-6">
+      <div className="flex justify-between items-center mb-6">
+        <h4 className="text-lg font-bold text-gray-800 flex items-center">
+          <svg className="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+          </svg>
+          Dust Cover Settings
+        </h4>
+        <button 
+          onClick={onRemove}
+          className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+          aria-label="Remove dust cover"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div className="space-y-6">
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-3">Size</label>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <input
+                type="text"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                placeholder="Flap width, inches"
+                value={dustCover.width}
+                onChange={(e) => handleNumberInput('width', e.target.value)}
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                placeholder="Height, inches"
+                value={dustCover.height}
+                onChange={(e) => handleNumberInput('height', e.target.value)}
+              />
+              <p className="text-xs text-gray-500 mt-1 flex items-center">
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Additional protective cover
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-3">Paper</label>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <SelectDropdown
+              options={PRINTQUOTE_DEFAULT_CONFIG.paperOptions.cover}
+              selected={dustCover.paper}
+              onChange={(e) => handleChange('paper', e.target.value)}
+              className="w-full"
+            />
+            <SelectDropdown
+              options={PRINTQUOTE_DEFAULT_CONFIG.weightOptions.map(w => ({ value: w, label: `${w} gsm` }))}
+              selected={dustCover.gsm}
+              onChange={(e) => handleChange('gsm', e.target.value)}
+              className="w-full"
+            />
+            <SelectDropdown
+              options={PRINTQUOTE_DEFAULT_CONFIG.printColors}
+              selected={dustCover.printColor}
+              onChange={(e) => handleChange('printColor', e.target.value)}
+              className="w-full"
+            />
+            <SelectDropdown
+              options={PRINTQUOTE_DEFAULT_CONFIG.coverFinishes}
+              selected={dustCover.finish}
+              onChange={(e) => handleChange('finish', e.target.value)}
+              className="w-full"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-6 flex flex-wrap gap-4">
+        <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-colors text-sm">
+          + Add-on for Dust Cover
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// ===== SUBSCRIPTION CARD COMPONENT =====
 const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, positions }) => {
   const handleChange = (field, value) => {
     onUpdate(index, { ...card, [field]: value });
@@ -224,8 +328,13 @@ const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, position
     }
   };
 
+  const positionOptions = positions.map(opt => ({
+    ...opt,
+    label: opt.value === 'BACK' ? `After page ${pageCount}` : opt.label
+  }));
+
   return (
-    <div className="bg-gradient-to-br from-gray-50 to-white p-6 rounded-xl border border-gray-200 shadow-sm mt-6">
+    <div className="bg-gradient-to-br from-green-50 to-white p-6 rounded-xl border border-green-200 shadow-sm mt-6">
       <div className="flex justify-between items-center mb-6">
         <h4 className="text-lg font-bold text-gray-800">Subscription Card {index + 1}</h4>
         <button 
@@ -246,8 +355,8 @@ const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, position
             <div>
               <input
                 type="text"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                placeholder="Width"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                placeholder="Width, inches"
                 value={card.width}
                 onChange={(e) => handleNumberInput('width', e.target.value)}
               />
@@ -255,12 +364,17 @@ const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, position
             <div>
               <input
                 type="text"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
-                placeholder="Height"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
+                placeholder="Height, inches"
                 value={card.height}
                 onChange={(e) => handleNumberInput('height', e.target.value)}
               />
-              <p className="text-xs text-gray-500 mt-1">Enter dimensions in inches</p>
+              <p className="text-xs text-gray-500 mt-1 flex items-center">
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Insert card dimensions
+              </p>
             </div>
           </div>
         </div>
@@ -269,16 +383,14 @@ const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, position
           <label className="block text-sm font-semibold text-gray-700 mb-3">Position</label>
           <div className="grid grid-cols-2 gap-4">
             <SelectDropdown
-              options={positions && positions.map(opt => ({
-                ...opt,
-                label: opt.value === 'BACK' ? `After page ${pageCount}` : opt.label
-              }))}
+              options={positionOptions}
               selected={card.position}
               onChange={(e) => handleChange('position', e.target.value)}
+              className="w-full"
             />
             <input
               type="text"
-              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition disabled:bg-gray-100"
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition disabled:bg-gray-100 disabled:cursor-not-allowed"
               placeholder="Page number"
               value={card.selectedPage}
               onChange={(e) => handleNumberInput('selectedPage', e.target.value)}
@@ -291,35 +403,116 @@ const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, position
           <label className="block text-sm font-semibold text-gray-700 mb-3">Paper</label>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <SelectDropdown
-              options={[{ value: '', label: 'Paper Type' }]}
+              options={PRINTQUOTE_DEFAULT_CONFIG.paperOptions.subscription}
               selected={card.paper}
               onChange={(e) => handleChange('paper', e.target.value)}
+              className="w-full"
             />
             <SelectDropdown
-              options={[{ value: '', label: 'Paper Type' }]}
-              selected={card.subname}
-              onChange={(e) => handleChange('subname', e.target.value)}
-            />
-            <SelectDropdown
-              options={[{ value: '', label: 'Color' }]}
-              selected={card.color}
-              onChange={(e) => handleChange('color', e.target.value)}
-            />
-            <SelectDropdown
-              options={[{ value: '', label: 'GSM' }]}
+              options={PRINTQUOTE_DEFAULT_CONFIG.weightOptions.map(w => ({ value: w, label: `${w} gsm` }))}
               selected={card.gsm}
               onChange={(e) => handleChange('gsm', e.target.value)}
+              className="w-full"
+            />
+            <SelectDropdown
+              options={PRINTQUOTE_DEFAULT_CONFIG.printColors}
+              selected={card.printColor}
+              onChange={(e) => handleChange('printColor', e.target.value)}
+              className="w-full"
+            />
+            <SelectDropdown
+              options={PRINTQUOTE_DEFAULT_CONFIG.weightOptions.map(w => ({ value: w, label: `${w} gsm` }))}
+              selected={card.gsm}
+              onChange={(e) => handleChange('gsm', e.target.value)}
+              className="w-full"
             />
           </div>
         </div>
+      </div>
+    </div>
+  );
+};
 
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-3">Print Color</label>
-          <SelectDropdown
-            options={[{ value: 'CMYK', label: 'Full Color' }]}
-            selected={card.printColor}
-            onChange={(e) => handleChange('printColor', e.target.value)}
-          />
+// ===== ADD-ON MODAL COMPONENT =====
+const AddOnModal = ({ isOpen, onClose, onSelectAddOn }) => {
+  const [selectedAddOn, setSelectedAddOn] = useState('');
+  
+  const addOnOptions = [
+    { id: 'FOIL_STAMPING', label: 'Foil Stamping', description: 'Add metallic foil stamping to cover', price: 50 },
+    { id: 'EMBOSSING', label: 'Embossing', description: 'Raised texture design on cover', price: 40 },
+    { id: 'DEBOSSING', label: 'Debossing', description: 'Indented texture design on cover', price: 40 },
+    { id: 'SPOT_UV', label: 'Spot UV', description: 'Glossy coating on specific areas', price: 30 },
+    { id: 'DIE_CUTTING', label: 'Die Cutting', description: 'Custom shape cutting', price: 60 },
+    { id: 'PERFORATION', label: 'Perforation', description: 'Easy tear-off sections', price: 25 },
+  ];
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-2xl p-8 max-w-2xl w-full mx-4">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-2xl font-bold text-gray-900">Add Additional Features</h3>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <div className="space-y-4 mb-6">
+          {addOnOptions.map((option) => (
+            <div 
+              key={option.id}
+              className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                selectedAddOn === option.id 
+                  ? 'border-indigo-500 bg-indigo-50' 
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+              onClick={() => setSelectedAddOn(option.id)}
+            >
+              <div className="flex justify-between items-center">
+                <div>
+                  <h4 className="font-semibold text-gray-900">{option.label}</h4>
+                  <p className="text-sm text-gray-600">{option.description}</p>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <span className="font-semibold text-indigo-600">${option.price}</span>
+                  {selectedAddOn === option.id ? (
+                    <div className="w-6 h-6 bg-indigo-600 rounded-full flex items-center justify-center">
+                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  ) : (
+                    <div className="w-6 h-6 border-2 border-gray-300 rounded-full"></div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div className="flex justify-end space-x-4">
+          <button 
+            onClick={onClose}
+            className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-colors"
+          >
+            Cancel
+          </button>
+          <button 
+            onClick={() => {
+              if (selectedAddOn) {
+                const selected = addOnOptions.find(opt => opt.id === selectedAddOn);
+                onSelectAddOn(selected);
+                onClose();
+              }
+            }}
+            className="px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+            disabled={!selectedAddOn}
+          >
+            Add Feature
+          </button>
         </div>
       </div>
     </div>
@@ -349,8 +542,10 @@ const PrintQuoteForm = () => {
   const [coverFinish, setCoverFinish] = useState('MATTE');
   const [coverFold, setCoverFold] = useState('NONE');
   const [foldWidth, setFoldWidth] = useState('');
-  const [isDustCoverEnabled, setIsDustCoverEnabled] = useState(false);
-
+  
+  // Dust Cover State
+  const [dustCover, setDustCover] = useState(null);
+  
   // Inside Page State
   const [pageCount, setPageCount] = useState(96);
   const [insidePaper, setInsidePaper] = useState('MATTE');
@@ -359,6 +554,10 @@ const PrintQuoteForm = () => {
   
   // Subscription Cards State
   const [subscriptionCards, setSubscriptionCards] = useState([]);
+  
+  // Add-ons State
+  const [addOns, setAddOns] = useState([]);
+  const [showAddOnModal, setShowAddOnModal] = useState(false);
 
   // Quantity & Options State
   const [quantity, setQuantity] = useState(200);
@@ -373,11 +572,11 @@ const PrintQuoteForm = () => {
   const isCustomSize = selectedSize === 'Custom Size';
   const [pricingData, setPricingData] = useState(getPricingData());
 
-  // ===== FIXED: Fetch form configuration =====
+  // Fetch form configuration
   const fetchFormConfig = async () => {
     try {
       console.log('🔄 Fetching perfect binding form configuration from API...');
-      const res = await fetch('/api/forms/print-quote'); // Print quote endpoint
+      const res = await fetch('/api/forms/print-quote');
       
       if (res.ok) {
         const apiConfig = await res.json();
@@ -446,15 +645,6 @@ const PrintQuoteForm = () => {
   const customSizeInstructions = formConfig?.customSizeInstructions || PRINTQUOTE_DEFAULT_CONFIG.customSizeInstructions;
   const spineWidth = formConfig?.spineWidth || PRINTQUOTE_DEFAULT_CONFIG.spineWidth;
 
-  useEffect(() => {
-    console.log('🔍 DEBUG - Current Configuration:', {
-      title: generalSettings.title,
-      description: generalSettings.description,
-      hasCustomConfig: formConfig !== PRINTQUOTE_DEFAULT_CONFIG,
-      configSource: formConfig === PRINTQUOTE_DEFAULT_CONFIG ? 'DEFAULT' : 'API'
-    });
-  }, [formConfig, generalSettings]);
-
   const refreshConfig = () => {
     console.log('🔄 Manually refreshing configuration...');
     setConfigVersion(prev => prev + 1);
@@ -494,13 +684,33 @@ const PrintQuoteForm = () => {
     setQuantity(pricingData[index].quantity);
   };
 
+  // Dust Cover Management
+  const addDustCover = () => {
+    setDustCover({
+      width: '',
+      height: '',
+      paper: 'GLOSS',
+      gsm: '150',
+      printColor: 'CMYK',
+      finish: 'MATTE'
+    });
+  };
+
+  const updateDustCover = (updatedDustCover) => {
+    setDustCover(updatedDustCover);
+  };
+
+  const removeDustCover = () => {
+    setDustCover(null);
+  };
+
   // Subscription Card Management
   const addSubscriptionCard = () => {
     if (subscriptionCards.length < 10) {
       const newCard = {
         id: Date.now(),
-        width: '', height: '', position: '', selectedPage: '',
-        paper: '', subname: '', color: '', gsm: '', printColor: 'CMYK'
+        width: '', height: '', position: 'FRONT', selectedPage: '',
+        paper: 'MATTE', gsm: '100', printColor: 'CMYK'
       };
       setSubscriptionCards([...subscriptionCards, newCard]);
     }
@@ -514,6 +724,15 @@ const PrintQuoteForm = () => {
 
   const removeSubscriptionCard = (index) => {
     setSubscriptionCards(subscriptionCards.filter((_, i) => i !== index));
+  };
+
+  // Add-ons Management
+  const handleAddOnSelect = (addOn) => {
+    setAddOns([...addOns, { ...addOn, id: Date.now() }]);
+  };
+
+  const removeAddOn = (id) => {
+    setAddOns(addOns.filter(addOn => addOn.id !== id));
   };
 
   // Price Calculation
@@ -536,19 +755,20 @@ const PrintQuoteForm = () => {
     const coverFoldCost = getOptionPrice(COVER_FOLDS, coverFold);
     const proofCost = getOptionPrice(ADDITIONAL_OPTIONS.proof, proof);
     const holePunchCost = holePunching.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.holePunch, holePunching.type) : 0;
-    const dustCoverCost = isDustCoverEnabled ? 100 + (quantity * 0.25) : 0;
+    const dustCoverCost = dustCover ? 100 + (quantity * 0.25) : 0;
     const subscriptionCardCost = subscriptionCards.length * (25 + (quantity * 0.02));
     const slipcaseCost = getOptionPrice(ADDITIONAL_OPTIONS.slipcase, slipcase);
     const shrinkWrapUnitCost = shrinkWrapping.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.shrinkWrap, shrinkWrapping.type) : 0;
     const shrinkWrapCost = shrinkWrapping.enabled ? quantity * shrinkWrapUnitCost : 0;
     const directMailUnitCost = directMailing.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.directMail, directMailing.type) : 0;
     const directMailCost = directMailing.enabled ? quantity * directMailUnitCost : 0;
+    const addOnsCost = addOns.reduce((total, addOn) => total + addOn.price, 0);
 
     const materialCost = coverPaperCost + insidePaperCost;
     const colorCost = coverColorCost + insideColorCost;
     const coverCost = coverFinishCost + coverFoldCost;
     const additionalServicesCost = proofCost + holePunchCost + dustCoverCost + subscriptionCardCost + 
-                                 slipcaseCost + shrinkWrapCost + directMailCost;
+                                 slipcaseCost + shrinkWrapCost + directMailCost + addOnsCost;
 
     const totalAmount = basePrintCost + materialCost + colorCost + coverCost + additionalServicesCost;
 
@@ -564,11 +784,12 @@ const PrintQuoteForm = () => {
       slipcase: slipcaseCost,
       shrinkWrapping: shrinkWrapCost,
       directMailing: directMailCost,
+      addOns: addOnsCost,
       total: totalAmount,
     };
   }, [pageCount, quantity, selectedSize, isCustomSize, coverPaper, insidePaper, 
       coverColor, insideColor, coverFinish, coverFold, proof, holePunching,
-      isDustCoverEnabled, subscriptionCards.length, slipcase, shrinkWrapping, directMailing, formConfig]);
+      dustCover, subscriptionCards.length, slipcase, shrinkWrapping, directMailing, addOns, formConfig]);
 
   const prices = calculatePricing();
 
@@ -582,11 +803,31 @@ const PrintQuoteForm = () => {
       bindingType, sizeUnit, paperUnit, selectedSize,
       customSize: isCustomSize ? { width: customWidth, height: customHeight } : null,
       bindingEdge, spineWidth,
-      cover: { paper: coverPaper, weight: coverWeight, color: coverColor, finish: coverFinish, 
-               fold: coverFold, foldWidth, dustCover: isDustCoverEnabled },
-      inside: { pageCount, paper: insidePaper, weight: insideWeight, color: insideColor, subscriptionCards },
+      cover: { 
+        paper: coverPaper, 
+        weight: coverWeight, 
+        color: coverColor, 
+        finish: coverFinish, 
+        fold: coverFold, 
+        foldWidth, 
+        dustCover: dustCover 
+      },
+      inside: { 
+        pageCount, 
+        paper: insidePaper, 
+        weight: insideWeight, 
+        color: insideColor, 
+        subscriptionCards 
+      },
       quantity,
-      options: { proof, holePunching, slipcase, shrinkWrapping, directMailing },
+      options: { 
+        proof, 
+        holePunching, 
+        slipcase, 
+        shrinkWrapping, 
+        directMailing,
+        addOns
+      },
       totalAmount: prices.total.toFixed(2),
     };
     
@@ -596,19 +837,22 @@ const PrintQuoteForm = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen  flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-8 border-b-2 border-indigo-600"></div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
         <p className="ml-4 text-gray-600">Loading form configuration...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen  py-8 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 font-sans">
+      <AddOnModal 
+        isOpen={showAddOnModal}
+        onClose={() => setShowAddOnModal(false)}
+        onSelectAddOn={handleAddOnSelect}
+      />
+      
       <div className="max-w-7xl mx-auto">
-        
-       
-
         {/* Header Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -794,21 +1038,61 @@ const PrintQuoteForm = () => {
                 )}
               </div>
 
+              {/* Add-ons Display */}
+              {addOns.length > 0 && (
+                <div className="mb-6">
+                  <h4 className="text-sm font-semibold text-gray-700 mb-3">Selected Add-ons</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {addOns.map((addOn) => (
+                      <div key={addOn.id} className="flex items-center bg-green-50 text-green-800 px-3 py-2 rounded-lg">
+                        <span className="font-medium">{addOn.label}</span>
+                        <span className="ml-2 font-semibold">${addOn.price}</span>
+                        <button 
+                          onClick={() => removeAddOn(addOn.id)}
+                          className="ml-2 text-green-600 hover:text-green-800"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="flex flex-wrap gap-4">
-                <button className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-colors">
+                <button 
+                  onClick={() => setShowAddOnModal(true)}
+                  className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                >
                   + Additional Add-ons
                 </button>
-                <button 
-                  onClick={() => setIsDustCoverEnabled(!isDustCoverEnabled)}
-                  className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-                    isDustCoverEnabled 
-                      ? 'bg-green-500 text-white hover:bg-green-600 shadow-sm' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {isDustCoverEnabled ? '✓ Dust Cover Added' : '+ Add Dust Cover'}
-                </button>
+                {!dustCover ? (
+                  <button 
+                    onClick={addDustCover}
+                    className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
+                  >
+                    + Add Dust Cover
+                  </button>
+                ) : (
+                  <button 
+                    onClick={removeDustCover}
+                    className="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                  >
+                    ✓ Dust Cover Added
+                  </button>
+                )}
               </div>
+
+              {/* Dust Cover Settings */}
+              {dustCover && (
+                <DustCoverSettings 
+                  dustCover={dustCover}
+                  onUpdate={updateDustCover}
+                  onRemove={removeDustCover}
+                />
+              )}
             </div>
 
             {/* Inside Page Section */}
@@ -861,7 +1145,7 @@ const PrintQuoteForm = () => {
                   <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                   </svg>
-                  Please select only the inside page count. Cover pages are calculated separately.
+                  Please select only inside page count. Cover pages are calculated separately.
                 </p>
               </div>
 
@@ -1040,6 +1324,7 @@ const PrintQuoteForm = () => {
                     { label: 'Hole Punching', value: prices.holePunching, show: prices.holePunching > 0 },
                     { label: 'Dust Cover', value: prices.dustCover, show: prices.dustCover > 0 },
                     { label: `Subscription Cards (${subscriptionCards.length})`, value: prices.subscriptionCards, show: prices.subscriptionCards > 0 },
+                    { label: `Add-ons (${addOns.length})`, value: prices.addOns, show: prices.addOns > 0 },
                     { label: 'Slipcase', value: prices.slipcase, show: prices.slipcase > 0 },
                     { label: 'Shrink Wrapping', value: prices.shrinkWrapping, show: prices.shrinkWrapping > 0 },
                     { label: 'Direct Mailing', value: prices.directMailing, show: prices.directMailing > 0 },

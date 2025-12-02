@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import { Save, Eye, Plus, Trash2 } from 'lucide-react';
 
-// Default configuration matching your existing form
-const DEFAULT_FORM_CONFIG = {
+// Use the same default configuration from the form
+const PRINTQUOTE_DEFAULT_CONFIG = {
   general: {
-    title: "Book Printing Quote",
-    description: "Configure your perfect book with our professional printing services. Get instant pricing and add to cart in minutes.",
+    title: "Perfect Binding Book Printing Quote",
+    description: "Configure your perfect bound book with our professional printing services. Get instant pricing and add to cart in minutes.",
     submitButtonText: "Add to Cart",
     shippingButtonText: "Calculate Shipping"
   },
@@ -17,7 +17,7 @@ const DEFAULT_FORM_CONFIG = {
     { value: 'HARDCOVER', label: 'Hardcover Book' },
     { value: 'WIRE', label: 'Wire Binding' },
   ],
-  sizes: ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', '8.5 x 5.5', '10 x 7.5', '11 x 8.5', 'Custom Size'],
+  sizes: ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', 'Custom Size'],
   bindingEdges: [
     { value: 'LEFT', label: 'Left Side', desc: 'Binding on the left, most common' },
     { value: 'RIGHT', label: 'Right Side', desc: 'First inside page starts from the right' },
@@ -104,7 +104,11 @@ const DEFAULT_FORM_CONFIG = {
     baseSetupCost: 200,
     costPerPage: 0.05,
     customSizeMultiplier: 1.2,
-    standardSizeMultiplier: 1.1
+    standardSizeMultiplier: 1.1,
+    dustCoverBaseCost: 100,
+    dustCoverPerCopy: 0.25,
+    subscriptionCardBaseCost: 25,
+    subscriptionCardPerCopy: 0.02
   }
 };
 
@@ -121,14 +125,14 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
       setConfig(formConfig);
     } else {
       console.log('📥 Loading default config');
-      setConfig(DEFAULT_FORM_CONFIG);
+      setConfig(PRINTQUOTE_DEFAULT_CONFIG);
     }
   }, [formConfig]);
 
   const updateNestedConfig = (path, value) => {
     const keys = path.split('.');
     setConfig(prev => {
-      const newConfig = { ...prev };
+      const newConfig = JSON.parse(JSON.stringify(prev));
       let current = newConfig;
       for (let i = 0; i < keys.length - 1; i++) {
         if (!current[keys[i]]) current[keys[i]] = {};
@@ -196,7 +200,7 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
     });
   };
 
- const handleSave = async () => {
+  const handleSave = async () => {
     if (saving) return;
     
     setSaving(true);
@@ -210,8 +214,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
       setSaving(false);
     }
   };
-
-  
 
   const renderEditableArray = (title, path, fields) => (
     <div className="space-y-4">
@@ -235,10 +237,13 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     {field}
                   </label>
                   <input
-                    type={field === 'price' ? 'number' : 'text'}
+                    type={field === 'price' || field === 'dustCoverBaseCost' || field === 'dustCoverPerCopy' || 
+                          field === 'subscriptionCardBaseCost' || field === 'subscriptionCardPerCopy' ? 'number' : 'text'}
                     value={item[field] || ''}
                     onChange={(e) => updateArrayItem(path, index, field, 
-                      field === 'price' ? parseFloat(e.target.value) || 0 : e.target.value
+                      field === 'price' || field === 'dustCoverBaseCost' || field === 'dustCoverPerCopy' || 
+                      field === 'subscriptionCardBaseCost' || field === 'subscriptionCardPerCopy' 
+                        ? parseFloat(e.target.value) || 0 : e.target.value
                     )}
                     className="w-full p-2 border border-gray-300 rounded text-sm"
                     placeholder={`Enter ${field}`}
@@ -327,7 +332,7 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
             {[
               'general', 'binding', 'sizes', 'paper-cover', 'paper-inside', 
               'paper-subscription', 'colors', 'finishes', 'folds', 'additional',
-              'positions', 'quantities', 'pricing'
+              'positions', 'page-counts', 'weights', 'quantities', 'pricing', 'dust-cover', 'subscription-cards'
             ].map(tab => (
               <button
                 key={tab}
@@ -375,8 +380,12 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     { id: 'folds', label: 'Cover Folds' },
                     { id: 'additional', label: 'Additional Services' },
                     { id: 'positions', label: 'Card Positions' },
+                    { id: 'page-counts', label: 'Page Count Options' },
+                    { id: 'weights', label: 'Weight Options' },
                     { id: 'quantities', label: 'Quantity Options' },
                     { id: 'pricing', label: 'Pricing Settings' },
+                    { id: 'dust-cover', label: 'Dust Cover Pricing' },
+                    { id: 'subscription-cards', label: 'Subscription Cards Pricing' },
                   ].map(section => (
                     <button
                       key={section.id}
@@ -540,27 +549,27 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                       <div className="space-y-6">
                         <div>
                           <h4 className="font-medium text-gray-700 mb-3">Proof Options</h4>
-                          {renderEditableArray('additionalOptions.proof', 'additionalOptions.proof', ['value', 'label', 'price'])}
+                          {renderEditableArray('Proof Options', 'additionalOptions.proof', ['value', 'label', 'price'])}
                         </div>
 
                         <div>
                           <h4 className="font-medium text-gray-700 mb-3">Hole Punch Options</h4>
-                          {renderEditableArray('additionalOptions.holePunch', 'additionalOptions.holePunch', ['value', 'label', 'price'])}
+                          {renderEditableArray('Hole Punch Options', 'additionalOptions.holePunch', ['value', 'label', 'price'])}
                         </div>
 
                         <div>
                           <h4 className="font-medium text-gray-700 mb-3">Slipcase Options</h4>
-                          {renderEditableArray('additionalOptions.slipcase', 'additionalOptions.slipcase', ['value', 'label', 'price'])}
+                          {renderEditableArray('Slipcase Options', 'additionalOptions.slipcase', ['value', 'label', 'price'])}
                         </div>
 
                         <div>
                           <h4 className="font-medium text-gray-700 mb-3">Shrink Wrap Options</h4>
-                          {renderEditableArray('additionalOptions.shrinkWrap', 'additionalOptions.shrinkWrap', ['value', 'label', 'price'])}
+                          {renderEditableArray('Shrink Wrap Options', 'additionalOptions.shrinkWrap', ['value', 'label', 'price'])}
                         </div>
 
                         <div>
                           <h4 className="font-medium text-gray-700 mb-3">Direct Mail Options</h4>
-                          {renderEditableArray('additionalOptions.directMail', 'additionalOptions.directMail', ['value', 'label', 'price'])}
+                          {renderEditableArray('Direct Mail Options', 'additionalOptions.directMail', ['value', 'label', 'price'])}
                         </div>
                       </div>
                     </>
@@ -570,16 +579,20 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Subscription Card Positions</h3>
                       {renderEditableArray('Card Positions', 'positions', ['value', 'label'])}
-                      
-                      <div className="mt-6">
-                        <h4 className="font-medium text-gray-700 mb-3">Page Count Options</h4>
-                        {renderSimpleArray('Page Counts', 'pageCounts', 'Enter page count')}
-                      </div>
+                    </>
+                  )}
 
-                      <div className="mt-6">
-                        <h4 className="font-medium text-gray-700 mb-3">Weight Options</h4>
-                        {renderSimpleArray('Weight Options', 'weightOptions', 'Enter weight (gsm)')}
-                      </div>
+                  {activeTab === 'page-counts' && (
+                    <>
+                      <h3 className="text-lg font-semibold text-gray-900">Page Count Options</h3>
+                      {renderSimpleArray('Page Counts', 'pageCounts', 'Enter page count')}
+                    </>
+                  )}
+
+                  {activeTab === 'weights' && (
+                    <>
+                      <h3 className="text-lg font-semibold text-gray-900">Weight Options</h3>
+                      {renderSimpleArray('Weight Options', 'weightOptions', 'Enter weight (gsm)')}
                     </>
                   )}
 
@@ -642,6 +655,94 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                             step="0.1"
                             value={config.pricing?.standardSizeMultiplier || 1}
                             onChange={(e) => updateNestedConfig('pricing.standardSizeMultiplier', parseFloat(e.target.value) || 1)}
+                            className="w-full p-3 border border-gray-300 rounded-lg"
+                          />
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {activeTab === 'dust-cover' && (
+                    <>
+                      <h3 className="text-lg font-semibold text-gray-900">Dust Cover Pricing</h3>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Base Cost ($)
+                          </label>
+                          <input
+                            type="number"
+                            value={config.pricing?.dustCoverBaseCost || 0}
+                            onChange={(e) => updateNestedConfig('pricing.dustCoverBaseCost', parseFloat(e.target.value) || 0)}
+                            className="w-full p-3 border border-gray-300 rounded-lg"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Cost Per Copy ($)
+                          </label>
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={config.pricing?.dustCoverPerCopy || 0}
+                            onChange={(e) => updateNestedConfig('pricing.dustCoverPerCopy', parseFloat(e.target.value) || 0)}
+                            className="w-full p-3 border border-gray-300 rounded-lg"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="mt-6">
+                        <h4 className="font-medium text-gray-700 mb-3">Dust Cover Paper Options</h4>
+                        <p className="text-sm text-gray-500 mb-4">
+                          Dust cover uses the same paper options as regular cover. You can edit them in the "Cover Paper" tab.
+                        </p>
+                      </div>
+                    </>
+                  )}
+
+                  {activeTab === 'subscription-cards' && (
+                    <>
+                      <h3 className="text-lg font-semibold text-gray-900">Subscription Cards Pricing</h3>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Base Cost per Card ($)
+                          </label>
+                          <input
+                            type="number"
+                            value={config.pricing?.subscriptionCardBaseCost || 0}
+                            onChange={(e) => updateNestedConfig('pricing.subscriptionCardBaseCost', parseFloat(e.target.value) || 0)}
+                            className="w-full p-3 border border-gray-300 rounded-lg"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Cost Per Copy ($)
+                          </label>
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={config.pricing?.subscriptionCardPerCopy || 0}
+                            onChange={(e) => updateNestedConfig('pricing.subscriptionCardPerCopy', parseFloat(e.target.value) || 0)}
+                            className="w-full p-3 border border-gray-300 rounded-lg"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="mt-6">
+                        <h4 className="font-medium text-gray-700 mb-3">Maximum Cards Allowed</h4>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Maximum Subscription Cards per Order
+                          </label>
+                          <input
+                            type="number"
+                            value={config.maxSubscriptionCards || 10}
+                            onChange={(e) => updateNestedConfig('maxSubscriptionCards', parseInt(e.target.value) || 10)}
                             className="w-full p-3 border border-gray-300 rounded-lg"
                           />
                         </div>
