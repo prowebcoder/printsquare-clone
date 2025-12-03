@@ -261,7 +261,7 @@ export default async function DynamicPage({ params }) {
       <Header />
       <main>
         {componentsToRender.length > 0 ? (
-          <div className="components-container mt-16">
+          <div className="components-container mt-0 md:mt-16">
             {componentsToRender.map((component, index) => 
               renderComponent(component, index)
             )}

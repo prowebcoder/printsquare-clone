@@ -66,7 +66,7 @@ export default function JoinPage() {
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-100 flex flex-col">
       <Header />
       
-      <main className="flex-1 flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
+      <main className="flex-1 flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8 mt-0 md:mt-16">
         <div className="max-w-md w-full">
           {/* Sign Up Card */}
           <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">

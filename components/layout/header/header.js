@@ -152,7 +152,7 @@ const closeCustomQuoteModal = () => setIsCustomQuoteModalOpen(false);
       </div>
 
       {/* Spacer */}
-      <div className="h-[130px] sm:h-[120px] md:h-[110px]"></div>
+      <div className="h-[104px] sm:h-[120px] md:h-[110px]"></div>
 
       {/* Mobile Menu - Pass customer auth state */}
       <MobileMenu 

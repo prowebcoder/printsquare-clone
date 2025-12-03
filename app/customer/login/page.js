@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useCustomerAuth } from '@/hooks/useCustomerAuth';
@@ -15,13 +15,25 @@ export default function LoginPage() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isClient, setIsClient] = useState(false);
   
   const { login, customer } = useCustomerAuth();
   const router = useRouter();
 
-  // Redirect if already logged in
+  // Set isClient to true after component mounts
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Redirect if already logged in - using useEffect
+  useEffect(() => {
+    if (customer) {
+      router.push('/customer/account');
+    }
+  }, [customer, router]);
+
+  // Don't render the form if we're redirecting
   if (customer) {
-    router.push('/customer/account');
     return null;
   }
 
@@ -41,7 +53,7 @@ export default function LoginPage() {
     const result = await login(formData.email, formData.password);
     
     if (result.success) {
-      router.push('/customer/account');
+      // Let the useEffect handle the redirect when customer changes
     } else {
       setError(result.error);
     }
@@ -49,11 +61,20 @@ export default function LoginPage() {
     setLoading(false);
   };
 
+  // Optional: Show a loading state while checking auth
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-100 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-100 flex flex-col">
       <Header />
       
-      <main className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <main className="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 mt-0 md:mt-16">
         <div className="max-w-md w-full">
           {/* Login Card */}
           <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">

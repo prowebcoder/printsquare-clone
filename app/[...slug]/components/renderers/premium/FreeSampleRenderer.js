@@ -1,9 +1,11 @@
 // app/[...slug]/components/renderers/premium/FreeSampleRenderer.js
+import { useState } from 'react';
 import AppImage from "../../AppImage";
 
 export default function FreeSampleRenderer({ component, index }) {
   const content = component.content || {};
   const imagePosition = content.imagePosition || 'left';
+  const [imageError, setImageError] = useState(false);
   
   // Check if there's any content to show
   const hasContent = content.title || 
@@ -32,10 +34,27 @@ export default function FreeSampleRenderer({ component, index }) {
     }
   };
 
+  // Process image URL - ensure it's absolute if needed
+  const getImageUrl = (url) => {
+    if (!url) return '';
+    // If it's already an absolute URL, return as is
+    if (url.startsWith('http') || url.startsWith('//') || url.startsWith('data:')) {
+      return url;
+    }
+    // If it's a relative path, ensure it starts with /
+    if (url.startsWith('/')) {
+      return url;
+    }
+    // Add leading slash if missing
+    return `/${url}`;
+  };
+
+  const imageUrl = getImageUrl(content.image);
+
   return (
     <section 
       key={component.id || index} 
-      className="relative py-20 overflow-hidden"
+      className="relative py-12 md:py-20 overflow-hidden"
       style={getBackgroundStyle()}
     >
       {/* Decorative Background Circles - Only show if not using gradient */}
@@ -46,23 +65,39 @@ export default function FreeSampleRenderer({ component, index }) {
         </>
       )}
 
-      <div className={`relative max-w-7xl mx-auto px-6 lg:px-12 flex flex-col lg:flex-row items-center gap-12 ${
+      <div className={`relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 flex flex-col lg:flex-row items-center gap-8 lg:gap-12 ${
         imagePosition === 'right' ? 'lg:flex-row-reverse' : ''
       }`}>
         
         {/* Image Section - Only show if image exists */}
-        {content.image && (
-          <div className="lg:w-1/2 relative group">
-            <div className="relative h-80 lg:h-96 w-full overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 group-hover:scale-[1.02]">
+        {imageUrl && !imageError && (
+          <div className="lg:w-1/2 w-full relative group mb-8 lg:mb-0">
+            <div className="relative h-64 sm:h-72 md:h-80 lg:h-96 w-full overflow-hidden rounded-2xl shadow-xl transition-transform duration-300 group-hover:scale-[1.02]">
               <AppImage
-                src={content.image}
-                alt="Book sample showcase"
+                src={imageUrl}
+                alt={content.title || "Book sample showcase"}
                 fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
-                priority
+                priority={index < 2} // Only prioritize first 2 images
+                onError={() => setImageError(true)}
+                // Remove unoptimized prop since AppImage uses plain img tag
               />
             </div>
             <div className="absolute -bottom-5 -left-5 w-32 h-32 bg-[#2e6e97]/20 rounded-full blur-2xl"></div>
+          </div>
+        )}
+
+        {/* Image Error Fallback */}
+        {imageError && imageUrl && (
+          <div className="lg:w-1/2 w-full relative mb-8 lg:mb-0">
+            <div className="relative h-64 sm:h-72 md:h-80 lg:h-96 w-full overflow-hidden rounded-2xl shadow-xl bg-gray-100 flex items-center justify-center">
+              <div className="text-center p-6">
+                <div className="text-gray-400 text-4xl mb-3">📷</div>
+                <p className="text-gray-600 font-medium">Image failed to load</p>
+                <p className="text-gray-500 text-sm mt-2">Please check the image URL</p>
+              </div>
+            </div>
           </div>
         )}
 
@@ -71,7 +106,7 @@ export default function FreeSampleRenderer({ component, index }) {
           {/* Title - Only show if exists */}
           {content.title && (
             <h2 
-              className="text-4xl lg:text-5xl font-bold mb-6 leading-tight"
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 leading-tight"
               style={{ color: content.titleColor || '#1F2937' }}
             >
               {content.title}
@@ -79,10 +114,10 @@ export default function FreeSampleRenderer({ component, index }) {
           )}
 
           {/* Descriptions - Only show if they exist */}
-          <div className="space-y-5 text-gray-600 text-lg mb-10">
+          <div className="space-y-4 sm:space-y-5 text-gray-600 text-base sm:text-lg mb-8 sm:mb-10">
             {[1, 2, 3].map((num) => (
               content[`description${num}`] && (
-                <p key={num}>{content[`description${num}`]}</p>
+                <p key={num} className="leading-relaxed">{content[`description${num}`]}</p>
               )
             ))}
           </div>
@@ -91,11 +126,13 @@ export default function FreeSampleRenderer({ component, index }) {
           {content.buttonText && (
             <a
               href={content.buttonLink || 'mailto:support@printsquare.net'}
-              className="inline-block font-semibold px-10 py-4 rounded-full shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+              className="inline-block font-semibold px-8 py-3 sm:px-10 sm:py-4 rounded-full shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-95"
               style={{
                 backgroundColor: content.buttonBgColor || '#e21b36',
                 color: content.buttonTextColor || '#FFFFFF'
               }}
+              target={content.buttonLink?.startsWith('http') ? '_blank' : '_self'}
+              rel={content.buttonLink?.startsWith('http') ? 'noopener noreferrer' : undefined}
             >
               {content.buttonText}
             </a>
@@ -103,7 +140,7 @@ export default function FreeSampleRenderer({ component, index }) {
 
           {/* Email Info - Only show if email exists */}
           {content.email && (
-            <div className="mt-6 text-gray-700 text-sm">
+            <div className="mt-6 text-gray-700 text-sm sm:text-base">
               <span className="mr-2">Or email us directly at</span>
               <a
                 href={`mailto:${content.email}`}
