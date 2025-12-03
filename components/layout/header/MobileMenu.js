@@ -4,11 +4,16 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { FiPlus, FiMinus, FiX } from "react-icons/fi";
 
-const MobileMenu = ({ isOpen, toggleMenu }) => {
+const MobileMenu = ({ isOpen, toggleMenu, customer, onLogout, onRequestSample, onOpenCustomQuote }) => {
   const [openMenus, setOpenMenus] = useState({});
 
   const toggleSubMenu = (menu) => {
     setOpenMenus((prev) => ({ ...prev, [menu]: !prev[menu] }));
+  };
+
+  const handleCustomQuote = () => {
+    onOpenCustomQuote();
+    toggleMenu(); // Close mobile menu when opening modal
   };
 
   const menuData = {
@@ -21,7 +26,11 @@ const MobileMenu = ({ isOpen, toggleMenu }) => {
       { label: "Saddle Stitching", href: "/saddle-stitching" },
       { label: "Hardcover Book", href: "/hardcover-book" },
       { label: "Wire Binding", href: "/wire-binding" },
-      { label: "Custom Quote", href: "/custom-quote" },
+      { 
+        label: "Custom Quote", 
+        onClick: handleCustomQuote,
+        isButton: true // Flag to indicate this should be a button, not a link
+      },
     ],
     "Printing Service": [
       { label: "Printing", href: "/printing" },
@@ -43,6 +52,11 @@ const MobileMenu = ({ isOpen, toggleMenu }) => {
       { label: "Faq's", href: "/faqs" },
       { label: "Contact Us", href: "/contact-us" },
     ],
+  };
+
+  const handleRequestSample = () => {
+    onRequestSample();
+    toggleMenu(); // Close mobile menu when opening modal
   };
 
   return (
@@ -97,15 +111,24 @@ const MobileMenu = ({ isOpen, toggleMenu }) => {
                 }`}
               >
                 <ul className="ml-3 mt-2 space-y-2">
-                  {menuData[menuItem].map((subItem) => (
-                    <li key={subItem.label}>
-                      <Link
-                        href={subItem.href}
-                        onClick={toggleMenu}
-                        className="block text-gray-600 hover:text-[#E21B36] text-sm py-1 transition"
-                      >
-                        {subItem.label}
-                      </Link>
+                  {menuData[menuItem].map((subItem, index) => (
+                    <li key={`${subItem.label}-${index}`}>
+                      {subItem.isButton ? (
+                        <button
+                          onClick={subItem.onClick}
+                          className="block w-full text-left text-gray-600 hover:text-[#E21B36] text-sm py-1 transition"
+                        >
+                          {subItem.label}
+                        </button>
+                      ) : (
+                        <Link
+                          href={subItem.href}
+                          onClick={toggleMenu}
+                          className="block text-gray-600 hover:text-[#E21B36] text-sm py-1 transition"
+                        >
+                          {subItem.label}
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -114,34 +137,86 @@ const MobileMenu = ({ isOpen, toggleMenu }) => {
           );
         })}
 
-        {/* Footer Section */}
-        <div className="mt-6 border-t border-gray-200 pt-4 space-y-3">
-          <div className="text-gray-700 text-sm space-y-1">
-            <div>support@printsquarenet</div>
-            <div>(415)-694-4593</div>
-          </div>
+        {/* Customer Authentication Section */}
+        <div className="mt-6 border-t border-gray-200 pt-4">
+          {customer ? (
+            // Show when customer is logged in
+            <div className="space-y-4">
+              {/* Welcome Message */}
+              <div className="text-gray-700 text-sm space-y-1">
+                <div className="font-medium text-[#E21B36]">Welcome, {customer.name}</div>
+                <div className="text-gray-500">You are now logged in</div>
+              </div>
 
-          <div className="flex flex-col gap-2 mt-3">
+              {/* Customer Links */}
+              <div className="flex flex-col gap-3 mt-3">
+                <Link
+                  href="/customer/account"
+                  onClick={toggleMenu}
+                  className="text-center border border-green-500 text-green-600 px-4 py-2 rounded-lg hover:bg-green-50 font-medium transition"
+                >
+                  My Account
+                </Link>
+                <button
+                  onClick={() => {
+                    onLogout();
+                    toggleMenu();
+                  }}
+                  className="text-center border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 font-medium transition"
+                >
+                  Logout
+                </button>
+                <button
+                  onClick={handleRequestSample}
+                  className="text-center bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white px-4 py-2 rounded-lg font-medium shadow-md hover:shadow-lg transition"
+                >
+                  Request Sample
+                </button>
+              </div>
+            </div>
+          ) : (
+            // Show when customer is not logged in
+            <>
+              {/* Contact Info */}
+              <div className="text-gray-700 text-sm space-y-1">
+                <div>contact@printseoul.com</div>
+                <div>(415)-694-4593</div>
+              </div>
+
+              {/* Authentication Buttons */}
+              <div className="flex flex-col gap-3 mt-4">
+                <Link
+                  href="/customer/join"
+                  onClick={toggleMenu}
+                  className="text-center border border-[#E21B36] text-[#E21B36] px-4 py-2 rounded-lg hover:bg-[#E21B36] hover:text-white font-medium transition"
+                >
+                  Join Us
+                </Link>
+                <Link
+                  href="/customer/login"
+                  onClick={toggleMenu}
+                  className="text-center border border-[#E21B36] text-[#E21B36] px-4 py-2 rounded-lg hover:bg-[#E21B36] hover:text-white font-medium transition"
+                >
+                  Login
+                </Link>
+                <button
+                  onClick={handleRequestSample}
+                  className="text-center bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white px-4 py-2 rounded-lg font-medium shadow-md hover:shadow-lg transition"
+                >
+                  Request Sample
+                </button>
+              </div>
+            </>
+          )}
+
+          {/* Portfolio Button (Always visible) */}
+          <div className="mt-4 pt-4 border-t border-gray-200">
             <Link
-              href="/sign-up"
+              href="/portfolio"
               onClick={toggleMenu}
-              className="text-center border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 font-medium transition"
+              className="block text-center bg-[#E21B36] text-white px-4 py-2 rounded-lg hover:bg-[#c8152d] font-medium transition"
             >
-              Join Us
-            </Link>
-            <Link
-              href="/login"
-              onClick={toggleMenu}
-              className="text-center border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 font-medium transition"
-            >
-              Login
-            </Link>
-            <Link
-              href="/request-sample"
-              onClick={toggleMenu}
-              className="text-center bg-gradient-to-r from-[#E21B36] to-[#FF4B2B] text-white px-4 py-2 rounded-lg font-medium shadow-md hover:shadow-lg transition"
-            >
-              Requesting Sample
+              Portfolio
             </Link>
           </div>
         </div>

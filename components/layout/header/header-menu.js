@@ -4,7 +4,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { FiPlus, FiMinus } from "react-icons/fi";
 
-const MainMenu = () => {
+const MainMenu = ({ onOpenCustomQuote }) => {
   const [activeMenu, setActiveMenu] = useState(null);
   const [openMenus, setOpenMenus] = useState({});
 
@@ -21,7 +21,16 @@ const MainMenu = () => {
         { label: "Saddle Stitching", href: "/saddle-stitching" },
         { label: "Hardcover Book", href: "/hardcover-book" },
         { label: "Wire Binding", href: "/wire-binding" },
-        { label: "Custom Quote", href: "/custom-quote" },
+        { 
+          label: "Custom Quote", 
+          href: "#",
+          onClick: (e) => {
+            e.preventDefault();
+            if (onOpenCustomQuote) {
+              onOpenCustomQuote();
+            }
+          }
+        },
       ],
     },
     "Printing Service": {
@@ -81,12 +90,21 @@ const MainMenu = () => {
                   <ul className="space-y-1">
                     {menuData[menuItem].items.map((subItem) => (
                       <li key={subItem.label}>
-                        <Link
-                          href={subItem.href}
-                          className="block px-3 py-2 text-sm text-white hover:bg-gradient-to-r hover:from-[#E21B36] hover:to-[#FF4B2B] hover:text-white rounded-md transition-all duration-200"
-                        >
-                          {subItem.label}
-                        </Link>
+                        {subItem.onClick ? (
+                          <button
+                            onClick={subItem.onClick}
+                            className="block w-full text-left px-3 py-2 text-sm text-white hover:bg-gradient-to-r hover:from-[#E21B36] hover:to-[#FF4B2B] hover:text-white rounded-md transition-all duration-200"
+                          >
+                            {subItem.label}
+                          </button>
+                        ) : (
+                          <Link
+                            href={subItem.href}
+                            className="block px-3 py-2 text-sm text-white hover:bg-gradient-to-r hover:from-[#E21B36] hover:to-[#FF4B2B] hover:text-white rounded-md transition-all duration-200"
+                          >
+                            {subItem.label}
+                          </Link>
+                        )}
                       </li>
                     ))}
                   </ul>
@@ -118,12 +136,21 @@ const MainMenu = () => {
                 <ul className="bg-[#121A2C] rounded-md ml-2 mr-2 mb-2">
                   {menuData[menuItem].items.map((subItem) => (
                     <li key={subItem.label}>
-                      <Link
-                        href={subItem.href}
-                        className="block px-4 py-2 text-sm text-white hover:bg-gradient-to-r hover:from-[#E21B36] hover:to-[#FF4B2B] hover:text-white rounded-md transition-all duration-200"
-                      >
-                        {subItem.label}
-                      </Link>
+                      {subItem.onClick ? (
+                        <button
+                          onClick={subItem.onClick}
+                          className="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gradient-to-r hover:from-[#E21B36] hover:to-[#FF4B2B] hover:text-white rounded-md transition-all duration-200"
+                        >
+                          {subItem.label}
+                        </button>
+                      ) : (
+                        <Link
+                          href={subItem.href}
+                          className="block px-4 py-2 text-sm text-white hover:bg-gradient-to-r hover:from-[#E21B36] hover:to-[#FF4B2B] hover:text-white rounded-md transition-all duration-200"
+                        >
+                          {subItem.label}
+                        </Link>
+                      )}
                     </li>
                   ))}
                 </ul>

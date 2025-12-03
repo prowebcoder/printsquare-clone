@@ -7,14 +7,21 @@ import MainMenu from "./header-menu";
 import MobileMenu from "./MobileMenu";
 import { FiMenu, FiX } from "react-icons/fi";
 import { useCustomerAuth } from '@/hooks/useCustomerAuth';
+import RequestingSample from "@/components/modals/RequestingSample";
+import CustomQuote from '@/components/modals/CustomQuote';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false); // mobile menu
   const [isSticky, setIsSticky] = useState(false);
+  const [isSampleModalOpen, setIsSampleModalOpen] = useState(false); // Modal state
   const { customer, logout, loading } = useCustomerAuth();
+const [isCustomQuoteModalOpen, setIsCustomQuoteModalOpen] = useState(false);
 
   const toggleMenu = () => setIsOpen(!isOpen);
-
+  const openSampleModal = () => setIsSampleModalOpen(true);
+  const closeSampleModal = () => setIsSampleModalOpen(false);
+const openCustomQuoteModal = () => setIsCustomQuoteModalOpen(true);
+const closeCustomQuoteModal = () => setIsCustomQuoteModalOpen(false);
   const handleLogout = async () => {
     await logout();
     // Optional: Redirect to home page after logout
@@ -60,12 +67,12 @@ const Header = () => {
                   >
                     Logout
                   </button>
-                  <Link
-                    href="/request-sample"
+                  <button
+                    onClick={openSampleModal}
                     className="bg-[#E21B36] text-white px-3 py-1 rounded hover:bg-[#c8152d] text-xs font-medium shadow-sm transition"
                   >
                     Request Sample
-                  </Link>
+                  </button>
                 </div>
               ) : (
                 // Show when customer is not logged in
@@ -82,12 +89,12 @@ const Header = () => {
                   >
                     Login
                   </Link>
-                  <Link
-                    href="/request-sample"
+                  <button
+                    onClick={openSampleModal}
                     className="bg-[#E21B36] text-white px-3 py-1 rounded hover:bg-[#c8152d] text-xs font-medium shadow-sm transition"
                   >
                     Request Sample
-                  </Link>
+                  </button>
                 </>
               )}
             </div>
@@ -114,7 +121,7 @@ const Header = () => {
 
             {/* Desktop Menu */}
             <div className="hidden md:block">
-              <MainMenu className="text-white" />
+              <MainMenu className="text-white" onOpenCustomQuote={openCustomQuoteModal} />
             </div>
 
             {/* Right Buttons */}
@@ -153,7 +160,20 @@ const Header = () => {
         toggleMenu={toggleMenu} 
         customer={customer}
         onLogout={handleLogout}
+        onRequestSample={openSampleModal}
+        onOpenCustomQuote={openCustomQuoteModal} 
       />
+
+      {/* Sample Request Modal */}
+      <RequestingSample 
+        isOpen={isSampleModalOpen}
+        onClose={closeSampleModal}
+      />
+      {/* Custom Quote Modal */}
+      <CustomQuote 
+  isOpen={isCustomQuoteModalOpen}
+  onClose={closeCustomQuoteModal}
+/>
     </>
   );
 };
