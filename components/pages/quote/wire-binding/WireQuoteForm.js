@@ -1,6 +1,8 @@
+// components/pages/quote/wire-binding/WireQuoteForm.js
 'use client';
 import { useState, useCallback, useEffect } from 'react';
 
+// ===== WIRE BINDING CONFIG =====
 const WIREQUOTE_DEFAULT_CONFIG = {
   general: {
     title: "Wire Binding Printing Quote",
@@ -13,15 +15,6 @@ const WIREQUOTE_DEFAULT_CONFIG = {
     { value: 'SADDLE', label: 'Saddle Stitching', link: '/saddle-stitching' },
     { value: 'HARDCOVER', label: 'Hardcover Book', link: '/hardcover-book' },
     { value: 'WIRE', label: 'Wire Binding', link: '/wire-binding' },
-  ],
-  sizes: [
-    { value: '8.5x11-letter', label: '8.5" x 11" (Letter)' },
-    { value: '8.5x11-standard', label: '8.5" x 11"' },
-    { value: '5.5x8.5', label: '5.5" x 8.5" (Half Letter)' },
-    { value: '6x9', label: '6" x 9"' },
-    { value: '7x10', label: '7" x 10"' },
-    { value: '9x12', label: '9" x 12"' },
-    { value: 'custom', label: 'Custom Size' }
   ],
   bindingEdges: [
     { 
@@ -52,25 +45,25 @@ const WIREQUOTE_DEFAULT_CONFIG = {
   ],
   paperOptions: {
     cover: [
-      { value: 'MATTE', label: 'Matte', gsm: ['200', '250', '300'] },
-      { value: 'GLOSS', label: 'Gloss', gsm: ['200', '250', '300'] },
-      { value: 'HI-QMYSTIC', label: 'Hi-Q Mystic', gsm: ['200', '250'] },
-      { value: 'UNCOATED_W', label: 'Uncoated White', gsm: ['200', '250'] }
+      { value: 'MATTE', label: 'Matte', price: 0 },
+      { value: 'GLOSS', label: 'Gloss', price: 0 },
+      { value: 'HI-QMYSTIC', label: 'Hi-Q Mystic', price: 25 },
+      { value: 'UNCOATED_W', label: 'Uncoated White', price: 0 }
     ],
     inside: [
-      { value: 'MATTE', label: 'Matte', gsm: ['80', '100', '120'] },
-      { value: 'GLOSS', label: 'Gloss', gsm: ['80', '100', '120'] },
-      { value: 'HI-PLUS', label: 'Hi-Plus', gsm: ['80', '100'] },
-      { value: 'UNCOATED_W', label: 'Uncoated White', gsm: ['80', '100'] }
+      { value: 'MATTE', label: 'Matte', price: 0 },
+      { value: 'GLOSS', label: 'Gloss', price: 0 },
+      { value: 'HI-PLUS', label: 'Hi-Plus', price: 20 },
+      { value: 'UNCOATED_W', label: 'Uncoated White', price: 0 }
     ]
   },
   printColors: [
-    { value: 'CMYK', label: 'Full color', description: 'Full color' },
-    { value: 'CMYK_PMS1', label: 'Full color + 1 Spot color', description: 'Full color + 1 Spot color' },
-    { value: 'CMYK_PMS2', label: 'Full color + 2 Spot color', description: 'Full color + 2 Spot color' },
-    { value: 'BW', label: 'Black only', description: 'Black only' },
-    { value: 'BW_PMS1', label: 'Black + 1 Spot color', description: 'Black + 1 Spot color' },
-    { value: 'BW_PMS2', label: 'Black + 2 Spot color', description: 'Black + 2 Spot color' }
+    { value: 'CMYK', label: 'Full color', price: 0 },
+    { value: 'CMYK_PMS1', label: 'Full color + 1 Spot color', price: 75 },
+    { value: 'CMYK_PMS2', label: 'Full color + 2 Spot color', price: 150 },
+    { value: 'BW', label: 'Black only', price: -100 },
+    { value: 'BW_PMS1', label: 'Black + 1 Spot color', price: -25 },
+    { value: 'BW_PMS2', label: 'Black + 2 Spot color', price: 50 }
   ],
   coverFinishes: [
     { value: 'NONE', label: 'None', price: 0 },
@@ -78,10 +71,10 @@ const WIREQUOTE_DEFAULT_CONFIG = {
     { value: 'GLOSS', label: 'Gloss Lamination', price: 40 },
   ],
   coverFolds: [
-    { value: '', label: 'No fold' },
-    { value: 'FRONT', label: 'Front cover fold' },
-    { value: 'BACK', label: 'Back cover fold' },
-    { value: 'BOTH', label: 'Both cover folds' },
+    { value: 'NONE', label: 'No fold', price: 0 },
+    { value: 'FRONT', label: 'Front cover fold', price: 25 },
+    { value: 'BACK', label: 'Back cover fold', price: 25 },
+    { value: 'BOTH', label: 'Both cover folds', price: 40 },
   ],
   additionalOptions: {
     proof: [
@@ -94,6 +87,7 @@ const WIREQUOTE_DEFAULT_CONFIG = {
       { value: '9.5', label: '0.374"(9.5mm) drill - Used for binders and etc.', price: 25 },
     ],
     slipcase: [
+      { value: 'NONE', label: 'None', price: 0 },
       { value: 'CASE', label: 'Slipcase only', price: 80 },
       { value: 'CASEPRINT', label: 'Slipcase + printing', price: 150 },
     ],
@@ -115,16 +109,100 @@ const WIREQUOTE_DEFAULT_CONFIG = {
   pageCounts: [24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 148, 152, 156, 160],
   weightOptions: ['80', '100', '120', '150', '200', '250', '300'],
   quantities: [200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000],
-  customSizeInstructions: "📏 Minimum: 4\" × 4\" | Maximum: 11.8\" × 14.3\"",
+  customSizeInstructions: {
+    INCH: "📏 Minimum: 4\" × 4\" | Maximum: 11.8\" × 14.3\"",
+    MM: "📏 Minimum: 102 × 102 mm | Maximum: 300 × 363 mm"
+  },
   pricing: {
-    baseSetupCost: 200,
+    baseSetupCost: 150,
     costPerPage: 0.06,
     customSizeMultiplier: 1.2,
     standardSizeMultiplier: 1.1,
-    wireBindingBaseCost: 80
+    wireBindingBaseCost: 50
   }
 };
 
+// ===== PAPER WEIGHT CONVERSION DATA =====
+const PAPER_WEIGHT_CONVERSIONS = {
+  '80': { 
+    gsm: '80 gsm',
+    us: '54# text',
+    pt: '2.5 pt',
+    kg: '69 kg'
+  },
+  '100': { 
+    gsm: '100 gsm',
+    us: '68# text',
+    pt: '3.2 pt',
+    kg: '86 kg'
+  },
+  '120': { 
+    gsm: '120 gsm',
+    us: '80# text',
+    pt: '3.8 pt',
+    kg: '103 kg'
+  },
+  '150': { 
+    gsm: '150 gsm',
+    us: '100# text',
+    pt: '4.8 pt',
+    kg: '129 kg'
+  },
+  '200': { 
+    gsm: '200 gsm',
+    us: '74# cover',
+    pt: '7.1 pt',
+    kg: '172 kg'
+  },
+  '250': { 
+    gsm: '250 gsm',
+    us: '92# cover',
+    pt: '9.1 pt',
+    kg: '215 kg'
+  },
+  '300': { 
+    gsm: '300 gsm',
+    us: '110# cover',
+    pt: '11.3 pt',
+    kg: '258 kg'
+  }
+};
+
+// ===== SIZE CONVERSION DATA =====
+const SIZE_CONVERSIONS = {
+  INCH: {
+    '8.5x11-letter': '8.5" x 11" (Letter)',
+    '8.5x11-standard': '8.5" x 11"',
+    '5.5x8.5': '5.5" x 8.5" (Half Letter)',
+    '6x9': '6" x 9"',
+    '7x10': '7" x 10"',
+    '9x12': '9" x 12"',
+    'A6': '4.13" x 5.83"',
+    'A5': '5.83" x 8.27"',
+    'A4': '8.27" x 11.69"',
+    'B6': '5.04" x 7.17"',
+    'B5': '7.17" x 10.12"',
+    'B4': '10.12" x 14.33"',
+    'custom': 'Custom Size'
+  },
+  MM: {
+    '8.5x11-letter': '216 x 279 mm (Letter)',
+    '8.5x11-standard': '216 x 279 mm',
+    '5.5x8.5': '140 x 216 mm (Half Letter)',
+    '6x9': '152 x 229 mm',
+    '7x10': '178 x 254 mm',
+    '9x12': '229 x 305 mm',
+    'A6': '105 x 148 mm',
+    'A5': '148 x 210 mm',
+    'A4': '210 x 297 mm',
+    'B6': '128 x 182 mm',
+    'B5': '182 x 257 mm',
+    'B4': '257 x 364 mm',
+    'custom': 'Custom Size'
+  }
+};
+
+// ===== UTILITY FUNCTIONS =====
 const getPricingData = (basePrice = 1200) => {
   const quantities = [200, 300, 400, 500, 600, 700, 800, 900, 1000];
   return quantities.map((qty, index) => ({
@@ -143,6 +221,311 @@ const getOptionPrice = (options, selectedValue) => {
 
 const formatCurrency = (amount) => `$${amount.toFixed(2)}`;
 
+// ===== SHIPPING MODAL COMPONENT =====
+const ShippingModal = ({ isOpen, onClose, formData }) => {
+  const [zipCode, setZipCode] = useState('');
+  const [country, setCountry] = useState('US');
+  const [shippingMethod, setShippingMethod] = useState('standard');
+  const [shippingCost, setShippingCost] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const countries = [
+    { value: 'US', label: 'United States' },
+    { value: 'CA', label: 'Canada' },
+    { value: 'GB', label: 'United Kingdom' },
+    { value: 'AU', label: 'Australia' },
+    { value: 'DE', label: 'Germany' },
+    { value: 'FR', label: 'France' },
+    { value: 'JP', label: 'Japan' },
+  ];
+
+  const shippingMethods = [
+    { value: 'standard', label: 'Standard Shipping', estimatedDays: '7-14 business days', baseCost: 25 },
+    { value: 'express', label: 'Express Shipping', estimatedDays: '3-5 business days', baseCost: 45 },
+    { value: 'priority', label: 'Priority Shipping', estimatedDays: '1-3 business days', baseCost: 75 },
+    { value: 'overnight', label: 'Overnight Shipping', estimatedDays: '1 business day', baseCost: 120 },
+  ];
+
+  const calculateShipping = () => {
+    if (!zipCode.trim()) {
+      setError('Please enter a valid ZIP/Postal Code');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    
+    // Mock shipping calculation based on quantity and weight
+    setTimeout(() => {
+      const baseWeight = (formData.quantity * 0.15) + (formData.pageCount * 0.008); // Simplified weight calculation
+      let calculatedCost = 0;
+      
+      switch(shippingMethod) {
+        case 'standard':
+          calculatedCost = 25 + (baseWeight * 0.4);
+          break;
+        case 'express':
+          calculatedCost = 45 + (baseWeight * 0.7);
+          break;
+        case 'priority':
+          calculatedCost = 75 + (baseWeight * 1.0);
+          break;
+        case 'overnight':
+          calculatedCost = 120 + (baseWeight * 1.8);
+          break;
+        default:
+          calculatedCost = 25 + (baseWeight * 0.4);
+      }
+      
+      // Add international premium
+      if (country !== 'US') {
+        calculatedCost *= 1.5;
+      }
+      
+      setShippingCost({
+        cost: calculatedCost.toFixed(2),
+        estimatedDays: shippingMethods.find(m => m.value === shippingMethod)?.estimatedDays,
+        method: shippingMethods.find(m => m.value === shippingMethod)?.label
+      });
+      setLoading(false);
+    }, 1500);
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-2xl font-bold text-gray-900">Calculate Shipping</h3>
+          <button 
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            aria-label="Close"
+          >
+            <span className="text-2xl text-gray-500">×</span>
+          </button>
+        </div>
+        
+        <div className="space-y-6">
+          {/* Order Summary */}
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <h4 className="font-semibold text-gray-900 mb-2">Order Summary</h4>
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              <div className="text-gray-600">Quantity:</div>
+              <div className="font-medium">{formData.quantity} copies</div>
+              <div className="text-gray-600">Pages:</div>
+              <div className="font-medium">{formData.pageCount} pages</div>
+              <div className="text-gray-600">Size:</div>
+              <div className="font-medium">{formData.selectedSize}</div>
+              <div className="text-gray-600">Weight:</div>
+              <div className="font-medium">~{(formData.quantity * 0.15 + formData.pageCount * 0.008).toFixed(1)} kg</div>
+            </div>
+          </div>
+
+          {/* Shipping Form */}
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Country
+              </label>
+              <select
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+              >
+                {countries.map((country) => (
+                  <option key={country.value} value={country.value}>
+                    {country.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ZIP / Postal Code
+              </label>
+              <input
+                type="text"
+                value={zipCode}
+                onChange={(e) => setZipCode(e.target.value)}
+                placeholder="Enter your ZIP/Postal Code"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+              />
+              {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Shipping Method
+              </label>
+              <div className="space-y-2">
+                {shippingMethods.map((method) => (
+                  <label 
+                    key={method.value}
+                    className={`flex items-center justify-between p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                      shippingMethod === method.value 
+                        ? 'border-indigo-500 bg-indigo-50' 
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        name="shippingMethod"
+                        value={method.value}
+                        checked={shippingMethod === method.value}
+                        onChange={(e) => setShippingMethod(e.target.value)}
+                        className="form-radio text-indigo-600 h-4 w-4"
+                      />
+                      <div className="ml-3">
+                        <span className="font-medium text-gray-900">{method.label}</span>
+                        <p className="text-sm text-gray-600">{method.estimatedDays}</p>
+                      </div>
+                    </div>
+                    <span className="font-semibold text-indigo-600">${method.baseCost}+</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Calculate Button */}
+          <button
+            onClick={calculateShipping}
+            disabled={loading}
+            className="w-full py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+          >
+            {loading ? (
+              <span className="flex items-center justify-center">
+                <svg className="animate-spin h-5 w-5 mr-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Calculating...
+              </span>
+            ) : (
+              'Calculate Shipping Cost'
+            )}
+          </button>
+
+          {/* Shipping Result */}
+          {shippingCost && (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
+              <h4 className="font-semibold text-green-900 mb-2">Shipping Cost Calculated</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-gray-700">Shipping Method:</span>
+                  <span className="font-medium">{shippingCost.method}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-700">Estimated Delivery:</span>
+                  <span className="font-medium">{shippingCost.estimatedDays}</span>
+                </div>
+                <div className="flex justify-between pt-2 border-t border-green-200">
+                  <span className="text-lg font-bold text-gray-900">Shipping Cost:</span>
+                  <span className="text-xl font-bold text-green-600">${shippingCost.cost}</span>
+                </div>
+                <p className="text-sm text-green-700 mt-2">
+                  This is an estimated shipping cost. Final cost may vary based on exact dimensions and weight.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex space-x-4 pt-4 border-t border-gray-200">
+            <button
+              onClick={onClose}
+              className="flex-1 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+            {shippingCost && (
+              <button
+                onClick={() => {
+                  // Add shipping to order
+                  alert(`Shipping added: $${shippingCost.cost} for ${shippingCost.method}`);
+                  onClose();
+                }}
+                className="flex-1 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
+              >
+                Add Shipping to Order
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ===== PAPER WEIGHT SELECTOR COMPONENT =====
+const PaperWeightSelector = ({ paperUnit, weightValue, onChange, label = "", availableWeights = null }) => {
+  const getWeightOptions = () => {
+    let weightKeys = availableWeights || Object.keys(PAPER_WEIGHT_CONVERSIONS);
+    
+    return weightKeys.map(key => {
+      const conversion = PAPER_WEIGHT_CONVERSIONS[key];
+      if (!conversion) return null;
+      
+      let labelText = '';
+      
+      switch(paperUnit) {
+        case 'GSM':
+          labelText = conversion.gsm;
+          break;
+        case 'US':
+          labelText = conversion.us;
+          break;
+        case 'PT':
+          labelText = conversion.pt;
+          break;
+        case 'KG':
+          labelText = conversion.kg;
+          break;
+        default:
+          labelText = conversion.gsm;
+      }
+      
+      return {
+        value: key,
+        label: labelText
+      };
+    }).filter(Boolean);
+  };
+
+  const options = getWeightOptions();
+  
+  // If current weight value is not in available options, select the first available
+  useEffect(() => {
+    if (options.length > 0 && !options.find(opt => opt.value === weightValue)) {
+      onChange({ target: { value: options[0].value } });
+    }
+  }, [options, weightValue, onChange]);
+
+  return (
+    <div>
+      {label && <p className="text-sm font-semibold mb-2 text-gray-700 opacity-0">{label}</p>}
+      <select
+        value={weightValue}
+        onChange={onChange}
+        className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors"
+        disabled={options.length === 0}
+      >
+        {options.map((option, index) => (
+          <option key={`${option.value}-${index}`} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
+
+// ===== REUSABLE COMPONENTS =====
 const RadioGroup = ({ label, name, options, selected, onChange, className = "" }) => (
   <div className={`flex items-center space-x-4 ${className}`}>
     <p className="text-sm font-semibold text-gray-700 min-w-20">{label}:</p>
@@ -166,7 +549,7 @@ const RadioGroup = ({ label, name, options, selected, onChange, className = "" }
   </div>
 );
 
-const SelectDropdown = ({ label, options, selected, onChange, className = "", disabled = false }) => {
+const SelectDropdown = ({ label, options, selected, onChange, className = "", disabled = false, showDescription = false }) => {
   const getStringValue = (value) => {
     if (typeof value === 'string') return value;
     if (typeof value === 'number') return value.toString();
@@ -175,6 +558,7 @@ const SelectDropdown = ({ label, options, selected, onChange, className = "", di
   };
 
   const stringValue = getStringValue(selected);
+  const selectedOption = options?.find(opt => opt.value === stringValue);
 
   return (
     <div className={className}>
@@ -210,6 +594,9 @@ const SelectDropdown = ({ label, options, selected, onChange, className = "", di
           );
         })}
       </select>
+      {showDescription && selectedOption?.description && (
+        <p className="text-xs text-gray-500 mt-1">{selectedOption.description}</p>
+      )}
     </div>
   );
 };
@@ -247,11 +634,9 @@ const BindingEdgeSelector = ({ label, options, selected, onChange, className = "
         >
           <div className="flex items-center space-x-3">
             {option.image && (
-              <img 
-                src={option.image} 
-                alt={option.label}
-                className="w-12 h-12 object-contain"
-              />
+              <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center">
+                <span className="text-xs font-semibold text-gray-600">Edge</span>
+              </div>
             )}
             <div className="flex-1">
               <p className="font-semibold text-gray-900 text-sm">{option.label}</p>
@@ -264,43 +649,63 @@ const BindingEdgeSelector = ({ label, options, selected, onChange, className = "
   </div>
 );
 
+// ===== MAIN COMPONENT =====
 const WireQuoteForm = () => {
   const [formConfig, setFormConfig] = useState(WIREQUOTE_DEFAULT_CONFIG);
   const [loading, setLoading] = useState(true);
   const [configVersion, setConfigVersion] = useState(0);
 
+  // Form State Management
   const [sizeUnit, setSizeUnit] = useState('INCH');
-  const [paperUnit, setPaperUnit] = useState('US');
+  const [paperUnit, setPaperUnit] = useState('GSM');
   const [selectedSize, setSelectedSize] = useState('8.5x11-standard');
   const [customWidth, setCustomWidth] = useState('');
   const [customHeight, setCustomHeight] = useState('');
   const [bindingEdge, setBindingEdge] = useState('LEFT');
   const [wireColor, setWireColor] = useState('BLACK');
   
+  // Cover State
   const [coverPaper, setCoverPaper] = useState('MATTE');
   const [coverWeight, setCoverWeight] = useState('300');
   const [coverColor, setCoverColor] = useState('CMYK');
   const [coverFinish, setCoverFinish] = useState('NONE');
-  const [coverFold, setCoverFold] = useState('');
+  const [coverFold, setCoverFold] = useState('NONE');
   const [foldWidth, setFoldWidth] = useState('');
   
+  // Inside Page State
   const [pageCount, setPageCount] = useState(96);
   const [insidePaper, setInsidePaper] = useState('MATTE');
   const [insideWeight, setInsideWeight] = useState('100');
   const [insideColor, setInsideColor] = useState('CMYK');
   
+  // Quantity & Options State
   const [quantity, setQuantity] = useState(200);
   const [selectedQuantityIndex, setSelectedQuantityIndex] = useState(0);
   const [proof, setProof] = useState('ONLINE');
   const [holePunching, setHolePunching] = useState({ enabled: false, type: '6' });
-  const [slipcase, setSlipcase] = useState('');
+  const [slipcase, setSlipcase] = useState('NONE');
   const [shrinkWrapping, setShrinkWrapping] = useState({ enabled: false, type: '1' });
   const [directMailing, setDirectMailing] = useState({ enabled: false, type: 'ALL' });
-  const [isDustCoverEnabled, setIsDustCoverEnabled] = useState(false);
+  
+  // Shipping Modal State
+  const [showShippingModal, setShowShippingModal] = useState(false);
 
+  // Derived State
   const isCustomSize = selectedSize === 'custom';
   const [pricingData, setPricingData] = useState(getPricingData());
 
+  // Available sizes based on unit
+  const availableSizes = [
+    '8.5x11-letter', '8.5x11-standard', '5.5x8.5', '6x9', '7x10', '9x12',
+    'A6', 'A5', 'A4', 'B6', 'B5', 'B4', 'custom'
+  ];
+
+  // Get display label for size
+  const getSizeDisplayLabel = (size) => {
+    return SIZE_CONVERSIONS[sizeUnit]?.[size] || size;
+  };
+
+  // Fetch form configuration
   const fetchFormConfig = async () => {
     try {
       console.log('🔄 Fetching wire binding form configuration from API...');
@@ -355,8 +760,8 @@ const WireQuoteForm = () => {
     fetchFormConfig();
   }, [configVersion]);
 
+  // Configuration constants
   const BINDING_TYPES = formConfig?.bindingTypes || WIREQUOTE_DEFAULT_CONFIG.bindingTypes;
-  const SIZES = formConfig?.sizes || WIREQUOTE_DEFAULT_CONFIG.sizes;
   const BINDING_EDGES = formConfig?.bindingEdges || WIREQUOTE_DEFAULT_CONFIG.bindingEdges;
   const WIRE_COLORS = formConfig?.wireColors || WIREQUOTE_DEFAULT_CONFIG.wireColors;
   const PAPER_OPTIONS = formConfig?.paperOptions || WIREQUOTE_DEFAULT_CONFIG.paperOptions;
@@ -371,20 +776,12 @@ const WireQuoteForm = () => {
   const generalSettings = formConfig?.general || WIREQUOTE_DEFAULT_CONFIG.general;
   const customSizeInstructions = formConfig?.customSizeInstructions || WIREQUOTE_DEFAULT_CONFIG.customSizeInstructions;
 
-  useEffect(() => {
-    console.log('🔍 DEBUG - Current Wire Binding Configuration:', {
-      title: generalSettings.title,
-      description: generalSettings.description,
-      hasCustomConfig: formConfig !== WIREQUOTE_DEFAULT_CONFIG,
-      configSource: formConfig === WIREQUOTE_DEFAULT_CONFIG ? 'DEFAULT' : 'API'
-    });
-  }, [formConfig, generalSettings]);
-
   const refreshConfig = () => {
     console.log('🔄 Manually refreshing wire binding configuration...');
     setConfigVersion(prev => prev + 1);
   };
 
+  // Handlers
   const handleNumberInput = (setter) => (e) => {
     const value = e.target.value;
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
@@ -418,35 +815,44 @@ const WireQuoteForm = () => {
     setQuantity(pricingData[index].quantity);
   };
 
+  // Price Calculation - FIXED
   const calculatePricing = useCallback(() => {
     const baseCostPerPage = formConfig?.pricing?.costPerPage || 0.06;
-    const baseSetupCost = formConfig?.pricing?.baseSetupCost || 200;
-    const wireBindingBaseCost = formConfig?.pricing?.wireBindingBaseCost || 80;
+    const baseSetupCost = formConfig?.pricing?.baseSetupCost || 150;
+    const wireBindingBaseCost = formConfig?.pricing?.wireBindingBaseCost || 50;
     const customSizeMultiplier = formConfig?.pricing?.customSizeMultiplier || 1.2;
     const standardSizeMultiplier = formConfig?.pricing?.standardSizeMultiplier || 1.1;
     
+    // Base printing cost: setup + wire binding + (pages × cost per page × quantity)
     let basePrintCost = baseSetupCost + wireBindingBaseCost + (pageCount * baseCostPerPage * quantity);
     
-    if (isCustomSize) basePrintCost *= customSizeMultiplier;
-    else if (selectedSize !== '8.5x11-standard') basePrintCost *= standardSizeMultiplier;
+    // Apply size multipliers
+    if (isCustomSize) {
+      basePrintCost *= customSizeMultiplier;
+    } else if (selectedSize !== '8.5x11-standard' && selectedSize !== 'A4') {
+      // Apply standard size multiplier for non-standard sizes
+      basePrintCost *= standardSizeMultiplier;
+    }
     
-    const coverPaperCost = 0;
-    const insidePaperCost = 0;
+    // Get option costs
+    const coverPaperCost = getOptionPrice(PAPER_OPTIONS.cover, coverPaper);
+    const insidePaperCost = getOptionPrice(PAPER_OPTIONS.inside, insidePaper);
     const coverColorCost = getOptionPrice(PRINT_COLORS, coverColor);
     const insideColorCost = getOptionPrice(PRINT_COLORS, insideColor);
     const coverFinishCost = getOptionPrice(COVER_FINISHES, coverFinish);
+    const coverFoldCost = getOptionPrice(COVER_FOLDS, coverFold);
     const proofCost = getOptionPrice(ADDITIONAL_OPTIONS.proof, proof);
     const holePunchCost = holePunching.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.holePunch, holePunching.type) : 0;
-    const dustCoverCost = isDustCoverEnabled ? 80 + (quantity * 0.20) : 0;
     const slipcaseCost = getOptionPrice(ADDITIONAL_OPTIONS.slipcase, slipcase);
     const shrinkWrapUnitCost = shrinkWrapping.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.shrinkWrap, shrinkWrapping.type) : 0;
     const shrinkWrapCost = shrinkWrapping.enabled ? quantity * shrinkWrapUnitCost : 0;
     const directMailUnitCost = directMailing.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.directMail, directMailing.type) : 0;
     const directMailCost = directMailing.enabled ? quantity * directMailUnitCost : 0;
 
+    // Categorize costs
     const materialCost = coverPaperCost + insidePaperCost;
-    const colorCost = coverColorCost + insideColorCost + coverFinishCost;
-    const additionalServicesCost = proofCost + holePunchCost + dustCoverCost + slipcaseCost + shrinkWrapCost + directMailCost;
+    const colorCost = coverColorCost + insideColorCost + coverFinishCost + coverFoldCost;
+    const additionalServicesCost = proofCost + holePunchCost + slipcaseCost + shrinkWrapCost + directMailCost;
 
     const totalAmount = basePrintCost + materialCost + colorCost + additionalServicesCost;
 
@@ -456,30 +862,92 @@ const WireQuoteForm = () => {
       color: colorCost,
       proof: proofCost,
       holePunching: holePunchCost,
-      dustCover: dustCoverCost,
       slipcase: slipcaseCost,
       shrinkWrapping: shrinkWrapCost,
       directMailing: directMailCost,
       total: totalAmount,
     };
-  }, [pageCount, quantity, selectedSize, isCustomSize, coverColor, insideColor, coverFinish, proof, holePunching, isDustCoverEnabled, slipcase, shrinkWrapping, directMailing, formConfig]);
+  }, [
+    pageCount, quantity, selectedSize, isCustomSize, coverPaper, insidePaper, 
+    coverColor, insideColor, coverFinish, coverFold, proof, holePunching,
+    slipcase, shrinkWrapping, directMailing, formConfig
+  ]);
 
   const prices = calculatePricing();
 
+  // Update pricing data when configuration changes
   useEffect(() => {
-    const newBasePrice = 800 + (pageCount * 3) + (quantity * 0.8);
-    setPricingData(getPricingData(newBasePrice));
-  }, [pageCount, quantity]);
+    const calculatePriceForQuantity = (qty) => {
+      const baseCostPerPage = formConfig?.pricing?.costPerPage || 0.06;
+      const baseSetupCost = formConfig?.pricing?.baseSetupCost || 150;
+      const wireBindingBaseCost = formConfig?.pricing?.wireBindingBaseCost || 50;
+      const customSizeMultiplier = formConfig?.pricing?.customSizeMultiplier || 1.2;
+      const standardSizeMultiplier = formConfig?.pricing?.standardSizeMultiplier || 1.1;
+      
+      let basePrintCost = baseSetupCost + wireBindingBaseCost + (pageCount * baseCostPerPage * qty);
+      
+      if (isCustomSize) {
+        basePrintCost *= customSizeMultiplier;
+      } else if (selectedSize !== '8.5x11-standard' && selectedSize !== 'A4') {
+        basePrintCost *= standardSizeMultiplier;
+      }
+      
+      // Add all other costs (simplified for pricing table)
+      const coverPaperCost = getOptionPrice(PAPER_OPTIONS.cover, coverPaper);
+      const insidePaperCost = getOptionPrice(PAPER_OPTIONS.inside, insidePaper);
+      const coverColorCost = getOptionPrice(PRINT_COLORS, coverColor);
+      const insideColorCost = getOptionPrice(PRINT_COLORS, insideColor);
+      const coverFinishCost = getOptionPrice(COVER_FINISHES, coverFinish);
+      const coverFoldCost = getOptionPrice(COVER_FOLDS, coverFold);
+      const proofCost = getOptionPrice(ADDITIONAL_OPTIONS.proof, proof);
+      const holePunchCost = holePunching.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.holePunch, holePunching.type) : 0;
+      const slipcaseCost = getOptionPrice(ADDITIONAL_OPTIONS.slipcase, slipcase);
+      
+      const additionalCosts = coverPaperCost + insidePaperCost + coverColorCost + insideColorCost + 
+                            coverFinishCost + coverFoldCost + proofCost + holePunchCost + slipcaseCost;
+      
+      const total = basePrintCost + additionalCosts;
+      
+      return {
+        quantity: qty,
+        price: `$${Math.round(total).toLocaleString()}`,
+        pricePerCopy: `$${(total / qty).toFixed(2)}`,
+        time: '10-12 business days'
+      };
+    };
+
+    const quantities = [200, 300, 400, 500, 600, 700, 800, 900, 1000];
+    const newPricingData = quantities.map(qty => calculatePriceForQuantity(qty));
+    setPricingData(newPricingData);
+  }, [pageCount, selectedSize, isCustomSize, coverPaper, insidePaper, coverColor, insideColor, coverFinish, coverFold, proof, holePunching, slipcase, formConfig]);
 
   const handleAddToCart = () => {
     const formData = {
       sizeUnit, paperUnit, selectedSize,
       customSize: isCustomSize ? { width: customWidth, height: customHeight } : null,
       bindingEdge, wireColor,
-      cover: { paper: coverPaper, weight: coverWeight, color: coverColor, finish: coverFinish, fold: coverFold, foldWidth },
-      inside: { pageCount, paper: insidePaper, weight: insideWeight, color: insideColor },
+      cover: { 
+        paper: coverPaper, 
+        weight: coverWeight, 
+        color: coverColor, 
+        finish: coverFinish, 
+        fold: coverFold, 
+        foldWidth 
+      },
+      inside: { 
+        pageCount, 
+        paper: insidePaper, 
+        weight: insideWeight, 
+        color: insideColor 
+      },
       quantity,
-      options: { proof, holePunching, slipcase, shrinkWrapping, directMailing, dustCover: isDustCoverEnabled },
+      options: { 
+        proof, 
+        holePunching, 
+        slipcase, 
+        shrinkWrapping, 
+        directMailing
+      },
       totalAmount: prices.total.toFixed(2),
     };
     
@@ -498,9 +966,13 @@ const WireQuoteForm = () => {
 
   return (
     <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 font-sans">
+      <ShippingModal
+        isOpen={showShippingModal}
+        onClose={() => setShowShippingModal(false)}
+        formData={{ quantity, pageCount, selectedSize: getSizeDisplayLabel(selectedSize) }}
+      />
+      
       <div className="max-w-7xl mx-auto">
-        
-
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             {generalSettings.title}
@@ -510,9 +982,10 @@ const WireQuoteForm = () => {
           </p>
         </div>
 
+        {/* Unit Selection */}
         <div className="mb-12 bg-white rounded-2xl shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Measurement Units</h2>
-          <div className="flex gap-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Measurement Units</h2>
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
             <RadioGroup
               label="Size Unit"
               name="size_type_sel"
@@ -538,7 +1011,9 @@ const WireQuoteForm = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             
+            {/* Size & Binding Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Size Selection */}
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                   <svg className="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -548,7 +1023,10 @@ const WireQuoteForm = () => {
                 </h3>
                 <SelectDropdown
                   label="Select Standard Size"
-                  options={SIZES}
+                  options={availableSizes.map(s => ({ 
+                    value: s, 
+                    label: getSizeDisplayLabel(s)
+                  }))}
                   selected={selectedSize}
                   onChange={(e) => {
                     setSelectedSize(e.target.value);
@@ -586,11 +1064,12 @@ const WireQuoteForm = () => {
                 </div>
                 {isCustomSize && (
                   <p className="text-xs text-gray-500 mt-3">
-                    {customSizeInstructions}
+                    {customSizeInstructions[sizeUnit] || customSizeInstructions.INCH}
                   </p>
                 )}
               </div>
 
+              {/* Binding Edge */}
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                   <svg className="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -617,6 +1096,7 @@ const WireQuoteForm = () => {
               </div>
             </div>
 
+            {/* Cover Section */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b border-gray-200">
                 <h3 className="text-2xl font-bold text-gray-900 flex items-center">
@@ -635,19 +1115,19 @@ const WireQuoteForm = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <SelectDropdown 
                   label="Paper Type" 
                   options={PAPER_OPTIONS.cover} 
                   selected={coverPaper} 
                   onChange={(e) => setCoverPaper(e.target.value)} 
                 />
-                <SelectDropdown 
-                  label="Paper Weight" 
-                  options={(PAPER_OPTIONS.cover.find(p => p.value === coverPaper)?.gsm || []).map(w => ({ value: w, label: `${w} gsm` }))} 
-                  selected={coverWeight} 
-                  onChange={(e) => setCoverWeight(e.target.value)} 
-                  disabled={!coverPaper}
+                <PaperWeightSelector
+                  paperUnit={paperUnit}
+                  label="Paper Weight"
+                  weightValue={coverWeight}
+                  onChange={(e) => setCoverWeight(e.target.value)}
+                  availableWeights={['200', '250', '300']}
                 />
                 <SelectDropdown 
                   label="Print Color" 
@@ -655,55 +1135,41 @@ const WireQuoteForm = () => {
                   selected={coverColor} 
                   onChange={(e) => setCoverColor(e.target.value)} 
                 />
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                 <SelectDropdown 
                   label="Cover Finish" 
                   options={COVER_FINISHES} 
                   selected={coverFinish} 
                   onChange={(e) => setCoverFinish(e.target.value)} 
                 />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <SelectDropdown 
+                  label="Cover Fold" 
+                  options={COVER_FOLDS} 
+                  selected={coverFold} 
+                  onChange={(e) => setCoverFold(e.target.value)} 
+                />
                 
-                <div className="grid grid-cols-2 gap-3">
-                  <SelectDropdown 
-                    label="Cover Fold" 
-                    options={COVER_FOLDS} 
-                    selected={coverFold} 
-                    onChange={(e) => setCoverFold(e.target.value)} 
-                  />
+                <div>
+                  <label className="text-sm font-semibold mb-2 text-gray-700">Fold Width</label>
                   <input
                     type="text"
-                    value={coverFold ? foldWidth : ''}
+                    value={coverFold !== 'NONE' ? foldWidth : ''}
                     onChange={handleNumberInput(setFoldWidth)}
-                    placeholder="Fold width"
-                    className={`p-3 border rounded-lg text-sm transition-all ${
-                      coverFold 
-                        ? 'bg-white border-gray-300' 
+                    placeholder="Enter fold width"
+                    className={`w-full p-3 border rounded-lg text-sm transition-all ${
+                      coverFold !== 'NONE'
+                        ? 'bg-white border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500' 
                         : 'bg-gray-100 border-gray-300 text-gray-500'
                     }`}
-                    readOnly={!coverFold}
+                    readOnly={coverFold === 'NONE'}
                   />
                 </div>
               </div>
-
-              <div className="flex flex-wrap gap-4">
-                <button className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-colors">
-                  + Additional Add-ons
-                </button>
-                <button 
-                  onClick={() => setIsDustCoverEnabled(!isDustCoverEnabled)}
-                  className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-                    isDustCoverEnabled 
-                      ? 'bg-green-500 text-white hover:bg-green-600 shadow-sm' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {isDustCoverEnabled ? '✓ Dust Cover Added' : '+ Add Dust Cover'}
-                </button>
-              </div>
             </div>
 
+            {/* Inside Page Section */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b border-gray-200">
                 <h3 className="text-2xl font-bold text-gray-900 flex items-center">
@@ -714,7 +1180,7 @@ const WireQuoteForm = () => {
                 </h3>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <SelectDropdown
                   label="Page Count"
                   options={PAGE_COUNTS.map(c => ({ value: c, label: `${c} pages` }))}
@@ -727,19 +1193,16 @@ const WireQuoteForm = () => {
                   selected={insidePaper} 
                   onChange={(e) => setInsidePaper(e.target.value)} 
                 />
-                <SelectDropdown 
-                  label="Paper Weight" 
-                  options={(PAPER_OPTIONS.inside.find(p => p.value === insidePaper)?.gsm || []).map(w => ({ value: w, label: `${w} gsm` }))} 
-                  selected={insideWeight} 
-                  onChange={(e) => setInsideWeight(e.target.value)} 
-                  disabled={!insidePaper}
+                <PaperWeightSelector
+                  paperUnit={paperUnit}
+                  label="Paper Weight"
+                  weightValue={insideWeight}
+                  onChange={(e) => setInsideWeight(e.target.value)}
+                  availableWeights={['80', '100', '120']}
                 />
-              </div>
-
-              <div className="mb-6">
                 <SelectDropdown 
                   label="Print Color" 
-                  options={PRINT_COLORS.filter(opt => opt.value !== 'NOCOLOR')} 
+                  options={PRINT_COLORS} 
                   selected={insideColor} 
                   onChange={(e) => setInsideColor(e.target.value)} 
                 />
@@ -756,6 +1219,7 @@ const WireQuoteForm = () => {
             </div>
           </div>
 
+          {/* Right Column - Pricing & Options */}
           <div className="space-y-8">
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
@@ -886,15 +1350,16 @@ const WireQuoteForm = () => {
                 </ToggleOption>
               </div>
 
+              {/* Price Breakdown */}
               <div className="mt-8 border-t pt-6">
                 <h4 className="text-lg font-bold text-gray-900 mb-4">Price Breakdown</h4>
                 <div className="space-y-3 text-sm">
                   {[
                     { label: 'Base Printing', value: prices.basePrinting },
+                    { label: 'Premium Materials', value: prices.materials, show: prices.materials > 0 },
                     { label: 'Color Options', value: prices.color, show: prices.color > 0 },
                     { label: 'Digital Proof', value: prices.proof, show: prices.proof > 0 },
                     { label: 'Hole Punching', value: prices.holePunching, show: prices.holePunching > 0 },
-                    { label: 'Dust Cover', value: prices.dustCover, show: prices.dustCover > 0 },
                     { label: 'Slipcase', value: prices.slipcase, show: prices.slipcase > 0 },
                     { label: 'Shrink Wrapping', value: prices.shrinkWrapping, show: prices.shrinkWrapping > 0 },
                     { label: 'Direct Mailing', value: prices.directMailing, show: prices.directMailing > 0 },
@@ -914,8 +1379,12 @@ const WireQuoteForm = () => {
                 </div>
               </div>
 
+              {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
-                <button className="flex-1 px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-sm">
+                <button 
+                  onClick={() => setShowShippingModal(true)}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-sm"
+                >
                   {generalSettings.shippingButtonText}
                 </button>
                 <button 

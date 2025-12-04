@@ -15,7 +15,6 @@ const PRINTQUOTE_DEFAULT_CONFIG = {
     { value: 'HARDCOVER', label: 'Hardcover Book', link: '/hardcover-book' },
     { value: 'WIRE', label: 'Wire Binding', link: '/wire-binding' },
   ],
-  sizes: ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', 'Custom Size'],
   bindingEdges: [
     { value: 'LEFT', label: 'Left Side', desc: 'Binding on the left, most common' },
     { value: 'RIGHT', label: 'Right Side', desc: 'First inside page starts from the right' },
@@ -145,7 +144,10 @@ const PRINTQUOTE_DEFAULT_CONFIG = {
   pageCounts: Array.from({ length: (880 - 24) / 2 + 1 }, (_, i) => 24 + i * 2),
   weightOptions: ['100', '120', '150', '250', '300'],
   quantities: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
-  customSizeInstructions: "📏 Minimum: 4\" × 4\" | Maximum: 11.8\" × 14.3\"",
+  customSizeInstructions: {
+    INCH: "📏 Minimum: 4\" × 4\" | Maximum: 11.8\" × 14.3\"",
+    MM: "📏 Minimum: 102 × 102 mm | Maximum: 300 × 363 mm"
+  },
   spineWidth: '0.178"',
   pricing: {
     baseSetupCost: 200,
@@ -205,6 +207,36 @@ const PAPER_WEIGHT_CONVERSIONS = {
   }
 };
 
+// ===== SIZE CONVERSION DATA =====
+const SIZE_CONVERSIONS = {
+  INCH: {
+    '5.5 x 8.5': '5.5" x 8.5"',
+    '7.5 x 10': '7.5" x 10"',
+    '8.5 x 11': '8.5" x 11"',
+    '9 x 12': '9" x 12"',
+    'A6': '4.13" x 5.83"',
+    'A5': '5.83" x 8.27"',
+    'A4': '8.27" x 11.69"',
+    'B6': '5.04" x 7.17"',
+    'B5': '7.17" x 10.12"',
+    'B4': '10.12" x 14.33"',
+    'Custom Size': 'Custom Size'
+  },
+  MM: {
+    '5.5 x 8.5': '140 x 216 mm',
+    '7.5 x 10': '191 x 254 mm',
+    '8.5 x 11': '216 x 279 mm',
+    '9 x 12': '229 x 305 mm',
+    'A6': '105 x 148 mm',
+    'A5': '148 x 210 mm',
+    'A4': '210 x 297 mm',
+    'B6': '128 x 182 mm',
+    'B5': '182 x 257 mm',
+    'B4': '257 x 364 mm',
+    'Custom Size': 'Custom Size'
+  }
+};
+
 // ===== UTILITY FUNCTIONS =====
 const getPricingData = (basePrice = 2340) => {
   const quantities = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
@@ -223,6 +255,247 @@ const getOptionPrice = (options, selectedValue) => {
 };
 
 const formatCurrency = (amount) => `$${amount.toFixed(2)}`;
+
+// ===== SHIPPING MODAL COMPONENT =====
+const ShippingModal = ({ isOpen, onClose, formData }) => {
+  const [zipCode, setZipCode] = useState('');
+  const [country, setCountry] = useState('US');
+  const [shippingMethod, setShippingMethod] = useState('standard');
+  const [shippingCost, setShippingCost] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const countries = [
+    { value: 'US', label: 'United States' },
+    { value: 'CA', label: 'Canada' },
+    { value: 'GB', label: 'United Kingdom' },
+    { value: 'AU', label: 'Australia' },
+    { value: 'DE', label: 'Germany' },
+    { value: 'FR', label: 'France' },
+    { value: 'JP', label: 'Japan' },
+  ];
+
+  const shippingMethods = [
+    { value: 'standard', label: 'Standard Shipping', estimatedDays: '7-14 business days', baseCost: 25 },
+    { value: 'express', label: 'Express Shipping', estimatedDays: '3-5 business days', baseCost: 45 },
+    { value: 'priority', label: 'Priority Shipping', estimatedDays: '1-3 business days', baseCost: 75 },
+    { value: 'overnight', label: 'Overnight Shipping', estimatedDays: '1 business day', baseCost: 120 },
+  ];
+
+  const calculateShipping = () => {
+    if (!zipCode.trim()) {
+      setError('Please enter a valid ZIP/Postal Code');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    
+    // Mock shipping calculation based on quantity and weight
+    setTimeout(() => {
+      const baseWeight = (formData.quantity * 0.2) + (formData.pageCount * 0.01); // Simplified weight calculation
+      let calculatedCost = 0;
+      
+      switch(shippingMethod) {
+        case 'standard':
+          calculatedCost = 25 + (baseWeight * 0.5);
+          break;
+        case 'express':
+          calculatedCost = 45 + (baseWeight * 0.8);
+          break;
+        case 'priority':
+          calculatedCost = 75 + (baseWeight * 1.2);
+          break;
+        case 'overnight':
+          calculatedCost = 120 + (baseWeight * 2.0);
+          break;
+        default:
+          calculatedCost = 25 + (baseWeight * 0.5);
+      }
+      
+      // Add international premium
+      if (country !== 'US') {
+        calculatedCost *= 1.5;
+      }
+      
+      setShippingCost({
+        cost: calculatedCost.toFixed(2),
+        estimatedDays: shippingMethods.find(m => m.value === shippingMethod)?.estimatedDays,
+        method: shippingMethods.find(m => m.value === shippingMethod)?.label
+      });
+      setLoading(false);
+    }, 1500);
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-2xl font-bold text-gray-900">Calculate Shipping</h3>
+          <button 
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            aria-label="Close"
+          >
+            <span className="text-2xl text-gray-500">×</span>
+          </button>
+        </div>
+        
+        <div className="space-y-6">
+          {/* Order Summary */}
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <h4 className="font-semibold text-gray-900 mb-2">Order Summary</h4>
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              <div className="text-gray-600">Quantity:</div>
+              <div className="font-medium">{formData.quantity} books</div>
+              <div className="text-gray-600">Pages:</div>
+              <div className="font-medium">{formData.pageCount} pages</div>
+              <div className="text-gray-600">Size:</div>
+              <div className="font-medium">{formData.selectedSize}</div>
+              <div className="text-gray-600">Weight:</div>
+              <div className="font-medium">~{(formData.quantity * 0.2 + formData.pageCount * 0.01).toFixed(1)} kg</div>
+            </div>
+          </div>
+
+          {/* Shipping Form */}
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Country
+              </label>
+              <select
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+              >
+                {countries.map((country) => (
+                  <option key={country.value} value={country.value}>
+                    {country.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ZIP / Postal Code
+              </label>
+              <input
+                type="text"
+                value={zipCode}
+                onChange={(e) => setZipCode(e.target.value)}
+                placeholder="Enter your ZIP/Postal Code"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+              />
+              {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Shipping Method
+              </label>
+              <div className="space-y-2">
+                {shippingMethods.map((method) => (
+                  <label 
+                    key={method.value}
+                    className={`flex items-center justify-between p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                      shippingMethod === method.value 
+                        ? 'border-indigo-500 bg-indigo-50' 
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        name="shippingMethod"
+                        value={method.value}
+                        checked={shippingMethod === method.value}
+                        onChange={(e) => setShippingMethod(e.target.value)}
+                        className="form-radio text-indigo-600 h-4 w-4"
+                      />
+                      <div className="ml-3">
+                        <span className="font-medium text-gray-900">{method.label}</span>
+                        <p className="text-sm text-gray-600">{method.estimatedDays}</p>
+                      </div>
+                    </div>
+                    <span className="font-semibold text-indigo-600">${method.baseCost}+</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Calculate Button */}
+          <button
+            onClick={calculateShipping}
+            disabled={loading}
+            className="w-full py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+          >
+            {loading ? (
+              <span className="flex items-center justify-center">
+                <svg className="animate-spin h-5 w-5 mr-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Calculating...
+              </span>
+            ) : (
+              'Calculate Shipping Cost'
+            )}
+          </button>
+
+          {/* Shipping Result */}
+          {shippingCost && (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
+              <h4 className="font-semibold text-green-900 mb-2">Shipping Cost Calculated</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-gray-700">Shipping Method:</span>
+                  <span className="font-medium">{shippingCost.method}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-700">Estimated Delivery:</span>
+                  <span className="font-medium">{shippingCost.estimatedDays}</span>
+                </div>
+                <div className="flex justify-between pt-2 border-t border-green-200">
+                  <span className="text-lg font-bold text-gray-900">Shipping Cost:</span>
+                  <span className="text-xl font-bold text-green-600">${shippingCost.cost}</span>
+                </div>
+                <p className="text-sm text-green-700 mt-2">
+                  This is an estimated shipping cost. Final cost may vary based on exact dimensions and weight.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex space-x-4 pt-4 border-t border-gray-200">
+            <button
+              onClick={onClose}
+              className="flex-1 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+            {shippingCost && (
+              <button
+                onClick={() => {
+                  // Add shipping to order
+                  alert(`Shipping added: $${shippingCost.cost} for ${shippingCost.method}`);
+                  onClose();
+                }}
+                className="flex-1 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
+              >
+                Add Shipping to Order
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // ===== PAPER WEIGHT SELECTOR COMPONENT =====
 const PaperWeightSelector = ({ paperUnit, weightValue, onChange, label = "" }) => {
@@ -257,7 +530,7 @@ const PaperWeightSelector = ({ paperUnit, weightValue, onChange, label = "" }) =
 
   return (
     <div>
-      {label && <p className="text-sm font-semibold mb-2 text-gray-700">{label}</p>}
+      {label && <p className="text-sm font-semibold mb-2 text-gray-700 opacity-0">{label}</p>}
       <select
         value={weightValue}
         onChange={onChange}
@@ -687,6 +960,9 @@ const PrintQuoteForm = () => {
   // Add-ons State
   const [addOns, setAddOns] = useState([]);
   const [showAddOnModal, setShowAddOnModal] = useState(false);
+  
+  // Shipping Modal State
+  const [showShippingModal, setShowShippingModal] = useState(false);
 
   // Quantity & Options State
   const [quantity, setQuantity] = useState(200);
@@ -700,6 +976,16 @@ const PrintQuoteForm = () => {
   // Derived State
   const isCustomSize = selectedSize === 'Custom Size';
   const [pricingData, setPricingData] = useState(getPricingData());
+
+  // Available sizes based on unit
+  const availableSizes = sizeUnit === 'INCH' 
+    ? ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', 'A6', 'A5', 'A4', 'B6', 'B5', 'B4', 'Custom Size']
+    : ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', 'A6', 'A5', 'A4', 'B6', 'B5', 'B4', 'Custom Size'];
+
+  // Get display label for size
+  const getSizeDisplayLabel = (size) => {
+    return SIZE_CONVERSIONS[sizeUnit]?.[size] || size;
+  };
 
   // Fetch form configuration
   const fetchFormConfig = async () => {
@@ -758,7 +1044,6 @@ const PrintQuoteForm = () => {
 
   // Configuration constants
   const BINDING_TYPES = formConfig?.bindingTypes || PRINTQUOTE_DEFAULT_CONFIG.bindingTypes;
-  const SIZES = formConfig?.sizes || PRINTQUOTE_DEFAULT_CONFIG.sizes;
   const BINDING_EDGES = formConfig?.bindingEdges || PRINTQUOTE_DEFAULT_CONFIG.bindingEdges;
   const PAPER_OPTIONS = formConfig?.paperOptions || PRINTQUOTE_DEFAULT_CONFIG.paperOptions;
   const PRINT_COLORS = formConfig?.printColors || PRINTQUOTE_DEFAULT_CONFIG.printColors;
@@ -865,7 +1150,7 @@ const PrintQuoteForm = () => {
     setAddOns(addOns.filter(addOn => addOn.id !== id));
   };
 
-  // Price Calculation
+  // Price Calculation - FIXED
   const calculatePricing = useCallback(() => {
     const baseCostPerPage = formConfig?.pricing?.costPerPage || 0.05;
     const baseSetupCost = formConfig?.pricing?.baseSetupCost || 200;
@@ -876,11 +1161,18 @@ const PrintQuoteForm = () => {
     const subscriptionCardBaseCost = formConfig?.pricing?.subscriptionCardBaseCost || 25;
     const subscriptionCardPerCopy = formConfig?.pricing?.subscriptionCardPerCopy || 0.02;
     
+    // Base printing cost: setup + (pages × cost per page × quantity)
     let basePrintCost = baseSetupCost + (pageCount * baseCostPerPage * quantity);
     
-    if (isCustomSize) basePrintCost *= customSizeMultiplier;
-    else if (selectedSize !== '8.5 x 11') basePrintCost *= standardSizeMultiplier;
+    // Apply size multipliers
+    if (isCustomSize) {
+      basePrintCost *= customSizeMultiplier;
+    } else if (selectedSize !== '8.5 x 11' && selectedSize !== 'A4') {
+      // Apply standard size multiplier for non-standard sizes
+      basePrintCost *= standardSizeMultiplier;
+    }
     
+    // Get option costs
     const coverPaperCost = getOptionPrice(PAPER_OPTIONS.cover, coverPaper);
     const insidePaperCost = getOptionPrice(PAPER_OPTIONS.inside, insidePaper);
     const coverColorCost = getOptionPrice(PRINT_COLORS, coverColor);
@@ -899,6 +1191,7 @@ const PrintQuoteForm = () => {
     const directMailCost = directMailing.enabled ? quantity * directMailUnitCost : 0;
     const addOnsCost = addOns.reduce((total, addOn) => total + addOn.price, 0);
 
+    // Categorize costs
     const materialCost = coverPaperCost + insidePaperCost;
     const colorCost = coverColorCost + insideColorCost;
     const coverCost = coverFinishCost + coverFoldCost;
@@ -922,16 +1215,58 @@ const PrintQuoteForm = () => {
       addOns: addOnsCost,
       total: totalAmount,
     };
-  }, [pageCount, quantity, selectedSize, isCustomSize, coverPaper, insidePaper, 
-      coverColor, insideColor, coverFinish, coverFold, proof, holePunching,
-      dustCover, subscriptionCards.length, slipcase, shrinkWrapping, directMailing, addOns, formConfig]);
+  }, [
+    pageCount, quantity, selectedSize, isCustomSize, coverPaper, insidePaper, 
+    coverColor, insideColor, coverFinish, coverFold, proof, holePunching,
+    dustCover, subscriptionCards.length, slipcase, shrinkWrapping, directMailing, addOns, formConfig
+  ]);
 
   const prices = calculatePricing();
 
+  // Update pricing data when configuration changes
   useEffect(() => {
-    const newBasePrice = 1000 + (pageCount * 3) + (quantity * 0.8);
-    setPricingData(getPricingData(newBasePrice));
-  }, [pageCount, quantity]);
+    const calculatePriceForQuantity = (qty) => {
+      const baseCostPerPage = formConfig?.pricing?.costPerPage || 0.05;
+      const baseSetupCost = formConfig?.pricing?.baseSetupCost || 200;
+      const customSizeMultiplier = formConfig?.pricing?.customSizeMultiplier || 1.2;
+      const standardSizeMultiplier = formConfig?.pricing?.standardSizeMultiplier || 1.1;
+      
+      let basePrintCost = baseSetupCost + (pageCount * baseCostPerPage * qty);
+      
+      if (isCustomSize) {
+        basePrintCost *= customSizeMultiplier;
+      } else if (selectedSize !== '8.5 x 11' && selectedSize !== 'A4') {
+        basePrintCost *= standardSizeMultiplier;
+      }
+      
+      // Add all other costs (simplified for pricing table)
+      const coverPaperCost = getOptionPrice(PAPER_OPTIONS.cover, coverPaper);
+      const insidePaperCost = getOptionPrice(PAPER_OPTIONS.inside, insidePaper);
+      const coverColorCost = getOptionPrice(PRINT_COLORS, coverColor);
+      const insideColorCost = getOptionPrice(PRINT_COLORS, insideColor);
+      const coverFinishCost = getOptionPrice(COVER_FINISHES, coverFinish);
+      const coverFoldCost = getOptionPrice(COVER_FOLDS, coverFold);
+      const proofCost = getOptionPrice(ADDITIONAL_OPTIONS.proof, proof);
+      const holePunchCost = holePunching.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.holePunch, holePunching.type) : 0;
+      const slipcaseCost = getOptionPrice(ADDITIONAL_OPTIONS.slipcase, slipcase);
+      
+      const additionalCosts = coverPaperCost + insidePaperCost + coverColorCost + insideColorCost + 
+                            coverFinishCost + coverFoldCost + proofCost + holePunchCost + slipcaseCost;
+      
+      const total = basePrintCost + additionalCosts;
+      
+      return {
+        quantity: qty,
+        price: `$${Math.round(total).toLocaleString()}`,
+        pricePerCopy: `$${(total / qty).toFixed(2)}`,
+        time: '5 business days'
+      };
+    };
+
+    const quantities = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+    const newPricingData = quantities.map(qty => calculatePriceForQuantity(qty));
+    setPricingData(newPricingData);
+  }, [pageCount, selectedSize, isCustomSize, coverPaper, insidePaper, coverColor, insideColor, coverFinish, coverFold, proof, holePunching, slipcase, formConfig]);
 
   const handleAddToCart = () => {
     const formData = {
@@ -987,6 +1322,12 @@ const PrintQuoteForm = () => {
         onSelectAddOn={handleAddOnSelect}
       />
       
+      <ShippingModal
+        isOpen={showShippingModal}
+        onClose={() => setShowShippingModal(false)}
+        formData={{ quantity, pageCount, selectedSize }}
+      />
+      
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="text-center mb-12">
@@ -999,7 +1340,7 @@ const PrintQuoteForm = () => {
         </div>
 
         {/* Binding Type Selection */}
-        <div className="mb-8 bg-white rounded-2xl shadow-lg p-6">
+        {/* <div className="mb-8 bg-white rounded-2xl shadow-lg p-6">
           <div className="flex flex-wrap gap-4 justify-center">
             {BINDING_TYPES.map((type) => (
               <button
@@ -1015,12 +1356,12 @@ const PrintQuoteForm = () => {
               </button>
             ))}
           </div>
-        </div>
+        </div> */}
 
         {/* Unit Selection */}
         <div className="mb-12 bg-white rounded-2xl shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Measurement Units</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Measurement Units</h2>
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
             <RadioGroup
               label="Size Unit"
               name="size_type_sel"
@@ -1058,7 +1399,10 @@ const PrintQuoteForm = () => {
                 </h3>
                 <SelectDropdown
                   label="Select Standard Size"
-                  options={SIZES.map(s => ({ value: s, label: s }))}
+                  options={availableSizes.map(s => ({ 
+                    value: s, 
+                    label: getSizeDisplayLabel(s)
+                  }))}
                   selected={selectedSize}
                   onChange={(e) => {
                     setSelectedSize(e.target.value);
@@ -1087,7 +1431,7 @@ const PrintQuoteForm = () => {
                       />
                     </div>
                     <p className="text-xs text-gray-500 mt-3">
-                      {customSizeInstructions}
+                      {customSizeInstructions[sizeUnit] || customSizeInstructions.INCH}
                     </p>
                   </>
                 )}
@@ -1140,6 +1484,7 @@ const PrintQuoteForm = () => {
                 />
                 <PaperWeightSelector
                   paperUnit={paperUnit}
+                  label='Weight'
                   weightValue={coverWeight}
                   onChange={(e) => setCoverWeight(e.target.value)}
                 />
@@ -1265,6 +1610,7 @@ const PrintQuoteForm = () => {
                   showDescription={false}
                 />
                 <PaperWeightSelector
+                  label="Paper Weight" 
                   paperUnit={paperUnit}
                   weightValue={insideWeight}
                   onChange={(e) => setInsideWeight(e.target.value)}
@@ -1477,7 +1823,10 @@ const PrintQuoteForm = () => {
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
-                <button className="flex-1 px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-sm">
+                <button 
+                  onClick={() => setShowShippingModal(true)}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-sm"
+                >
                   {generalSettings.shippingButtonText}
                 </button>
                 <button 

@@ -1,6 +1,8 @@
+// components/pages/quote/hardcover/HardQuoteForm.js
 'use client';
 import { useState, useCallback, useEffect } from 'react';
 
+// ===== DEFAULT CONFIG =====
 const HARDQUOTE_DEFAULT_CONFIG = {
   general: {
     title: "Hardcover Book Printing Quote",
@@ -14,40 +16,31 @@ const HARDQUOTE_DEFAULT_CONFIG = {
     { value: 'HARDCOVER', label: 'Hardcover Book', link: '/hardcover-book' },
     { value: 'WIRE', label: 'Wire Binding', link: '/wire-binding' },
   ],
-  sizes: [
-    { value: '5.5x8.5', label: '5.5" x 8.5" (Half Letter)' },
-    { value: '6x9', label: '6" x 9"' },
-    { value: '7x10', label: '7" x 10"' },
-    { value: '8.5x11-letter', label: '8.5" x 11" (Letter)' },
-    { value: '8.5x11-standard', label: '8.5" x 11"' },
-    { value: '9x12', label: '9" x 12"' },
-    { value: 'custom', label: 'Custom Size' }
-  ],
   bindingEdges: [
     { value: 'SQUARE', label: 'Square Spine', desc: 'Standard square spine' },
     { value: 'ROUNDED', label: 'Rounded Spine', desc: 'Premium rounded spine' },
   ],
   paperOptions: {
     cover: [
-      { value: 'MATTE', label: 'Matte', gsm: ['120', '150', '200'] },
-      { value: 'GLOSS', label: 'Gloss', gsm: ['120', '150', '200'] },
-      { value: 'UNCOATED', label: 'Uncoated', gsm: ['120', '150'] },
-      { value: 'PAPERCLOTH_GLOSS', label: 'Papercloth Gloss', gsm: [] }
+      { value: 'MATTE', label: 'Matte', description: 'Matte finish, professional look' },
+      { value: 'GLOSS', label: 'Gloss', description: 'Glossy finish, vibrant colors' },
+      { value: 'UNCOATED', label: 'Uncoated', description: 'Natural paper feel' },
+      { value: 'PAPERCLOTH_GLOSS', label: 'Papercloth Gloss', description: 'Premium papercloth with gloss finish' }
     ],
     inside: [
-      { value: 'MATTE', label: 'Matte', gsm: ['80', '100', '120'] },
-      { value: 'GLOSS', label: 'Gloss', gsm: ['80', '100', '120'] },
-      { value: 'UNCOATED', label: 'Uncoated', gsm: ['80', '100'] }
+      { value: 'MATTE', label: 'Matte', description: 'Matte finish, reduces glare' },
+      { value: 'GLOSS', label: 'Gloss', description: 'Glossy finish, vibrant printing' },
+      { value: 'UNCOATED', label: 'Uncoated', description: 'Natural, uncoated paper' }
     ]
   },
   printColors: [
-    { value: 'NOCOLOR', label: 'No Print', description: 'No Print' },
-    { value: 'CMYK', label: 'Full color', description: 'Full color' },
-    { value: 'CMYK_PMS1', label: 'Full color + 1 Spot color', description: 'Full color + 1 Spot color' },
-    { value: 'CMYK_PMS2', label: 'Full color + 2 Spot color', description: 'Full color + 2 Spot color' },
-    { value: 'BW', label: 'Black only', description: 'Black only' },
-    { value: 'BW_PMS1', label: 'Black + 1 Spot color', description: 'Black + 1 Spot color' },
-    { value: 'BW_PMS2', label: 'Black + 2 Spot color', description: 'Black + 2 Spot color' }
+    { value: 'NOCOLOR', label: 'No Print', price: 0 },
+    { value: 'CMYK', label: 'Full color', price: 0 },
+    { value: 'CMYK_PMS1', label: 'Full color + 1 Spot color', price: 75 },
+    { value: 'CMYK_PMS2', label: 'Full color + 2 Spot color', price: 150 },
+    { value: 'BW', label: 'Black only', price: -100 },
+    { value: 'BW_PMS1', label: 'Black + 1 Spot color', price: -25 },
+    { value: 'BW_PMS2', label: 'Black + 2 Spot color', price: 50 }
   ],
   coverFinishes: [
     { value: 'NONE', label: 'None', price: 0 },
@@ -67,13 +60,13 @@ const HARDQUOTE_DEFAULT_CONFIG = {
   ],
   additionalOptions: {
     proof: [
-      { value: 'ONLINE', label: 'E-Proof(PDF proof, free)', price: 0 },
+      { value: 'ONLINE', label: 'E-Proof (PDF proof, free)', price: 0 },
       { value: 'DIGITAL', label: 'Digital Proof', price: 50 },
     ],
     holePunch: [
-      { value: '6', label: '0.236"(6mm) drill - Most commonly used size for wall calendar', price: 15 },
-      { value: '8', label: '0.315"(8mm) drill - Most selected for binder holes', price: 20 },
-      { value: '9.5', label: '0.374"(9.5mm) drill - Used for binders and etc.', price: 25 },
+      { value: '6', label: '0.236" (6mm) drill', price: 15 },
+      { value: '8', label: '0.315" (8mm) drill', price: 20 },
+      { value: '9.5', label: '0.374" (9.5mm) drill', price: 25 },
     ],
     slipcase: [
       { value: 'CASE', label: 'Slipcase only', price: 80 },
@@ -97,17 +90,79 @@ const HARDQUOTE_DEFAULT_CONFIG = {
   pageCounts: [36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 148, 152, 156, 160],
   weightOptions: ['80', '100', '120', '150', '200'],
   quantities: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
-  customSizeInstructions: "📏 Minimum: 4\" × 4\" | Maximum: 11.8\" × 14.3\"",
+  customSizeInstructions: {
+    INCH: "📏 Minimum: 4\" × 4\" | Maximum: 11.8\" × 14.3\"",
+    MM: "📏 Minimum: 102 × 102 mm | Maximum: 300 × 363 mm"
+  },
   spineWidth: '0.178"',
   pricing: {
     baseSetupCost: 300,
     costPerPage: 0.08,
     customSizeMultiplier: 1.3,
     standardSizeMultiplier: 1.2,
-    hardcoverBaseCost: 150
+    hardcoverBaseCost: 150,
+    dustCoverBaseCost: 100,
+    dustCoverPerCopy: 0.25,
   }
 };
 
+// ===== PAPER WEIGHT CONVERSION DATA =====
+const PAPER_WEIGHT_CONVERSIONS = {
+  '80': { 
+    gsm: '80 gsm',
+    us: '54# text',
+    pt: '2.5 pt',
+    kg: '69 kg'
+  },
+  '100': { 
+    gsm: '100 gsm',
+    us: '68# text',
+    pt: '3.2 pt',
+    kg: '86 kg'
+  },
+  '120': { 
+    gsm: '120 gsm',
+    us: '80# text',
+    pt: '3.8 pt',
+    kg: '103 kg'
+  },
+  '150': { 
+    gsm: '150 gsm',
+    us: '100# text',
+    pt: '4.8 pt',
+    kg: '129 kg'
+  },
+  '200': { 
+    gsm: '200 gsm',
+    us: '74# cover',
+    pt: '7.1 pt',
+    kg: '172 kg'
+  }
+};
+
+// ===== SIZE CONVERSION DATA =====
+const SIZE_CONVERSIONS = {
+  INCH: {
+    '5.5x8.5': '5.5" x 8.5" (Half Letter)',
+    '6x9': '6" x 9"',
+    '7x10': '7" x 10"',
+    '8.5x11-letter': '8.5" x 11" (Letter)',
+    '8.5x11-standard': '8.5" x 11"',
+    '9x12': '9" x 12"',
+    'custom': 'Custom Size'
+  },
+  MM: {
+    '5.5x8.5': '140 x 216 mm (Half Letter)',
+    '6x9': '152 x 229 mm',
+    '7x10': '178 x 254 mm',
+    '8.5x11-letter': '216 x 279 mm (Letter)',
+    '8.5x11-standard': '216 x 279 mm',
+    '9x12': '229 x 305 mm',
+    'custom': 'Custom Size'
+  }
+};
+
+// ===== UTILITY FUNCTIONS =====
 const getPricingData = (basePrice = 2340) => {
   const quantities = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
   return quantities.map((qty, index) => ({
@@ -126,6 +181,427 @@ const getOptionPrice = (options, selectedValue) => {
 
 const formatCurrency = (amount) => `$${amount.toFixed(2)}`;
 
+// ===== SHIPPING MODAL COMPONENT =====
+const ShippingModal = ({ isOpen, onClose, formData }) => {
+  const [zipCode, setZipCode] = useState('');
+  const [country, setCountry] = useState('US');
+  const [shippingMethod, setShippingMethod] = useState('standard');
+  const [shippingCost, setShippingCost] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const countries = [
+    { value: 'US', label: 'United States' },
+    { value: 'CA', label: 'Canada' },
+    { value: 'GB', label: 'United Kingdom' },
+    { value: 'AU', label: 'Australia' },
+    { value: 'DE', label: 'Germany' },
+    { value: 'FR', label: 'France' },
+    { value: 'JP', label: 'Japan' },
+  ];
+
+  const shippingMethods = [
+    { value: 'standard', label: 'Standard Shipping', estimatedDays: '10-14 business days', baseCost: 35 },
+    { value: 'express', label: 'Express Shipping', estimatedDays: '5-7 business days', baseCost: 65 },
+    { value: 'priority', label: 'Priority Shipping', estimatedDays: '3-5 business days', baseCost: 95 },
+    { value: 'overnight', label: 'Overnight Shipping', estimatedDays: '1-2 business days', baseCost: 150 },
+  ];
+
+  const calculateShipping = () => {
+    if (!zipCode.trim()) {
+      setError('Please enter a valid ZIP/Postal Code');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    
+    // Mock shipping calculation for hardcover books
+    setTimeout(() => {
+      // Hardcover books are heavier than perfect bound
+      const baseWeight = (formData.quantity * 0.3) + (formData.pageCount * 0.015);
+      let calculatedCost = 0;
+      
+      switch(shippingMethod) {
+        case 'standard':
+          calculatedCost = 35 + (baseWeight * 0.7);
+          break;
+        case 'express':
+          calculatedCost = 65 + (baseWeight * 1.0);
+          break;
+        case 'priority':
+          calculatedCost = 95 + (baseWeight * 1.5);
+          break;
+        case 'overnight':
+          calculatedCost = 150 + (baseWeight * 2.5);
+          break;
+        default:
+          calculatedCost = 35 + (baseWeight * 0.7);
+      }
+      
+      // Add international premium
+      if (country !== 'US') {
+        calculatedCost *= 1.8; // Hardcover books cost more to ship internationally
+      }
+      
+      setShippingCost({
+        cost: calculatedCost.toFixed(2),
+        estimatedDays: shippingMethods.find(m => m.value === shippingMethod)?.estimatedDays,
+        method: shippingMethods.find(m => m.value === shippingMethod)?.label
+      });
+      setLoading(false);
+    }, 1500);
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-2xl font-bold text-gray-900">Calculate Shipping</h3>
+          <button 
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            aria-label="Close"
+          >
+            <span className="text-2xl text-gray-500">×</span>
+          </button>
+        </div>
+        
+        <div className="space-y-6">
+          {/* Order Summary */}
+          <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+            <h4 className="font-semibold text-gray-900 mb-2">Order Summary</h4>
+            <div className="grid grid-cols-2 gap-2 text-sm">
+              <div className="text-gray-600">Quantity:</div>
+              <div className="font-medium">{formData.quantity} hardcover books</div>
+              <div className="text-gray-600">Pages:</div>
+              <div className="font-medium">{formData.pageCount} pages</div>
+              <div className="text-gray-600">Size:</div>
+              <div className="font-medium">{formData.selectedSize}</div>
+              <div className="text-gray-600">Weight:</div>
+              <div className="font-medium">~{(formData.quantity * 0.3 + formData.pageCount * 0.015).toFixed(1)} kg</div>
+            </div>
+          </div>
+
+          {/* Shipping Form */}
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Country
+              </label>
+              <select
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+              >
+                {countries.map((country) => (
+                  <option key={country.value} value={country.value}>
+                    {country.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                ZIP / Postal Code
+              </label>
+              <input
+                type="text"
+                value={zipCode}
+                onChange={(e) => setZipCode(e.target.value)}
+                placeholder="Enter your ZIP/Postal Code"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+              />
+              {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Shipping Method
+              </label>
+              <div className="space-y-2">
+                {shippingMethods.map((method) => (
+                  <label 
+                    key={method.value}
+                    className={`flex items-center justify-between p-3 border-2 rounded-lg cursor-pointer transition-all ${
+                      shippingMethod === method.value 
+                        ? 'border-indigo-500 bg-indigo-50' 
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="flex items-center">
+                      <input
+                        type="radio"
+                        name="shippingMethod"
+                        value={method.value}
+                        checked={shippingMethod === method.value}
+                        onChange={(e) => setShippingMethod(e.target.value)}
+                        className="form-radio text-indigo-600 h-4 w-4"
+                      />
+                      <div className="ml-3">
+                        <span className="font-medium text-gray-900">{method.label}</span>
+                        <p className="text-sm text-gray-600">{method.estimatedDays}</p>
+                      </div>
+                    </div>
+                    <span className="font-semibold text-indigo-600">${method.baseCost}+</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Calculate Button */}
+          <button
+            onClick={calculateShipping}
+            disabled={loading}
+            className="w-full py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+          >
+            {loading ? (
+              <span className="flex items-center justify-center">
+                <svg className="animate-spin h-5 w-5 mr-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Calculating...
+              </span>
+            ) : (
+              'Calculate Shipping Cost'
+            )}
+          </button>
+
+          {/* Shipping Result */}
+          {shippingCost && (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
+              <h4 className="font-semibold text-green-900 mb-2">Shipping Cost Calculated</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-gray-700">Shipping Method:</span>
+                  <span className="font-medium">{shippingCost.method}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-700">Estimated Delivery:</span>
+                  <span className="font-medium">{shippingCost.estimatedDays}</span>
+                </div>
+                <div className="flex justify-between pt-2 border-t border-green-200">
+                  <span className="text-lg font-bold text-gray-900">Shipping Cost:</span>
+                  <span className="text-xl font-bold text-green-600">${shippingCost.cost}</span>
+                </div>
+                <p className="text-sm text-green-700 mt-2">
+                  Note: Hardcover books require special packaging and handling.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex space-x-4 pt-4 border-t border-gray-200">
+            <button
+              onClick={onClose}
+              className="flex-1 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+            >
+              Cancel
+            </button>
+            {shippingCost && (
+              <button
+                onClick={() => {
+                  // Add shipping to order
+                  alert(`Shipping added: $${shippingCost.cost} for ${shippingCost.method}`);
+                  onClose();
+                }}
+                className="flex-1 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
+              >
+                Add Shipping to Order
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ===== PAPER WEIGHT SELECTOR COMPONENT =====
+const PaperWeightSelector = ({ paperUnit, weightValue, onChange, label = "", options = [] }) => {
+  const getWeightOptions = () => {
+    if (options && options.length > 0) {
+      return options.map(weight => {
+        const conversion = PAPER_WEIGHT_CONVERSIONS[weight] || { gsm: `${weight} gsm`, us: `${weight} gsm`, pt: `${weight} gsm`, kg: `${weight} gsm` };
+        let labelText = '';
+        
+        switch(paperUnit) {
+          case 'GSM':
+            labelText = conversion.gsm;
+            break;
+          case 'US':
+            labelText = conversion.us;
+            break;
+          case 'PT':
+            labelText = conversion.pt;
+            break;
+          case 'KG':
+            labelText = conversion.kg;
+            break;
+          default:
+            labelText = conversion.gsm;
+        }
+        
+        return {
+          value: weight,
+          label: labelText
+        };
+      });
+    }
+    
+    return Object.keys(PAPER_WEIGHT_CONVERSIONS).map(key => {
+      const conversion = PAPER_WEIGHT_CONVERSIONS[key];
+      let labelText = '';
+      
+      switch(paperUnit) {
+        case 'GSM':
+          labelText = conversion.gsm;
+          break;
+        case 'US':
+          labelText = conversion.us;
+          break;
+        case 'PT':
+          labelText = conversion.pt;
+          break;
+        case 'KG':
+          labelText = conversion.kg;
+          break;
+        default:
+          labelText = conversion.gsm;
+      }
+      
+      return {
+        value: key,
+        label: labelText
+      };
+    });
+  };
+
+  return (
+    <div>
+      {label && <p className="text-sm font-semibold mb-2 text-gray-700 opacity-0">{label}</p>}
+      <select
+        value={weightValue}
+        onChange={onChange}
+        className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors"
+      >
+        {getWeightOptions().map((option, index) => (
+          <option key={`${option.value}-${index}`} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
+
+// ===== DUST COVER COMPONENT =====
+const DustCoverSettings = ({ dustCover, onUpdate, onRemove, paperUnit }) => {
+  const handleChange = (field, value) => {
+    onUpdate({ ...dustCover, [field]: value });
+  };
+
+  const handleNumberInput = (field, value) => {
+    if (value === '' || /^\d*\.?\d*$/.test(value)) {
+      handleChange(field, value);
+    }
+  };
+
+  return (
+    <div className="bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border-2 border-blue-200 shadow-sm mt-6">
+      <div className="flex justify-between items-center mb-6">
+        <h4 className="text-lg font-bold text-gray-800 flex items-center">
+          <span className="mr-2">📄</span>
+          Dust Cover Settings
+        </h4>
+        <button 
+          onClick={onRemove}
+          className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+          aria-label="Remove dust cover"
+        >
+          <span className="text-xl">×</span>
+        </button>
+      </div>
+
+      <div className="space-y-6">
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-3">Size</label>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <input
+                type="text"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                placeholder="Flap width, inches"
+                value={dustCover.width}
+                onChange={(e) => handleNumberInput('width', e.target.value)}
+              />
+            </div>
+            <div>
+              <input
+                type="text"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                placeholder="Height, inches"
+                value={dustCover.height}
+                onChange={(e) => handleNumberInput('height', e.target.value)}
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Protective cover that wraps around the hardcover book
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-3">Paper Settings</label>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <select
+              value={dustCover.paper}
+              onChange={(e) => handleChange('paper', e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors"
+            >
+              <option value="MATTE">Matte</option>
+              <option value="GLOSS">Gloss</option>
+              <option value="UNCOATED">Uncoated</option>
+              <option value="PAPERCLOTH_GLOSS">Papercloth Gloss</option>
+            </select>
+            <PaperWeightSelector
+              paperUnit={paperUnit}
+              weightValue={dustCover.gsm}
+              onChange={(e) => handleChange('gsm', e.target.value)}
+              options={['100', '120', '150', '200']}
+            />
+            <select
+              value={dustCover.printColor}
+              onChange={(e) => handleChange('printColor', e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors"
+            >
+              <option value="NOCOLOR">No Print</option>
+              <option value="CMYK">Full color</option>
+              <option value="BW">Black only</option>
+            </select>
+            <select
+              value={dustCover.finish}
+              onChange={(e) => handleChange('finish', e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors"
+            >
+              <option value="NONE">None</option>
+              <option value="MATTE">Matte Lamination</option>
+              <option value="GLOSS">Gloss Lamination</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ===== REUSABLE COMPONENTS =====
 const RadioGroup = ({ label, name, options, selected, onChange, className = "" }) => (
   <div className={`flex items-center space-x-4 ${className}`}>
     <p className="text-sm font-semibold text-gray-700 min-w-20">{label}:</p>
@@ -149,7 +625,7 @@ const RadioGroup = ({ label, name, options, selected, onChange, className = "" }
   </div>
 );
 
-const SelectDropdown = ({ label, options, selected, onChange, className = "", disabled = false }) => {
+const SelectDropdown = ({ label, options, selected, onChange, className = "", disabled = false, showDescription = false }) => {
   const getStringValue = (value) => {
     if (typeof value === 'string') return value;
     if (typeof value === 'number') return value.toString();
@@ -158,6 +634,11 @@ const SelectDropdown = ({ label, options, selected, onChange, className = "", di
   };
 
   const stringValue = getStringValue(selected);
+  const selectedOption = options?.find(opt => {
+    if (typeof opt === 'string') return opt === stringValue;
+    if (typeof opt === 'object') return opt.value === stringValue || opt.label === stringValue;
+    return false;
+  });
 
   return (
     <div className={className}>
@@ -175,7 +656,7 @@ const SelectDropdown = ({ label, options, selected, onChange, className = "", di
             value = option;
             labelText = option;
           } else if (typeof option === 'object') {
-            value = option.value || option;
+            value = option.value || option.label || option;
             labelText = option.label || option.value || option;
           } else {
             value = option;
@@ -192,6 +673,9 @@ const SelectDropdown = ({ label, options, selected, onChange, className = "", di
           );
         })}
       </select>
+      {showDescription && selectedOption?.description && (
+        <p className="text-xs text-gray-500 mt-1">{selectedOption.description}</p>
+      )}
     </div>
   );
 };
@@ -213,6 +697,7 @@ const ToggleOption = ({ label, enabled, onToggle, children, className = "" }) =>
   </div>
 );
 
+// ===== MAIN COMPONENT =====
 const HardQuoteForm = () => {
   const [formConfig, setFormConfig] = useState(HARDQUOTE_DEFAULT_CONFIG);
   const [loading, setLoading] = useState(true);
@@ -237,6 +722,12 @@ const HardQuoteForm = () => {
   const [insideWeight, setInsideWeight] = useState('100');
   const [insideColor, setInsideColor] = useState('CMYK');
   
+  // Dust Cover State
+  const [dustCover, setDustCover] = useState(null);
+  
+  // Shipping Modal State
+  const [showShippingModal, setShowShippingModal] = useState(false);
+
   const [quantity, setQuantity] = useState(200);
   const [selectedQuantityIndex, setSelectedQuantityIndex] = useState(1);
   const [proof, setProof] = useState('ONLINE');
@@ -244,10 +735,20 @@ const HardQuoteForm = () => {
   const [slipcase, setSlipcase] = useState('');
   const [shrinkWrapping, setShrinkWrapping] = useState({ enabled: false, type: '1' });
   const [directMailing, setDirectMailing] = useState({ enabled: false, type: 'ALL' });
-  const [isDustCoverEnabled, setIsDustCoverEnabled] = useState(false);
 
   const isCustomSize = selectedSize === 'custom';
   const [pricingData, setPricingData] = useState(getPricingData());
+
+  // Available sizes based on unit
+  const availableSizes = [
+    { value: '5.5x8.5', label: SIZE_CONVERSIONS[sizeUnit]?.['5.5x8.5'] || '5.5" x 8.5"' },
+    { value: '6x9', label: SIZE_CONVERSIONS[sizeUnit]?.['6x9'] || '6" x 9"' },
+    { value: '7x10', label: SIZE_CONVERSIONS[sizeUnit]?.['7x10'] || '7" x 10"' },
+    { value: '8.5x11-letter', label: SIZE_CONVERSIONS[sizeUnit]?.['8.5x11-letter'] || '8.5" x 11" (Letter)' },
+    { value: '8.5x11-standard', label: SIZE_CONVERSIONS[sizeUnit]?.['8.5x11-standard'] || '8.5" x 11"' },
+    { value: '9x12', label: SIZE_CONVERSIONS[sizeUnit]?.['9x12'] || '9" x 12"' },
+    { value: 'custom', label: 'Custom Size' }
+  ];
 
   const fetchFormConfig = async () => {
     try {
@@ -304,7 +805,6 @@ const HardQuoteForm = () => {
   }, [configVersion]);
 
   const BINDING_TYPES = formConfig?.bindingTypes || HARDQUOTE_DEFAULT_CONFIG.bindingTypes;
-  const SIZES = formConfig?.sizes || HARDQUOTE_DEFAULT_CONFIG.sizes;
   const BINDING_EDGES = formConfig?.bindingEdges || HARDQUOTE_DEFAULT_CONFIG.bindingEdges;
   const PAPER_OPTIONS = formConfig?.paperOptions || HARDQUOTE_DEFAULT_CONFIG.paperOptions;
   const PRINT_COLORS = formConfig?.printColors || HARDQUOTE_DEFAULT_CONFIG.printColors;
@@ -318,15 +818,6 @@ const HardQuoteForm = () => {
   const generalSettings = formConfig?.general || HARDQUOTE_DEFAULT_CONFIG.general;
   const customSizeInstructions = formConfig?.customSizeInstructions || HARDQUOTE_DEFAULT_CONFIG.customSizeInstructions;
   const spineWidth = formConfig?.spineWidth || HARDQUOTE_DEFAULT_CONFIG.spineWidth;
-
-  useEffect(() => {
-    console.log('🔍 DEBUG - Current Hardcover Configuration:', {
-      title: generalSettings.title,
-      description: generalSettings.description,
-      hasCustomConfig: formConfig !== HARDQUOTE_DEFAULT_CONFIG,
-      configSource: formConfig === HARDQUOTE_DEFAULT_CONFIG ? 'DEFAULT' : 'API'
-    });
-  }, [formConfig, generalSettings]);
 
   const refreshConfig = () => {
     console.log('🔄 Manually refreshing hardcover configuration...');
@@ -366,40 +857,66 @@ const HardQuoteForm = () => {
     setQuantity(pricingData[index].quantity);
   };
 
+  // Dust Cover Management
+  const addDustCover = () => {
+    setDustCover({
+      width: '',
+      height: '',
+      paper: 'MATTE',
+      gsm: '150',
+      printColor: 'CMYK',
+      finish: 'NONE'
+    });
+  };
+
+  const updateDustCover = (updatedDustCover) => {
+    setDustCover(updatedDustCover);
+  };
+
+  const removeDustCover = () => {
+    setDustCover(null);
+  };
+
+  // Price Calculation - FIXED
   const calculatePricing = useCallback(() => {
     const baseCostPerPage = formConfig?.pricing?.costPerPage || 0.08;
     const baseSetupCost = formConfig?.pricing?.baseSetupCost || 300;
     const hardcoverBaseCost = formConfig?.pricing?.hardcoverBaseCost || 150;
     const customSizeMultiplier = formConfig?.pricing?.customSizeMultiplier || 1.3;
     const standardSizeMultiplier = formConfig?.pricing?.standardSizeMultiplier || 1.2;
+    const dustCoverBaseCost = formConfig?.pricing?.dustCoverBaseCost || 100;
+    const dustCoverPerCopy = formConfig?.pricing?.dustCoverPerCopy || 0.25;
     
+    // Base printing cost: setup + hardcover base + (pages × cost per page × quantity)
     let basePrintCost = baseSetupCost + hardcoverBaseCost + (pageCount * baseCostPerPage * quantity);
     
-    if (isCustomSize) basePrintCost *= customSizeMultiplier;
-    else if (selectedSize !== '6x9') basePrintCost *= standardSizeMultiplier;
+    // Apply size multipliers
+    if (isCustomSize) {
+      basePrintCost *= customSizeMultiplier;
+    } else if (selectedSize !== '6x9') {
+      basePrintCost *= standardSizeMultiplier;
+    }
     
-    const coverPaperCost = 0;
-    const insidePaperCost = 0;
+    // Get option costs
     const coverColorCost = getOptionPrice(PRINT_COLORS, coverColor);
     const insideColorCost = getOptionPrice(PRINT_COLORS, insideColor);
     const proofCost = getOptionPrice(ADDITIONAL_OPTIONS.proof, proof);
     const holePunchCost = holePunching.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.holePunch, holePunching.type) : 0;
-    const dustCoverCost = isDustCoverEnabled ? 100 + (quantity * 0.25) : 0;
+    const dustCoverCost = dustCover ? dustCoverBaseCost + (quantity * dustCoverPerCopy) : 0;
     const slipcaseCost = getOptionPrice(ADDITIONAL_OPTIONS.slipcase, slipcase);
     const shrinkWrapUnitCost = shrinkWrapping.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.shrinkWrap, shrinkWrapping.type) : 0;
     const shrinkWrapCost = shrinkWrapping.enabled ? quantity * shrinkWrapUnitCost : 0;
     const directMailUnitCost = directMailing.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.directMail, directMailing.type) : 0;
     const directMailCost = directMailing.enabled ? quantity * directMailUnitCost : 0;
 
-    const materialCost = coverPaperCost + insidePaperCost;
+    // Categorize costs
     const colorCost = coverColorCost + insideColorCost;
     const additionalServicesCost = proofCost + holePunchCost + dustCoverCost + slipcaseCost + shrinkWrapCost + directMailCost;
 
-    const totalAmount = basePrintCost + materialCost + colorCost + additionalServicesCost;
+    const totalAmount = basePrintCost + colorCost + additionalServicesCost;
 
     return {
       basePrinting: basePrintCost,
-      materials: materialCost,
       color: colorCost,
       proof: proofCost,
       holePunching: holePunchCost,
@@ -409,14 +926,52 @@ const HardQuoteForm = () => {
       directMailing: directMailCost,
       total: totalAmount,
     };
-  }, [pageCount, quantity, selectedSize, isCustomSize, coverColor, insideColor, proof, holePunching, isDustCoverEnabled, slipcase, shrinkWrapping, directMailing, formConfig]);
+  }, [
+    pageCount, quantity, selectedSize, isCustomSize, coverColor, insideColor, 
+    proof, holePunching, dustCover, slipcase, shrinkWrapping, directMailing, formConfig
+  ]);
 
   const prices = calculatePricing();
 
+  // Update pricing data when configuration changes
   useEffect(() => {
-    const newBasePrice = 1500 + (pageCount * 4) + (quantity * 1.2);
-    setPricingData(getPricingData(newBasePrice));
-  }, [pageCount, quantity]);
+    const calculatePriceForQuantity = (qty) => {
+      const baseCostPerPage = formConfig?.pricing?.costPerPage || 0.08;
+      const baseSetupCost = formConfig?.pricing?.baseSetupCost || 300;
+      const hardcoverBaseCost = formConfig?.pricing?.hardcoverBaseCost || 150;
+      const customSizeMultiplier = formConfig?.pricing?.customSizeMultiplier || 1.3;
+      const standardSizeMultiplier = formConfig?.pricing?.standardSizeMultiplier || 1.2;
+      
+      let basePrintCost = baseSetupCost + hardcoverBaseCost + (pageCount * baseCostPerPage * qty);
+      
+      if (isCustomSize) {
+        basePrintCost *= customSizeMultiplier;
+      } else if (selectedSize !== '6x9') {
+        basePrintCost *= standardSizeMultiplier;
+      }
+      
+      // Add other costs (simplified for pricing table)
+      const coverColorCost = getOptionPrice(PRINT_COLORS, coverColor);
+      const insideColorCost = getOptionPrice(PRINT_COLORS, insideColor);
+      const proofCost = getOptionPrice(ADDITIONAL_OPTIONS.proof, proof);
+      const slipcaseCost = getOptionPrice(ADDITIONAL_OPTIONS.slipcase, slipcase);
+      
+      const additionalCosts = coverColorCost + insideColorCost + proofCost + slipcaseCost;
+      
+      const total = basePrintCost + additionalCosts;
+      
+      return {
+        quantity: qty,
+        price: `$${Math.round(total).toLocaleString()}`,
+        pricePerCopy: `$${(total / qty).toFixed(2)}`,
+        time: '15-18 business days'
+      };
+    };
+
+    const quantities = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
+    const newPricingData = quantities.map(qty => calculatePriceForQuantity(qty));
+    setPricingData(newPricingData);
+  }, [pageCount, selectedSize, isCustomSize, coverColor, insideColor, proof, slipcase, formConfig]);
 
   const handleAddToCart = () => {
     const formData = {
@@ -426,8 +981,9 @@ const HardQuoteForm = () => {
       headband: { color: headbandColor, bookmark },
       cover: { paper: coverPaper, weight: coverWeight, color: coverColor },
       inside: { pageCount, paper: insidePaper, weight: insideWeight, color: insideColor },
+      dustCover,
       quantity,
-      options: { proof, holePunching, slipcase, shrinkWrapping, directMailing, dustCover: isDustCoverEnabled },
+      options: { proof, holePunching, slipcase, shrinkWrapping, directMailing },
       totalAmount: prices.total.toFixed(2),
     };
     
@@ -437,19 +993,22 @@ const HardQuoteForm = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-8 border-b-2 border-indigo-600"></div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
         <p className="ml-4 text-gray-600">Loading hardcover form configuration...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen  py-8 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 font-sans">
+      <ShippingModal
+        isOpen={showShippingModal}
+        onClose={() => setShowShippingModal(false)}
+        formData={{ quantity, pageCount, selectedSize: availableSizes.find(s => s.value === selectedSize)?.label || selectedSize }}
+      />
+      
       <div className="max-w-7xl mx-auto">
-        
-        
-
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             {generalSettings.title}
@@ -459,9 +1018,10 @@ const HardQuoteForm = () => {
           </p>
         </div>
 
+        {/* Unit Selection */}
         <div className="mb-12 bg-white rounded-2xl shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Measurement Units</h2>
-          <div className="flex gap-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Measurement Units</h2>
+          <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
             <RadioGroup
               label="Size Unit"
               name="size_type_sel"
@@ -476,6 +1036,7 @@ const HardQuoteForm = () => {
                 { value: 'GSM', label: 'Grammage (gsm)' },
                 { value: 'US', label: 'US Weight (lb)' },
                 { value: 'PT', label: 'Caliper (point)' },
+                { value: 'KG', label: 'Japan Weight (kg)' },
               ]}
               selected={paperUnit}
               onChange={(e) => setPaperUnit(e.target.value)}
@@ -486,17 +1047,17 @@ const HardQuoteForm = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             
+            {/* Size & Binding Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Size Selection */}
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                  <svg className="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                  </svg>
+                  <span className="mr-2">📐</span>
                   Size & Dimensions
                 </h3>
                 <SelectDropdown
                   label="Select Standard Size"
-                  options={SIZES}
+                  options={availableSizes}
                   selected={selectedSize}
                   onChange={(e) => {
                     setSelectedSize(e.target.value);
@@ -506,44 +1067,35 @@ const HardQuoteForm = () => {
                     }
                   }}
                 />
-                <div className="grid grid-cols-2 gap-3 mt-4">
-                  <input
-                    type="text"
-                    value={isCustomSize ? customWidth : ''}
-                    onChange={handleNumberInput(setCustomWidth)}
-                    placeholder={`Width (${sizeUnit === 'INCH' ? 'inches' : 'mm'})`}
-                    className={`p-3 border rounded-lg text-sm transition-all ${
-                      isCustomSize 
-                        ? 'bg-white border-indigo-500 ring-2 ring-indigo-500 ring-opacity-20' 
-                        : 'bg-gray-100 border-gray-300 text-gray-500'
-                    }`}
-                    readOnly={!isCustomSize}
-                  />
-                  <input
-                    type="text"
-                    value={isCustomSize ? customHeight : ''}
-                    onChange={handleNumberInput(setCustomHeight)}
-                    placeholder={`Height (${sizeUnit === 'INCH' ? 'inches' : 'mm'})`}
-                    className={`p-3 border rounded-lg text-sm transition-all ${
-                      isCustomSize 
-                        ? 'bg-white border-indigo-500 ring-2 ring-indigo-500 ring-opacity-20' 
-                        : 'bg-gray-100 border-gray-300 text-gray-500'
-                    }`}
-                    readOnly={!isCustomSize}
-                  />
-                </div>
                 {isCustomSize && (
-                  <p className="text-xs text-gray-500 mt-3">
-                    {customSizeInstructions}
-                  </p>
+                  <>
+                    <div className="grid grid-cols-2 gap-3 mt-4">
+                      <input
+                        type="text"
+                        value={customWidth}
+                        onChange={handleNumberInput(setCustomWidth)}
+                        placeholder={`Width (${sizeUnit === 'INCH' ? 'inches' : 'mm'})`}
+                        className="p-3 border border-indigo-500 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                      />
+                      <input
+                        type="text"
+                        value={customHeight}
+                        onChange={handleNumberInput(setCustomHeight)}
+                        placeholder={`Height (${sizeUnit === 'INCH' ? 'inches' : 'mm'})`}
+                        className="p-3 border border-indigo-500 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 mt-3">
+                      {customSizeInstructions[sizeUnit] || customSizeInstructions.INCH}
+                    </p>
+                  </>
                 )}
               </div>
 
+              {/* Binding Details */}
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                  <svg className="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  </svg>
+                  <span className="mr-2">📖</span>
                   Binding Details
                 </h3>
                 <SelectDropdown
@@ -578,12 +1130,11 @@ const HardQuoteForm = () => {
               </div>
             </div>
 
+            {/* Cover Section */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b border-gray-200">
                 <h3 className="text-2xl font-bold text-gray-900 flex items-center">
-                  <svg className="w-6 h-6 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
+                  <span className="mr-2">📔</span>
                   Cover Specifications
                 </h3>
                 <div className="flex space-x-4 mt-2 sm:mt-0">
@@ -601,14 +1152,15 @@ const HardQuoteForm = () => {
                   label="Paper Type" 
                   options={PAPER_OPTIONS.cover} 
                   selected={coverPaper} 
-                  onChange={(e) => setCoverPaper(e.target.value)} 
+                  onChange={(e) => setCoverPaper(e.target.value)}
+                  showDescription={true}
                 />
-                <SelectDropdown 
-                  label="Paper Weight" 
-                  options={(PAPER_OPTIONS.cover.find(p => p.value === coverPaper)?.gsm || []).map(w => ({ value: w, label: `${w} gsm` }))} 
-                  selected={coverWeight} 
-                  onChange={(e) => setCoverWeight(e.target.value)} 
-                  disabled={!coverPaper}
+                <PaperWeightSelector
+                  paperUnit={paperUnit}
+                  label='Weight'
+                  weightValue={coverWeight}
+                  onChange={(e) => setCoverWeight(e.target.value)}
+                  options={WEIGHT_OPTIONS}
                 />
                 <SelectDropdown 
                   label="Print Color" 
@@ -622,25 +1174,39 @@ const HardQuoteForm = () => {
                 <button className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-colors">
                   + Additional Add-ons
                 </button>
-                <button 
-                  onClick={() => setIsDustCoverEnabled(!isDustCoverEnabled)}
-                  className={`px-6 py-3 rounded-lg font-semibold transition-all ${
-                    isDustCoverEnabled 
-                      ? 'bg-green-500 text-white hover:bg-green-600 shadow-sm' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {isDustCoverEnabled ? '✓ Dust Cover Added' : '+ Add Dust Cover'}
-                </button>
+                {!dustCover ? (
+                  <button 
+                    onClick={addDustCover}
+                    className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
+                  >
+                    + Add Dust Cover
+                  </button>
+                ) : (
+                  <button 
+                    onClick={removeDustCover}
+                    className="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors"
+                  >
+                    ✓ Dust Cover Added
+                  </button>
+                )}
               </div>
+
+              {/* Dust Cover Settings */}
+              {dustCover && (
+                <DustCoverSettings 
+                  dustCover={dustCover}
+                  onUpdate={updateDustCover}
+                  onRemove={removeDustCover}
+                  paperUnit={paperUnit}
+                />
+              )}
             </div>
 
+            {/* Inside Page Section */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b border-gray-200">
                 <h3 className="text-2xl font-bold text-gray-900 flex items-center">
-                  <svg className="w-6 h-6 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
+                  <span className="mr-2">📄</span>
                   Inside Pages
                 </h3>
               </div>
@@ -656,14 +1222,15 @@ const HardQuoteForm = () => {
                   label="Paper Type" 
                   options={PAPER_OPTIONS.inside} 
                   selected={insidePaper} 
-                  onChange={(e) => setInsidePaper(e.target.value)} 
+                  onChange={(e) => setInsidePaper(e.target.value)}
+                  showDescription={true}
                 />
-                <SelectDropdown 
+                <PaperWeightSelector
                   label="Paper Weight" 
-                  options={(PAPER_OPTIONS.inside.find(p => p.value === insidePaper)?.gsm || []).map(w => ({ value: w, label: `${w} gsm` }))} 
-                  selected={insideWeight} 
-                  onChange={(e) => setInsideWeight(e.target.value)} 
-                  disabled={!insidePaper}
+                  paperUnit={paperUnit}
+                  weightValue={insideWeight}
+                  onChange={(e) => setInsideWeight(e.target.value)}
+                  options={WEIGHT_OPTIONS}
                 />
               </div>
 
@@ -677,22 +1244,18 @@ const HardQuoteForm = () => {
               </div>
 
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <p className="text-sm text-yellow-800 flex items-center">
-                  <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                  Please select only the inside page count. Cover pages are calculated separately.
+                <p className="text-sm text-yellow-800">
+                  <span className="font-semibold">Note:</span> Please select only the inside page count. Cover pages are calculated separately.
                 </p>
               </div>
             </div>
           </div>
 
+          {/* Right Column - Pricing & Options */}
           <div className="space-y-8">
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                <svg className="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
+                <span className="mr-2">🔢</span>
                 Quantity
               </h3>
               <input
@@ -710,12 +1273,10 @@ const HardQuoteForm = () => {
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                 <div className="text-sm text-blue-800 space-y-1">
                   <p className="flex items-center">
-                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                    </svg>
+                    <span className="mr-2">⏰</span>
                     Production time excludes weekends and holidays
                   </p>
-                  <p>• Printing occurs on weekdays only</p>
+                  <p>• Hardcover production takes longer than perfect binding</p>
                   <p>• Process starts after final proof approval and payment</p>
                 </div>
               </div>
@@ -817,6 +1378,7 @@ const HardQuoteForm = () => {
                 </ToggleOption>
               </div>
 
+              {/* Price Breakdown */}
               <div className="mt-8 border-t pt-6">
                 <h4 className="text-lg font-bold text-gray-900 mb-4">Price Breakdown</h4>
                 <div className="space-y-3 text-sm">
@@ -845,8 +1407,12 @@ const HardQuoteForm = () => {
                 </div>
               </div>
 
+              {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
-                <button className="flex-1 px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-sm">
+                <button 
+                  onClick={() => setShowShippingModal(true)}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-sm"
+                >
                   {generalSettings.shippingButtonText}
                 </button>
                 <button 
