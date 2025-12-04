@@ -1,7 +1,7 @@
 // components/pages/quote/perfect-binding/PrintQuoteForm.js
 import React, { useState, useCallback, useEffect } from 'react';
 
-// ===== PERFECT-BINDING-SPECIFIC DEFAULT CONFIG =====
+// ===== ENHANCED DEFAULT CONFIG =====
 const PRINTQUOTE_DEFAULT_CONFIG = {
   general: {
     title: "Perfect Binding Book Printing Quote",
@@ -23,11 +23,60 @@ const PRINTQUOTE_DEFAULT_CONFIG = {
   ],
   paperOptions: {
     cover: [
-      { value: 'MATTE', label: 'Matte', price: 0 },
-      { value: 'GLOSS', label: 'Gloss', price: 0 },
-      { value: 'HI-PLUS', label: 'Hi-Plus', price: 50 },
-      { value: 'HI-QMATTE', label: 'Hi-Q Matte', price: 100 },
-      { value: 'PREMIUM', label: 'Premium', price: 150 },
+      {
+        value: 'GLOSS',
+        label: 'Gloss',
+        description: 'Brilliant-gloss, very affordable so highly used',
+        price: 0
+      },
+      {
+        value: 'MATTE',
+        label: 'Matte',
+        description: 'Highly used like Gloss',
+        price: 0
+      },
+      {
+        value: 'HI-PLUS',
+        label: 'Hi-Plus',
+        description: 'Thicker than Matte. Good printability',
+        price: 50
+      },
+      {
+        value: 'HI-QMATTE',
+        label: 'Hi-Q Matte',
+        description: 'Thicker than Matte, Premium grade',
+        price: 100
+      },
+      {
+        value: 'UNCOATED_W',
+        label: 'Uncoated',
+        description: 'Matte and very much used',
+        price: 0
+      },
+      {
+        value: 'MONTBLANC_EW',
+        label: 'Premium',
+        description: 'Used for high-end magazines and catalogs',
+        price: 150
+      },
+      {
+        value: 'NEWPLUS_W',
+        label: 'New Plus',
+        description: 'Affordable and suitable for mass printing',
+        price: 0
+      },
+      {
+        value: 'TEXTBOOK',
+        label: 'Textbook',
+        description: 'For educational book',
+        price: 0
+      },
+      {
+        value: 'TRANSLUCENT',
+        label: 'Translucent',
+        description: 'Translucent paper',
+        price: 0
+      },
     ],
     inside: [
       { value: 'GLOSS', label: 'Gloss', price: 0 },
@@ -102,7 +151,57 @@ const PRINTQUOTE_DEFAULT_CONFIG = {
     baseSetupCost: 200,
     costPerPage: 0.05,
     customSizeMultiplier: 1.2,
-    standardSizeMultiplier: 1.1
+    standardSizeMultiplier: 1.1,
+    dustCoverBaseCost: 100,
+    dustCoverPerCopy: 0.25,
+    subscriptionCardBaseCost: 25,
+    subscriptionCardPerCopy: 0.02
+  }
+};
+
+// ===== PAPER WEIGHT CONVERSION DATA =====
+const PAPER_WEIGHT_CONVERSIONS = {
+  '100': { 
+    gsm: '100 gsm',
+    us: '68# text',
+    pt: '3.2 pt',
+    kg: '86 kg'
+  },
+  '120': { 
+    gsm: '120 gsm',
+    us: '80# text',
+    pt: '3.8 pt',
+    kg: '103 kg'
+  },
+  '150': { 
+    gsm: '150 gsm',
+    us: '100# text',
+    pt: '4.8 pt',
+    kg: '129 kg'
+  },
+  '180': { 
+    gsm: '180 gsm',
+    us: '67# cover',
+    pt: '5.9 pt',
+    kg: '155 kg'
+  },
+  '200': { 
+    gsm: '200 gsm',
+    us: '74# cover',
+    pt: '7.1 pt',
+    kg: '172 kg'
+  },
+  '250': { 
+    gsm: '250 gsm',
+    us: '92# cover',
+    pt: '9.1 pt',
+    kg: '215 kg'
+  },
+  '300': { 
+    gsm: '300 gsm',
+    us: '110# cover',
+    pt: '11.3 pt',
+    kg: '258 kg'
   }
 };
 
@@ -124,6 +223,55 @@ const getOptionPrice = (options, selectedValue) => {
 };
 
 const formatCurrency = (amount) => `$${amount.toFixed(2)}`;
+
+// ===== PAPER WEIGHT SELECTOR COMPONENT =====
+const PaperWeightSelector = ({ paperUnit, weightValue, onChange, label = "" }) => {
+  const getWeightOptions = () => {
+    return Object.keys(PAPER_WEIGHT_CONVERSIONS).map(key => {
+      const conversion = PAPER_WEIGHT_CONVERSIONS[key];
+      let labelText = '';
+      
+      switch(paperUnit) {
+        case 'GSM':
+          labelText = conversion.gsm;
+          break;
+        case 'US':
+          labelText = conversion.us;
+          break;
+        case 'PT':
+          labelText = conversion.pt;
+          break;
+        case 'KG':
+          labelText = conversion.kg;
+          break;
+        default:
+          labelText = conversion.gsm;
+      }
+      
+      return {
+        value: key,
+        label: labelText
+      };
+    });
+  };
+
+  return (
+    <div>
+      {label && <p className="text-sm font-semibold mb-2 text-gray-700">{label}</p>}
+      <select
+        value={weightValue}
+        onChange={onChange}
+        className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors"
+      >
+        {getWeightOptions().map((option, index) => (
+          <option key={`${option.value}-${index}`} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+};
 
 // ===== REUSABLE COMPONENTS =====
 const RadioGroup = ({ label, name, options, selected, onChange, className = "" }) => (
@@ -149,7 +297,7 @@ const RadioGroup = ({ label, name, options, selected, onChange, className = "" }
   </div>
 );
 
-const SelectDropdown = ({ label, options, selected, onChange, className = "", disabled = false }) => {
+const SelectDropdown = ({ label, options, selected, onChange, className = "", disabled = false, showDescription = false }) => {
   const getStringValue = (value) => {
     if (typeof value === 'string') return value;
     if (typeof value === 'number') return value.toString();
@@ -158,6 +306,7 @@ const SelectDropdown = ({ label, options, selected, onChange, className = "", di
   };
 
   const stringValue = getStringValue(selected);
+  const selectedOption = options?.find(opt => opt.value === stringValue);
 
   return (
     <div className={className}>
@@ -192,6 +341,9 @@ const SelectDropdown = ({ label, options, selected, onChange, className = "", di
           );
         })}
       </select>
+      {showDescription && selectedOption?.description && (
+        <p className="text-xs text-gray-500 mt-1">{selectedOption.description}</p>
+      )}
     </div>
   );
 };
@@ -214,7 +366,7 @@ const ToggleOption = ({ label, enabled, onToggle, children, className = "" }) =>
 );
 
 // ===== DUST COVER COMPONENT =====
-const DustCoverSettings = ({ dustCover, onUpdate, onRemove }) => {
+const DustCoverSettings = ({ dustCover, onUpdate, onRemove, paperUnit }) => {
   const handleChange = (field, value) => {
     onUpdate({ ...dustCover, [field]: value });
   };
@@ -229,9 +381,7 @@ const DustCoverSettings = ({ dustCover, onUpdate, onRemove }) => {
     <div className="bg-gradient-to-br from-blue-50 to-white p-6 rounded-xl border-2 border-blue-200 shadow-sm mt-6">
       <div className="flex justify-between items-center mb-6">
         <h4 className="text-lg font-bold text-gray-800 flex items-center">
-          <svg className="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-          </svg>
+          <span className="mr-2">📄</span>
           Dust Cover Settings
         </h4>
         <button 
@@ -239,9 +389,7 @@ const DustCoverSettings = ({ dustCover, onUpdate, onRemove }) => {
           className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
           aria-label="Remove dust cover"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <span className="text-xl">×</span>
         </button>
       </div>
 
@@ -266,30 +414,27 @@ const DustCoverSettings = ({ dustCover, onUpdate, onRemove }) => {
                 value={dustCover.height}
                 onChange={(e) => handleNumberInput('height', e.target.value)}
               />
-              <p className="text-xs text-gray-500 mt-1 flex items-center">
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Additional protective cover
+              <p className="text-xs text-gray-500 mt-1">
+                Additional protective cover that wraps around the book
               </p>
             </div>
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-3">Paper</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-3">Paper Settings</label>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <SelectDropdown
               options={PRINTQUOTE_DEFAULT_CONFIG.paperOptions.cover}
               selected={dustCover.paper}
               onChange={(e) => handleChange('paper', e.target.value)}
               className="w-full"
+              showDescription={true}
             />
-            <SelectDropdown
-              options={PRINTQUOTE_DEFAULT_CONFIG.weightOptions.map(w => ({ value: w, label: `${w} gsm` }))}
-              selected={dustCover.gsm}
+            <PaperWeightSelector
+              paperUnit={paperUnit}
+              weightValue={dustCover.gsm}
               onChange={(e) => handleChange('gsm', e.target.value)}
-              className="w-full"
             />
             <SelectDropdown
               options={PRINTQUOTE_DEFAULT_CONFIG.printColors}
@@ -306,18 +451,12 @@ const DustCoverSettings = ({ dustCover, onUpdate, onRemove }) => {
           </div>
         </div>
       </div>
-
-      <div className="mt-6 flex flex-wrap gap-4">
-        <button className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-colors text-sm">
-          + Add-on for Dust Cover
-        </button>
-      </div>
     </div>
   );
 };
 
 // ===== SUBSCRIPTION CARD COMPONENT =====
-const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, positions }) => {
+const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, positions, paperUnit }) => {
   const handleChange = (field, value) => {
     onUpdate(index, { ...card, [field]: value });
   };
@@ -342,9 +481,7 @@ const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, position
           className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
           aria-label="Remove subscription card"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-          </svg>
+          <span className="text-xl">×</span>
         </button>
       </div>
 
@@ -369,11 +506,8 @@ const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, position
                 value={card.height}
                 onChange={(e) => handleNumberInput('height', e.target.value)}
               />
-              <p className="text-xs text-gray-500 mt-1 flex items-center">
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                Insert card dimensions
+              <p className="text-xs text-gray-500 mt-1">
+                Insert card dimensions (usually smaller than page size)
               </p>
             </div>
           </div>
@@ -400,7 +534,7 @@ const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, position
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-3">Paper</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-3">Paper Settings</label>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <SelectDropdown
               options={PRINTQUOTE_DEFAULT_CONFIG.paperOptions.subscription}
@@ -408,11 +542,10 @@ const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, position
               onChange={(e) => handleChange('paper', e.target.value)}
               className="w-full"
             />
-            <SelectDropdown
-              options={PRINTQUOTE_DEFAULT_CONFIG.weightOptions.map(w => ({ value: w, label: `${w} gsm` }))}
-              selected={card.gsm}
+            <PaperWeightSelector
+              paperUnit={paperUnit}
+              weightValue={card.gsm}
               onChange={(e) => handleChange('gsm', e.target.value)}
-              className="w-full"
             />
             <SelectDropdown
               options={PRINTQUOTE_DEFAULT_CONFIG.printColors}
@@ -421,9 +554,9 @@ const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, position
               className="w-full"
             />
             <SelectDropdown
-              options={PRINTQUOTE_DEFAULT_CONFIG.weightOptions.map(w => ({ value: w, label: `${w} gsm` }))}
-              selected={card.gsm}
-              onChange={(e) => handleChange('gsm', e.target.value)}
+              options={PRINTQUOTE_DEFAULT_CONFIG.coverFinishes.filter(opt => opt.value !== 'NONE')}
+              selected={card.finish}
+              onChange={(e) => handleChange('finish', e.target.value)}
               className="w-full"
             />
           </div>
@@ -454,9 +587,7 @@ const AddOnModal = ({ isOpen, onClose, onSelectAddOn }) => {
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-2xl font-bold text-gray-900">Add Additional Features</h3>
           <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <span className="text-2xl">×</span>
           </button>
         </div>
         
@@ -480,9 +611,7 @@ const AddOnModal = ({ isOpen, onClose, onSelectAddOn }) => {
                   <span className="font-semibold text-indigo-600">${option.price}</span>
                   {selectedAddOn === option.id ? (
                     <div className="w-6 h-6 bg-indigo-600 rounded-full flex items-center justify-center">
-                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
+                      <span className="text-white text-sm">✓</span>
                     </div>
                   ) : (
                     <div className="w-6 h-6 border-2 border-gray-300 rounded-full"></div>
@@ -529,7 +658,7 @@ const PrintQuoteForm = () => {
   // Form State Management
   const [bindingType, setBindingType] = useState('PERFECT');
   const [sizeUnit, setSizeUnit] = useState('INCH');
-  const [paperUnit, setPaperUnit] = useState('US');
+  const [paperUnit, setPaperUnit] = useState('GSM');
   const [selectedSize, setSelectedSize] = useState('8.5 x 11');
   const [customWidth, setCustomWidth] = useState('');
   const [customHeight, setCustomHeight] = useState('');
@@ -706,11 +835,12 @@ const PrintQuoteForm = () => {
 
   // Subscription Card Management
   const addSubscriptionCard = () => {
-    if (subscriptionCards.length < 10) {
+    const maxCards = formConfig?.maxSubscriptionCards || 10;
+    if (subscriptionCards.length < maxCards) {
       const newCard = {
         id: Date.now(),
         width: '', height: '', position: 'FRONT', selectedPage: '',
-        paper: 'MATTE', gsm: '100', printColor: 'CMYK'
+        paper: 'MATTE', gsm: '100', printColor: 'CMYK', finish: 'NONE'
       };
       setSubscriptionCards([...subscriptionCards, newCard]);
     }
@@ -741,6 +871,10 @@ const PrintQuoteForm = () => {
     const baseSetupCost = formConfig?.pricing?.baseSetupCost || 200;
     const customSizeMultiplier = formConfig?.pricing?.customSizeMultiplier || 1.2;
     const standardSizeMultiplier = formConfig?.pricing?.standardSizeMultiplier || 1.1;
+    const dustCoverBaseCost = formConfig?.pricing?.dustCoverBaseCost || 100;
+    const dustCoverPerCopy = formConfig?.pricing?.dustCoverPerCopy || 0.25;
+    const subscriptionCardBaseCost = formConfig?.pricing?.subscriptionCardBaseCost || 25;
+    const subscriptionCardPerCopy = formConfig?.pricing?.subscriptionCardPerCopy || 0.02;
     
     let basePrintCost = baseSetupCost + (pageCount * baseCostPerPage * quantity);
     
@@ -755,8 +889,9 @@ const PrintQuoteForm = () => {
     const coverFoldCost = getOptionPrice(COVER_FOLDS, coverFold);
     const proofCost = getOptionPrice(ADDITIONAL_OPTIONS.proof, proof);
     const holePunchCost = holePunching.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.holePunch, holePunching.type) : 0;
-    const dustCoverCost = dustCover ? 100 + (quantity * 0.25) : 0;
-    const subscriptionCardCost = subscriptionCards.length * (25 + (quantity * 0.02));
+    const dustCoverCost = dustCover ? dustCoverBaseCost + (quantity * dustCoverPerCopy) : 0;
+    const subscriptionCardCost = subscriptionCards.length > 0 ? 
+      (subscriptionCardBaseCost * subscriptionCards.length) + (quantity * subscriptionCardPerCopy * subscriptionCards.length) : 0;
     const slipcaseCost = getOptionPrice(ADDITIONAL_OPTIONS.slipcase, slipcase);
     const shrinkWrapUnitCost = shrinkWrapping.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.shrinkWrap, shrinkWrapping.type) : 0;
     const shrinkWrapCost = shrinkWrapping.enabled ? quantity * shrinkWrapUnitCost : 0;
@@ -863,10 +998,29 @@ const PrintQuoteForm = () => {
           </p>
         </div>
 
+        {/* Binding Type Selection */}
+        <div className="mb-8 bg-white rounded-2xl shadow-lg p-6">
+          <div className="flex flex-wrap gap-4 justify-center">
+            {BINDING_TYPES.map((type) => (
+              <button
+                key={type.value}
+                onClick={() => window.location.href = type.link || '#'}
+                className={`px-6 py-3 rounded-lg font-semibold transition-all ${
+                  bindingType === type.value
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {type.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* Unit Selection */}
         <div className="mb-12 bg-white rounded-2xl shadow-lg p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Measurement Units</h2>
-          <div className="flex gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <RadioGroup
               label="Size Unit"
               name="size_type_sel"
@@ -881,7 +1035,7 @@ const PrintQuoteForm = () => {
                 { value: 'GSM', label: 'Grammage (gsm)' },
                 { value: 'US', label: 'US Weight (lb)' },
                 { value: 'PT', label: 'Caliper (point)' },
-                { value: 'JAPAN', label: 'Japan Weight (kg)' },
+                { value: 'KG', label: 'Japan Weight (kg)' },
               ]}
               selected={paperUnit}
               onChange={(e) => setPaperUnit(e.target.value)}
@@ -899,9 +1053,7 @@ const PrintQuoteForm = () => {
               {/* Size Selection */}
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                  <svg className="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                  </svg>
+                  <span className="mr-2">📐</span>
                   Size & Dimensions
                 </h3>
                 <SelectDropdown
@@ -916,45 +1068,35 @@ const PrintQuoteForm = () => {
                     }
                   }}
                 />
-                <div className="grid grid-cols-2 gap-3 mt-4">
-                  <input
-                    type="text"
-                    value={isCustomSize ? customWidth : ''}
-                    onChange={handleNumberInput(setCustomWidth)}
-                    placeholder={`Width (${sizeUnit === 'INCH' ? 'inches' : 'mm'})`}
-                    className={`p-3 border rounded-lg text-sm transition-all ${
-                      isCustomSize 
-                        ? 'bg-white border-indigo-500 ring-2 ring-indigo-500 ring-opacity-20' 
-                        : 'bg-gray-100 border-gray-300 text-gray-500'
-                    }`}
-                    readOnly={!isCustomSize}
-                  />
-                  <input
-                    type="text"
-                    value={isCustomSize ? customHeight : ''}
-                    onChange={handleNumberInput(setCustomHeight)}
-                    placeholder={`Height (${sizeUnit === 'INCH' ? 'inches' : 'mm'})`}
-                    className={`p-3 border rounded-lg text-sm transition-all ${
-                      isCustomSize 
-                        ? 'bg-white border-indigo-500 ring-2 ring-indigo-500 ring-opacity-20' 
-                        : 'bg-gray-100 border-gray-300 text-gray-500'
-                    }`}
-                    readOnly={!isCustomSize}
-                  />
-                </div>
                 {isCustomSize && (
-                  <p className="text-xs text-gray-500 mt-3">
-                    {customSizeInstructions}
-                  </p>
+                  <>
+                    <div className="grid grid-cols-2 gap-3 mt-4">
+                      <input
+                        type="text"
+                        value={customWidth}
+                        onChange={handleNumberInput(setCustomWidth)}
+                        placeholder={`Width (${sizeUnit === 'INCH' ? 'inches' : 'mm'})`}
+                        className="p-3 border border-indigo-500 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                      />
+                      <input
+                        type="text"
+                        value={customHeight}
+                        onChange={handleNumberInput(setCustomHeight)}
+                        placeholder={`Height (${sizeUnit === 'INCH' ? 'inches' : 'mm'})`}
+                        className="p-3 border border-indigo-500 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 mt-3">
+                      {customSizeInstructions}
+                    </p>
+                  </>
                 )}
               </div>
 
               {/* Binding Edge */}
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                  <svg className="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  </svg>
+                  <span className="mr-2">📖</span>
                   Binding Details
                 </h3>
                 <SelectDropdown
@@ -975,9 +1117,7 @@ const PrintQuoteForm = () => {
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b border-gray-200">
                 <h3 className="text-2xl font-bold text-gray-900 flex items-center">
-                  <svg className="w-6 h-6 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
+                  <span className="mr-2">📔</span>
                   Cover Specifications
                 </h3>
                 <div className="flex space-x-4 mt-2 sm:mt-0">
@@ -995,13 +1135,13 @@ const PrintQuoteForm = () => {
                   label="Paper Type" 
                   options={PAPER_OPTIONS.cover} 
                   selected={coverPaper} 
-                  onChange={(e) => setCoverPaper(e.target.value)} 
+                  onChange={(e) => setCoverPaper(e.target.value)}
+                  showDescription={true}
                 />
-                <SelectDropdown 
-                  label="Paper Weight" 
-                  options={WEIGHT_OPTIONS.map(w => ({ value: w, label: `${w} gsm` }))} 
-                  selected={coverWeight} 
-                  onChange={(e) => setCoverWeight(e.target.value)} 
+                <PaperWeightSelector
+                  paperUnit={paperUnit}
+                  weightValue={coverWeight}
+                  onChange={(e) => setCoverWeight(e.target.value)}
                 />
                 <SelectDropdown 
                   label="Print Color" 
@@ -1029,7 +1169,7 @@ const PrintQuoteForm = () => {
                     <label className="text-sm font-semibold mb-2 text-gray-700">Fold Width</label>
                     <input
                       type="text"
-                      placeholder="Enter fold width"
+                      placeholder="Enter fold width in inches"
                       value={foldWidth}
                       onChange={handleNumberInput(setFoldWidth)}
                       className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
@@ -1051,9 +1191,7 @@ const PrintQuoteForm = () => {
                           onClick={() => removeAddOn(addOn.id)}
                           className="ml-2 text-green-600 hover:text-green-800"
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                          </svg>
+                          <span>×</span>
                         </button>
                       </div>
                     ))}
@@ -1091,6 +1229,7 @@ const PrintQuoteForm = () => {
                   dustCover={dustCover}
                   onUpdate={updateDustCover}
                   onRemove={removeDustCover}
+                  paperUnit={paperUnit}
                 />
               )}
             </div>
@@ -1099,14 +1238,12 @@ const PrintQuoteForm = () => {
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b border-gray-200">
                 <h3 className="text-2xl font-bold text-gray-900 flex items-center">
-                  <svg className="w-6 h-6 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
+                  <span className="mr-2">📄</span>
                   Inside Pages
                 </h3>
                 <button 
                   onClick={addSubscriptionCard}
-                  disabled={subscriptionCards.length >= 10}
+                  disabled={subscriptionCards.length >= (formConfig?.maxSubscriptionCards || 10)}
                   className="mt-2 sm:mt-0 px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
                 >
                   + Add Subscription Card
@@ -1125,12 +1262,12 @@ const PrintQuoteForm = () => {
                   options={PAPER_OPTIONS.inside} 
                   selected={insidePaper} 
                   onChange={(e) => setInsidePaper(e.target.value)} 
+                  showDescription={false}
                 />
-                <SelectDropdown 
-                  label="Paper Weight" 
-                  options={WEIGHT_OPTIONS.map(w => ({ value: w, label: `${w} gsm` }))} 
-                  selected={insideWeight} 
-                  onChange={(e) => setInsideWeight(e.target.value)} 
+                <PaperWeightSelector
+                  paperUnit={paperUnit}
+                  weightValue={insideWeight}
+                  onChange={(e) => setInsideWeight(e.target.value)}
                 />
                 <SelectDropdown 
                   label="Print Color" 
@@ -1141,11 +1278,8 @@ const PrintQuoteForm = () => {
               </div>
 
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
-                <p className="text-sm text-yellow-800 flex items-center">
-                  <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                  Please select only inside page count. Cover pages are calculated separately.
+                <p className="text-sm text-yellow-800">
+                  <span className="font-semibold">Note:</span> Please select only inside page count. Cover pages are calculated separately.
                 </p>
               </div>
 
@@ -1159,6 +1293,7 @@ const PrintQuoteForm = () => {
                   onRemove={removeSubscriptionCard}
                   pageCount={pageCount}
                   positions={POSITIONS}
+                  paperUnit={paperUnit}
                 />
               ))}
 
@@ -1182,9 +1317,7 @@ const PrintQuoteForm = () => {
             {/* Quantity Input */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                <svg className="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
+                <span className="mr-2">🔢</span>
                 Quantity
               </h3>
               <input
@@ -1203,9 +1336,7 @@ const PrintQuoteForm = () => {
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                 <div className="text-sm text-blue-800 space-y-1">
                   <p className="flex items-center">
-                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                    </svg>
+                    <span className="mr-2">⏰</span>
                     Production time excludes weekends and holidays
                   </p>
                   <p>• Printing occurs on weekdays only</p>

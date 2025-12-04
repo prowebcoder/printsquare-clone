@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Save, Eye, Plus, Trash2 } from 'lucide-react';
 
-// Use the same default configuration from the form
+// Enhanced default configuration with proper structure
 const PRINTQUOTE_DEFAULT_CONFIG = {
   general: {
     title: "Perfect Binding Book Printing Quote",
@@ -25,11 +25,60 @@ const PRINTQUOTE_DEFAULT_CONFIG = {
   ],
   paperOptions: {
     cover: [
-      { value: 'MATTE', label: 'Matte', price: 0 },
-      { value: 'GLOSS', label: 'Gloss', price: 0 },
-      { value: 'HI-PLUS', label: 'Hi-Plus', price: 50 },
-      { value: 'HI-QMATTE', label: 'Hi-Q Matte', price: 100 },
-      { value: 'PREMIUM', label: 'Premium', price: 150 },
+      { 
+        value: 'GLOSS', 
+        label: 'Gloss', 
+        description: 'Brilliant-gloss, very affordable so highly used',
+        price: 0 
+      },
+      { 
+        value: 'MATTE', 
+        label: 'Matte', 
+        description: 'Highly used like Gloss',
+        price: 0 
+      },
+      { 
+        value: 'HI-PLUS', 
+        label: 'Hi-Plus', 
+        description: 'Thicker than Matte. Good printability',
+        price: 50 
+      },
+      { 
+        value: 'HI-QMATTE', 
+        label: 'Hi-Q Matte', 
+        description: 'Thicker than Matte, Premium grade',
+        price: 100 
+      },
+      { 
+        value: 'UNCOATED_W', 
+        label: 'Uncoated', 
+        description: 'Matte and very much used',
+        price: 0 
+      },
+      { 
+        value: 'MONTBLANC_EW', 
+        label: 'Premium', 
+        description: 'Used for high-end magazines and catalogs',
+        price: 150 
+      },
+      { 
+        value: 'NEWPLUS_W', 
+        label: 'New Plus', 
+        description: 'Affordable and suitable for mass printing',
+        price: 0 
+      },
+      { 
+        value: 'TEXTBOOK', 
+        label: 'Textbook', 
+        description: 'For educational book',
+        price: 0 
+      },
+      { 
+        value: 'TRANSLUCENT', 
+        label: 'Translucent', 
+        description: 'Translucent paper',
+        price: 0 
+      }
     ],
     inside: [
       { value: 'GLOSS', label: 'Gloss', price: 0 },
@@ -96,7 +145,7 @@ const PRINTQUOTE_DEFAULT_CONFIG = {
     { value: 'SELECT', label: 'Front of page no.' },
   ],
   pageCounts: Array.from({ length: (880 - 24) / 2 + 1 }, (_, i) => 24 + i * 2),
-  weightOptions: ['100', '120', '150', '250', '300'],
+  weightOptions: ['100', '120', '150', '180', '200', '250', '300'],
   quantities: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
   customSizeInstructions: "📏 Minimum: 4\" × 4\" | Maximum: 11.8\" × 14.3\"",
   spineWidth: '0.178"',
@@ -109,11 +158,58 @@ const PRINTQUOTE_DEFAULT_CONFIG = {
     dustCoverPerCopy: 0.25,
     subscriptionCardBaseCost: 25,
     subscriptionCardPerCopy: 0.02
+  },
+  maxSubscriptionCards: 10
+};
+
+// Paper weight conversion data for different units
+const PAPER_WEIGHT_CONVERSIONS = {
+  '100': { 
+    gsm: '100 gsm',
+    us: '68# text',
+    pt: '3.2 pt',
+    kg: '86 kg'
+  },
+  '120': { 
+    gsm: '120 gsm',
+    us: '80# text',
+    pt: '3.8 pt',
+    kg: '103 kg'
+  },
+  '150': { 
+    gsm: '150 gsm',
+    us: '100# text',
+    pt: '4.8 pt',
+    kg: '129 kg'
+  },
+  '180': { 
+    gsm: '180 gsm',
+    us: '67# cover',
+    pt: '5.9 pt',
+    kg: '155 kg'
+  },
+  '200': { 
+    gsm: '200 gsm',
+    us: '74# cover',
+    pt: '7.1 pt',
+    kg: '172 kg'
+  },
+  '250': { 
+    gsm: '250 gsm',
+    us: '92# cover',
+    pt: '9.1 pt',
+    kg: '215 kg'
+  },
+  '300': { 
+    gsm: '300 gsm',
+    us: '110# cover',
+    pt: '11.3 pt',
+    kg: '258 kg'
   }
 };
 
 export default function PrintQuoteFormEditor({ formConfig, onSave }) {
-  const [config, setConfig] = useState({});
+  const [config, setConfig] = useState(PRINTQUOTE_DEFAULT_CONFIG);
   const [activeTab, setActiveTab] = useState('general');
   const [preview, setPreview] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -129,21 +225,25 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
     }
   }, [formConfig]);
 
+  // Helper function to update nested properties
   const updateNestedConfig = (path, value) => {
     const keys = path.split('.');
     setConfig(prev => {
       const newConfig = JSON.parse(JSON.stringify(prev));
       let current = newConfig;
+      
       for (let i = 0; i < keys.length - 1; i++) {
         if (!current[keys[i]]) current[keys[i]] = {};
-        current[keys[i]] = { ...current[keys[i]] };
         current = current[keys[i]];
       }
-      current[keys[keys.length - 1]] = value;
+      
+      const lastKey = keys[keys.length - 1];
+      current[lastKey] = value;
       return newConfig;
     });
   };
 
+  // Helper function to update array items in nested paths
   const updateArrayItem = (path, index, field, value) => {
     const keys = path.split('.');
     setConfig(prev => {
@@ -151,18 +251,20 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
       let current = newConfig;
       
       for (let i = 0; i < keys.length - 1; i++) {
-        if (!current[keys[i]]) current[keys[i]] = {};
+        if (!current[keys[i]]) return prev;
         current = current[keys[i]];
       }
       
-      const array = current[keys[keys.length - 1]];
-      if (array && array[index]) {
-        array[index] = { ...array[index], [field]: value };
+      const arrayKey = keys[keys.length - 1];
+      if (Array.isArray(current[arrayKey]) && current[arrayKey][index]) {
+        current[arrayKey][index] = { ...current[arrayKey][index], [field]: value };
       }
+      
       return newConfig;
     });
   };
 
+  // Add item to array
   const addArrayItem = (path, newItem) => {
     const keys = path.split('.');
     setConfig(prev => {
@@ -175,12 +277,16 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
       }
       
       const arrayKey = keys[keys.length - 1];
-      if (!current[arrayKey]) current[arrayKey] = [];
+      if (!Array.isArray(current[arrayKey])) {
+        current[arrayKey] = [];
+      }
+      
       current[arrayKey] = [...current[arrayKey], newItem];
       return newConfig;
     });
   };
 
+  // Remove item from array
   const removeArrayItem = (path, index) => {
     const keys = path.split('.');
     setConfig(prev => {
@@ -193,13 +299,15 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
       }
       
       const arrayKey = keys[keys.length - 1];
-      if (current[arrayKey] && Array.isArray(current[arrayKey])) {
+      if (Array.isArray(current[arrayKey])) {
         current[arrayKey] = current[arrayKey].filter((_, i) => i !== index);
       }
+      
       return newConfig;
     });
   };
 
+  // Handle saving configuration
   const handleSave = async () => {
     if (saving) return;
     
@@ -215,92 +323,158 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
     }
   };
 
-  const renderEditableArray = (title, path, fields) => (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h4 className="font-medium text-gray-700">{title}</h4>
-        <button
-          onClick={() => addArrayItem(path, fields.reduce((acc, field) => ({ ...acc, [field]: '' }), {}))}
-          className="flex items-center px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700"
-        >
-          <Plus size={14} className="mr-1" />
-          Add New
-        </button>
-      </div>
-      <div className="space-y-3">
-        {config[path]?.map((item, index) => (
-          <div key={index} className="flex space-x-3 p-4 border border-gray-200 rounded-lg bg-gray-50">
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
-              {fields.map(field => (
-                <div key={field}>
-                  <label className="block text-xs font-medium text-gray-500 mb-1 capitalize">
-                    {field}
-                  </label>
-                  <input
-                    type={field === 'price' || field === 'dustCoverBaseCost' || field === 'dustCoverPerCopy' || 
-                          field === 'subscriptionCardBaseCost' || field === 'subscriptionCardPerCopy' ? 'number' : 'text'}
-                    value={item[field] || ''}
-                    onChange={(e) => updateArrayItem(path, index, field, 
-                      field === 'price' || field === 'dustCoverBaseCost' || field === 'dustCoverPerCopy' || 
-                      field === 'subscriptionCardBaseCost' || field === 'subscriptionCardPerCopy' 
-                        ? parseFloat(e.target.value) || 0 : e.target.value
-                    )}
-                    className="w-full p-2 border border-gray-300 rounded text-sm"
-                    placeholder={`Enter ${field}`}
-                  />
-                </div>
-              ))}
-            </div>
-            <button
-              onClick={() => removeArrayItem(path, index)}
-              className="p-2 text-red-600 hover:bg-red-50 rounded self-start"
-              title="Remove"
-            >
-              <Trash2 size={16} />
-            </button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+  // Render editable array with multiple fields
+  const renderEditableArray = (title, path, fields, isNested = false) => {
+    const getArray = () => {
+      const keys = path.split('.');
+      let current = config;
+      for (let i = 0; i < keys.length; i++) {
+        if (!current[keys[i]]) return [];
+        current = current[keys[i]];
+      }
+      return Array.isArray(current) ? current : [];
+    };
 
-  const renderSimpleArray = (title, path, placeholder = "Enter value") => (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h4 className="font-medium text-gray-700">{title}</h4>
-        <button
-          onClick={() => addArrayItem(path, '')}
-          className="flex items-center px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700"
-        >
-          <Plus size={14} className="mr-1" />
-          Add New
-        </button>
+    const array = getArray();
+
+    return (
+      <div className="space-y-4 mb-6">
+        <div className="flex justify-between items-center">
+          <h4 className="font-medium text-gray-700">{title}</h4>
+          <button
+            onClick={() => {
+              const newItem = fields.reduce((acc, field) => {
+                if (field === 'price') {
+                  acc[field] = 0;
+                } else if (field === 'description') {
+                  acc[field] = '';
+                } else if (field === 'label') {
+                  acc[field] = 'New Item';
+                } else if (field === 'value') {
+                  acc[field] = `NEW_${Date.now()}`;
+                } else if (field === 'desc') {
+                  acc[field] = '';
+                } else {
+                  acc[field] = '';
+                }
+                return acc;
+              }, {});
+              addArrayItem(path, newItem);
+            }}
+            className="flex items-center px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 transition-colors"
+          >
+            <Plus size={14} className="mr-1" />
+            Add New
+          </button>
+        </div>
+        
+        <div className="space-y-3">
+          {array.map((item, index) => (
+            <div key={index} className="flex items-start space-x-3 p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {fields.map(field => (
+                  <div key={field}>
+                    <label className="block text-xs font-medium text-gray-500 mb-1 capitalize">
+                      {field === 'gsm' ? 'Weight (gsm)' : field}
+                    </label>
+                    <input
+                      type={field === 'price' ? 'number' : 'text'}
+                      value={item[field] || ''}
+                      onChange={(e) => {
+                        const value = field === 'price' ? parseFloat(e.target.value) || 0 : e.target.value;
+                        updateArrayItem(path, index, field, value);
+                      }}
+                      className="w-full p-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      placeholder={`Enter ${field}`}
+                    />
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={() => removeArrayItem(path, index)}
+                className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+                title="Remove"
+              >
+                <Trash2 size={16} />
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
-      <div className="space-y-2">
-        {config[path]?.map((item, index) => (
-          <div key={index} className="flex space-x-2">
-            <input
-              type="text"
-              value={item}
-              onChange={(e) => {
-                const newArray = [...config[path]];
-                newArray[index] = e.target.value;
-                updateNestedConfig(path, newArray);
-              }}
-              className="flex-1 p-2 border border-gray-300 rounded text-sm"
-              placeholder={placeholder}
-            />
-            <button
-              onClick={() => removeArrayItem(path, index)}
-              className="p-2 text-red-600 hover:bg-red-50 rounded"
-            >
-              <Trash2 size={16} />
-            </button>
-          </div>
-        ))}
+    );
+  };
+
+  // Render simple string array
+  const renderSimpleArray = (title, path, placeholder = "Enter value") => {
+    const getArray = () => {
+      const keys = path.split('.');
+      let current = config;
+      for (let i = 0; i < keys.length; i++) {
+        if (!current[keys[i]]) return [];
+        current = current[keys[i]];
+      }
+      return Array.isArray(current) ? current : [];
+    };
+
+    const array = getArray();
+
+    return (
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <h4 className="font-medium text-gray-700">{title}</h4>
+          <button
+            onClick={() => addArrayItem(path, '')}
+            className="flex items-center px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 transition-colors"
+          >
+            <Plus size={14} className="mr-1" />
+            Add New
+          </button>
+        </div>
+        
+        <div className="space-y-2">
+          {array.map((item, index) => (
+            <div key={index} className="flex space-x-2">
+              <input
+                type="text"
+                value={item}
+                onChange={(e) => {
+                  const newArray = [...array];
+                  newArray[index] = e.target.value;
+                  updateNestedConfig(path, newArray);
+                }}
+                className="flex-1 p-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder={placeholder}
+              />
+              <button
+                onClick={() => removeArrayItem(path, index)}
+                className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+              >
+                <Trash2 size={16} />
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
+
+  // Render paper options section
+  const renderPaperOptions = (type) => {
+    const paperTypes = {
+      'cover': { title: 'Cover Paper', path: 'paperOptions.cover', fields: ['value', 'label', 'description', 'price'] },
+      'inside': { title: 'Inside Paper', path: 'paperOptions.inside', fields: ['value', 'label', 'price'] },
+      'subscription': { title: 'Subscription Paper', path: 'paperOptions.subscription', fields: ['value', 'label', 'price'] }
+    };
+
+    const { title, path, fields } = paperTypes[type];
+    
+    return (
+      <div className="space-y-6">
+        <h3 className="text-lg font-semibold text-gray-900">{title} Options</h3>
+        {renderEditableArray(title, path, fields)}
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -312,32 +486,34 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
             <div className="flex space-x-3">
               <button
                 onClick={() => setPreview(!preview)}
-                className="flex items-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                className="flex items-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
               >
                 <Eye size={16} className="mr-2" />
                 {preview ? 'Edit' : 'Preview'}
               </button>
               <button
                 onClick={handleSave}
-                className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                disabled={saving}
+                className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-gray-400 transition-colors"
               >
                 <Save size={16} className="mr-2" />
-                Save Changes
+                {saving ? 'Saving...' : 'Save Changes'}
               </button>
             </div>
           </div>
 
           {/* Tabs */}
-          <div className="flex space-x-8 overflow-x-auto">
+          <div className="flex space-x-8 overflow-x-auto pb-2">
             {[
               'general', 'binding', 'sizes', 'paper-cover', 'paper-inside', 
               'paper-subscription', 'colors', 'finishes', 'folds', 'additional',
-              'positions', 'page-counts', 'weights', 'quantities', 'pricing', 'dust-cover', 'subscription-cards'
+              'positions', 'page-counts', 'weights', 'quantities', 'pricing', 
+              'dust-cover', 'subscription-cards'
             ].map(tab => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`pb-4 px-1 border-b-2 font-medium text-sm capitalize whitespace-nowrap ${
+                className={`pb-3 px-1 border-b-2 font-medium text-sm capitalize whitespace-nowrap transition-colors ${
                   activeTab === tab
                     ? 'border-indigo-500 text-indigo-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700'
@@ -363,7 +539,7 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            {/* Navigation */}
+            {/* Navigation Sidebar */}
             <div className="lg:col-span-1">
               <div className="bg-white rounded-lg shadow-sm border p-4 sticky top-6">
                 <h3 className="font-semibold text-gray-900 mb-3">Form Sections</h3>
@@ -392,7 +568,7 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                       onClick={() => setActiveTab(section.id)}
                       className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
                         activeTab === section.id
-                          ? 'bg-indigo-100 text-indigo-700'
+                          ? 'bg-indigo-100 text-indigo-700 font-medium'
                           : 'text-gray-600 hover:bg-gray-100'
                       }`}
                     >
@@ -407,60 +583,64 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
             <div className="lg:col-span-3">
               <div className="bg-white rounded-lg shadow-sm border">
                 <div className="p-6 space-y-6">
+                  {/* General Settings */}
                   {activeTab === 'general' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">General Settings</h3>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Form Title
-                        </label>
-                        <input
-                          type="text"
-                          value={config.general?.title || ''}
-                          onChange={(e) => updateNestedConfig('general.title', e.target.value)}
-                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Form Description
-                        </label>
-                        <textarea
-                          value={config.general?.description || ''}
-                          onChange={(e) => updateNestedConfig('general.description', e.target.value)}
-                          rows={3}
-                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-4">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Submit Button Text
+                            Form Title
                           </label>
                           <input
                             type="text"
-                            value={config.general?.submitButtonText || ''}
-                            onChange={(e) => updateNestedConfig('general.submitButtonText', e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            value={config.general?.title || ''}
+                            onChange={(e) => updateNestedConfig('general.title', e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                           />
                         </div>
+
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Shipping Button Text
+                            Form Description
                           </label>
-                          <input
-                            type="text"
-                            value={config.general?.shippingButtonText || ''}
-                            onChange={(e) => updateNestedConfig('general.shippingButtonText', e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                          <textarea
+                            value={config.general?.description || ''}
+                            onChange={(e) => updateNestedConfig('general.description', e.target.value)}
+                            rows={3}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                           />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              Submit Button Text
+                            </label>
+                            <input
+                              type="text"
+                              value={config.general?.submitButtonText || ''}
+                              onChange={(e) => updateNestedConfig('general.submitButtonText', e.target.value)}
+                              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              Shipping Button Text
+                            </label>
+                            <input
+                              type="text"
+                              value={config.general?.shippingButtonText || ''}
+                              onChange={(e) => updateNestedConfig('general.shippingButtonText', e.target.value)}
+                              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                            />
+                          </div>
                         </div>
                       </div>
                     </>
                   )}
 
+                  {/* Binding Options */}
                   {activeTab === 'binding' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Binding Options</h3>
@@ -469,58 +649,46 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </>
                   )}
 
+                  {/* Sizes & Dimensions */}
                   {activeTab === 'sizes' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Sizes & Dimensions</h3>
                       {renderSimpleArray('Available Sizes', 'sizes', 'Enter size (e.g., 8.5 x 11)')}
                       
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Custom Size Instructions
-                        </label>
-                        <input
-                          type="text"
-                          value={config.customSizeInstructions || ''}
-                          onChange={(e) => updateNestedConfig('customSizeInstructions', e.target.value)}
-                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        />
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Custom Size Instructions
+                          </label>
+                          <input
+                            type="text"
+                            value={config.customSizeInstructions || ''}
+                            onChange={(e) => updateNestedConfig('customSizeInstructions', e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Spine Width Display
+                          </label>
+                          <input
+                            type="text"
+                            value={config.spineWidth || ''}
+                            onChange={(e) => updateNestedConfig('spineWidth', e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                          />
+                        </div>
                       </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Spine Width Display
-                        </label>
-                        <input
-                          type="text"
-                          value={config.spineWidth || ''}
-                          onChange={(e) => updateNestedConfig('spineWidth', e.target.value)}
-                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                      </div>
                     </>
                   )}
 
-                  {activeTab === 'paper-cover' && (
-                    <>
-                      <h3 className="text-lg font-semibold text-gray-900">Cover Paper Options</h3>
-                      {renderEditableArray('Cover Paper Types', 'paperOptions.cover', ['value', 'label', 'price'])}
-                    </>
-                  )}
+                  {/* Paper Options */}
+                  {activeTab === 'paper-cover' && renderPaperOptions('cover')}
+                  {activeTab === 'paper-inside' && renderPaperOptions('inside')}
+                  {activeTab === 'paper-subscription' && renderPaperOptions('subscription')}
 
-                  {activeTab === 'paper-inside' && (
-                    <>
-                      <h3 className="text-lg font-semibold text-gray-900">Inside Paper Options</h3>
-                      {renderEditableArray('Inside Paper Types', 'paperOptions.inside', ['value', 'label', 'price'])}
-                    </>
-                  )}
-
-                  {activeTab === 'paper-subscription' && (
-                    <>
-                      <h3 className="text-lg font-semibold text-gray-900">Subscription Paper Options</h3>
-                      {renderEditableArray('Subscription Paper Types', 'paperOptions.subscription', ['value', 'label', 'price'])}
-                    </>
-                  )}
-
+                  {/* Color Options */}
                   {activeTab === 'colors' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Print Color Options</h3>
@@ -528,6 +696,7 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </>
                   )}
 
+                  {/* Cover Finishes */}
                   {activeTab === 'finishes' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Cover Finish Options</h3>
@@ -535,6 +704,7 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </>
                   )}
 
+                  {/* Cover Folds */}
                   {activeTab === 'folds' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Cover Fold Options</h3>
@@ -542,11 +712,12 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </>
                   )}
 
+                  {/* Additional Services */}
                   {activeTab === 'additional' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Additional Services</h3>
                       
-                      <div className="space-y-6">
+                      <div className="space-y-8">
                         <div>
                           <h4 className="font-medium text-gray-700 mb-3">Proof Options</h4>
                           {renderEditableArray('Proof Options', 'additionalOptions.proof', ['value', 'label', 'price'])}
@@ -575,6 +746,7 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </>
                   )}
 
+                  {/* Card Positions */}
                   {activeTab === 'positions' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Subscription Card Positions</h3>
@@ -582,6 +754,7 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </>
                   )}
 
+                  {/* Page Count Options */}
                   {activeTab === 'page-counts' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Page Count Options</h3>
@@ -589,13 +762,45 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </>
                   )}
 
+                  {/* Weight Options */}
                   {activeTab === 'weights' && (
                     <>
-                      <h3 className="text-lg font-semibold text-gray-900">Weight Options</h3>
-                      {renderSimpleArray('Weight Options', 'weightOptions', 'Enter weight (gsm)')}
+                      <h3 className="text-lg font-semibold text-gray-900">Weight Options (gsm values)</h3>
+                      {renderSimpleArray('Weight Options (gsm)', 'weightOptions', 'Enter weight in gsm (e.g., 100, 120, 150)')}
+                      
+                      <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <h4 className="font-medium text-blue-900 mb-2">Weight Conversion Reference</h4>
+                        <div className="text-sm text-blue-800">
+                          <p className="mb-2">The weight options use these conversion values:</p>
+                          <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-blue-200">
+                              <thead>
+                                <tr>
+                                  <th className="px-3 py-2 text-left text-xs font-medium text-blue-900">GSM</th>
+                                  <th className="px-3 py-2 text-left text-xs font-medium text-blue-900">US Weight</th>
+                                  <th className="px-3 py-2 text-left text-xs font-medium text-blue-900">Caliper (pt)</th>
+                                  <th className="px-3 py-2 text-left text-xs font-medium text-blue-900">Japan Weight</th>
+                                </tr>
+                              </thead>
+                              <tbody className="divide-y divide-blue-100">
+                                {Object.entries(PAPER_WEIGHT_CONVERSIONS).map(([gsm, conversions]) => (
+                                  <tr key={gsm}>
+                                    <td className="px-3 py-2 text-sm">{conversions.gsm}</td>
+                                    <td className="px-3 py-2 text-sm">{conversions.us}</td>
+                                    <td className="px-3 py-2 text-sm">{conversions.pt}</td>
+                                    <td className="px-3 py-2 text-sm">{conversions.kg}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                          <p className="mt-2 text-xs">Note: Users can select different paper units (GSM, US, PT, KG) in the form, and these conversions will be displayed automatically.</p>
+                        </div>
+                      </div>
                     </>
                   )}
 
+                  {/* Quantity Options */}
                   {activeTab === 'quantities' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Quantity Options</h3>
@@ -603,6 +808,7 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </>
                   )}
 
+                  {/* Pricing Settings */}
                   {activeTab === 'pricing' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Pricing Settings</h3>
@@ -616,7 +822,7 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                             type="number"
                             value={config.pricing?.baseSetupCost || 0}
                             onChange={(e) => updateNestedConfig('pricing.baseSetupCost', parseFloat(e.target.value) || 0)}
-                            className="w-full p-3 border border-gray-300 rounded-lg"
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                           />
                         </div>
 
@@ -629,7 +835,7 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                             step="0.01"
                             value={config.pricing?.costPerPage || 0}
                             onChange={(e) => updateNestedConfig('pricing.costPerPage', parseFloat(e.target.value) || 0)}
-                            className="w-full p-3 border border-gray-300 rounded-lg"
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                           />
                         </div>
 
@@ -642,7 +848,7 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                             step="0.1"
                             value={config.pricing?.customSizeMultiplier || 1}
                             onChange={(e) => updateNestedConfig('pricing.customSizeMultiplier', parseFloat(e.target.value) || 1)}
-                            className="w-full p-3 border border-gray-300 rounded-lg"
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                           />
                         </div>
 
@@ -655,13 +861,14 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                             step="0.1"
                             value={config.pricing?.standardSizeMultiplier || 1}
                             onChange={(e) => updateNestedConfig('pricing.standardSizeMultiplier', parseFloat(e.target.value) || 1)}
-                            className="w-full p-3 border border-gray-300 rounded-lg"
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                           />
                         </div>
                       </div>
                     </>
                   )}
 
+                  {/* Dust Cover Pricing */}
                   {activeTab === 'dust-cover' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Dust Cover Pricing</h3>
@@ -675,7 +882,7 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                             type="number"
                             value={config.pricing?.dustCoverBaseCost || 0}
                             onChange={(e) => updateNestedConfig('pricing.dustCoverBaseCost', parseFloat(e.target.value) || 0)}
-                            className="w-full p-3 border border-gray-300 rounded-lg"
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                           />
                         </div>
 
@@ -688,20 +895,14 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                             step="0.01"
                             value={config.pricing?.dustCoverPerCopy || 0}
                             onChange={(e) => updateNestedConfig('pricing.dustCoverPerCopy', parseFloat(e.target.value) || 0)}
-                            className="w-full p-3 border border-gray-300 rounded-lg"
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                           />
                         </div>
-                      </div>
-
-                      <div className="mt-6">
-                        <h4 className="font-medium text-gray-700 mb-3">Dust Cover Paper Options</h4>
-                        <p className="text-sm text-gray-500 mb-4">
-  Dust cover uses the same paper options as regular cover. You can edit them in the &quot;Cover Paper&quot; tab.
-</p>
                       </div>
                     </>
                   )}
 
+                  {/* Subscription Cards Pricing */}
                   {activeTab === 'subscription-cards' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Subscription Cards Pricing</h3>
@@ -715,7 +916,7 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                             type="number"
                             value={config.pricing?.subscriptionCardBaseCost || 0}
                             onChange={(e) => updateNestedConfig('pricing.subscriptionCardBaseCost', parseFloat(e.target.value) || 0)}
-                            className="w-full p-3 border border-gray-300 rounded-lg"
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                           />
                         </div>
 
@@ -728,7 +929,7 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                             step="0.01"
                             value={config.pricing?.subscriptionCardPerCopy || 0}
                             onChange={(e) => updateNestedConfig('pricing.subscriptionCardPerCopy', parseFloat(e.target.value) || 0)}
-                            className="w-full p-3 border border-gray-300 rounded-lg"
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                           />
                         </div>
                       </div>
@@ -743,7 +944,7 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                             type="number"
                             value={config.maxSubscriptionCards || 10}
                             onChange={(e) => updateNestedConfig('maxSubscriptionCards', parseInt(e.target.value) || 10)}
-                            className="w-full p-3 border border-gray-300 rounded-lg"
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                           />
                         </div>
                       </div>
