@@ -32,6 +32,7 @@ const ComponentToolbar = ({ onAddComponent }) => {
       { type: 'serviceBox', name: 'Service Box', category: 'Services' },
       { type: 'textBox', name: 'Text Box', category: 'Content' },
       { type: 'contactUs', name: 'Contact Us', category: 'Forms' },
+      { type: 'portfolioShowcase', name: 'Portfolio Showcase', category: 'Showcase' },
       
       // Form Components
       { type: 'form', name: 'Basic Form', category: 'Forms' },

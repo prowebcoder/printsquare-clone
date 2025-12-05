@@ -33,6 +33,8 @@ export const getComponentIcon = (type) => {
     tabsGallery: <Grid size={16} />,
     serviceBox: <Grid size={16} />,
     textBox: <FileText size={16} />,
+    contactUs: <Users size={16} />,
+    portfolioShowcase: <Grid size={16} />,
   };
   return icons[type] || <FileText size={16} />;
 };
@@ -41,7 +43,7 @@ export const getComponentCategory = (type) => {
   if (['aboutHero', 'aboutUs', 'freeSample'].includes(type)) {
     return 'about';
   }
-  if (['heroBanner', 'multiColumn', 'multiTable', 'serviceBox', 'contactUs', 'textBox', 'videoWithText', 'tabsGallery', 'weightConverter', 'imageBanner', 'imageBannerTwo', 'method', 'notice', 'orderProcess', 'portfolio', 'pricing', 'quickGuides', 'videoBanner', 'tabsFaq'].includes(type)) {
+  if (['heroBanner', 'multiColumn', 'multiTable', 'serviceBox', 'contactUs', 'textBox', 'videoWithText', 'tabsGallery', 'weightConverter', 'imageBanner', 'imageBannerTwo', 'method', 'notice', 'orderProcess', 'portfolio', 'pricing', 'quickGuides', 'videoBanner', 'tabsFaq', 'portfolioShowcase'].includes(type)) {
     return 'home';
   }
   if (['form'].includes(type)) {
@@ -79,6 +81,7 @@ export const getComponentDisplayName = (type) => {
     'serviceBox': 'Service Box',
     'textBox': 'Text Box',
     'contactUs': 'Contact Us',
+    'portfolioShowcase': 'Portfolio Showcase',
   };
   
   return nameMap[type] || type;

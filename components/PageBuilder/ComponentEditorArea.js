@@ -73,6 +73,7 @@ const getComponentIcon = (type) => {
     serviceBox: '🗂️',
     textBox: '📄',
     contactUs: '📞',
+    portfolioShowcase: '🖼️',
   };
   return icons[type] || '📄';
 };

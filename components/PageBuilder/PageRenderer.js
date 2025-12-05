@@ -26,6 +26,7 @@ import TabsGalleryRenderer from './renderers/TabsGalleryRenderer';
 import ServiceBoxRenderer from './renderers/ServiceBoxRenderer';
 import TextBoxRenderer from './renderers/TextBoxRenderer';
 import ContactUsRenderer from './renderers/ContactUsRenderer';
+import PortfolioShowcaseRenderer from './renderers/PortfolioShowcaseRenderer';
 
 const PageRenderer = ({ components }) => {
   if (!components || !Array.isArray(components)) {
@@ -90,6 +91,7 @@ const PageRenderer = ({ components }) => {
         case 'serviceBox': return <ServiceBoxRenderer key={component.id} component={component} />;
         case 'textBox': return <TextBoxRenderer key={component.id} component={component} />;
         case 'contactUs': return <ContactUsRenderer key={component.id} component={component} />;
+        case 'portfolioShowcase': return <PortfolioShowcaseRenderer key={component.id} component={component} />;
       default:
         return (
           <div key={component.id} className={`p-4 border border-yellow-300 bg-yellow-50 ${styleClasses}`}>

@@ -561,6 +561,102 @@ serviceBox: {
   ]
 },
 
+portfolioShowcase: {
+  title: "Our Portfolio Showcase",
+  titleColor: "#1F2937",
+  titleSize: "text-3xl sm:text-4xl",
+  description: "Filter and explore our collection of printed works with various binding types and paper finishes",
+  descriptionColor: "#4B5563",
+  descriptionSize: "text-base sm:text-lg",
+  
+  // Background settings
+  backgroundType: "gradient",
+  gradientFrom: "#F8F8F8",
+  gradientTo: "#EAEAEA",
+  backgroundColor: "#F8F8F8",
+  
+  // Filter settings
+  showFilters: true,
+  bindingOptions: ["All", "Perfect Binding", "Saddle Binding", "Hardcover Binding", "Wire Binding"],
+  coverOptions: ["All", "Gloss", "Matte", "Hi Plus", "Hi Qmatte", "Uncoated"],
+  insideOptions: ["All", "Gloss", "Matte", "Hi Plus", "Hi Qmatte", "Uncoated"],
+  
+  // Pagination settings
+  itemsPerPage: 9,
+  
+  // Grid settings
+  desktopColumns: 3,
+  tabletColumns: 2,
+  mobileColumns: 1,
+  
+  // Default portfolio items (first 9 from your data)
+  portfolioItems: [
+    {
+      id: 1,
+      image: "/portfolio/p1.jpg",
+      category1: "Perfect Binding",
+      category2: "Gloss",
+      category3: "Hi Plus",
+    },
+    {
+      id: 2,
+      image: "/portfolio/p2.jpg",
+      category1: "Saddle Binding",
+      category2: "Matte",
+      category3: "Uncoated",
+    },
+    {
+      id: 3,
+      image: "/portfolio/p3.jpg",
+      category1: "Hardcover Binding",
+      category2: "Hi Plus",
+      category3: "Gloss",
+    },
+    {
+      id: 4,
+      image: "/portfolio/p4.jpg",
+      category1: "Wire Binding",
+      category2: "Matte",
+      category3: "Hi Qmatte",
+    },
+    {
+      id: 5,
+      image: "/portfolio/p5.jpg",
+      category1: "Perfect Binding",
+      category2: "Hi Qmatte",
+      category3: "Uncoated",
+    },
+    {
+      id: 6,
+      image: "/portfolio/p6.jpg",
+      category1: "Saddle Binding",
+      category2: "Gloss",
+      category3: "Matte",
+    },
+    {
+      id: 7,
+      image: "/portfolio/p7.jpg",
+      category1: "Wire Binding",
+      category2: "Hi Plus",
+      category3: "Gloss",
+    },
+    {
+      id: 8,
+      image: "/portfolio/p8.jpg",
+      category1: "Hardcover Binding",
+      category2: "Uncoated",
+      category3: "Matte",
+    },
+    {
+      id: 9,
+      image: "/portfolio/p9.jpg",
+      category1: "Perfect Binding",
+      category2: "Gloss",
+      category3: "Hi Qmatte",
+    },
+  ]
+},
+
 contactUs: {
   // General settings
   showContactCards: true,

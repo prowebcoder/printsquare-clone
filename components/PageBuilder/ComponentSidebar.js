@@ -55,6 +55,7 @@ const SortableComponentItem = ({
       'serviceBox': 'Service Box',
       'textBox': 'Text Box',
       'contactUs': 'Contact Us',
+      'portfolioShowcase': 'Portfolio Showcase',
     };
     
     return nameMap[component.type] || component.type;

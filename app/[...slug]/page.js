@@ -123,6 +123,7 @@ const componentMap = {
   'serviceBox': Renderers.ServiceBoxRenderer,
   'textBox': Renderers.TextBoxRenderer,
   'contactUs': Renderers.ContactUsRenderer,
+  'portfolioShowcase': Renderers.PortfolioShowcaseRenderer,
 };
 
 function renderComponent(component, index) {
