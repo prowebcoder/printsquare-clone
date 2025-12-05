@@ -39,7 +39,7 @@ export default function AccountPage() {
         <div className="max-w-4xl mx-auto mt-20">
           {/* Header Section */}
           <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">My Account</h1>
+            <h1 className="text-4xl font-extrabold leading-tight text-gray-900 mb-2">My Account</h1>
             <p className="text-gray-600 text-lg">Welcome back, {customer.name}!</p>
           </div>
 
@@ -53,7 +53,7 @@ export default function AccountPage() {
                   </span>
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-white">{customer.name}</h1>
+                  <h1 className="text-2xl font-extrabold leading-tight text-white capitalize">{customer.name}</h1>
                   <p className="text-blue-100">{customer.email}</p>
                 </div>
               </div>
@@ -66,7 +66,7 @@ export default function AccountPage() {
                 <div className="space-y-6">
                   <div className="flex items-center space-x-3 mb-6">
                     <div className="w-2 h-8 bg-blue-600 rounded-full"></div>
-                    <h2 className="text-xl font-semibold text-gray-900">Profile Information</h2>
+                    <h2 className="text-xl font-extrabold leading-tight text-gray-900">Profile Information</h2>
                   </div>
                   
                   <div className="space-y-4">
@@ -93,7 +93,7 @@ export default function AccountPage() {
                 <div className="space-y-6">
                   <div className="flex items-center space-x-3 mb-6">
                     <div className="w-2 h-8 bg-green-600 rounded-full"></div>
-                    <h2 className="text-xl font-semibold text-gray-900">Account Actions</h2>
+                    <h2 className="text-xl font-extrabold leading-tight text-gray-900">Account Actions</h2>
                   </div>
                   
                   <div className="space-y-4">
@@ -128,7 +128,7 @@ export default function AccountPage() {
               <div className="border-t border-gray-200 pt-8">
                 <div className="flex items-center space-x-3 mb-6">
                   <div className="w-2 h-8 bg-purple-600 rounded-full"></div>
-                  <h2 className="text-xl font-semibold text-gray-900">Recent Activity</h2>
+                  <h2 className="text-xl font-extrabold leading-tight text-gray-900">Recent Activity</h2>
                 </div>
                 
                 <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 text-center">

@@ -90,7 +90,7 @@ export default function MethodRenderer({ component, index }) {
                   01
                 </span>
                 <h3 
-                  className="text-2xl font-semibold group-hover:text-[#E21B36] transition-colors"
+                  className="text-2xl font-extrabold leading-tight group-hover:text-[#E21B36] transition-colors"
                   style={{ color: content.titleColor || '#0B1633' }}
                 >
                   {content.method1?.title || "E-Proof"}
@@ -121,7 +121,7 @@ export default function MethodRenderer({ component, index }) {
                   02
                 </span>
                 <h3 
-                  className="text-2xl font-semibold group-hover:text-[#FF4B2B] transition-colors"
+                  className="text-2xl font-extrabold leading-tight group-hover:text-[#FF4B2B] transition-colors"
                   style={{ color: content.titleColor || '#0B1633' }}
                 >
                   {content.method2?.title || "Digital-Proof"}

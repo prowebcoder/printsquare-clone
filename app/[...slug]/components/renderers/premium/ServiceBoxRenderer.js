@@ -97,7 +97,7 @@ export default function ServiceBoxRenderer({ component, index }) {
   return (
     <section
       key={component.id || index}
-      className="relative py-20 px-6 sm:px-10 overflow-hidden"
+      className="relative py-6 md:py-20 px-6 sm:px-10 overflow-hidden"
       style={getBackgroundStyle()}
     >
       {/* Decorative background elements */}

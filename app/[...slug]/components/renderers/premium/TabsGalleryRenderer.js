@@ -59,7 +59,7 @@ export default function TabsGalleryRenderer({ component, index }) {
   return (
     <section
       key={component.id || index}
-      className="relative py-20 px-6 sm:px-10 overflow-hidden"
+      className="relative py-6 md:py-20 px-6 sm:px-10 overflow-hidden"
       style={getBackgroundStyle()}
     >
       {/* Decorative elements - Only show if not using gradient background */}

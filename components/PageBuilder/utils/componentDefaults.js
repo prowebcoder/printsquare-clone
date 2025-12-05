@@ -141,7 +141,7 @@ videoWithText: {
   overlayColor: '#000000',
   overlayOpacity: '40',
   titleColor: '#FFFFFF',
-  titleSize: 'text-4xl md:text-6xl',
+  titleSize: 'text-3xl md:text-6xl',
   subtitleColor: '#FFFFFF',
   subtitleSize: 'text-2xl md:text-3xl'
 },
@@ -204,7 +204,7 @@ videoWithText: {
   backgroundType: 'solid',
   backgroundColor: '#F8F9FB',
   titleColor: '#0B1633',
-  titleSize: 'text-4xl md:text-5xl',
+  titleSize: 'text-3xl md:text-5xl',
   highlightedColor: '#E21B36',
   descriptionColor: '#2E3850',
   descriptionSize: 'text-lg',
@@ -267,7 +267,7 @@ videoWithText: {
   backgroundType: 'solid',
   backgroundColor: '#F8F9FB',
   titleColor: '#0B1633',
-  titleSize: 'text-4xl md:text-5xl',
+  titleSize: 'text-3xl md:text-5xl',
   highlightedColor: '#E21B36',
   descriptionColor: '#2E3850',
   descriptionSize: 'text-lg md:text-base',
@@ -394,7 +394,7 @@ videoWithText: {
   gradientFrom: '#111827',
   gradientTo: '#000000',
   titleColor: '#FFFFFF',
-  titleSize: 'text-4xl md:text-5xl',
+  titleSize: 'text-3xl md:text-5xl',
   highlightedColor: '#E21B36',
   stepGradientFrom: '#E21B36',
   stepGradientTo: '#FF4B2B',
@@ -451,7 +451,7 @@ serviceBox: {
   // Header content
   title: "Our Equipment & Technology",
   titleColor: "#FFFFFF",
-  titleSize: "text-4xl sm:text-5xl",
+  titleSize: "text-3xl md:text-5xl",
   description: "We're powered by precision — from prepress to finishing — equipped with cutting-edge machines that ensure top-tier quality and consistency.",
   descriptionColor: "#D6D9E0",
   descriptionSize: "text-base sm:text-lg",
@@ -682,7 +682,7 @@ contactUs: {
   heroGradientFrom: '#0B1633',
   heroGradientTo: '#FF4B2B',
   heroTitleColor: '#1F2937',
-  heroTitleSize: 'text-4xl md:text-5xl',
+  heroTitleSize: 'text-3xl md:text-5xl',
   
   // Contact cards
   contactCards: [
@@ -812,7 +812,7 @@ textBox: {
   titleGradientFrom: '#E21B36',
   titleGradientTo: '#FF4B2B',
   titleColor: '#1F2937',
-  titleSize: 'text-4xl sm:text-5xl',
+  titleSize: 'text-3xl md:text-5xl',
   
   description: "Over the years, Print Seoul has earned the trust of magazine publishers, designers, and printing brokers by consistently delivering outstanding quality and reliable service. Our clients return time and again — confident their printing needs are in expert hands.",
   descriptionColor: '#4B5563',
@@ -864,7 +864,7 @@ textBox: {
 tabsGallery: {
   title: "Our Advanced Printing Facilities",
   titleColor: "#1F2937",
-  titleSize: "text-4xl sm:text-5xl",
+  titleSize: "text-3xl md:text-5xl",
   description: "From small runs to large-scale printing, Printseoul delivers precision and quality at every stage.",
   descriptionColor: "#4B5563",
   descriptionSize: "text-base sm:text-lg",

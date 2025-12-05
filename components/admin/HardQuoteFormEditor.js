@@ -4,8 +4,8 @@ import { Save, Eye, Plus, Trash2 } from 'lucide-react';
 
 const DEFAULT_FORM_CONFIG = {
   general: {
-    title: "Hardcover Book Printing Quote",
-    description: "Configure your perfect hardcover book with our professional printing services. Get instant pricing and add to cart in minutes.",
+    title: "Wire Binding Printing Quote",
+    description: "Configure your professional wire-bound documents with our instant quoting system. Perfect for reports, manuals, and presentations.",
     submitButtonText: "Add to Cart",
     shippingButtonText: "Calculate Shipping"
   },
@@ -16,59 +16,83 @@ const DEFAULT_FORM_CONFIG = {
     { value: 'WIRE', label: 'Wire Binding', link: '/wire-binding' },
   ],
   sizes: [
+    { value: '8.5x11-letter', label: '8.5" x 11" (Letter)' },
+    { value: '8.5x11-standard', label: '8.5" x 11"' },
     { value: '5.5x8.5', label: '5.5" x 8.5" (Half Letter)' },
     { value: '6x9', label: '6" x 9"' },
     { value: '7x10', label: '7" x 10"' },
-    { value: '8.5x11-letter', label: '8.5" x 11" (Letter)' },
-    { value: '8.5x11-standard', label: '8.5" x 11"' },
     { value: '9x12', label: '9" x 12"' },
+    { value: 'A6', label: 'A6 (4.13" x 5.83")' },
+    { value: 'A5', label: 'A5 (5.83" x 8.27")' },
+    { value: 'A4', label: 'A4 (8.27" x 11.69")' },
+    { value: 'B6', label: 'B6 (5.04" x 7.17")' },
+    { value: 'B5', label: 'B5 (7.17" x 10.12")' },
+    { value: 'B4', label: 'B4 (10.12" x 14.33")' },
     { value: 'custom', label: 'Custom Size' }
   ],
   bindingEdges: [
-    { value: 'SQUARE', label: 'Square Spine', desc: 'Standard square spine' },
-    { value: 'ROUNDED', label: 'Rounded Spine', desc: 'Premium rounded spine' },
+    { 
+      value: 'LEFT', 
+      label: 'Left Side', 
+      desc: 'Binding on the left, most common',
+      image: '/asset/images/quote/edge01.png'
+    },
+    { 
+      value: 'RIGHT', 
+      label: 'Right Side', 
+      desc: 'First inside page starts from the right',
+      image: '/asset/images/quote/edge02.png'
+    },
+    { 
+      value: 'TOP', 
+      label: 'Top Side', 
+      desc: 'Binding on the top, a.k.a calendar binding',
+      image: '/asset/images/quote/edge03.png'
+    },
+  ],
+  wireColors: [
+    { value: 'BLACK', label: 'Black', color: '#000000', image: '/asset/images/quote/color_paper/wire_black.png' },
+    { value: 'WHITE', label: 'White', color: '#ffffff', image: '/asset/images/quote/color_paper/wire_white.png' },
+    { value: 'SILVER', label: 'Silver', color: '#c0c0c0', image: '/asset/images/quote/color_paper/wire_silver.png' },
+    { value: 'GOLD', label: 'Gold', color: '#ffd700', image: '/asset/images/quote/color_paper/wire_gold.png' },
+    { value: 'TBD', label: 'To be determined', color: '#cccccc' }
   ],
   paperOptions: {
     cover: [
-      { value: 'MATTE', label: 'Matte', gsm: ['120', '150', '200'] },
-      { value: 'GLOSS', label: 'Gloss', gsm: ['120', '150', '200'] },
-      { value: 'UNCOATED', label: 'Uncoated', gsm: ['120', '150'] },
-      { value: 'PAPERCLOTH_GLOSS', label: 'Papercloth Gloss', gsm: [] }
+      { value: 'MATTE', label: 'Matte', price: 0 },
+      { value: 'GLOSS', label: 'Gloss', price: 0 },
+      { value: 'HI-QMYSTIC', label: 'Hi-Q Mystic', price: 25 },
+      { value: 'UNCOATED_W', label: 'Uncoated White', price: 0 }
     ],
     inside: [
-      { value: 'MATTE', label: 'Matte', gsm: ['80', '100', '120'] },
-      { value: 'GLOSS', label: 'Gloss', gsm: ['80', '100', '120'] },
-      { value: 'UNCOATED', label: 'Uncoated', gsm: ['80', '100'] }
+      { value: 'MATTE', label: 'Matte', price: 0 },
+      { value: 'GLOSS', label: 'Gloss', price: 0 },
+      { value: 'HI-PLUS', label: 'Hi-Plus', price: 20 },
+      { value: 'UNCOATED_W', label: 'Uncoated White', price: 0 }
     ]
   },
   printColors: [
-    { value: 'NOCOLOR', label: 'No Print', description: 'No Print' },
-    { value: 'CMYK', label: 'Full color', description: 'Full color' },
-    { value: 'CMYK_PMS1', label: 'Full color + 1 Spot color', description: 'Full color + 1 Spot color' },
-    { value: 'CMYK_PMS2', label: 'Full color + 2 Spot color', description: 'Full color + 2 Spot color' },
-    { value: 'BW', label: 'Black only', description: 'Black only' },
-    { value: 'BW_PMS1', label: 'Black + 1 Spot color', description: 'Black + 1 Spot color' },
-    { value: 'BW_PMS2', label: 'Black + 2 Spot color', description: 'Black + 2 Spot color' }
+    { value: 'CMYK', label: 'Full color', price: 0 },
+    { value: 'CMYK_PMS1', label: 'Full color + 1 Spot color', price: 75 },
+    { value: 'CMYK_PMS2', label: 'Full color + 2 Spot color', price: 150 },
+    { value: 'BW', label: 'Black only', price: -100 },
+    { value: 'BW_PMS1', label: 'Black + 1 Spot color', price: -25 },
+    { value: 'BW_PMS2', label: 'Black + 2 Spot color', price: 50 }
   ],
   coverFinishes: [
     { value: 'NONE', label: 'None', price: 0 },
-    { value: 'MATTE', label: 'Matte Lamination', price: 50 },
-    { value: 'GLOSS', label: 'Gloss Lamination', price: 50 },
+    { value: 'MATTE', label: 'Matte Lamination', price: 40 },
+    { value: 'GLOSS', label: 'Gloss Lamination', price: 40 },
   ],
-  headbandColors: [
-    { value: 'RD30', label: 'Red', color: '#ff0000' },
-    { value: 'BL30', label: 'Blue', color: '#0000ff' },
-    { value: 'GN30', label: 'Green', color: '#00ff00' },
-    { value: 'BK30', label: 'Black', color: '#000000' },
-    { value: 'GY30', label: 'Gray', color: '#808080' }
-  ],
-  bookmarkOptions: [
-    { value: '', label: 'None' },
-    { value: 'Y', label: 'Add: same color as headband' }
+  coverFolds: [
+    { value: 'NONE', label: 'No fold', price: 0 },
+    { value: 'FRONT', label: 'Front cover fold', price: 25 },
+    { value: 'BACK', label: 'Back cover fold', price: 25 },
+    { value: 'BOTH', label: 'Both cover folds', price: 40 },
   ],
   additionalOptions: {
     proof: [
-      { value: 'ONLINE', label: 'E-Proof(PDF proof, free)', price: 0 },
+      { value: 'ONLINE', label: 'E-Proof (PDF proof, free)', price: 0 },
       { value: 'DIGITAL', label: 'Digital Proof', price: 50 },
     ],
     holePunch: [
@@ -77,6 +101,7 @@ const DEFAULT_FORM_CONFIG = {
       { value: '9.5', label: '0.374"(9.5mm) drill - Used for binders and etc.', price: 25 },
     ],
     slipcase: [
+      { value: 'NONE', label: 'None', price: 0 },
       { value: 'CASE', label: 'Slipcase only', price: 80 },
       { value: 'CASEPRINT', label: 'Slipcase + printing', price: 150 },
     ],
@@ -95,21 +120,23 @@ const DEFAULT_FORM_CONFIG = {
     { value: 'BACK', label: 'After last page' },
     { value: 'SELECT', label: 'Front of page no.' },
   ],
-  pageCounts: [36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 148, 152, 156, 160],
-  weightOptions: ['80', '100', '120', '150', '200'],
-  quantities: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
-  customSizeInstructions: "📏 Minimum: 4\" × 4\" | Maximum: 11.8\" × 14.3\"",
-  spineWidth: '0.178"',
+  pageCounts: [24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 148, 152, 156, 160],
+  weightOptions: ['80', '100', '120', '150', '200', '250', '300'],
+  quantities: [200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000],
+  customSizeInstructions: {
+    INCH: "📏 Minimum: 4\" × 4\" | Maximum: 11.8\" × 14.3\"",
+    MM: "📏 Minimum: 102 × 102 mm | Maximum: 300 × 363 mm"
+  },
   pricing: {
-    baseSetupCost: 300,
-    costPerPage: 0.08,
-    customSizeMultiplier: 1.3,
-    standardSizeMultiplier: 1.2,
-    hardcoverBaseCost: 150
+    baseSetupCost: 200,
+    costPerPage: 0.06,
+    customSizeMultiplier: 1.2,
+    standardSizeMultiplier: 1.1,
+    wireBindingBaseCost: 80
   }
 };
 
-export default function HardQuoteFormEditor({ formConfig, onSave }) {
+export default function WireQuoteFormEditor({ formConfig, onSave }) {
   const [config, setConfig] = useState({});
   const [activeTab, setActiveTab] = useState('general');
   const [preview, setPreview] = useState(false);
@@ -117,10 +144,10 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
 
   useEffect(() => {
     if (formConfig && Object.keys(formConfig).length > 0) {
-      console.log('📥 Loading saved hardcover config:', formConfig);
+      console.log('📥 Loading saved wire binding config:', formConfig);
       setConfig(formConfig);
     } else {
-      console.log('📥 Loading default hardcover config');
+      console.log('📥 Loading default wire binding config');
       setConfig(DEFAULT_FORM_CONFIG);
     }
   }, [formConfig]);
@@ -201,10 +228,10 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
     
     setSaving(true);
     try {
-      console.log('💾 Saving hardcover config:', config);
+      console.log('💾 Saving wire binding config:', config);
       await onSave(config);
     } catch (error) {
-      console.error('Error saving hardcover config:', error);
+      console.error('Error saving wire binding config:', error);
       alert('Error saving configuration');
     } finally {
       setSaving(false);
@@ -232,16 +259,22 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
           }
           return current?.map((item, index) => (
             <div key={index} className="flex space-x-3 p-4 border border-gray-200 rounded-lg bg-gray-50">
-              <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {fields.map(field => (
                   <div key={field}>
                     <label className="block text-xs font-medium text-gray-500 mb-1 capitalize">
                       {field}
                     </label>
                     <input
-                      type={field === 'price' || field === 'gsm' ? 'text' : 'text'}
+                      type={field === 'price' || field === 'gsm' ? 'number' : 'text'}
+                      step={field === 'price' ? "0.01" : "1"}
                       value={item[field] || ''}
-                      onChange={(e) => updateArrayItem(path, index, field, e.target.value)}
+                      onChange={(e) => {
+                        const value = field === 'price' || field === 'gsm' 
+                          ? parseFloat(e.target.value) || 0 
+                          : e.target.value;
+                        updateArrayItem(path, index, field, value);
+                      }}
                       className="w-full p-2 border border-gray-300 rounded text-sm"
                       placeholder={`Enter ${field}`}
                     />
@@ -289,13 +322,14 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">GSM Options (comma separated)</label>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Price ($)</label>
               <input
-                type="text"
-                value={paper.gsm?.join(', ') || ''}
-                onChange={(e) => updateArrayItem(`paperOptions.${type}`, index, 'gsm', e.target.value.split(',').map(s => s.trim()))}
+                type="number"
+                step="0.01"
+                value={paper.price || 0}
+                onChange={(e) => updateArrayItem(`paperOptions.${type}`, index, 'price', parseFloat(e.target.value) || 0)}
                 className="w-full p-2 border border-gray-300 rounded text-sm"
-                placeholder="e.g., 120, 150, 200"
+                placeholder="e.g., 0"
               />
             </div>
           </div>
@@ -308,7 +342,7 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
         </div>
       ))}
       <button
-        onClick={() => addArrayItem(`paperOptions.${type}`, { value: '', label: '', gsm: [] })}
+        onClick={() => addArrayItem(`paperOptions.${type}`, { value: '', label: '', price: 0 })}
         className="flex items-center px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700"
       >
         <Plus size={14} className="mr-1" />
@@ -329,7 +363,7 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
       <div className="bg-white border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
-            <h1 className="text-2xl font-bold text-gray-900">Hardcover Quote Form Editor</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Wire Binding Quote Form Editor</h1>
             <div className="flex space-x-3">
               <button
                 onClick={() => setPreview(!preview)}
@@ -351,8 +385,8 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
 
           <div className="flex space-x-8 overflow-x-auto">
             {[
-              'general', 'binding', 'sizes', 'paper-cover', 'paper-inside', 
-              'colors', 'finishes', 'headband', 'bookmark', 'additional',
+              'general', 'binding', 'wire-colors', 'sizes', 'paper-cover', 'paper-inside', 
+              'colors', 'finishes', 'cover-folds', 'additional',
               'page-counts', 'quantities', 'pricing'
             ].map(tab => (
               <button
@@ -374,11 +408,11 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {preview ? (
           <div className="bg-white rounded-lg shadow-sm border p-6">
-            <h3 className="text-lg font-semibold mb-4">Hardcover Form Preview</h3>
+            <h3 className="text-lg font-semibold mb-4">Wire Binding Form Preview</h3>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-              <p className="text-gray-500">Hardcover form preview would be rendered here</p>
+              <p className="text-gray-500">Wire binding form preview would be rendered here</p>
               <p className="text-sm text-gray-400 mt-2">
-                Configuration changes will be reflected in the actual hardcover form
+                Configuration changes will be reflected in the actual wire binding form
               </p>
             </div>
           </div>
@@ -391,13 +425,13 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
                   {[
                     { id: 'general', label: 'General Settings' },
                     { id: 'binding', label: 'Binding Options' },
+                    { id: 'wire-colors', label: 'Wire Colors' },
                     { id: 'sizes', label: 'Size Options' },
                     { id: 'paper-cover', label: 'Cover Paper' },
                     { id: 'paper-inside', label: 'Inside Paper' },
                     { id: 'colors', label: 'Color Options' },
                     { id: 'finishes', label: 'Cover Finishes' },
-                    { id: 'headband', label: 'Headband Colors' },
-                    { id: 'bookmark', label: 'Bookmark Options' },
+                    { id: 'cover-folds', label: 'Cover Fold Options' },
                     { id: 'additional', label: 'Additional Services' },
                     { id: 'page-counts', label: 'Page Count Options' },
                     { id: 'quantities', label: 'Quantity Options' },
@@ -478,7 +512,14 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Binding Options</h3>
                       {renderEditableArray('Binding Types', 'bindingTypes', ['value', 'label', 'link'])}
-                      {renderEditableArray('Spine Types', 'bindingEdges', ['value', 'label', 'desc'])}
+                      {renderEditableArray('Binding Edges', 'bindingEdges', ['value', 'label', 'desc', 'image'])}
+                    </>
+                  )}
+
+                  {activeTab === 'wire-colors' && (
+                    <>
+                      <h3 className="text-lg font-semibold text-gray-900">Wire Color Options</h3>
+                      {renderEditableArray('Wire Colors', 'wireColors', ['value', 'label', 'color', 'image'])}
                     </>
                   )}
 
@@ -487,28 +528,31 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
                       <h3 className="text-lg font-semibold text-gray-900">Size Options</h3>
                       {renderEditableArray('Available Sizes', 'sizes', ['value', 'label'])}
                       
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Custom Size Instructions
-                        </label>
-                        <input
-                          type="text"
-                          value={config.customSizeInstructions || ''}
-                          onChange={(e) => updateNestedConfig('customSizeInstructions', e.target.value)}
-                          className="w-full p-3 border border-gray-300 rounded-lg"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Default Spine Width
-                        </label>
-                        <input
-                          type="text"
-                          value={config.spineWidth || ''}
-                          onChange={(e) => updateNestedConfig('spineWidth', e.target.value)}
-                          className="w-full p-3 border border-gray-300 rounded-lg"
-                        />
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Custom Size Instructions (INCH)
+                          </label>
+                          <input
+                            type="text"
+                            value={config.customSizeInstructions?.INCH || ''}
+                            onChange={(e) => updateNestedConfig('customSizeInstructions.INCH', e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-lg"
+                            placeholder="Minimum: 4&quot; × 4&quot; | Maximum: 11.8&quot; × 14.3&quot;"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Custom Size Instructions (MM)
+                          </label>
+                          <input
+                            type="text"
+                            value={config.customSizeInstructions?.MM || ''}
+                            onChange={(e) => updateNestedConfig('customSizeInstructions.MM', e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-lg"
+                            placeholder="Minimum: 102 × 102 mm | Maximum: 300 × 363 mm"
+                          />
+                        </div>
                       </div>
                     </>
                   )}
@@ -519,7 +563,7 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
                   {activeTab === 'colors' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Color Options</h3>
-                      {renderEditableArray('Print Colors', 'printColors', ['value', 'label', 'description'])}
+                      {renderEditableArray('Print Colors', 'printColors', ['value', 'label', 'price'])}
                     </>
                   )}
 
@@ -530,17 +574,10 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
                     </>
                   )}
 
-                  {activeTab === 'headband' && (
+                  {activeTab === 'cover-folds' && (
                     <>
-                      <h3 className="text-lg font-semibold text-gray-900">Headband Color Options</h3>
-                      {renderEditableArray('Headband Colors', 'headbandColors', ['value', 'label', 'color'])}
-                    </>
-                  )}
-
-                  {activeTab === 'bookmark' && (
-                    <>
-                      <h3 className="text-lg font-semibold text-gray-900">Bookmark Options</h3>
-                      {renderEditableArray('Bookmark Options', 'bookmarkOptions', ['value', 'label'])}
+                      <h3 className="text-lg font-semibold text-gray-900">Cover Fold Options</h3>
+                      {renderEditableArray('Cover Folds', 'coverFolds', ['value', 'label', 'price'])}
                     </>
                   )}
 
@@ -705,12 +742,12 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Hardcover Base Cost ($)
+                            Wire Binding Base Cost ($)
                           </label>
                           <input
                             type="number"
-                            value={config.pricing?.hardcoverBaseCost || 0}
-                            onChange={(e) => updateNestedConfig('pricing.hardcoverBaseCost', parseFloat(e.target.value) || 0)}
+                            value={config.pricing?.wireBindingBaseCost || 0}
+                            onChange={(e) => updateNestedConfig('pricing.wireBindingBaseCost', parseFloat(e.target.value) || 0)}
                             className="w-full p-3 border border-gray-300 rounded-lg"
                           />
                         </div>

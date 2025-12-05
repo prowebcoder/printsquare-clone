@@ -22,8 +22,8 @@ export default function AboutUsRenderer({ component, index }) {
   const contentColClass = imagePosition === 'left' ? 'order-2' : 'order-1';
 
   return (
-    <section key={component.id || index} className="relative bg-[#F8F9FB] py-20 px-6 md:px-16 lg:px-28 text-[#0B1633]">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+    <section key={component.id || index} className="relative bg-[#F8F9FB] py-6 md:py-20 px-6 md:px-16 lg:px-28 text-[#0B1633]">
+      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-6 md:gap-12 items-center">
         
         {/* Image Section */}
         {content.image && (

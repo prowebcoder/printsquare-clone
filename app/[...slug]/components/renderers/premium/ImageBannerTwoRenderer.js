@@ -67,7 +67,7 @@ export default function ImageBannerTwoRenderer({ component, index }) {
             {/* Title - Only show if title or highlightedTitle exists */}
             {(content.title || content.highlightedTitle) && (
               <h2 
-                className={`font-bold mb-6 ${content.titleSize || 'text-3xl md:text-4xl'}`}
+                className={`font-extrabold leading-tight mb-6 ${content.titleSize || 'text-3xl md:text-4xl'}`}
                 style={{ color: content.titleColor || '#0B1633' }}
               >
                 {content.title || 'Special Order'}{' '}

@@ -56,7 +56,7 @@ export default function MultiColumnRenderer({ component, index }) {
                 <div className="text-center flex-1 flex flex-col w-full">
                   {/* Heading */}
                   {column.heading && (
-                    <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
+                    <h3 className="text-xl font-extrabold leading-tight text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
                       {column.heading}
                     </h3>
                   )}

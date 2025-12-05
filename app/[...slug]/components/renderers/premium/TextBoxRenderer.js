@@ -164,7 +164,7 @@ export default function TextBoxRenderer({ component, index }) {
   return (
     <section
       key={component.id || index}
-      className="relative py-20 px-6 sm:px-10 overflow-hidden"
+      className="relative py-6 md:py-20 px-6 sm:px-10 overflow-hidden"
       style={getBackgroundStyle()}
     >
       {/* Decorative background elements */}
@@ -210,7 +210,7 @@ export default function TextBoxRenderer({ component, index }) {
           {/* Title */}
           {content.title && (
             <h1 
-              className={`font-bold tracking-tight ${content.titleSize || 'text-4xl sm:text-5xl'}`}
+              className={`font-bold tracking-tight ${content.titleSize || 'text-3xl md:text-5xl'}`}
               style={getTitleStyle()}
             >
               {content.title}

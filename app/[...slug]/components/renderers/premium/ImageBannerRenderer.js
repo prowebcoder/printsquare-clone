@@ -44,7 +44,7 @@ export default function ImageBannerRenderer({ component, index }) {
             {/* Title - Only show if exists */}
             {content.title && (
               <h2 
-                className={`font-bold mb-4 ${content.titleSize || 'text-3xl md:text-4xl'}`}
+                className={`font-extrabold leading-tight mb-4 ${content.titleSize || 'text-3xl md:text-4xl'}`}
                 style={{ color: content.titleColor || '#FFFFFF' }}
               >
                 {content.title}

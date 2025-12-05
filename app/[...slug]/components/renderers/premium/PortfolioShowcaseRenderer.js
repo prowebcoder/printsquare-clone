@@ -77,7 +77,7 @@ export default function PortfolioShowcaseRenderer({ component, index }) {
         <div className="text-center mb-10 md:mb-16">
           {content.title && (
             <h2 
-              className={`font-bold tracking-tight text-gray-900 ${content.titleSize || 'text-3xl sm:text-4xl'} mb-4`}
+              className={`font-extrabold leading-tight text-gray-900 ${content.titleSize || 'text-3xl sm:text-4xl'} mb-4`}
               style={{ color: content.titleColor || '#1F2937' }}
             >
               {content.title}

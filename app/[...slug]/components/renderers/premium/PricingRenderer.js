@@ -36,7 +36,7 @@ export default function PricingRenderer({ component, index }) {
   return (
     <section
       key={component.id || index}
-      className="relative py-24 px-6 md:px-12 overflow-hidden"
+      className="relative py-6 md:py-20 px-6 md:px-12 overflow-hidden"
       style={getBackgroundStyle()}
     >
       {/* Background Glow Elements - Only show if not using gradient background */}
@@ -50,9 +50,9 @@ export default function PricingRenderer({ component, index }) {
       <div className="relative max-w-6xl mx-auto z-10">
         {/* Section Title - Only show if title or highlightedTitle exists */}
         {(content.title || content.highlightedTitle) && (
-          <div className="text-center mb-16">
+          <div className="text-center mb-6 md:mb-10">
             <h2 
-              className={`font-extrabold mb-8 leading-tight ${content.titleSize || 'text-4xl md:text-5xl'}`}
+              className={`font-extrabold leading-tight ${content.titleSize || 'text-3xl md:text-5xl'}`}
               style={{ color: content.titleColor || '#FFFFFF' }}
             >
               {content.title || 'Affordable Printing'}{' '}
@@ -67,7 +67,7 @@ export default function PricingRenderer({ component, index }) {
 
         {/* Description - Only show if exists */}
         {(content.description1 || content.description2) && (
-          <div className="space-y-6 text-lg mb-16 max-w-3xl mx-auto leading-relaxed text-center">
+          <div className="space-y-6 text-lg mb-6 md:mb-10 max-w-3xl mx-auto leading-relaxed text-center">
             {content.description1 && (
               <p style={{ color: content.titleColor || '#FFFFFF' }}>{content.description1}</p>
             )}

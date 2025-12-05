@@ -106,7 +106,7 @@ export default function FreeSampleRenderer({ component, index }) {
           {/* Title - Only show if exists */}
           {content.title && (
             <h2 
-              className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 leading-tight"
+              className="text-3xl md:text-4xl font-extrabold leading-tight mb-6"
               style={{ color: content.titleColor || '#1F2937' }}
             >
               {content.title}

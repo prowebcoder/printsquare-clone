@@ -278,7 +278,7 @@ export default function ContactUsRenderer({ component, index }) {
                     />
                   </div>
                   <h3 
-                    className="font-semibold text-lg mb-2"
+                    className="font-extrabold leading-tight text-lg mb-2"
                     style={{ color: card.titleColor || content.cardTitleColor || '#1F2937' }}
                   >
                     {card.title}
@@ -317,7 +317,7 @@ export default function ContactUsRenderer({ component, index }) {
           >
             {content.formTitle && (
               <h2 
-                className="text-2xl font-bold mb-6 text-center"
+                className="text-2xl font-extrabold leading-tight mb-6 text-center"
                 style={{ color: content.formTitleColor || '#1F2937' }}
               >
                 {content.formTitle}

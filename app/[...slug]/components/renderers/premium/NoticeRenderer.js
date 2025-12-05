@@ -46,7 +46,7 @@ export default function NoticeRenderer({ component, index }) {
         {content.title && (
           <div className="text-center mb-14">
             <h2 
-              className="text-4xl md:text-5xl font-bold tracking-wide flex items-center justify-center gap-3"
+              className="text-4xl md:text-5xl font-extrabold leading-tight tracking-wide flex items-center justify-center gap-3"
               style={{ color: content.titleColor || '#0B1633' }}
             >
               <svg
@@ -90,7 +90,7 @@ export default function NoticeRenderer({ component, index }) {
                 {/* Notice Title - Only show if exists */}
                 {notice.title && (
                   <h3 
-                    className="font-semibold text-lg mb-2"
+                    className="font-extrabold leading-tight text-lg mb-2"
                     style={{ color: content.noticeTitleColor || '#0B1633' }}
                   >
                     {notice.title}

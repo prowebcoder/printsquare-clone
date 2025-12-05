@@ -26,7 +26,7 @@ export default function MultiTableRenderer({ component, index }) {
               {/* Table Title */}
               {table.title && (
                 <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                  <h3 className="text-xl font-bold text-gray-900 text-center">
+                  <h3 className="text-xl font-extrabold leading-tight text-gray-900 text-center">
                     {table.title}
                   </h3>
                 </div>
@@ -42,7 +42,7 @@ export default function MultiTableRenderer({ component, index }) {
                         {table.headers.map((header, headerIndex) => (
                           <th 
                             key={headerIndex}
-                            className="px-6 py-4 text-left text-sm font-semibold text-gray-900 border-b border-gray-200"
+                            className="px-6 py-4 text-left text-sm font-extrabold leading-tight text-gray-900 border-b border-gray-200"
                           >
                             {header}
                           </th>
