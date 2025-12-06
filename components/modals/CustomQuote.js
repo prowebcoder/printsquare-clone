@@ -261,7 +261,8 @@ const CustomQuote = ({ isOpen, onClose }) => {
             </h2>
             
             <p className="text-sm text-gray-600 mb-4">
-              Request a custom quote if you can't obtain a quote online.
+             Request a custom quote if you can&apos;t obtain a quote online.
+
             </p>
             
             <form onSubmit={handleSubmit}>
