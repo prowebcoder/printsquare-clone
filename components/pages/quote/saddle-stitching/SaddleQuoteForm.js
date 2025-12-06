@@ -956,6 +956,10 @@ const SaddleQuoteForm = () => {
   const [shrinkWrapping, setShrinkWrapping] = useState({ enabled: false, type: '1' });
   const [directMailing, setDirectMailing] = useState({ enabled: false, type: 'ALL' });
 
+// Email submission states
+  const [submitting, setSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
+
   // Derived State
   const isCustomSize = selectedSize === 'Custom Size';
   const [pricingData, setPricingData] = useState(getPricingData());
@@ -1251,42 +1255,84 @@ const SaddleQuoteForm = () => {
     setPricingData(newPricingData);
   }, [pageCount, selectedSize, isCustomSize, coverPaper, insidePaper, coverColor, insideColor, coverFinish, coverFold, proof, holePunching, slipcase, formConfig]);
 
-  const handleAddToCart = () => {
-    const formData = {
-      bindingType, sizeUnit, paperUnit, selectedSize,
-      customSize: isCustomSize ? { width: customWidth, height: customHeight } : null,
-      bindingEdge, spineWidth,
-      cover: { 
-        paper: coverPaper, 
-        weight: coverWeight, 
-        color: coverColor, 
-        finish: coverFinish, 
-        fold: coverFold, 
-        foldWidth, 
-        dustCover: dustCover 
-      },
-      inside: { 
-        pageCount, 
-        paper: insidePaper, 
-        weight: insideWeight, 
-        color: insideColor, 
-        subscriptionCards 
-      },
-      quantity,
-      options: { 
-        proof, 
-        holePunching, 
-        slipcase, 
-        shrinkWrapping, 
-        directMailing,
-        addOns
-      },
-      totalAmount: prices.total.toFixed(2),
-    };
-    
-    console.log("Form Data Submitted:", formData);
-    alert(`Order added to cart! Total Price: ${formatCurrency(prices.total)}`);
+  const handleAddToCart = async () => {
+  const formData = {
+    bindingType,
+    sizeUnit,
+    paperUnit,
+    selectedSize,
+    customSize: isCustomSize ? { width: customWidth, height: customHeight } : null,
+    bindingEdge,
+    spineWidth: formConfig.spineWidth || '0.178"',
+    cover: { 
+      paper: coverPaper, 
+      weight: coverWeight, 
+      color: coverColor, 
+      finish: coverFinish, 
+      fold: coverFold, 
+      foldWidth,
+      dustCover: dustCover 
+    },
+    inside: { 
+      pageCount, 
+      paper: insidePaper, 
+      weight: insideWeight, 
+      color: insideColor, 
+      subscriptionCards 
+    },
+    quantity,
+    options: { 
+      proof, 
+      holePunching, 
+      slipcase, 
+      shrinkWrapping, 
+      directMailing,
+      addOns
+    },
+    totalAmount: prices.total.toFixed(2),
   };
+  
+  console.log("Saddle Stitching Form Data Submitted:", formData);
+  
+  setSubmitting(true);
+  setSubmitStatus(null);
+  
+  try {
+    // Send email to your address
+    const emailResponse = await fetch('/api/send-quote/saddle-quote', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+    
+    const emailResult = await emailResponse.json();
+    
+    if (emailResponse.ok) {
+      setSubmitStatus({ 
+        type: 'success', 
+        message: 'Saddle stitching quote sent successfully! We\'ll contact you soon.' 
+      });
+      alert(`Saddle stitching quote sent! Total Price: ${formatCurrency(prices.total)}`);
+    } else {
+      setSubmitStatus({ 
+        type: 'error', 
+        message: emailResult.message || 'Failed to send quote request.' 
+      });
+      alert('Failed to send quote request. Please try again.');
+    }
+  } catch (error) {
+    console.error('Submission error:', error);
+    setSubmitStatus({ 
+      type: 'error', 
+      message: 'An error occurred. Please try again.' 
+    });
+    alert('Error submitting quote. Please try again.');
+  } finally {
+    setSubmitting(false);
+  }
+};
 
   if (loading) {
     return (
@@ -1786,20 +1832,50 @@ const SaddleQuoteForm = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 mt-8">
-                <button 
-                  onClick={() => setShowShippingModal(true)}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-sm"
-                >
-                  {generalSettings.shippingButtonText}
-                </button>
-                <button 
-                  onClick={handleAddToCart}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-sm"
-                >
-                  {generalSettings.submitButtonText}
-                </button>
-              </div>
+<div className="flex flex-col sm:flex-row gap-4 mt-8">
+  <button 
+    onClick={() => setShowShippingModal(true)}
+    disabled={submitting}
+    className="flex-1 px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+  >
+    {generalSettings.shippingButtonText}
+  </button>
+  <button 
+    onClick={handleAddToCart}
+    disabled={submitting}
+    className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+  >
+    {submitting ? (
+      <>
+        <svg className="animate-spin h-5 w-5 mr-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Sending Quote...
+      </>
+    ) : (
+      generalSettings.submitButtonText
+    )}
+  </button>
+</div>
+
+{/* Status Message */}
+{submitStatus && (
+  <div className={`mt-4 p-4 rounded-lg ${submitStatus.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
+    <div className="flex items-center">
+      {submitStatus.type === 'success' ? (
+        <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+        </svg>
+      ) : (
+        <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+        </svg>
+      )}
+      <span>{submitStatus.message}</span>
+    </div>
+  </div>
+)}
             </div>
           </div>
         </div>

@@ -5,10 +5,50 @@ import { FiX } from "react-icons/fi";
 import { useCustomerAuth } from '@/hooks/useCustomerAuth';
 import { useRouter } from 'next/navigation';
 
+// Helper function for form validation
+const validateFormData = (formData) => {
+  const errors = [];
+
+  if (!formData.project_name.trim()) {
+    errors.push("Project name is required");
+  }
+
+  if (!formData.binding) {
+    errors.push("Please select a binding type");
+  }
+
+  if (!formData.custom_width || !formData.custom_height) {
+    errors.push("Please specify finished size dimensions");
+  }
+
+  if (!formData.page_in) {
+    errors.push("Page count is required");
+  }
+
+  if (!formData.quantity) {
+    errors.push("Quantity is required");
+  }
+
+  if (!formData.country) {
+    errors.push("Please select a country");
+  }
+
+  if (!formData.zipcode) {
+    errors.push("Zip code is required for shipping estimate");
+  }
+
+  if (formData.quote_desc.length < 10) {
+    errors.push("Please provide a more detailed project description (minimum 10 characters)");
+  }
+
+  return errors;
+};
+
 const CustomQuote = ({ isOpen, onClose }) => {
   const { customer } = useCustomerAuth();
   const router = useRouter();
   
+  // Form state
   const [formData, setFormData] = useState({
     project_name: "",
     binding: "",
@@ -20,6 +60,10 @@ const CustomQuote = ({ isOpen, onClose }) => {
     zipcode: "",
     quote_desc: ""
   });
+
+  // Submission states
+  const [submitting, setSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(null);
 
   // Redirect to login if not logged in
   useEffect(() => {
@@ -59,6 +103,16 @@ const CustomQuote = ({ isOpen, onClose }) => {
       return;
     }
 
+    // Validate form
+    const validationErrors = validateFormData(formData);
+    if (validationErrors.length > 0) {
+      alert(`Please fix the following errors:\n\n• ${validationErrors.join('\n• ')}`);
+      return;
+    }
+
+    setSubmitting(true);
+    setSubmitStatus(null);
+
     try {
       const submissionData = {
         ...formData,
@@ -68,26 +122,52 @@ const CustomQuote = ({ isOpen, onClose }) => {
         timestamp: new Date().toISOString()
       };
 
-      // TODO: Implement API call
-      console.log('Custom quote data:', submissionData);
-      
-      alert('Custom quote request submitted successfully! Our team will contact you soon.');
-      onClose();
-      
-      setFormData({
-        project_name: "",
-        binding: "",
-        custom_width: "",
-        custom_height: "",
-        page_in: "",
-        quantity: "",
-        country: "",
-        zipcode: "",
-        quote_desc: ""
+      // Send email via API
+      const response = await fetch('/api/send-quote/custom-quote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submissionData),
       });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setSubmitStatus({ 
+          type: 'success', 
+          message: 'Custom quote request submitted successfully! Our team will contact you within 1-2 business days.' 
+        });
+        
+        // Show success message and reset form after delay
+        setTimeout(() => {
+          onClose();
+          setFormData({
+            project_name: "",
+            binding: "",
+            custom_width: "",
+            custom_height: "",
+            page_in: "",
+            quantity: "",
+            country: "",
+            zipcode: "",
+            quote_desc: ""
+          });
+        }, 3000);
+      } else {
+        setSubmitStatus({ 
+          type: 'error', 
+          message: result.message || 'Failed to submit request. Please try again.' 
+        });
+      }
     } catch (error) {
       console.error('Error submitting custom quote:', error);
-      alert('Error submitting request. Please try again.');
+      setSubmitStatus({ 
+        type: 'error', 
+        message: 'Network error. Please check your connection and try again.' 
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -181,7 +261,7 @@ const CustomQuote = ({ isOpen, onClose }) => {
             </h2>
             
             <p className="text-sm text-gray-600 mb-4">
-              Request a custom quote if you can&apos;t obtain a quote online.
+              Request a custom quote if you can't obtain a quote online.
             </p>
             
             <form onSubmit={handleSubmit}>
@@ -196,6 +276,7 @@ const CustomQuote = ({ isOpen, onClose }) => {
                   maxLength={200}
                   placeholder="Project Name (Title)"
                   className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#E21B36] focus:border-transparent"
+                  required
                 />
               </div>
 
@@ -208,6 +289,7 @@ const CustomQuote = ({ isOpen, onClose }) => {
                     value={formData.binding}
                     onChange={handleChange}
                     className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#E21B36] focus:border-transparent"
+                    required
                   >
                     {bindings.map((binding, index) => (
                       <option key={index} value={binding.value}>{binding.label}</option>
@@ -225,6 +307,7 @@ const CustomQuote = ({ isOpen, onClose }) => {
                       maxLength={7}
                       placeholder="Width"
                       className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#E21B36] focus:border-transparent"
+                      required
                     />
                     <input
                       type="text"
@@ -234,6 +317,7 @@ const CustomQuote = ({ isOpen, onClose }) => {
                       maxLength={7}
                       placeholder="Height"
                       className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#E21B36] focus:border-transparent"
+                      required
                     />
                   </div>
                 </div>
@@ -251,6 +335,7 @@ const CustomQuote = ({ isOpen, onClose }) => {
                     maxLength={7}
                     placeholder="Page Count"
                     className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#E21B36] focus:border-transparent"
+                    required
                   />
                 </div>
                 <div className="space-y-1">
@@ -263,6 +348,7 @@ const CustomQuote = ({ isOpen, onClose }) => {
                     maxLength={7}
                     placeholder="Quantity"
                     className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#E21B36] focus:border-transparent"
+                    required
                   />
                 </div>
               </div>
@@ -276,6 +362,7 @@ const CustomQuote = ({ isOpen, onClose }) => {
                     value={formData.country}
                     onChange={handleChange}
                     className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#E21B36] focus:border-transparent"
+                    required
                   >
                     <option value="">Select Country</option>
                     {countries.map((country, index) => (
@@ -293,6 +380,7 @@ const CustomQuote = ({ isOpen, onClose }) => {
                     maxLength={10}
                     placeholder="ZipCode"
                     className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#E21B36] focus:border-transparent"
+                    required
                   />
                 </div>
               </div>
@@ -304,26 +392,58 @@ const CustomQuote = ({ isOpen, onClose }) => {
                   name="quote_desc"
                   value={formData.quote_desc}
                   onChange={handleChange}
-                  placeholder="Please describe your project"
+                  placeholder="Please describe your project (minimum 10 characters)"
                   rows={3}
                   className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#E21B36] focus:border-transparent"
+                  required
+                  minLength={10}
                 />
               </div>
+
+              {/* Status Message */}
+              {submitStatus && (
+                <div className={`mb-4 p-3 rounded-md text-sm ${submitStatus.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
+                  <div className="flex items-center">
+                    {submitStatus.type === 'success' ? (
+                      <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    )}
+                    <span>{submitStatus.message}</span>
+                  </div>
+                </div>
+              )}
 
               {/* Footer Buttons */}
               <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 text-sm border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-500"
+                  disabled={submitting}
+                  className="px-4 py-2 text-sm border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 text-sm bg-[#E21B36] text-white rounded-md hover:bg-[#c8152d] focus:outline-none focus:ring-1 focus:ring-[#E21B36]"
+                  disabled={submitting}
+                  className="px-4 py-2 text-sm bg-[#E21B36] text-white rounded-md hover:bg-[#c8152d] focus:outline-none focus:ring-1 focus:ring-[#E21B36] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
                 >
-                  Submit
+                  {submitting ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Submitting...
+                    </>
+                  ) : (
+                    'Submit Quote Request'
+                  )}
                 </button>
               </div>
             </form>
