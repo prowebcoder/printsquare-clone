@@ -265,7 +265,7 @@ const CustomQuote = ({ isOpen, onClose }) => {
 
             </p>
             
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}> 
               {/* Row 1: Project Name */}
               <div className="mb-3">
                 <label className="block text-xs font-medium text-gray-700 mb-1">Project Name</label>
