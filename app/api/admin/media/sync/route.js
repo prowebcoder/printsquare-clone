@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { readdir, stat } from 'fs/promises';
 import path from 'path';
 import Media from '@/models/Media';
-import dbConnect from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 
 export async function POST() {
   try {

@@ -1,5 +1,5 @@
 // app/api/admin/create-admin/route.js
-import { connectToDatabase } from '@/lib/mongodb';
+import { connectToDatabase } from '@/lib/db';
 import User from '@/models/User';
 import bcrypt from 'bcryptjs';
 

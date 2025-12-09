@@ -1,6 +1,8 @@
 // components/pages/quote/hardcover/HardQuoteForm.js
 'use client';
 import { useState, useCallback, useEffect } from 'react';
+import { useCart } from '@/context/CartContext';
+import { useRouter } from 'next/navigation';
 
 // ===== DEFAULT CONFIG =====
 const HARDQUOTE_DEFAULT_CONFIG = {
@@ -699,6 +701,10 @@ const ToggleOption = ({ label, enabled, onToggle, children, className = "" }) =>
 
 // ===== MAIN COMPONENT =====
 const HardQuoteForm = () => {
+  // Import cart context and router
+  const { addToCart } = useCart();
+  const router = useRouter();
+
   // Move ALL hooks inside the component
   const [formConfig, setFormConfig] = useState(HARDQUOTE_DEFAULT_CONFIG);
   const [loading, setLoading] = useState(true);
@@ -737,14 +743,9 @@ const HardQuoteForm = () => {
   const [shrinkWrapping, setShrinkWrapping] = useState({ enabled: false, type: '1' });
   const [directMailing, setDirectMailing] = useState({ enabled: false, type: 'ALL' });
 
-  // Email submission states
-  const [submitting, setSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null);
-
   const isCustomSize = selectedSize === 'custom';
   const [pricingData, setPricingData] = useState(getPricingData());
 
-  // Rest of your component code remains the same...
   // Available sizes based on unit
   const availableSizes = [
     { value: '5.5x8.5', label: SIZE_CONVERSIONS[sizeUnit]?.['5.5x8.5'] || '5.5" x 8.5"' },
@@ -979,54 +980,46 @@ const HardQuoteForm = () => {
     setPricingData(newPricingData);
   }, [pageCount, selectedSize, isCustomSize, coverColor, insideColor, proof, slipcase, formConfig]);
 
-  const handleAddToCart = async () => {
-    const formData = {
-      sizeUnit, 
-      paperUnit, 
-      selectedSize,
-      customSize: isCustomSize ? { width: customWidth, height: customHeight } : null,
-      spineType, 
-      spineWidth,
-      headband: { color: headbandColor, bookmark },
-      cover: { paper: coverPaper, weight: coverWeight, color: coverColor },
-      inside: { pageCount, paper: insidePaper, weight: insideWeight, color: insideColor },
-      dustCover,
-      quantity,
-      options: { proof, holePunching, slipcase, shrinkWrapping, directMailing },
-      totalAmount: prices.total.toFixed(2),
-    };
-    
-    console.log("Hardcover Form Data Submitted:", formData);
-    
-    setSubmitting(true);
-    setSubmitStatus(null);
-    
-    try {
-      // Send email to your address
-      const emailResponse = await fetch('/api/send-quote/hard-quote', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      
-      const emailResult = await emailResponse.json();
-      
-      if (emailResponse.ok) {
-        setSubmitStatus({ type: 'success', message: 'Quote request sent successfully! We\'ll contact you soon.' });
-        alert(`Hardcover book quote sent! Total Price: ${formatCurrency(prices.total)}`);
-      } else {
-        setSubmitStatus({ type: 'error', message: emailResult.message || 'Failed to send quote request.' });
-        alert('Failed to send quote request. Please try again.');
-      }
-    } catch (error) {
-      console.error('Submission error:', error);
-      setSubmitStatus({ type: 'error', message: 'An error occurred. Please try again.' });
-      alert('Error submitting quote. Please try again.');
-    } finally {
-      setSubmitting(false);
+  // NEW: Handle Add to Cart function
+  const handleAddToCart = () => {
+  const formData = {
+    sizeUnit, 
+    paperUnit, 
+    selectedSize,
+    customSize: isCustomSize ? { width: customWidth, height: customHeight } : null,
+    spineType, 
+    spineWidth,
+    headband: { color: headbandColor, bookmark },
+    cover: { paper: coverPaper, weight: coverWeight, color: coverColor },
+    inside: { pageCount, paper: insidePaper, weight: insideWeight, color: insideColor },
+    dustCover,
+    quantity,
+    options: { proof, holePunching, slipcase, shrinkWrapping, directMailing },
+    totalAmount: prices.total,
+  };
+  
+  const cartItem = {
+    type: 'hardcover',
+    productName: `Hardcover Book - ${selectedSize}`,
+    quantity: quantity,
+    price: prices.total / quantity,
+    total: prices.total,
+    configuration: formData,
+    summary: {
+      size: availableSizes.find(s => s.value === selectedSize)?.label || selectedSize,
+      pages: pageCount,
+      binding: spineType,
+      cover: coverPaper,
+      printColor: coverColor,
+      quantity: quantity
     }
+  };
+    
+    // Add to cart
+    addToCart(cartItem);
+    
+    // Redirect to cart page
+    router.push('/cart');
   };
 
   if (loading) {
@@ -1445,51 +1438,21 @@ const HardQuoteForm = () => {
                 </div>
               </div>
 
-              {/* Action Buttons */}
+              {/* Action Buttons - UPDATED FOR CART */}
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
                 <button 
                   onClick={() => setShowShippingModal(true)}
-                  disabled={submitting}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-sm"
                 >
                   {generalSettings.shippingButtonText}
                 </button>
                 <button 
                   onClick={handleAddToCart}
-                  disabled={submitting}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-sm flex items-center justify-center"
                 >
-                  {submitting ? (
-                    <>
-                      <svg className="animate-spin h-5 w-5 mr-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Sending Quote...
-                    </>
-                  ) : (
-                    generalSettings.submitButtonText
-                  )}
+                  {generalSettings.submitButtonText}
                 </button>
               </div>
-
-              {/* Status Message */}
-              {submitStatus && (
-                <div className={`mt-4 p-4 rounded-lg ${submitStatus.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
-                  <div className="flex items-center">
-                    {submitStatus.type === 'success' ? (
-                      <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                    ) : (
-                      <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                      </svg>
-                    )}
-                    <span>{submitStatus.message}</span>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>

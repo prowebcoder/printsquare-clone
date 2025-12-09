@@ -1,7 +1,7 @@
 // app/api/admin/pages/[id]/set-homepage/route.js
 import { NextResponse } from 'next/server';
 import Page from '@/models/Page';
-import dbConnect from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 
 export async function POST(request, { params }) {
   try {

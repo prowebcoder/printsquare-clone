@@ -9,23 +9,24 @@ import { FiMenu, FiX } from "react-icons/fi";
 import { useCustomerAuth } from '@/hooks/useCustomerAuth';
 import RequestingSample from "@/components/modals/RequestingSample";
 import CustomQuote from '@/components/modals/CustomQuote';
+import CartIcon from "../common/CartIcon";
+import CartSidebar from "../common/CartSidebar";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false); // mobile menu
   const [isSticky, setIsSticky] = useState(false);
   const [isSampleModalOpen, setIsSampleModalOpen] = useState(false); // Modal state
   const { customer, logout, loading } = useCustomerAuth();
-const [isCustomQuoteModalOpen, setIsCustomQuoteModalOpen] = useState(false);
+  const [isCustomQuoteModalOpen, setIsCustomQuoteModalOpen] = useState(false);
 
   const toggleMenu = () => setIsOpen(!isOpen);
   const openSampleModal = () => setIsSampleModalOpen(true);
   const closeSampleModal = () => setIsSampleModalOpen(false);
-const openCustomQuoteModal = () => setIsCustomQuoteModalOpen(true);
-const closeCustomQuoteModal = () => setIsCustomQuoteModalOpen(false);
+  const openCustomQuoteModal = () => setIsCustomQuoteModalOpen(true);
+  const closeCustomQuoteModal = () => setIsCustomQuoteModalOpen(false);
+  
   const handleLogout = async () => {
     await logout();
-    // Optional: Redirect to home page after logout
-    // window.location.href = '/';
   };
 
   useEffect(() => {
@@ -52,7 +53,6 @@ const closeCustomQuoteModal = () => setIsCustomQuoteModalOpen(false);
             </div>
             <div className="flex items-center space-x-2">
               {customer ? (
-                // Show when customer is logged in
                 <div className="flex items-center space-x-3">
                   <span className="text-sm">Welcome, {customer.name}</span>
                   <Link
@@ -75,7 +75,6 @@ const closeCustomQuoteModal = () => setIsCustomQuoteModalOpen(false);
                   </button>
                 </div>
               ) : (
-                // Show when customer is not logged in
                 <>
                   <Link
                     href="/customer/join"
@@ -132,6 +131,7 @@ const closeCustomQuoteModal = () => setIsCustomQuoteModalOpen(false);
                   <div className="w-px h-4 bg-gray-400"></div>
                 </div>
               )}
+              <CartIcon />
               <Link
                 href="/portfolio"
                 className="bg-[#E21B36] text-white px-4 py-2 rounded-lg hover:bg-[#c8152d] transition text-sm font-medium"
@@ -154,7 +154,7 @@ const closeCustomQuoteModal = () => setIsCustomQuoteModalOpen(false);
       {/* Spacer */}
       <div className="h-[104px] sm:h-[120px] md:h-[110px]"></div>
 
-      {/* Mobile Menu - Pass customer auth state */}
+      {/* Mobile Menu */}
       <MobileMenu 
         isOpen={isOpen} 
         toggleMenu={toggleMenu} 
@@ -169,11 +169,15 @@ const closeCustomQuoteModal = () => setIsCustomQuoteModalOpen(false);
         isOpen={isSampleModalOpen}
         onClose={closeSampleModal}
       />
+      
       {/* Custom Quote Modal */}
       <CustomQuote 
-  isOpen={isCustomQuoteModalOpen}
-  onClose={closeCustomQuoteModal}
-/>
+        isOpen={isCustomQuoteModalOpen}
+        onClose={closeCustomQuoteModal}
+      />
+      
+      {/* Cart Sidebar */}
+      <CartSidebar />
     </>
   );
 };

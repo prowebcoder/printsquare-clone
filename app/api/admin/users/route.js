@@ -1,7 +1,7 @@
 // printsquare-clone/app/api/admin/users/route.js
 import { NextResponse } from 'next/server';
 import User from '@/models/User';
-import dbConnect from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 
 export async function GET() {
   try {

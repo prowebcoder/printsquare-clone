@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import User from '@/models/User';
 import Page from '@/models/Page';
 import Media from '@/models/Media';
-import dbConnect from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 
 export async function GET() {
   try {

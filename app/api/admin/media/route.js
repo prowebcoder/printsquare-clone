@@ -4,7 +4,7 @@ import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import Media from '@/models/Media';
-import dbConnect from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 
 export async function GET() {
   try {

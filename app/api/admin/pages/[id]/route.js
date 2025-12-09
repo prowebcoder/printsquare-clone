@@ -1,7 +1,7 @@
 // app/api/admin/pages/[id]/route.js
 import { NextResponse } from 'next/server';
 import Page from '@/models/Page';
-import dbConnect from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 
 export async function GET(request, { params }) {
   try {
