@@ -266,6 +266,7 @@ const CustomQuote = ({ isOpen, onClose }) => {
             </p>
             
             <form onSubmit={handleSubmit}> 
+
               {/* Row 1: Project Name */}
               <div className="mb-3">
                 <label className="block text-xs font-medium text-gray-700 mb-1">Project Name</label>
@@ -279,7 +280,7 @@ const CustomQuote = ({ isOpen, onClose }) => {
                   className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#E21B36] focus:border-transparent"
                   required
                 />
-              </div>
+              </div> 
 
               {/* Row 2: Binding & Size */}
               <div className="grid grid-cols-2 gap-3 mb-3">
