@@ -1,7 +1,7 @@
 // app/api/admin/auth/verify/route.js
 import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
-import dbConnect from '@/lib/db';
+import { dbConnect } from "@/lib/mongodb";
 import User from '@/models/User';
 
 export async function GET(request) {

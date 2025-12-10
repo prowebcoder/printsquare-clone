@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/db';
+import { dbConnect } from "@/lib/mongodb";
 import Customer from '@/models/Customer';
 import { hashPassword, generateCustomerToken } from '@/lib/auth';
 

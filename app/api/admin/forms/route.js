@@ -1,6 +1,6 @@
 // app/api/admin/forms/route.js
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/db';
+import { dbConnect } from "@/lib/mongodb";
 import FormConfiguration from '@/models/FormConfiguration';
 
 export async function GET(request) {
