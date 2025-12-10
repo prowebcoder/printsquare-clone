@@ -1,4 +1,4 @@
-// src/app/page.js
+// app/page.js
 import dbConnect from '@/lib/mongodb';
 import Page from '@/models/Page';
 import Header from '@/components/layout/header/header';

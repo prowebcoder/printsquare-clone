@@ -1,5 +1,6 @@
 // app/[...slug]/page.js
-import dbConnect from '@/lib/db';
+import dbConnect from '@/lib/mongodb';
+
 import Page from '@/models/Page';
 import { notFound, redirect } from 'next/navigation';
 import Header from '@/components/layout/header/header';
