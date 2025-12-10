@@ -1,6 +1,6 @@
 // app/api/admin/login/route.js
 import { NextResponse } from 'next/server';
-import { dbConnect } from "@/lib/mongodb";
+import dbConnect from "@/lib/mongodb";
 import User from '../../../../models/User';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';

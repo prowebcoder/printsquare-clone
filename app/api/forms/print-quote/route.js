@@ -1,6 +1,6 @@
 // app/api/forms/print-quote/route.js
 import { NextResponse } from 'next/server';
-import { dbConnect } from "@/lib/mongodb";
+import dbConnect from "@/lib/mongodb";
 import FormConfiguration from '@/models/FormConfiguration';
 
 export async function GET() {

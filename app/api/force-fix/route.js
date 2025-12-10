@@ -1,4 +1,4 @@
-import { dbConnect } from "@/lib/mongodb";
+import dbConnect from "@/lib/mongodb";
 import Page from '@/models/Page';
 
 export async function POST(request) {

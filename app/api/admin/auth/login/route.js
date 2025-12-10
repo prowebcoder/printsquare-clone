@@ -1,5 +1,6 @@
 // app/api/admin/auth/login/route.js
-import { dbConnect } from "@/lib/mongodb";
+import dbConnect from "@/lib/mongodb";
+
 import User from '@/models/User';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
