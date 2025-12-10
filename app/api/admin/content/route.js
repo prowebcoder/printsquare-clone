@@ -1,5 +1,5 @@
 // app/api/admin/content/route.js
-import dbConnect from "@/lib/mongodb";
+import dbConnect from '@/lib/mongodb';
 import Page from '@/models/Page';
 
 export async function GET(request) {
