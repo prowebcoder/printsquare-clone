@@ -1,4 +1,3 @@
-import { stripe } from '@/lib/stripe';
 import { NextResponse } from 'next/server';
 
 export async function GET(request) {
@@ -13,11 +12,31 @@ export async function GET(request) {
       );
     }
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId, {
-      expand: ['line_items', 'customer', 'customer_details'],
-    });
+    // Return mock session data (Stripe removed)
+    const fakeSessionData = {
+      id: sessionId,
+      payment_status: "paid",
+      customer_details: {
+        email: "customer@example.com",
+        name: "Mock Customer",
+      },
+      line_items: [
+        {
+          quantity: 1,
+          description: "Mock Product",
+          price: {
+            unit_amount: 1000,
+            currency: "usd",
+          }
+        }
+      ],
+      amount_total: 1000,
+      currency: "usd",
+      mock: true
+    };
 
-    return NextResponse.json(session);
+    return NextResponse.json(fakeSessionData);
+
   } catch (error) {
     console.error('Error retrieving session:', error);
     return NextResponse.json(
