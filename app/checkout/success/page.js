@@ -1,19 +1,22 @@
 'use client';
-import { useEffect, useState } from 'react';
+
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Header from '@/components/layout/header/header';
 import Footer from '@/components/layout/footer/footer';
 import { FiCheckCircle, FiHome, FiShoppingBag } from 'react-icons/fi';
 
-export default function CheckoutSuccess() {
+function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
   const [loading, setLoading] = useState(true);
   const [orderComplete, setOrderComplete] = useState(false);
 
   useEffect(() => {
-    // Simple effect to show success after a delay
     const timer = setTimeout(() => {
       setLoading(false);
       setOrderComplete(true);
@@ -58,14 +61,21 @@ export default function CheckoutSuccess() {
             <p className="text-lg text-gray-600 mb-8">
               Thank you for your order. Your payment has been processed successfully.
             </p>
-            
+
             <div className="bg-white rounded-xl shadow-md p-6 mb-8">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Order Details</h2>
               {sessionId && (
                 <div className="text-left">
-                  <p className="mb-2"><span className="font-medium">Order ID:</span> {sessionId.substring(0, 12)}...</p>
-                  <p className="mb-2"><span className="font-medium">Status:</span> <span className="text-green-600 font-semibold">Completed</span></p>
-                  <p className="mb-2"><span className="font-medium">Confirmation:</span> Sent to your email</p>
+                  <p className="mb-2">
+                    <span className="font-medium">Order ID:</span> {sessionId.substring(0, 12)}...
+                  </p>
+                  <p className="mb-2">
+                    <span className="font-medium">Status:</span>{' '}
+                    <span className="text-green-600 font-semibold">Completed</span>
+                  </p>
+                  <p className="mb-2">
+                    <span className="font-medium">Confirmation:</span> Sent to your email
+                  </p>
                   <p className="text-sm text-gray-500 mt-4">
                     A receipt has been emailed to you. Please check your inbox.
                   </p>
@@ -94,5 +104,13 @@ export default function CheckoutSuccess() {
       </div>
       <Footer />
     </>
+  );
+}
+
+export default function CheckoutSuccess() {
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+      <CheckoutSuccessContent />
+    </Suspense>
   );
 }
