@@ -23,6 +23,7 @@
 │   │   │   │   │   ├── NoticeRenderer.js
 │   │   │   │   │   ├── OrderProcessRenderer.js
 │   │   │   │   │   ├── PortfolioRenderer.js
+│   │   │   │   │   ├── PortfolioShowcaseRenderer.js
 │   │   │   │   │   ├── PricingRenderer.js
 │   │   │   │   │   ├── QuickGuidesRenderer.js
 │   │   │   │   │   ├── ServiceBoxRenderer.js
@@ -36,8 +37,6 @@
 │   │   │   └── AppImage.js
 │   │   ├── utils
 │   │   │   └── imageUtils.js
-│   │   └── page.js
-│   ├── about-us-2
 │   │   └── page.js
 │   ├── admin
 │   │   ├── dashboard
@@ -106,6 +105,8 @@
 │   │   │   │   ├── [id]
 │   │   │   │   │   ├── duplicate
 │   │   │   │   │   │   └── route.js
+│   │   │   │   │   ├── set-homepage
+│   │   │   │   │   │   └── route.js
 │   │   │   │   │   └── route.js
 │   │   │   │   └── route.js
 │   │   │   ├── setup
@@ -145,13 +146,24 @@
 │   │   │       └── route.js
 │   │   ├── reset-pages
 │   │   │   └── route.js
+│   │   ├── send-quote
+│   │   │   ├── custom-quote
+│   │   │   │   └── route.js
+│   │   │   ├── hard-quote
+│   │   │   │   └── route.js
+│   │   │   ├── print-quote
+│   │   │   │   └── route.js
+│   │   │   ├── saddle-quote
+│   │   │   │   └── route.js
+│   │   │   └── wire-quote
+│   │   │       └── route.js
 │   │   ├── test-form-config
+│   │   │   └── route.js
+│   │   ├── test-stripe
 │   │   │   └── route.js
 │   │   └── upload
 │   │       └── route.js
-│   ├── binding-and-finishing-2
-│   │   └── page.js
-│   ├── contact-us-2
+│   ├── cart
 │   │   └── page.js
 │   ├── customer
 │   │   ├── account
@@ -162,21 +174,13 @@
 │   │       └── page.js
 │   ├── debug-pages
 │   │   └── page.js
-│   ├── faqs-2
-│   │   └── page.js
 │   ├── hardcover-book
 │   │   └── page.js
 │   ├── perfect-binding
 │   │   └── page.js
-│   ├── portfolio
-│   │   └── page.js
-│   ├── printing-2
-│   │   └── page.js
 │   ├── privacy-policy
 │   │   └── page.js
 │   ├── saddle-stitching
-│   │   └── page.js
-│   ├── sheet-fed-press-2
 │   │   └── page.js
 │   ├── sitemap
 │   │   └── page.js
@@ -185,10 +189,6 @@
 │   ├── test-connection
 │   │   └── page.js
 │   ├── test-form-config
-│   │   └── page.js
-│   ├── tour-our-facilities-2
-│   │   └── page.js
-│   ├── web-fed-press-2
 │   │   └── page.js
 │   ├── wire-binding
 │   │   └── page.js
@@ -210,14 +210,19 @@
 │   │   ├── FaqData.js
 │   │   └── PortfolioData.js
 │   ├── layout
+│   │   ├── common
+│   │   │   ├── CartIcon.js
+│   │   │   └── CartSidebar.js
 │   │   ├── footer
 │   │   │   └── footer.js
 │   │   ├── header
 │   │   │   ├── header-menu.js
 │   │   │   ├── header.js
-│   │   │   ├── MobileMenu.js
-│   │   │   └── RequestingSample.js
+│   │   │   └── MobileMenu.js
 │   │   └── Popup.js
+│   ├── modals
+│   │   ├── CustomQuote.js
+│   │   └── RequestingSample.js
 │   ├── PageBuilder
 │   │   ├── editors
 │   │   │   ├── AboutHeroEditor.js
@@ -238,8 +243,8 @@
 │   │   │   ├── MultiTableEditor.js
 │   │   │   ├── NoticeEditor.js
 │   │   │   ├── OrderProcessEditor.js
-│   │   │   ├── PerfectBindingFormEditor.js
 │   │   │   ├── PortfolioEditor.js
+│   │   │   ├── PortfolioShowcaseEditor.js
 │   │   │   ├── PricingEditor.js
 │   │   │   ├── QuickGuidesEditor.js
 │   │   │   ├── ServiceBoxEditor.js
@@ -356,13 +361,16 @@
 │   │       └── index.js
 │   ├── FolderStructureCreator.js
 │   └── ProtectedRoute.js
+├── context
+│   └── CartContext.js
 ├── hooks
 │   └── useCustomerAuth.js
 ├── lib
 │   ├── auth.js
 │   ├── db.js
 │   ├── formConfigStorage.js
-│   └── mongodb.js
+│   ├── mongodb.js
+│   └── stripe.js
 ├── models
 │   ├── Content.js
 │   ├── Customer.js
@@ -590,7 +598,9 @@
 │   └── window.svg
 ├── scripts
 │   ├── fix-database.js
+│   ├── fix-homepage.js
 │   ├── fixAdmin.js
+│   ├── migrate-homepage.js
 │   ├── resetAuth.js
 │   ├── seed-fixed.js
 │   ├── seed.js
@@ -599,75 +609,6 @@
 │   ├── seedPages.js
 │   ├── test-mongodb.js
 │   └── testAuth.js
-├── src
-│   └── app
-│       ├── about-us
-│       │   └── page.js
-│       ├── admin
-│       │   ├── dashboard
-│       │   │   └── page.js
-│       │   ├── login
-│       │   │   └── page.js
-│       │   └── pages
-│       │       └── [pages]
-│       │           └── page.js
-│       ├── api
-│       │   ├── admin
-│       │   │   ├── content
-│       │   │   │   └── [page]
-│       │   │   │       └── route.js
-│       │   │   ├── forms
-│       │   │   │   └── [formId]
-│       │   │   │       └── route.js
-│       │   │   ├── login
-│       │   │   │   └── route.js
-│       │   │   └── logout
-│       │   │       └── route.js
-│       │   ├── content
-│       │   │   └── [page]
-│       │   │       └── route.js
-│       │   ├── debug
-│       │   │   └── content
-│       │   │       └── route.js
-│       │   ├── folder-structure
-│       │   │   └── route.js
-│       │   ├── forms
-│       │   │   └── [formId]
-│       │   │       └── route.js
-│       │   ├── test-auth
-│       │   │   └── route.js
-│       │   └── test-connection
-│       │       └── route.js
-│       ├── binding-and-finishing
-│       │   └── page.js
-│       ├── contact-us
-│       │   └── page.js
-│       ├── faqs
-│       │   └── page.js
-│       ├── perfect-binding
-│       │   └── page.js
-│       ├── portfolio
-│       │   └── page.js
-│       ├── printing
-│       │   └── page.js
-│       ├── privacy-policy
-│       │   └── page.js
-│       ├── saddle-stitching
-│       │   └── page.js
-│       ├── sheet-fed-press
-│       │   └── page.js
-│       ├── sitemap
-│       │   └── page.js
-│       ├── terms-conditions
-│       │   └── page.js
-│       ├── tour-our-facilities
-│       │   └── page.js
-│       ├── web-fed-press
-│       │   └── page.js
-│       ├── favicon.ico
-│       ├── globals.css
-│       ├── layout.js
-│       └── page.js
 ├── eslint.config.mjs
 ├── folder-structure.txt
 ├── jsconfig.json

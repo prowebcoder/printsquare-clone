@@ -25,40 +25,43 @@ export default function CartPage() {
     }).format(amount);
   };
 
-  const handleCheckout = async () => {
-    setIsCheckingOut(true);
+  // SIMPLE PAYPAL CHECKOUT FUNCTION
+const handlePayPalCheckout = async () => {
+  setIsCheckingOut(true);
+  
+  try {
+    // Calculate total
+    const total = cartTotal;
     
-    try {
-    // Collect customer info (you might want to add a form for this)
-    const customerEmail = 'customer@example.com'; // Get from user input
-    const customerName = 'Customer Name'; // Get from user input
-    
-    // Call your checkout API
-    const response = await fetch('/api/checkout', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        items: cartItems,
-        total: cartTotal,
-        customerEmail: customerEmail,
-        customerName: customerName,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (response.ok && data.url) {
-      // Redirect to Stripe checkout
-      window.location.href = data.url;
+    // Create item description
+    let itemName = '';
+    if (cartItems.length === 1) {
+      itemName = cartItems[0].productName || `${cartItems[0].type.replace('-', ' ').toUpperCase()} Book`;
     } else {
-      throw new Error(data.error || 'Checkout failed');
+      itemName = `${cartItems.length} Printing Items`;
     }
+    
+    // Get PayPal email from environment variable
+    const paypalEmail = process.env.NEXT_PUBLIC_PAYPAL_BUSINESS_EMAIL;
+    
+    if (!paypalEmail) {
+      alert('Please contact admin to set up PayPal email for checkout.');
+      setIsCheckingOut(false);
+      return;
+    }
+    
+    // Create PayPal hosted checkout URL
+    const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=${encodeURIComponent(paypalEmail)}&amount=${total.toFixed(2)}&item_name=${encodeURIComponent(itemName)}&currency_code=USD&return=${encodeURIComponent(window.location.origin + '/checkout/success')}&cancel_return=${encodeURIComponent(window.location.origin + '/cart')}`;
+    
+    console.log('Redirecting to PayPal:', paypalUrl);
+    
+    // Clear cart and redirect to PayPal
+    clearCart();
+    window.location.href = paypalUrl;
+    
   } catch (error) {
-    console.error('Checkout error:', error);
-    alert('Checkout failed. Please try again.');
-  } finally {
+    console.error('PayPal checkout error:', error);
+    alert(`Checkout failed: ${error.message}`);
     setIsCheckingOut(false);
   }
 };
@@ -100,21 +103,7 @@ export default function CartPage() {
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
                 <Link
-                  href="/quote/perfect-binding"
-                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
-                >
-                  <FiPlus className="w-5 h-5 mr-2" />
-                  Perfect Binding
-                </Link>
-                <Link
-                  href="/quote/hardcover"
-                  className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 transition-colors"
-                >
-                  <FiPlus className="w-5 h-5 mr-2" />
-                  Hardcover Books
-                </Link>
-                <Link
-                  href="/quote"
+                  href="/perfect-binding"
                   className="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-lg shadow-sm text-gray-700 bg-white hover:bg-gray-50 transition-colors"
                 >
                   View All Printing Services
@@ -287,12 +276,11 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                
-                
+                {/* PayPal Checkout Button */}
                 <button
-                  onClick={handleCheckout}
-                  disabled={isCheckingOut}
-                  className="mt-8 w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                  onClick={handlePayPalCheckout}
+                  disabled={isCheckingOut || cartItems.length === 0}
+                  className="mt-8 w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                 >
                   {isCheckingOut ? (
                     <>
@@ -303,7 +291,12 @@ export default function CartPage() {
                       Processing...
                     </>
                   ) : (
-                    'Proceed to Checkout'
+                    <>
+                      <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.607-.541c-1.818-1.22-4.694-1.547-6.774-.527-.388.194-.914.623-1.453 1.172a6.359 6.359 0 0 1 1.978.327c2.293.779 3.987 2.579 4.752 5.236.23.813.39 1.56.477 2.235.097.726.117 1.214.117 1.615h2.436c.515 0 .954.374 1.04.883l.428 2.033a.642.642 0 0 1-.633.74h-3.882l.24-1.27a.928.928 0 0 0-.916-1.088h-1.83c.198-.664.398-1.445.598-2.332.329-1.475.64-3.228.64-5.047 0-1.015-.076-2.006-.223-2.955z"/>
+                      </svg>
+                      Checkout with PayPal
+                    </>
                   )}
                 </button>
                 
@@ -337,7 +330,7 @@ export default function CartPage() {
                     <svg className="w-5 h-5 text-purple-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                     </svg>
-                    Secure SSL encrypted checkout
+                    Secure PayPal checkout
                   </p>
                 </div>
               </div>

@@ -1,6 +1,8 @@
 // components/pages/quote/wire-binding/WireQuoteForm.js
 'use client';
 import { useState, useCallback, useEffect } from 'react';
+import { useCart } from '@/context/CartContext';
+import { useRouter } from 'next/navigation';
 
 // ===== WIRE BINDING CONFIG =====
 const WIREQUOTE_DEFAULT_CONFIG = {
@@ -651,6 +653,10 @@ const BindingEdgeSelector = ({ label, options, selected, onChange, className = "
 
 // ===== MAIN COMPONENT =====
 const WireQuoteForm = () => {
+  // Import cart context and router
+  const { addToCart } = useCart();
+  const router = useRouter();
+
   const [formConfig, setFormConfig] = useState(WIREQUOTE_DEFAULT_CONFIG);
   const [loading, setLoading] = useState(true);
   const [configVersion, setConfigVersion] = useState(0);
@@ -690,15 +696,9 @@ const WireQuoteForm = () => {
   // Shipping Modal State
   const [showShippingModal, setShowShippingModal] = useState(false);
 
-// Email submission states
-  const [submitting, setSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null);
-
   // Derived State
   const isCustomSize = selectedSize === 'custom';
   const [pricingData, setPricingData] = useState(getPricingData());
-
-
 
   // Available sizes based on unit
   const availableSizes = [
@@ -821,7 +821,7 @@ const WireQuoteForm = () => {
     setQuantity(pricingData[index].quantity);
   };
 
-  // Price Calculation - FIXED
+  // Price Calculation
   const calculatePricing = useCallback(() => {
     const baseCostPerPage = formConfig?.pricing?.costPerPage || 0.06;
     const baseSetupCost = formConfig?.pricing?.baseSetupCost || 150;
@@ -927,92 +927,76 @@ const WireQuoteForm = () => {
     setPricingData(newPricingData);
   }, [pageCount, selectedSize, isCustomSize, coverPaper, insidePaper, coverColor, insideColor, coverFinish, coverFold, proof, holePunching, slipcase, formConfig]);
 
-  const handleAddToCart = async () => {
-  const formData = {
-    sizeUnit,
-    paperUnit,
-    selectedSize,
-    customSize: isCustomSize ? { width: customWidth, height: customHeight } : null,
-    bindingEdge,
-    wireColor,
-    cover: { 
-      paper: coverPaper, 
-      weight: coverWeight, 
-      color: coverColor, 
-      finish: coverFinish, 
-      fold: coverFold, 
-      foldWidth 
-    },
-    inside: { 
-      pageCount, 
-      paper: insidePaper, 
-      weight: insideWeight, 
-      color: insideColor 
-    },
-    quantity,
-    options: { 
-      proof, 
-      holePunching, 
-      slipcase, 
-      shrinkWrapping, 
-      directMailing
-    },
-    totalAmount: prices.total.toFixed(2),
-  };
-  
-  console.log("Wire Binding Form Data Submitted:", formData);
-  
-  setSubmitting(true);
-  setSubmitStatus(null);
-  
-  try {
-    // Send email to your address
-    const emailResponse = await fetch('/api/send-quote/wire-quote', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+  // NEW: Handle Add to Cart function
+  const handleAddToCart = () => {
+    const formData = {
+      sizeUnit,
+      paperUnit,
+      selectedSize,
+      customSize: isCustomSize ? { width: customWidth, height: customHeight } : null,
+      bindingEdge,
+      wireColor,
+      cover: { 
+        paper: coverPaper, 
+        weight: coverWeight, 
+        color: coverColor, 
+        finish: coverFinish, 
+        fold: coverFold, 
+        foldWidth 
       },
-      body: JSON.stringify(formData),
-    });
+      inside: { 
+        pageCount, 
+        paper: insidePaper, 
+        weight: insideWeight, 
+        color: insideColor 
+      },
+      quantity,
+      options: { 
+        proof, 
+        holePunching, 
+        slipcase, 
+        shrinkWrapping, 
+        directMailing
+      },
+      totalAmount: prices.total,
+    };
     
-    const emailResult = await emailResponse.json();
+    const cartItem = {
+      type: 'wire-binding',
+      productName: `Wire Binding - ${selectedSize}`,
+      quantity: quantity,
+      price: prices.total / quantity,
+      total: prices.total,
+      configuration: formData,
+      summary: {
+        size: getSizeDisplayLabel(selectedSize),
+        pages: pageCount,
+        binding: bindingEdge,
+        wireColor: wireColor,
+        cover: coverPaper,
+        printColor: coverColor,
+        quantity: quantity
+      }
+    };
     
-    if (emailResponse.ok) {
-      setSubmitStatus({ 
-        type: 'success', 
-        message: 'Wire binding quote sent successfully! We\'ll contact you soon.' 
-      });
-      alert(`Wire binding quote sent! Total Price: ${formatCurrency(prices.total)}`);
-    } else {
-      setSubmitStatus({ 
-        type: 'error', 
-        message: emailResult.message || 'Failed to send quote request.' 
-      });
-      alert('Failed to send quote request. Please try again.');
-    }
-  } catch (error) {
-    console.error('Submission error:', error);
-    setSubmitStatus({ 
-      type: 'error', 
-      message: 'An error occurred. Please try again.' 
-    });
-    alert('Error submitting quote. Please try again.');
-  } finally {
-    setSubmitting(false);
-  }
-};
+    // Add to cart
+    addToCart(cartItem);
+    
+    // Redirect to cart page
+    router.push('/cart');
+  };
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-8 border-b-2 border-indigo-600"></div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
         <p className="ml-4 text-gray-600">Loading wire binding form configuration...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 font-sans">
       <ShippingModal
         isOpen={showShippingModal}
         onClose={() => setShowShippingModal(false)}
@@ -1063,9 +1047,7 @@ const WireQuoteForm = () => {
               {/* Size Selection */}
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                  <svg className="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                  </svg>
+                  <span className="mr-2">📐</span>
                   Size & Dimensions
                 </h3>
                 <SelectDropdown
@@ -1083,45 +1065,35 @@ const WireQuoteForm = () => {
                     }
                   }}
                 />
-                <div className="grid grid-cols-2 gap-3 mt-4">
-                  <input
-                    type="text"
-                    value={isCustomSize ? customWidth : ''}
-                    onChange={handleNumberInput(setCustomWidth)}
-                    placeholder={`Width (${sizeUnit === 'INCH' ? 'inches' : 'mm'})`}
-                    className={`p-3 border rounded-lg text-sm transition-all ${
-                      isCustomSize 
-                        ? 'bg-white border-indigo-500 ring-2 ring-indigo-500 ring-opacity-20' 
-                        : 'bg-gray-100 border-gray-300 text-gray-500'
-                    }`}
-                    readOnly={!isCustomSize}
-                  />
-                  <input
-                    type="text"
-                    value={isCustomSize ? customHeight : ''}
-                    onChange={handleNumberInput(setCustomHeight)}
-                    placeholder={`Height (${sizeUnit === 'INCH' ? 'inches' : 'mm'})`}
-                    className={`p-3 border rounded-lg text-sm transition-all ${
-                      isCustomSize 
-                        ? 'bg-white border-indigo-500 ring-2 ring-indigo-500 ring-opacity-20' 
-                        : 'bg-gray-100 border-gray-300 text-gray-500'
-                    }`}
-                    readOnly={!isCustomSize}
-                  />
-                </div>
                 {isCustomSize && (
-                  <p className="text-xs text-gray-500 mt-3">
-                    {customSizeInstructions[sizeUnit] || customSizeInstructions.INCH}
-                  </p>
+                  <>
+                    <div className="grid grid-cols-2 gap-3 mt-4">
+                      <input
+                        type="text"
+                        value={customWidth}
+                        onChange={handleNumberInput(setCustomWidth)}
+                        placeholder={`Width (${sizeUnit === 'INCH' ? 'inches' : 'mm'})`}
+                        className="p-3 border border-indigo-500 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                      />
+                      <input
+                        type="text"
+                        value={customHeight}
+                        onChange={handleNumberInput(setCustomHeight)}
+                        placeholder={`Height (${sizeUnit === 'INCH' ? 'inches' : 'mm'})`}
+                        className="p-3 border border-indigo-500 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition"
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500 mt-3">
+                      {customSizeInstructions[sizeUnit] || customSizeInstructions.INCH}
+                    </p>
+                  </>
                 )}
               </div>
 
               {/* Binding Edge */}
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                  <svg className="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  </svg>
+                  <span className="mr-2">📖</span>
                   Binding Details
                 </h3>
                 
@@ -1147,9 +1119,7 @@ const WireQuoteForm = () => {
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b border-gray-200">
                 <h3 className="text-2xl font-bold text-gray-900 flex items-center">
-                  <svg className="w-6 h-6 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
+                  <span className="mr-2">📔</span>
                   Cover Specifications
                 </h3>
                 <div className="flex space-x-4 mt-2 sm:mt-0">
@@ -1220,9 +1190,7 @@ const WireQuoteForm = () => {
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b border-gray-200">
                 <h3 className="text-2xl font-bold text-gray-900 flex items-center">
-                  <svg className="w-6 h-6 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
+                  <span className="mr-2">📄</span>
                   Inside Pages
                 </h3>
               </div>
@@ -1256,11 +1224,8 @@ const WireQuoteForm = () => {
               </div>
 
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                <p className="text-sm text-yellow-800 flex items-center">
-                  <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                  Please select only the inside page count. Cover pages are calculated separately.
+                <p className="text-sm text-yellow-800">
+                  <span className="font-semibold">Note:</span> Please select only the inside page count. Cover pages are calculated separately.
                 </p>
               </div>
             </div>
@@ -1270,9 +1235,7 @@ const WireQuoteForm = () => {
           <div className="space-y-8">
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-                <svg className="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
+                <span className="mr-2">🔢</span>
                 Quantity
               </h3>
               <input
@@ -1290,12 +1253,10 @@ const WireQuoteForm = () => {
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                 <div className="text-sm text-blue-800 space-y-1">
                   <p className="flex items-center">
-                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-                    </svg>
+                    <span className="mr-2">⏰</span>
                     Production time excludes weekends and holidays
                   </p>
-                  <p>• Printing occurs on weekdays only</p>
+                  <p>• Wire binding production is faster than hardcover</p>
                   <p>• Process starts after final proof approval and payment</p>
                 </div>
               </div>
@@ -1426,51 +1387,21 @@ const WireQuoteForm = () => {
                 </div>
               </div>
 
-             {/* Action Buttons */}
-<div className="flex flex-col sm:flex-row gap-4 mt-8">
-  <button 
-    onClick={() => setShowShippingModal(true)}
-    disabled={submitting}
-    className="flex-1 px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-  >
-    {generalSettings.shippingButtonText}
-  </button>
-  <button 
-    onClick={handleAddToCart}
-    disabled={submitting}
-    className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-  >
-    {submitting ? (
-      <>
-        <svg className="animate-spin h-5 w-5 mr-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        Sending Quote...
-      </>
-    ) : (
-      generalSettings.submitButtonText
-    )}
-  </button>
-</div>
-
-{/* Status Message */}
-{submitStatus && (
-  <div className={`mt-4 p-4 rounded-lg ${submitStatus.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
-    <div className="flex items-center">
-      {submitStatus.type === 'success' ? (
-        <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-        </svg>
-      ) : (
-        <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-        </svg>
-      )}
-      <span>{submitStatus.message}</span>
-    </div>
-  </div>
-)}
+              {/* Action Buttons - UPDATED FOR CART */}
+              <div className="flex flex-col sm:flex-row gap-4 mt-8">
+                <button 
+                  onClick={() => setShowShippingModal(true)}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-sm"
+                >
+                  {generalSettings.shippingButtonText}
+                </button>
+                <button 
+                  onClick={handleAddToCart}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-sm flex items-center justify-center"
+                >
+                  {generalSettings.submitButtonText}
+                </button>
+              </div>
             </div>
           </div>
         </div>
