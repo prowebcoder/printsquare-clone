@@ -12,30 +12,24 @@ const WIREQUOTE_DEFAULT_CONFIG = {
     submitButtonText: "Add to Cart",
     shippingButtonText: "Calculate Shipping"
   },
-  bindingTypes: [
-    { value: 'PERFECT', label: 'Perfect Binding', link: '/perfect-binding' },
-    { value: 'SADDLE', label: 'Saddle Stitching', link: '/saddle-stitching' },
-    { value: 'HARDCOVER', label: 'Hardcover Book', link: '/hardcover-book' },
-    { value: 'WIRE', label: 'Wire Binding', link: '/wire-binding' },
-  ],
   bindingEdges: [
     { 
       value: 'LEFT', 
       label: 'Left Side', 
       desc: 'Binding on the left, most common',
-      image: '/asset/images/quote/edge01.png'
+      image: '/forms/edge01.png'
     },
     { 
       value: 'RIGHT', 
       label: 'Right Side', 
       desc: 'First inside page starts from the right',
-      image: '/asset/images/quote/edge02.png'
+      image: '/forms/edge02.png'
     },
     { 
       value: 'TOP', 
       label: 'Top Side', 
       desc: 'Binding on the top, a.k.a calendar binding',
-      image: '/asset/images/quote/edge03.png'
+      image: '/forms/edge03.png'
     },
   ],
   wireColors: [
@@ -767,7 +761,6 @@ const WireQuoteForm = () => {
   }, [configVersion]);
 
   // Configuration constants
-  const BINDING_TYPES = formConfig?.bindingTypes || WIREQUOTE_DEFAULT_CONFIG.bindingTypes;
   const BINDING_EDGES = formConfig?.bindingEdges || WIREQUOTE_DEFAULT_CONFIG.bindingEdges;
   const WIRE_COLORS = formConfig?.wireColors || WIREQUOTE_DEFAULT_CONFIG.wireColors;
   const PAPER_OPTIONS = formConfig?.paperOptions || WIREQUOTE_DEFAULT_CONFIG.paperOptions;

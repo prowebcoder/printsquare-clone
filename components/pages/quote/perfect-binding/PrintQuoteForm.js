@@ -12,12 +12,6 @@ const PRINTQUOTE_DEFAULT_CONFIG = {
     submitButtonText: "Add to Cart",
     shippingButtonText: "Calculate Shipping"
   },
-  bindingTypes: [
-    { value: 'PERFECT', label: 'Perfect Binding', link: '/perfect-binding' },
-    { value: 'SADDLE', label: 'Saddle Stitching', link: '/saddle-stitching' },
-    { value: 'HARDCOVER', label: 'Hardcover Book', link: '/hardcover-book' },
-    { value: 'WIRE', label: 'Wire Binding', link: '/wire-binding' },
-  ],
   bindingEdges: [
     { value: 'LEFT', label: 'Left Side', desc: 'Binding on the left, most common' },
     { value: 'RIGHT', label: 'Right Side', desc: 'First inside page starts from the right' },
@@ -1050,7 +1044,6 @@ const PrintQuoteForm = () => {
   }, [configVersion]);
 
   // Configuration constants
-  const BINDING_TYPES = formConfig?.bindingTypes || PRINTQUOTE_DEFAULT_CONFIG.bindingTypes;
   const BINDING_EDGES = formConfig?.bindingEdges || PRINTQUOTE_DEFAULT_CONFIG.bindingEdges;
   const PAPER_OPTIONS = formConfig?.paperOptions || PRINTQUOTE_DEFAULT_CONFIG.paperOptions;
   const PRINT_COLORS = formConfig?.printColors || PRINTQUOTE_DEFAULT_CONFIG.printColors;

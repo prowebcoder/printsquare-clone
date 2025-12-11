@@ -11,12 +11,6 @@ const DEFAULT_FORM_CONFIG = {
     submitButtonText: "Add to Cart",
     shippingButtonText: "Calculate Shipping"
   },
-  bindingTypes: [
-    { value: 'PERFECT', label: 'Perfect Binding', link: '/perfect-binding' },
-    { value: 'SADDLE', label: 'Saddle Stitching', link: '/saddle-stitching' },
-    { value: 'HARDCOVER', label: 'Hardcover Book', link: '/hardcover-book' },
-    { value: 'WIRE', label: 'Wire Binding', link: '/wire-binding' },
-  ],
   bindingEdges: [
     { value: 'LEFT', label: 'Left Side', desc: 'Binding on the left, most common' },
     { value: 'RIGHT', label: 'Right Side', desc: 'First inside page starts from the right' },
@@ -523,10 +517,6 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Binding Settings</h3>
                       <div className="space-y-6">
-                        <div>
-                          <h4 className="font-medium text-gray-700 mb-3">Binding Types</h4>
-                          {renderEditableArray('', 'bindingTypes', ['value', 'label', 'link'])}
-                        </div>
                         <div>
                           <h4 className="font-medium text-gray-700 mb-3">Binding Edges</h4>
                           {renderEditableArray('', 'bindingEdges', ['value', 'label', 'desc'])}

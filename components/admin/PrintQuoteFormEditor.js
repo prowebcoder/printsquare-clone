@@ -11,12 +11,6 @@ const PRINTQUOTE_DEFAULT_CONFIG = {
     submitButtonText: "Add to Cart",
     shippingButtonText: "Calculate Shipping"
   },
-  bindingTypes: [
-    { value: 'PERFECT', label: 'Perfect Binding' },
-    { value: 'SADDLE', label: 'Saddle Stitching' },
-    { value: 'HARDCOVER', label: 'Hardcover Book' },
-    { value: 'WIRE', label: 'Wire Binding' },
-  ],
   sizes: ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', 'Custom Size'],
   bindingEdges: [
     { value: 'LEFT', label: 'Left Side', desc: 'Binding on the left, most common' },
@@ -644,7 +638,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                   {activeTab === 'binding' && (
                     <>
                       <h3 className="text-lg font-semibold text-gray-900">Binding Options</h3>
-                      {renderEditableArray('Binding Types', 'bindingTypes', ['value', 'label'])}
                       {renderEditableArray('Binding Edges', 'bindingEdges', ['value', 'label', 'desc'])}
                     </>
                   )}

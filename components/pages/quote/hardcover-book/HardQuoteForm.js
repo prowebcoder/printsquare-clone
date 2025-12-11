@@ -12,12 +12,7 @@ const HARDQUOTE_DEFAULT_CONFIG = {
     submitButtonText: "Add to Cart",
     shippingButtonText: "Calculate Shipping"
   },
-  bindingTypes: [
-    { value: 'PERFECT', label: 'Perfect Binding', link: '/perfect-binding' },
-    { value: 'SADDLE', label: 'Saddle Stitching', link: '/saddle-stitching' },
-    { value: 'HARDCOVER', label: 'Hardcover Book', link: '/hardcover-book' },
-    { value: 'WIRE', label: 'Wire Binding', link: '/wire-binding' },
-  ],
+  
   bindingEdges: [
     { value: 'SQUARE', label: 'Square Spine', desc: 'Standard square spine' },
     { value: 'ROUNDED', label: 'Rounded Spine', desc: 'Premium rounded spine' },
@@ -811,7 +806,7 @@ const HardQuoteForm = () => {
     fetchFormConfig();
   }, [configVersion]);
 
-  const BINDING_TYPES = formConfig?.bindingTypes || HARDQUOTE_DEFAULT_CONFIG.bindingTypes;
+  
   const BINDING_EDGES = formConfig?.bindingEdges || HARDQUOTE_DEFAULT_CONFIG.bindingEdges;
   const PAPER_OPTIONS = formConfig?.paperOptions || HARDQUOTE_DEFAULT_CONFIG.paperOptions;
   const PRINT_COLORS = formConfig?.printColors || HARDQUOTE_DEFAULT_CONFIG.printColors;
