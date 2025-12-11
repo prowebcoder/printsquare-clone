@@ -1,8 +1,9 @@
 // app/api/admin/auth/verify/route.js
+export const dynamic = "force-dynamic"; // ⬅ important fix
+
 import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import dbConnect from "@/lib/mongodb";
-
 import User from '@/models/User';
 
 export async function GET(request) {
@@ -17,23 +18,26 @@ export async function GET(request) {
 
     const token = authHeader.split(' ')[1];
 
+    let decoded;
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      
-      const user = await User.findById(decoded.userId).select('-password');
-      if (!user) {
-        return NextResponse.json({ error: 'User not found' }, { status: 401 });
-      }
-
-      return NextResponse.json({
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-      });
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch (jwtError) {
       return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
     }
+
+    const user = await User.findById(decoded.userId).select('-password');
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 401 });
+    }
+
+    return NextResponse.json({
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    });
+
   } catch (error) {
     console.error('Token verification error:', error);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
