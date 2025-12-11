@@ -63,13 +63,13 @@ const Header = () => {
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="border border-gray-400 text-white px-3 py-1 rounded hover:bg-gray-600 text-xs font-medium shadow-sm transition"
+                    className="border cursor-pointer border-gray-400 text-white px-3 py-1 rounded hover:bg-gray-600 text-xs font-medium shadow-sm transition"
                   >
                     Logout
                   </button>
                   <button
                     onClick={openSampleModal}
-                    className="bg-[#E21B36] text-white px-3 py-1 rounded hover:bg-[#c8152d] text-xs font-medium shadow-sm transition"
+                    className="bg-[#E21B36] cursor-pointer text-white px-3 py-1 rounded hover:bg-[#c8152d] text-xs font-medium shadow-sm transition"
                   >
                     Request Sample
                   </button>

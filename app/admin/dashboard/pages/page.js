@@ -196,7 +196,7 @@ export default function PagesPage() {
           <button
             onClick={() => fetchPages(true)}
             disabled={loading}
-            className="flex items-center space-x-2 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-all shadow-sm disabled:opacity-50"
+            className="flex items-center cursor-pointer space-x-2 bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-all shadow-sm disabled:opacity-50"
           >
             <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
             <span>Refresh</span>
@@ -368,7 +368,7 @@ export default function PagesPage() {
                       <button
                         onClick={() => handleDuplicate(page._id)}
                         disabled={duplicating === page._id}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
+                        className="p-2 cursor-pointer text-blue-600 hover:bg-blue-50 rounded-lg transition-colors disabled:opacity-50"
                         title="Duplicate Page"
                       >
                         {duplicating === page._id ? (
@@ -388,7 +388,7 @@ export default function PagesPage() {
 
                       <button
                         onClick={() => handleDelete(page._id)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 cursor-pointer text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Delete Page"
                       >
                         <Trash2 size={16} />
