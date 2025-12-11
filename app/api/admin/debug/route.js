@@ -1,3 +1,5 @@
+// app/api/admin/debug/route.js
+export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
 import Page from '@/models/Page';
 import dbConnect from "@/lib/mongodb";

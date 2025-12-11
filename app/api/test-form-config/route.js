@@ -1,4 +1,5 @@
 // app/test-form-config/page.js
+export const dynamic = "force-dynamic";
 'use client';
 import { useEffect, useState } from 'react';
 

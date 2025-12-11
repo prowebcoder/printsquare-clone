@@ -1,3 +1,5 @@
+// app/api/admin/forms/wire-quote/route.js
+export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
 import dbConnect from "@/lib/mongodb";
 import FormConfiguration from '@/models/FormConfiguration';

@@ -1,4 +1,5 @@
 // app/api/paypal/create-order/route.js
+export const dynamic = "force-dynamic";
 export async function POST(request) {
   try {
     const { cartItems } = await request.json();

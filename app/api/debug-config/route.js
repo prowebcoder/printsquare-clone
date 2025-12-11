@@ -1,4 +1,5 @@
 // app/api/debug-config/route.js
+export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 

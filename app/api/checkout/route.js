@@ -1,4 +1,5 @@
 // GET method for testing API
+export const dynamic = "force-dynamic";
 export async function GET() {
   return new Response(
     JSON.stringify({

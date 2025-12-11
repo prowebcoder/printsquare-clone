@@ -1,4 +1,5 @@
 // printsquare-clone/app/api/admin/users/[id]/route.js
+export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
 import User from '@/models/User';
 import dbConnect from "@/lib/mongodb";

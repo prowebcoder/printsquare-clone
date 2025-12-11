@@ -1,4 +1,5 @@
 // app/api/admin/setup/route.js
+export const dynamic = "force-dynamic";
 import dbConnect from "@/lib/mongodb";
 import User from '@/models/User';
 import bcrypt from 'bcryptjs';

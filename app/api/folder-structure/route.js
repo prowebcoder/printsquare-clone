@@ -1,4 +1,5 @@
 // src/app/api/folder-structure/route.js
+export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';

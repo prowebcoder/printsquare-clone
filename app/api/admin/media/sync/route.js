@@ -1,4 +1,5 @@
 // printsquare-clone/app/api/admin/media/sync/route.js
+export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
 import { readdir, stat } from 'fs/promises';
 import path from 'path';

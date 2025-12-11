@@ -1,6 +1,5 @@
 // app/api/admin/content/route.js
 export const dynamic = "force-dynamic";
-
 import dbConnect from '@/lib/mongodb';
 import Page from '@/models/Page';
 
