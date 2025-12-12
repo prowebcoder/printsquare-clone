@@ -125,20 +125,21 @@ const Header = () => {
 
             {/* Right Buttons */}
             <div className="hidden md:flex items-center space-x-4">
-              {customer && (
-                <div className="flex items-center space-x-3 mr-4">
-                  <span className="text-sm text-gray-300">Hi, {customer.name}</span>
-                  <div className="w-px h-4 bg-gray-400"></div>
-                </div>
-              )}
-              <CartIcon />
-              <Link
-                href="/portfolio"
-                className="bg-[#E21B36] text-white px-4 py-2 rounded-lg hover:bg-[#c8152d] transition text-sm font-medium"
-              >
-                Portfolio
-              </Link>
-            </div>
+  {customer && (
+    <div className="flex items-center space-x-3 mr-4">
+      <span className="text-sm text-gray-300">Hi, {customer.name}</span>
+      <div className="w-px h-4 bg-gray-400"></div>
+    </div>
+  )}
+  <CartIcon />
+  <Link
+    href="/portfolio"
+    className="bg-[#E21B36] text-white px-4 py-2 rounded-lg hover:bg-[#c8152d] transition-colors text-sm font-medium flex items-center justify-center"
+    style={{ minHeight: '40px' }} // Add explicit height
+  >
+    Portfolio
+  </Link>
+</div>
 
             {/* Mobile Menu Toggle */}
             <button

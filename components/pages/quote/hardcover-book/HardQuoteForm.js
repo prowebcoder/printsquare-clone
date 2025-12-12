@@ -1197,13 +1197,13 @@ const HardQuoteForm = () => {
               </div>
 
               <div className="flex flex-wrap gap-4">
-                <button className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-colors">
+                <button className="px-6 cursor-pointer py-3 bg-gray-100 text-gray-700 rounded-lg font-semibold hover:bg-gray-200 transition-colors">
                   + Additional Add-ons
                 </button>
                 {!dustCover ? (
                   <button 
                     onClick={addDustCover}
-                    className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
+                    className="px-6 py-3 cursor-pointer bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors"
                   >
                     + Add Dust Cover
                   </button>
@@ -1434,16 +1434,16 @@ const HardQuoteForm = () => {
               </div>
 
               {/* Action Buttons - UPDATED FOR CART */}
-              <div className="flex flex-col sm:flex-row gap-4 mt-8">
+              <div className="flex flex-col sm:flex-row gap-2 mt-8">
                 <button 
                   onClick={() => setShowShippingModal(true)}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-sm"
+                  className="flex-1 cursor-pointer px-2 py-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-xl font-semibold hover:from-gray-700 hover:to-gray-800 transition-all shadow-sm"
                 >
                   {generalSettings.shippingButtonText}
                 </button>
                 <button 
                   onClick={handleAddToCart}
-                  className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-sm flex items-center justify-center"
+                  className="flex-1 cursor-pointer px-2 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-sm flex items-center justify-center"
                 >
                   {generalSettings.submitButtonText}
                 </button>

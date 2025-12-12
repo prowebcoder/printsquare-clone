@@ -1,3 +1,4 @@
+// app/checkout/success/page.js
 'use client';
 
 export const dynamic = "force-dynamic";

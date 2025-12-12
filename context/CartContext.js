@@ -15,11 +15,14 @@ export const useCart = () => {
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isCartLoaded, setIsCartLoaded] = useState(false); // Add loading state
+  const [isCartLoaded, setIsCartLoaded] = useState(false);
+  const [pendingOrderId, setPendingOrderId] = useState(null);
 
   // Load cart from localStorage on initial render
   useEffect(() => {
     const savedCart = localStorage.getItem('printingCart');
+    const savedOrderId = localStorage.getItem('pendingOrderId');
+    
     if (savedCart) {
       try {
         const parsedCart = JSON.parse(savedCart);
@@ -28,15 +31,29 @@ export const CartProvider = ({ children }) => {
         console.error('Error loading cart from localStorage:', error);
       }
     }
-    setIsCartLoaded(true); // Mark as loaded
+    
+    if (savedOrderId) {
+      setPendingOrderId(savedOrderId);
+    }
+    
+    setIsCartLoaded(true);
   }, []);
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
-    if (isCartLoaded) { // Only save after initial load
+    if (isCartLoaded) {
       localStorage.setItem('printingCart', JSON.stringify(cartItems));
     }
   }, [cartItems, isCartLoaded]);
+
+  // Save pendingOrderId to localStorage
+  useEffect(() => {
+    if (pendingOrderId) {
+      localStorage.setItem('pendingOrderId', pendingOrderId);
+    } else {
+      localStorage.removeItem('pendingOrderId');
+    }
+  }, [pendingOrderId]);
 
   // Add item to cart
   const addToCart = (item) => {
@@ -101,12 +118,30 @@ export const CartProvider = ({ children }) => {
   // Clear entire cart
   const clearCart = () => {
     setCartItems([]);
+    setPendingOrderId(null);
+    localStorage.removeItem('printingCart');
+    localStorage.removeItem('pendingOrderId');
+  };
+
+  // Start checkout process - generate order ID
+  const startCheckout = () => {
+    const orderId = 'order_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    setPendingOrderId(orderId);
+    return orderId;
+  };
+
+  // Complete checkout - clear cart after successful payment
+  const completeCheckout = () => {
+    setCartItems([]);
+    setPendingOrderId(null);
+    localStorage.removeItem('printingCart');
+    localStorage.removeItem('pendingOrderId');
   };
 
   // Calculate cart total
   const cartTotal = cartItems.reduce((sum, item) => sum + item.total, 0);
 
-  // Calculate item count
+  // Calculate item count for cart icon
   const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
@@ -121,7 +156,10 @@ export const CartProvider = ({ children }) => {
         itemCount,
         isCartOpen,
         setIsCartOpen,
-        isCartLoaded, // Export loading state
+        isCartLoaded,
+        pendingOrderId,
+        startCheckout,
+        completeCheckout,
       }}
     >
       {children}
