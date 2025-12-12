@@ -47,7 +47,7 @@ const Header = () => {
         <div className="hidden md:block bg-[#151134] text-white text-xs py-2 px-4 border-b border-[#2a2660]">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
             <div className="flex items-center space-x-3">
-              <span>contact@printseoul.com</span>
+              <span> support@printseoul.com</span>
               <span>•</span>
               <span>(415)-694-4593</span>
             </div>

@@ -51,18 +51,12 @@ export default function NoticeRenderer({ component, index }) {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-8 h-8"
-                fill="none"
+                className="w-10 h-10"
                 viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
+                fill="currentColor"
                 style={{ color: content.titleColor || '#E21B36' }}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 13h6m2 0a9 9 0 11-6.219-8.56M15 13l3 8M6 21h12"
-                />
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
               </svg>
               {content.title}
             </h2>

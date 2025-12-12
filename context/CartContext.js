@@ -123,6 +123,42 @@ export const CartProvider = ({ children }) => {
     localStorage.removeItem('pendingOrderId');
   };
 
+  // Add to CartContext.js
+const saveOrderToDatabase = async (orderData) => {
+  try {
+    const response = await fetch('/api/orders/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(orderData),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to save order');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error saving order:', error);
+    throw error;
+  }
+};
+
+// Then add to the CartContext provider value
+completeCheckout: async (orderData) => {
+  try {
+    await saveOrderToDatabase(orderData);
+    setCartItems([]);
+    setPendingOrderId(null);
+    localStorage.removeItem('printingCart');
+    localStorage.removeItem('pendingOrderId');
+  } catch (error) {
+    console.error('Failed to complete checkout:', error);
+    throw error;
+  }
+};
+
   // Start checkout process - generate order ID
   const startCheckout = () => {
     const orderId = 'order_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);

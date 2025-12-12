@@ -114,6 +114,9 @@ const CustomQuote = ({ isOpen, onClose }) => {
     setSubmitStatus(null);
 
     try {
+      // Generate unique quote ID
+      const quoteId = 'CQ_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      
       const submissionData = {
         ...formData,
         customer_id: customer.id,
@@ -122,8 +125,26 @@ const CustomQuote = ({ isOpen, onClose }) => {
         timestamp: new Date().toISOString()
       };
 
+      // Save quote to database
+      const saveResponse = await fetch('/api/quotes/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...submissionData,
+          quoteId: quoteId
+        }),
+      });
+
+      const saveResult = await saveResponse.json();
+
+      if (!saveResponse.ok) {
+        throw new Error(saveResult.error || 'Failed to save quote');
+      }
+
       // Send email via API
-      const response = await fetch('/api/send-quote/custom-quote', {
+      const emailResponse = await fetch('/api/send-quote/custom-quote', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -131,12 +152,12 @@ const CustomQuote = ({ isOpen, onClose }) => {
         body: JSON.stringify(submissionData),
       });
 
-      const result = await response.json();
+      const emailResult = await emailResponse.json();
 
-      if (response.ok) {
+      if (emailResponse.ok) {
         setSubmitStatus({ 
           type: 'success', 
-          message: 'Custom quote request submitted successfully! Our team will contact you within 1-2 business days.' 
+          message: 'Custom quote request submitted successfully! Your quote ID is ' + quoteId + '. Our team will contact you within 1-2 business days.' 
         });
         
         // Show success message and reset form after delay
@@ -157,14 +178,14 @@ const CustomQuote = ({ isOpen, onClose }) => {
       } else {
         setSubmitStatus({ 
           type: 'error', 
-          message: result.message || 'Failed to submit request. Please try again.' 
+          message: emailResult.message || 'Failed to submit request. Please try again.' 
         });
       }
     } catch (error) {
       console.error('Error submitting custom quote:', error);
       setSubmitStatus({ 
         type: 'error', 
-        message: 'Network error. Please check your connection and try again.' 
+        message: error.message || 'Network error. Please check your connection and try again.' 
       });
     } finally {
       setSubmitting(false);
@@ -261,8 +282,7 @@ const CustomQuote = ({ isOpen, onClose }) => {
             </h2>
             
             <p className="text-sm text-gray-600 mb-4">
-             Request a custom quote if you can&apos;t obtain a quote online.
-
+              Request a custom quote if you can&apos;t obtain a quote online. All quotes will be saved to your account.
             </p>
             
             <form onSubmit={handleSubmit}> 

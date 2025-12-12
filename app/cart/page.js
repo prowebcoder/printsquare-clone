@@ -1,16 +1,21 @@
 // app/cart/page.js
 'use client';
 import { useCart } from '@/context/CartContext';
+import { useCustomerAuth } from '@/hooks/useCustomerAuth';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { FiTrash2, FiPlus, FiMinus, FiShoppingBag, FiRefreshCw, FiChevronRight, FiPackage, FiShield, FiTruck, FiCreditCard } from 'react-icons/fi';
+import { FiTrash2, FiPlus, FiMinus, FiShoppingBag, FiRefreshCw, FiChevronRight, FiPackage, FiShield, FiTruck, FiCreditCard, FiLogIn } from 'react-icons/fi';
 import Header from '@/components/layout/header/header';
 import Footer from '@/components/layout/footer/footer';
 
 export default function CartPage() {
   const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart, isCartLoaded, startCheckout } = useCart();
+  const { customer, isLoading: authLoading } = useCustomerAuth();
+  const router = useRouter();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -24,8 +29,14 @@ export default function CartPage() {
     }).format(amount);
   };
 
-  // FIXED: PayPal Checkout Function
+  // Enhanced: PayPal Checkout with Login Check
   const handlePayPalCheckout = async () => {
+    // Check if user is logged in
+    if (!customer) {
+      setShowLoginPrompt(true);
+      return;
+    }
+
     setIsCheckingOut(true);
     
     try {
@@ -67,8 +78,13 @@ export default function CartPage() {
     }
   };
 
+  // Handle login redirect
+  const handleLoginRedirect = () => {
+    router.push('/customer/login?redirect=/cart');
+  };
+
   // Show loading state
-  if (!isCartLoaded || !isClient) {
+  if (!isCartLoaded || !isClient || authLoading) {
     return (
       <>
         <Header />
@@ -161,6 +177,47 @@ export default function CartPage() {
               </div>
             </div>
           </div>
+          
+          {/* Login Status Banner */}
+          {!customer && (
+            <div className="mb-6 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl p-4">
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center mr-3">
+                  <FiLogIn className="w-5 h-5 text-yellow-600" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900">Login Required for Checkout</h3>
+                  <p className="text-sm text-gray-600">Please login or create an account to proceed with checkout and save your order details.</p>
+                </div>
+                <button
+                  onClick={handleLoginRedirect}
+                  className="ml-4 px-4 py-2 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-lg hover:from-yellow-600 hover:to-orange-600 transition-all duration-200"
+                >
+                  Login / Sign Up
+                </button>
+              </div>
+            </div>
+          )}
+          
+          {/* User Info Banner (if logged in) */}
+          {customer && (
+            <div className="mb-6 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4">
+              <div className="flex items-center">
+                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                  <svg className="w-5 h-5 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900">Welcome, {customer.name}!</h3>
+                  <p className="text-sm text-gray-600">Your order will be linked to your account and saved in your order history.</p>
+                </div>
+                <div className="text-sm text-gray-600">
+                  Order will ship to: <span className="font-medium">{customer.email}</span>
+                </div>
+              </div>
+            </div>
+          )}
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Cart Items Section */}
@@ -364,34 +421,65 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                {/* PayPal Checkout Button */}
-                <button
-                  onClick={handlePayPalCheckout}
-                  disabled={isCheckingOut || cartItems.length === 0}
-                  className="group relative w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none disabled:hover:shadow-lg cursor-pointer"
-                >
-                  {isCheckingOut ? (
-                    <div className="flex items-center justify-center">
-                      <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
-                      Processing Payment...
+                {/* Login Notice for Checkout */}
+                {!customer ? (
+                  <div className="mb-4">
+                    <div className="bg-gradient-to-r from-yellow-50 to-amber-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                      <div className="flex items-start">
+                        <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
+                          <FiLogIn className="w-4 h-4 text-yellow-600" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">Login Required</p>
+                          <p className="text-sm text-gray-600 mt-1">Please login to proceed with secure checkout.</p>
+                          <button
+                            onClick={handleLoginRedirect}
+                            className="mt-3 w-full py-2.5 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-lg hover:from-yellow-600 hover:to-orange-600 transition-all duration-200"
+                          >
+                            Login / Sign Up
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  ) : (
-                    <>
+                    <div className="text-center text-sm text-gray-500">
+                      Login ensures your order history is saved and you receive updates.
+                    </div>
+                  </div>
+                ) : (
+                  /* PayPal Checkout Button (only shows when logged in) */
+                  <button
+                    onClick={handlePayPalCheckout}
+                    disabled={isCheckingOut || cartItems.length === 0}
+                    className="group relative w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none disabled:hover:shadow-lg cursor-pointer"
+                  >
+                    {isCheckingOut ? (
                       <div className="flex items-center justify-center">
-                        <svg className="w-6 h-6 mr-3" viewBox="0 0 24 24" fill="none">
-                          <path d="M7 17L17 7M17 7H8M17 7V16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                        Proceed to Checkout
-                        <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                        </svg>
+                        <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
+                        Processing Payment...
                       </div>
-                      <div className="text-sm font-normal mt-2 opacity-90">
-                        Secure checkout via PayPal
-                      </div>
-                    </>
-                  )}
-                </button>
+                    ) : (
+                      <>
+                        <div className="flex items-center justify-center">
+                          <svg className="w-6 h-6 mr-3" viewBox="0 0 24 24" fill="none">
+                            <path d="M7 17L17 7M17 7H8M17 7V16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                          Proceed to Checkout
+                          <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                          </svg>
+                        </div>
+                        <div className="text-sm font-normal mt-2 opacity-90">
+                          Secure checkout via PayPal
+                        </div>
+                        {customer && (
+                          <div className="text-xs mt-1 opacity-75">
+                            Order will be linked to: {customer.email}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
               
               {/* Features Card */}
@@ -443,6 +531,11 @@ export default function CartPage() {
                   <p className="text-sm text-gray-600">
                     Your items are saved in your browser. Close this page and return anytime to complete your order.
                   </p>
+                  {customer && (
+                    <p className="text-xs text-indigo-600 mt-2 font-medium">
+                      ✓ Logged in as {customer.name} - Your cart will be synced to your account.
+                    </p>
+                  )}
                 </div>
               </div>
             </div>

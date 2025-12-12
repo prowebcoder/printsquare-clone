@@ -24,7 +24,6 @@ export default function Sidebar() {
     { name: 'Users', href: '/admin/dashboard/users', icon: Users },
     { name: 'Pages', href: '/admin/dashboard/pages', icon: FileText },
     { name: 'Media', href: '/admin/dashboard/media', icon: Image },
-    /*{ name: 'Content', href: '/admin/dashboard/content', icon: Image },*/
     { name: 'Forms', href: '/admin/dashboard/forms', icon: FormInput },
   ];
 

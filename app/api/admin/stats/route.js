@@ -1,4 +1,4 @@
-// printsquare-clone/app/api/admin/stats/route.js
+// app/api/admin/stats/route.js
 export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
 import User from '@/models/User';
