@@ -1,6 +1,7 @@
 // app/api/orders/create/route.js
+export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect';
+import dbConnect from '@/lib/mongodb';
 import Order from '@/models/Order';
 
 export async function POST(request) {

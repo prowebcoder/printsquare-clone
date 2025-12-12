@@ -1,4 +1,5 @@
 // app/api/quotes/create/route.js
+export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import CustomQuote from '@/models/CustomQuote';
