@@ -33,6 +33,7 @@ export { default as ServiceBoxRenderer } from './premium/ServiceBoxRenderer';
 export { default as TextBoxRenderer } from './premium/TextBoxRenderer';
 export { default as ContactUsRenderer } from './premium/ContactUsRenderer';
 export { default as PortfolioShowcaseRenderer } from './premium/PortfolioShowcaseRenderer';
+export { default as ImageWithTabsRenderer } from './premium/ImageWithTabsRenderer';
 
 export const TabsFaqRenderer = dynamic(
   () => import('./premium/TabsFaqRenderer'),

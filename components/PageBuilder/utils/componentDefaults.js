@@ -68,6 +68,79 @@ heading: {
   quoteBgColor: '#FFFFFF',
   quoteTextColor: '#121A2C'
 },
+
+imageWithTabs: {
+  title: 'How To Convert A File To PDF Document',
+  titleColor: '#000000',
+  titleSize: 'text-3xl',
+  
+  // Tabs configuration
+  tabs: [
+    {
+      id: 'indesign',
+      title: 'InDesign',
+      image: '/images/placeholder.jpg',
+      content: [
+        "1. Choose File > Export.",
+        "2. Specify a name and location for the file.",
+        "3. For \"Save As Type\" (Windows) or \"Format\" (Mac OS), choose \"Adobe PDF\", and then click Save.",
+        "4. Choose Adobe PDF Preset \"Press Quality\".",
+        "5. Then select the following options: Under \"Marks and Bleeds\" select a. crop marks b. bleed (3mm or .125°).",
+        "6. Click Export (Windows) or Save (Mac OS)."
+      ]
+    },
+    {
+      id: 'illustrator',
+      title: 'Illustrator',
+      image: '/images/placeholder.jpg',
+      content: [
+        "1. Choose File > Export.",
+        "2. Specify a name and location for the file.",
+        "3. For \"Save As Type\" (Windows) or \"Format\" (Mac OS), choose \"Adobe PDF\", and then click Save.",
+        "4. Choose Adobe PDF Preset \"Press Quality\".",
+        "5. Then select the following options: Under \"Marks and Bleeds\" select a. crop marks b. bleed (3mm or .125°).",
+        "6. Click Export (Windows) or Save (Mac OS)."
+      ]
+    },
+    {
+      id: 'photoshop',
+      title: 'Photoshop',
+      image: '/images/placeholder.jpg',
+      content: [
+        "1. Choose File > Save As, and then choose Photoshop PDF from the Format menu.",
+        "2. Click Save. In the Save Adobe PDF dialog box, choose an Adobe PDF preset specifying whether the Photoshop literal be printed on a desktop printer or proofer, sent to a commercial printer, distributed by email, displayed on the web, and so on.",
+        "3. Choose Adobe PDF Preset \"Press Quality\"",
+        "4. Click Export (Windows) or Save (Mac OS)."
+      ]
+    }
+  ],
+  
+  // Layout settings
+  imagePosition: 'left',
+  activeTab: 'indesign',
+  
+  // Background settings
+  backgroundType: 'solid',
+  backgroundColor: '#FFFFFF',
+  gradientFrom: '#f8f9fa',
+  gradientTo: '#e9ecef',
+  
+  // Tab styling
+  activeTabBgColor: '#e21b36',
+  activeTabTextColor: '#FFFFFF',
+  inactiveTabBgColor: '#f8f9fa',
+  inactiveTabTextColor: '#6c757d',
+  tabBorderRadius: '0.5rem',
+  
+  // Content styling
+  contentBgColor: '#FFFFFF',
+  contentTextColor: '#000000',
+  listNumberColor: '#e21b36',
+  
+  // Image settings
+  imageFit: 'cover',
+  imageBorderRadius: '0.5rem'
+},
       tabsFaq: {
       title: 'Frequently Asked Questions',
       tabs: [
@@ -318,34 +391,34 @@ videoWithText: {
 
       
       multiTable: {
-        tablesPerRowDesktop: 2,
-        tablesPerRowMobile: 1,
-        tables: [
-          {
-            title: 'International Metric Paper Sizes - ISO Standard',
-            headers: ['ISO size', 'W × L (mm)', 'W × L (inch)'],
-            rows: [
-              ['A0', '841 × 1189', '33 × 46'],
-              ['A1', '594 × 841', '23.38 × 33'],
-              ['A2', '420 × 594', '16.5 × 23.38'],
-              ['A3', '297 × 420', '11.75 × 16.5'],
-              ['A4', '210 × 297', '8.25 × 11.75'],
-              ['A5', '148 × 210', '5.88 × 8.25'],
-              ['A6', '105 × 148', '4.13 × 6.88']
-            ]
-          },
-          {
-            title: 'Size commonly used in USA and Canada',
-            headers: ['American Size', 'W × L (mm)', 'W × L (inch)'],
-            rows: [
-              ['Letter', '216 × 279', '8.5 × 11'],
-              ['Legal', '216 × 356', '8.5 × 14'],
-              ['Executive', '190 × 254', '7.5 × 10'],
-              ['Ledger / Tabloid', '279 × 432', '11 × 17']
-            ]
-          }
-        ]
-      },
+  tablesPerRowDesktop: 2,
+  tablesPerRowMobile: 1,
+  tables: [
+    {
+      title: 'International Metric Paper Sizes - ISO Standard',
+      headers: ['ISO size', 'W × L (mm)', 'W × L (inch)'],
+      rows: [
+        { cells: ['A0', '841 × 1189', '33 × 46'], url: '' },
+        { cells: ['A1', '594 × 841', '23.38 × 33'], url: '' },
+        { cells: ['A2', '420 × 594', '16.5 × 23.38'], url: '' },
+        { cells: ['A3', '297 × 420', '11.75 × 16.5'], url: '' },
+        { cells: ['A4', '210 × 297', '8.25 × 11.75'], url: '' },
+        { cells: ['A5', '148 × 210', '5.88 × 8.25'], url: '' },
+        { cells: ['A6', '105 × 148', '4.13 × 6.88'], url: '' }
+      ]
+    },
+    {
+      title: 'Size commonly used in USA and Canada',
+      headers: ['American Size', 'W × L (mm)', 'W × L (inch)'],
+      rows: [
+        { cells: ['Letter', '216 × 279', '8.5 × 11'], url: '' },
+        { cells: ['Legal', '216 × 356', '8.5 × 14'], url: '' },
+        { cells: ['Executive', '190 × 254', '7.5 × 10'], url: '' },
+        { cells: ['Ledger / Tabloid', '279 × 432', '11 × 17'], url: '' }
+      ]
+    }
+  ]
+},
       
       portfolio: {
   title: 'Our',

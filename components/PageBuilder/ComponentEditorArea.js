@@ -74,6 +74,7 @@ const getComponentIcon = (type) => {
     textBox: '📄',
     contactUs: '📞',
     portfolioShowcase: '🖼️',
+    imageWithTabs: '🖼️',
   };
   return icons[type] || '📄';
 };

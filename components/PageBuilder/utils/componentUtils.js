@@ -35,6 +35,7 @@ export const getComponentIcon = (type) => {
     textBox: <FileText size={16} />,
     contactUs: <Users size={16} />,
     portfolioShowcase: <Grid size={16} />,
+    imageWithTabs: <ImageIcon size={16} />,
   };
   return icons[type] || <FileText size={16} />;
 };

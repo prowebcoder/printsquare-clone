@@ -28,6 +28,7 @@ import ServiceBoxEditor from './ServiceBoxEditor';
 import TextBoxEditor from './TextBoxEditor';
 import ContactUsEditor from './ContactUsEditor';
 import PortfolioShowcaseEditor from './PortfolioShowcaseEditor';
+import ImageWithTabsEditor from './ImageWithTabsEditor';
 
 const ComponentEditor = ({ component, onUpdateContent, onUpdateStyles }) => {
   const renderContentEditor = () => {
@@ -60,6 +61,7 @@ const ComponentEditor = ({ component, onUpdateContent, onUpdateStyles }) => {
       case 'textBox': return <TextBoxEditor component={component} onUpdate={onUpdateContent} />;
       case 'contactUs': return <ContactUsEditor component={component} onUpdate={onUpdateContent} />;
       case 'portfolioShowcase': return <PortfolioShowcaseEditor component={component} onUpdate={onUpdateContent} />;
+      case 'imageWithTabs': return <ImageWithTabsEditor component={component} onUpdate={onUpdateContent} />;
       default: return <DefaultEditor />;
     }
   };

@@ -97,6 +97,7 @@ const componentMap = {
   'textBox': Renderers.TextBoxRenderer,
   'contactUs': Renderers.ContactUsRenderer,
   'portfolioShowcase': Renderers.PortfolioShowcaseRenderer,
+  'imageWithTabs': Renderers.ImageWithTabsRenderer,
 };
 
 function renderComponent(component, index) {

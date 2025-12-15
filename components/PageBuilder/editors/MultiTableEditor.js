@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from 'react';
-import { Trash2, Plus, ChevronUp, ChevronDown, Rows, Columns } from 'lucide-react';
+import { Trash2, Plus, ChevronUp, ChevronDown, Rows, Columns, Link } from 'lucide-react';
 
 const MultiTableEditor = ({ component, onUpdate }) => {
   const [expandedTables, setExpandedTables] = useState({});
@@ -31,15 +31,47 @@ const MultiTableEditor = ({ component, onUpdate }) => {
     onUpdate(component.id, { tables: newTables });
   };
 
-  const handleRowChange = (tableIndex, rowIndex, cellIndex, value) => {
+  // Handle cell change
+  const handleCellChange = (tableIndex, rowIndex, cellIndex, value) => {
     const newTables = [...(component.content?.tables || [])];
     if (!newTables[tableIndex].rows) {
       newTables[tableIndex].rows = [];
     }
     if (!newTables[tableIndex].rows[rowIndex]) {
-      newTables[tableIndex].rows[rowIndex] = [];
+      // Initialize as object if it's not
+      newTables[tableIndex].rows[rowIndex] = { cells: [], url: '' };
     }
-    newTables[tableIndex].rows[rowIndex][cellIndex] = value;
+    
+    // Ensure cells array exists
+    if (!newTables[tableIndex].rows[rowIndex].cells) {
+      newTables[tableIndex].rows[rowIndex].cells = [];
+    }
+    
+    newTables[tableIndex].rows[rowIndex].cells[cellIndex] = value;
+    onUpdate(component.id, { tables: newTables });
+  };
+
+  // Handle URL change for a row
+  const handleUrlChange = (tableIndex, rowIndex, value) => {
+    const newTables = [...(component.content?.tables || [])];
+    if (!newTables[tableIndex].rows) {
+      newTables[tableIndex].rows = [];
+    }
+    if (!newTables[tableIndex].rows[rowIndex]) {
+      newTables[tableIndex].rows[rowIndex] = { cells: [], url: '' };
+    }
+    
+    // Ensure it's an object with url property
+    if (typeof newTables[tableIndex].rows[rowIndex] === 'object') {
+      newTables[tableIndex].rows[rowIndex].url = value;
+    } else {
+      // Convert from array to object
+      newTables[tableIndex].rows[rowIndex] = {
+        cells: newTables[tableIndex].rows[rowIndex],
+        url: value
+      };
+    }
+    
     onUpdate(component.id, { tables: newTables });
   };
 
@@ -48,8 +80,8 @@ const MultiTableEditor = ({ component, onUpdate }) => {
       title: 'New Table',
       headers: ['Header 1', 'Header 2', 'Header 3'],
       rows: [
-        ['Data 1', 'Data 2', 'Data 3'],
-        ['Data 4', 'Data 5', 'Data 6']
+        { cells: ['Data 1', 'Data 2', 'Data 3'], url: '' },
+        { cells: ['Data 4', 'Data 5', 'Data 6'], url: '' }
       ]
     }];
     onUpdate(component.id, { tables: newTables });
@@ -69,7 +101,10 @@ const MultiTableEditor = ({ component, onUpdate }) => {
     }
     
     for (let i = 0; i < count; i++) {
-      const newRow = Array(headersCount).fill('New Data');
+      const newRow = {
+        cells: Array(headersCount).fill('New Data'),
+        url: ''
+      };
       newTables[tableIndex].rows.push(newRow);
     }
     
@@ -98,11 +133,25 @@ const MultiTableEditor = ({ component, onUpdate }) => {
     
     // Add columns to each row
     if (newTables[tableIndex].rows) {
-      newTables[tableIndex].rows = newTables[tableIndex].rows.map(row => 
-        [...row, ...Array(count).fill('New Data')]
-      );
+      newTables[tableIndex].rows = newTables[tableIndex].rows.map(row => {
+        // Handle both old array format and new object format
+        if (Array.isArray(row)) {
+          return {
+            cells: [...row, ...Array(count).fill('New Data')],
+            url: ''
+          };
+        } else {
+          return {
+            ...row,
+            cells: [...(row.cells || []), ...Array(count).fill('New Data')]
+          };
+        }
+      });
     } else {
-      newTables[tableIndex].rows = [Array(newTables[tableIndex].headers.length).fill('New Data')];
+      newTables[tableIndex].rows = [{
+        cells: Array(newTables[tableIndex].headers.length).fill('New Data'),
+        url: ''
+      }];
     }
     
     onUpdate(component.id, { tables: newTables });
@@ -119,9 +168,16 @@ const MultiTableEditor = ({ component, onUpdate }) => {
     
     // Remove column from each row
     if (newTables[tableIndex].rows) {
-      newTables[tableIndex].rows = newTables[tableIndex].rows.map(row => 
-        row.filter((_, i) => i !== columnIndex)
-      );
+      newTables[tableIndex].rows = newTables[tableIndex].rows.map(row => {
+        if (Array.isArray(row)) {
+          return row.filter((_, i) => i !== columnIndex);
+        } else {
+          return {
+            ...row,
+            cells: row.cells?.filter((_, i) => i !== columnIndex) || []
+          };
+        }
+      });
     }
     
     onUpdate(component.id, { tables: newTables });
@@ -141,8 +197,25 @@ const MultiTableEditor = ({ component, onUpdate }) => {
 
   const duplicateRow = (tableIndex, rowIndex) => {
     const newTables = [...(component.content?.tables || [])];
-    const rowToDuplicate = [...newTables[tableIndex].rows[rowIndex]];
-    newTables[tableIndex].rows.splice(rowIndex + 1, 0, rowToDuplicate);
+    const rowToDuplicate = newTables[tableIndex].rows[rowIndex];
+    
+    // Handle both formats
+    let duplicatedRow;
+    if (Array.isArray(rowToDuplicate)) {
+      duplicatedRow = [...rowToDuplicate];
+    } else {
+      duplicatedRow = {
+        cells: [...(rowToDuplicate.cells || [])],
+        url: rowToDuplicate.url || ''
+      };
+    }
+    
+    // Insert as object
+    if (Array.isArray(duplicatedRow)) {
+      duplicatedRow = { cells: duplicatedRow, url: '' };
+    }
+    
+    newTables[tableIndex].rows.splice(rowIndex + 1, 0, duplicatedRow);
     onUpdate(component.id, { tables: newTables });
   };
 
@@ -152,6 +225,24 @@ const MultiTableEditor = ({ component, onUpdate }) => {
     const [movedRow] = rows.splice(fromIndex, 1);
     rows.splice(toIndex, 0, movedRow);
     onUpdate(component.id, { tables: newTables });
+  };
+
+  // Get row data with backward compatibility
+  const getRowData = (row, cellIndex) => {
+    if (Array.isArray(row)) {
+      return row[cellIndex] || '';
+    } else {
+      return row.cells?.[cellIndex] || '';
+    }
+  };
+
+  // Get row URL with backward compatibility
+  const getRowUrl = (row) => {
+    if (Array.isArray(row)) {
+      return '';
+    } else {
+      return row.url || '';
+    }
   };
 
   return (
@@ -364,11 +455,14 @@ const MultiTableEditor = ({ component, onUpdate }) => {
                   </div>
                 </div>
 
-                {/* Rows */}
+                {/* Rows with URL Support */}
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <label className="block text-sm font-medium text-gray-700">
                       Rows ({table.rows?.length || 0})
+                      <span className="text-xs text-gray-500 ml-2">
+                        Add URL to make row clickable
+                      </span>
                     </label>
                     <div className="flex gap-2">
                       <button
@@ -383,70 +477,117 @@ const MultiTableEditor = ({ component, onUpdate }) => {
                   </div>
                   
                   <div className="max-h-96 overflow-y-auto border border-gray-200 rounded-lg">
-                    <div className="space-y-2 p-2">
+                    <div className="space-y-3 p-2">
                       {table.rows?.map((row, rowIndex) => (
-                        <div key={rowIndex} className="flex items-center gap-2 p-2 bg-white border border-gray-200 rounded">
-                          <div className="flex items-center gap-2 flex-shrink-0">
-                            <span className="text-xs text-gray-500 w-6 text-center">{rowIndex + 1}</span>
-                            <div className="flex flex-col gap-1">
-                              <button
-                                type="button"
-                                onClick={() => duplicateRow(tableIndex, rowIndex)}
-                                className="px-2 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600 transition-colors"
-                                title="Duplicate row"
-                              >
-                                Copy
-                              </button>
-                              {rowIndex > 0 && (
+                        <div key={rowIndex} className="p-3 bg-white border border-gray-200 rounded-lg">
+                          <div className="flex items-start gap-4">
+                            {/* Row Controls */}
+                            <div className="flex flex-col gap-2 flex-shrink-0">
+                              <div className="flex items-center gap-1">
+                                <span className="text-xs text-gray-500 w-6 text-center">{rowIndex + 1}</span>
                                 <button
                                   type="button"
-                                  onClick={() => moveRow(tableIndex, rowIndex, rowIndex - 1)}
-                                  className="px-2 py-1 bg-gray-500 text-white rounded text-xs hover:bg-gray-600 transition-colors"
-                                  title="Move up"
+                                  onClick={() => duplicateRow(tableIndex, rowIndex)}
+                                  className="px-2 py-1 bg-blue-500 text-white rounded text-xs hover:bg-blue-600 transition-colors"
+                                  title="Duplicate row"
                                 >
-                                  ↑
+                                  Copy
                                 </button>
-                              )}
-                              {rowIndex < table.rows.length - 1 && (
-                                <button
-                                  type="button"
-                                  onClick={() => moveRow(tableIndex, rowIndex, rowIndex + 1)}
-                                  className="px-2 py-1 bg-gray-500 text-white rounded text-xs hover:bg-gray-600 transition-colors"
-                                  title="Move down"
-                                >
-                                  ↓
-                                </button>
-                              )}
+                              </div>
+                              <div className="flex flex-col gap-1">
+                                {rowIndex > 0 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => moveRow(tableIndex, rowIndex, rowIndex - 1)}
+                                    className="px-2 py-1 bg-gray-500 text-white rounded text-xs hover:bg-gray-600 transition-colors"
+                                    title="Move up"
+                                  >
+                                    ↑
+                                  </button>
+                                )}
+                                {rowIndex < table.rows.length - 1 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => moveRow(tableIndex, rowIndex, rowIndex + 1)}
+                                    className="px-2 py-1 bg-gray-500 text-white rounded text-xs hover:bg-gray-600 transition-colors"
+                                    title="Move down"
+                                  >
+                                    ↓
+                                  </button>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                          
-                          <div className="overflow-x-auto flex-1">
-                            <div 
-                              className="grid gap-2 min-w-max"
-                              style={{ gridTemplateColumns: `repeat(${table.headers?.length || 3}, minmax(120px, 1fr))` }}
-                            >
-                              {row.map((cell, cellIndex) => (
+                            
+                            {/* Cells */}
+                            <div className="flex-1">
+                              <div className="mb-3">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <Link size={14} className="text-blue-600" />
+                                  <span className="text-xs font-medium text-gray-700">Row Link (Optional)</span>
+                                </div>
                                 <input
-                                  key={cellIndex}
                                   type="text"
-                                  value={cell || ''}
-                                  onChange={(e) => handleRowChange(tableIndex, rowIndex, cellIndex, e.target.value)}
-                                  className="p-2 border border-gray-300 rounded text-sm min-w-0"
-                                  placeholder={`Cell ${cellIndex + 1}`}
+                                  value={getRowUrl(row)}
+                                  onChange={(e) => handleUrlChange(tableIndex, rowIndex, e.target.value)}
+                                  className="w-full p-2 border border-blue-300 rounded text-sm"
+                                  placeholder="https://example.com (Leave empty for no link)"
                                 />
-                              ))}
+                                <p className="text-xs text-gray-500 mt-1">
+                                  Add URL to make entire row clickable
+                                </p>
+                              </div>
+                              
+                              <div className="overflow-x-auto">
+                                <div 
+                                  className="grid gap-2 min-w-max"
+                                  style={{ gridTemplateColumns: `repeat(${table.headers?.length || 3}, minmax(120px, 1fr))` }}
+                                >
+                                  {Array.from({ length: table.headers?.length || 3 }).map((_, cellIndex) => (
+                                    <div key={cellIndex} className="flex flex-col">
+                                      <span className="text-xs text-gray-500 mb-1">
+                                        {table.headers?.[cellIndex] || `Col ${cellIndex + 1}`}
+                                      </span>
+                                      <input
+                                        type="text"
+                                        value={getRowData(row, cellIndex)}
+                                        onChange={(e) => handleCellChange(tableIndex, rowIndex, cellIndex, e.target.value)}
+                                        className="p-2 border border-gray-300 rounded text-sm min-w-0"
+                                        placeholder={`Cell ${cellIndex + 1}`}
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
                             </div>
+                            
+                            {/* Remove Row Button */}
+                            {table.rows.length > 1 && (
+                              <div className="flex-shrink-0">
+                                <button
+                                  type="button"
+                                  onClick={() => removeRow(tableIndex, rowIndex)}
+                                  className="px-3 py-2 bg-red-500 text-white rounded text-sm hover:bg-red-600 transition-colors"
+                                  title="Remove row"
+                                >
+                                  ×
+                                </button>
+                              </div>
+                            )}
                           </div>
                           
-                          {table.rows.length > 1 && (
-                            <button
-                              type="button"
-                              onClick={() => removeRow(tableIndex, rowIndex)}
-                              className="px-3 py-2 bg-red-500 text-white rounded text-sm hover:bg-red-600 transition-colors flex-shrink-0"
-                              title="Remove row"
-                            >
-                              ×
-                            </button>
+                          {/* URL Preview */}
+                          {getRowUrl(row) && (
+                            <div className="mt-2 p-2 bg-blue-50 rounded text-xs">
+                              <span className="font-medium text-blue-700">Link Preview:</span>
+                              <a 
+                                href={getRowUrl(row)} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="ml-2 text-blue-600 hover:underline truncate block"
+                              >
+                                {getRowUrl(row)}
+                              </a>
+                            </div>
                           )}
                         </div>
                       ))}

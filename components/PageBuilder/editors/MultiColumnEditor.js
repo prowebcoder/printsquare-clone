@@ -2,11 +2,13 @@
 "use client";
 
 import { useState, useRef } from 'react';
-import { Trash2, Plus, ArrowRight, Download, ExternalLink, Star } from 'lucide-react';
+import { Trash2, Plus, ArrowRight, Download, ExternalLink, Star, FileArchive } from 'lucide-react';
 
 const MultiColumnEditor = ({ component, onUpdate }) => {
   const [uploadingColumns, setUploadingColumns] = useState({});
+  const [uploadingFiles, setUploadingFiles] = useState({});
   const fileInputRefs = useRef({});
+  const zipFileInputRefs = useRef({});
 
   // Icon options
   const iconOptions = [
@@ -15,6 +17,7 @@ const MultiColumnEditor = ({ component, onUpdate }) => {
     { value: 'download', label: 'Download', icon: Download },
     { value: 'external', label: 'External Link', icon: ExternalLink },
     { value: 'star', label: 'Star', icon: Star },
+    { value: 'file', label: 'File', icon: FileArchive },
   ];
 
   const handleColumnImageUpload = async (index, file) => {
@@ -64,6 +67,71 @@ const MultiColumnEditor = ({ component, onUpdate }) => {
     }
   };
 
+  // New function to handle ZIP file upload
+  // In the MultiColumnEditor.js, update the upload handler
+const handleZipFileUpload = async (index, file) => {
+  if (!file) return;
+
+  const isZip = file.type === 'application/zip' || 
+               file.type === 'application/x-zip-compressed' ||
+               file.name.endsWith('.zip');
+
+  if (!isZip) {
+    alert('Please select a ZIP file');
+    return;
+  }
+
+  if (file.size > 50 * 1024 * 1024) {
+    alert('ZIP file size must be less than 50MB');
+    return;
+  }
+
+  setUploadingFiles(prev => ({ ...prev, [index]: true }));
+
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      const newColumns = [...(component.content?.columns || [])];
+      newColumns[index] = { 
+        ...newColumns[index], 
+        buttonFile: result.imageUrl, // This will be /api/upload?file=filename.zip
+        fileSize: result.fileSize,
+        fileName: result.filename,
+        buttonType: 'file'
+      };
+      onUpdate(component.id, { columns: newColumns });
+    } else {
+      alert('Upload failed: ' + (result.error || 'Unknown error'));
+    }
+  } catch (error) {
+    console.error('Upload error:', error);
+    alert('Upload failed. Please try again.');
+  } finally {
+    setUploadingFiles(prev => ({ ...prev, [index]: false }));
+    if (zipFileInputRefs.current[index]) {
+      zipFileInputRefs.current[index].value = '';
+    }
+  }
+};
+
+  // Helper function to format file size
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
   const handleColumnImageUrlChange = (index, value) => {
     const newColumns = [...(component.content?.columns || [])];
     newColumns[index] = { ...newColumns[index], image: value };
@@ -73,6 +141,15 @@ const MultiColumnEditor = ({ component, onUpdate }) => {
   const handleColumnChange = (index, field, value) => {
     const newColumns = [...(component.content?.columns || [])];
     newColumns[index] = { ...newColumns[index], [field]: value };
+    
+    // If changing from file to link, clear file-related fields
+    if (field === 'buttonType' && value === 'link') {
+      newColumns[index].buttonFile = '';
+      newColumns[index].fileSize = '';
+      newColumns[index].fileName = '';
+      newColumns[index].fileDescription = '';
+    }
+    
     onUpdate(component.id, { columns: newColumns });
   };
 
@@ -83,10 +160,15 @@ const MultiColumnEditor = ({ component, onUpdate }) => {
       text: 'Column description text...',
       buttonText: 'Learn More',
       buttonLink: '#',
+      buttonType: 'link', // Default to link
       buttonIcon: '',
       buttonStyle: 'primary',
       buttonColor: '#3b82f6', // blue-600
-      buttonTextColor: '#ffffff' // white
+      buttonTextColor: '#ffffff', // white
+      buttonFile: '', // For file uploads
+      fileSize: '',
+      fileName: '',
+      fileDescription: ''
     }];
     onUpdate(component.id, { columns: newColumns });
   };
@@ -272,31 +354,131 @@ const MultiColumnEditor = ({ component, onUpdate }) => {
             <div className="space-y-4 border-2 border-dashed border-gray-300 p-4 rounded-lg">
               <label className="block text-sm font-medium text-gray-700 mb-2">Button Settings</label>
               
-              {/* Button Text & Link */}
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">Button Text</label>
-                  <input
-                    type="text"
-                    value={column.buttonText || ''}
-                    onChange={(e) => handleColumnChange(index, 'buttonText', e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded text-sm"
-                    placeholder="Learn more"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-500 mb-1">Button Link</label>
-                  <input
-                    type="text"
-                    value={column.buttonLink || ''}
-                    onChange={(e) => handleColumnChange(index, 'buttonLink', e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded text-sm"
-                    placeholder="https://example.com or /page"
-                  />
-                </div>
+              {/* Button Type Selection */}
+              <div className="mb-3">
+                <label className="block text-xs text-gray-500 mb-1">Button Type</label>
+                <select
+                  value={column.buttonType || 'link'}
+                  onChange={(e) => handleColumnChange(index, 'buttonType', e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded text-sm"
+                >
+                  <option value="link">Link (URL)</option>
+                  <option value="file">File Download (ZIP)</option>
+                </select>
               </div>
 
-              {/* Button Style & Icon */}
+              {/* Link Configuration */}
+              {column.buttonType === 'link' && (
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Button Text</label>
+                    <input
+                      type="text"
+                      value={column.buttonText || ''}
+                      onChange={(e) => handleColumnChange(index, 'buttonText', e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded text-sm"
+                      placeholder="Learn more"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Button Link</label>
+                    <input
+                      type="text"
+                      value={column.buttonLink || ''}
+                      onChange={(e) => handleColumnChange(index, 'buttonLink', e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded text-sm"
+                      placeholder="https://example.com or /page"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* File Download Configuration */}
+              {column.buttonType === 'file' && (
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">Button Text (for download)</label>
+                    <input
+                      type="text"
+                      value={column.buttonText || 'Download'}
+                      onChange={(e) => handleColumnChange(index, 'buttonText', e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded text-sm"
+                      placeholder="Download Now"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">ZIP File Upload</label>
+                    <div className="mb-2">
+                      <input
+                        type="file"
+                        ref={el => zipFileInputRefs.current[index] = el}
+                        onChange={(e) => handleZipFileUpload(index, e.target.files[0])}
+                        accept=".zip,application/zip,application/x-zip-compressed"
+                        className="hidden"
+                        id={`zip-upload-${component.id}-${index}`}
+                      />
+                      <label
+                        htmlFor={`zip-upload-${component.id}-${index}`}
+                        className={`cursor-pointer bg-purple-600 text-white px-3 py-2 rounded text-sm inline-block ${
+                          uploadingFiles[index] ? 'opacity-50 cursor-not-allowed' : 'hover:bg-purple-700'
+                        }`}
+                      >
+                        {uploadingFiles[index] ? 'Uploading ZIP...' : 'Upload ZIP File'}
+                      </label>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Supports .ZIP files (Max 50MB)
+                      </p>
+                    </div>
+
+                    {column.buttonFile && (
+                      <div className="p-3 bg-gray-50 rounded border border-gray-200">
+                        <div className="flex items-center gap-2 mb-2">
+                          <FileArchive size={20} className="text-purple-600" />
+                          <div className="flex-1">
+                            <p className="text-sm font-medium text-gray-700 truncate">
+                              {column.fileName || 'uploaded-file.zip'}
+                            </p>
+                            {column.fileSize && (
+                              <p className="text-xs text-gray-500">
+                                Size: {column.fileSize}
+                              </p>
+                            )}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleColumnChange(index, 'buttonFile', '')}
+                            className="text-red-500 hover:text-red-700"
+                            title="Remove file"
+                          >
+                            ×
+                          </button>
+                        </div>
+                        <input
+                          type="text"
+                          value={column.buttonFile || ''}
+                          onChange={(e) => handleColumnChange(index, 'buttonFile', e.target.value)}
+                          className="w-full p-2 border border-gray-300 rounded text-sm mt-2"
+                          placeholder="Or enter file URL"
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">File Description (Optional)</label>
+                    <input
+                      type="text"
+                      value={column.fileDescription || ''}
+                      onChange={(e) => handleColumnChange(index, 'fileDescription', e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded text-sm"
+                      placeholder="e.g., Includes templates, guides, and resources"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Button Style & Icon (Common for both types) */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs text-gray-500 mb-1">Button Style</label>
@@ -385,10 +567,9 @@ const MultiColumnEditor = ({ component, onUpdate }) => {
                 <div className="mt-3 p-3 bg-gray-50 rounded-lg">
                   <label className="block text-xs text-gray-500 mb-2">Button Preview:</label>
                   <div className="flex justify-center">
-                    <button
-                      type="button"
+                    <div
                       className={`
-                        inline-flex items-center gap-2 px-6 py-3 font-medium rounded-lg transition-colors duration-200
+                        inline-flex items-center gap-2 px-6 py-3 font-medium rounded-lg transition-colors duration-200 cursor-default
                         ${column.buttonStyle === 'primary' ? 'shadow-sm' : ''}
                         ${column.buttonStyle === 'outline' ? 'border-2 bg-transparent' : ''}
                         ${column.buttonStyle === 'ghost' ? 'bg-transparent hover:bg-gray-100' : ''}
@@ -404,7 +585,7 @@ const MultiColumnEditor = ({ component, onUpdate }) => {
                         const IconComponent = iconOptions.find(opt => opt.value === column.buttonIcon)?.icon;
                         return IconComponent ? <IconComponent size={16} /> : null;
                       })()}
-                    </button>
+                    </div>
                   </div>
                 </div>
               )}
