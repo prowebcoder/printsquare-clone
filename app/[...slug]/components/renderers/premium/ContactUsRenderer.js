@@ -468,31 +468,54 @@ export default function ContactUsRenderer({ component, index }) {
         )}
 
         {/* Map Section */}
-        {content.showMap && content.mapEmbedUrl && (
+        {content.showMap && (
           <div className="max-w-6xl mx-auto mt-16 px-6">
-            <div 
-              className="w-full rounded-2xl overflow-hidden shadow-lg"
-              style={{ height: content.mapHeight || '288px' }}
-            >
-              <iframe
-                src={content.mapEmbedUrl}
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                title="Location Map"
-              ></iframe>
-            </div>
+            {/* Address Display - Shown above the map */}
+            {content.address && (
+              <div className="mb-6 text-center">
+                <div className="flex items-center justify-center gap-2 mb-2">
+                  <MapPin className="text-red-500" size={20} />
+                  <h3 className="text-lg font-semibold" style={{ color: content.addressTitleColor || '#1F2937' }}>
+                    Our Location
+                  </h3>
+                </div>
+                <p 
+                  className="text-gray-600"
+                  style={{ color: content.addressTextColor || '#6B7280' }}
+                >
+                  {content.address || 'A-208 2F, Seoul Business Agency (SBA), 400, World Cup buk-ro, Mapo-gu, Seoul, Republic of Korea'}
+                </p>
+              </div>
+            )}
             
-            {/* Map Caption */}
-            {content.mapCaption && (
-              <p 
-                className="mt-4 text-center text-sm"
-                style={{ color: content.mapCaptionColor || '#6B7280' }}
-              >
-                {content.mapCaption}
-              </p>
+            {/* Map Embed - Only shown if mapEmbedUrl exists */}
+            {content.mapEmbedUrl && (
+              <>
+                <div 
+                  className="w-full rounded-2xl overflow-hidden shadow-lg mb-4"
+                  style={{ height: content.mapHeight || '288px' }}
+                >
+                  <iframe
+                    src={content.mapEmbedUrl}
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    title="Location Map"
+                  ></iframe>
+                </div>
+                
+                {/* Map Caption */}
+                {content.mapCaption && (
+                  <p 
+                    className="mt-2 text-center text-sm"
+                    style={{ color: content.mapCaptionColor || '#6B7280' }}
+                  >
+                    {content.mapCaption}
+                  </p>
+                )}
+              </>
             )}
           </div>
         )}

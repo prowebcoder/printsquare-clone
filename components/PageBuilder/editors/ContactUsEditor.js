@@ -5,9 +5,6 @@ import React, { useState } from 'react';
 import { 
   Plus, 
   Trash2, 
-  MoveUp, 
-  MoveDown, 
-  Copy,
   Eye,
   EyeOff,
   Palette,
@@ -17,7 +14,13 @@ import {
   Phone,
   MapPin,
   MessageSquare,
-  Settings
+  Settings,
+  Send,
+  User,
+  Building,
+  Globe,
+  Clock,
+  MessageCircle
 } from 'lucide-react';
 
 // Icon options for selection
@@ -33,6 +36,20 @@ const iconOptions = [
   { value: 'clock', label: 'Clock' },
   { value: 'messageCircle', label: 'Message Circle' }
 ];
+
+// Create a mapping between icon string values and React components
+const iconComponents = {
+  mail: Mail,
+  phone: Phone,
+  mapPin: MapPin,
+  send: Send,
+  user: User,
+  messageSquare: MessageSquare,
+  building: Building,
+  globe: Globe,
+  clock: Clock,
+  messageCircle: MessageCircle
+};
 
 // Form field types
 const fieldTypes = [
@@ -907,6 +924,17 @@ const ContactUsEditor = ({ component, onUpdate }) => {
       {expandedSection === 'map' && (
         <div className="space-y-4">
           <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Address</label>
+            <input
+              type="text"
+              value={content.address || 'A-208 2F, Seoul Business Agency (SBA), 400, World Cup buk-ro, Mapo-gu, Seoul, Republic of Korea'}
+              onChange={(e) => onUpdate(component.id, { address: e.target.value })}
+              className="w-full p-3 border border-gray-300 rounded text-sm"
+              placeholder="Enter your address"
+            />
+          </div>
+
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Map Embed URL</label>
             <input
               type="text"
@@ -916,8 +944,8 @@ const ContactUsEditor = ({ component, onUpdate }) => {
               placeholder="https://maps.google.com/embed?pb=..."
             />
             <p className="text-xs text-gray-500 mt-1">
-  Paste your Google Maps embed URL. You can get this by clicking &quot;Share&quot; &rarr; &quot;Embed a map&quot; on Google Maps.
-</p>
+              Paste your Google Maps embed URL. You can get this by clicking "Share" → "Embed a map" on Google Maps.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

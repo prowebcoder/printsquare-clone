@@ -33,6 +33,11 @@ function TabsFaqRenderer({ component }) {
   const mainTitle = titleWords.slice(0, -1).join(" ");
   const lastWord = titleWords.slice(-1)[0];
 
+  // Function to create HTML markup
+  const createMarkup = (html) => {
+    return { __html: html };
+  };
+
   return (
     <section
       className="py-20 px-4"
@@ -113,15 +118,14 @@ function TabsFaqRenderer({ component }) {
 
                 <div
                   className={`overflow-hidden transition-all duration-300 ${
-                    openIndex === faqIndex ? "max-h-40 mt-3" : "max-h-0"
+                    openIndex === faqIndex ? "mt-3" : "max-h-0"
                   }`}
                 >
-                  <p
-                    className="text-gray-600"
+                  <div
+                    className="text-gray-600 prose-sm max-w-none"
                     style={{ color: content.answerColor || "#6b7280" }}
-                  >
-                    {item.answer}
-                  </p>
+                    dangerouslySetInnerHTML={createMarkup(item.answer || '')}
+                  />
                 </div>
               </div>
             ))}

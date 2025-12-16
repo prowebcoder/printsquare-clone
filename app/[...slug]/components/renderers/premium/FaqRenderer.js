@@ -1,3 +1,4 @@
+// app/[...slug]/components/renderers/premium/FaqRenderer.js  
 "use client";
 
 import { useState, useEffect } from 'react';

@@ -27,6 +27,37 @@ export default function NoticeRenderer({ component, index }) {
     }
   };
 
+  // Determine grid class based on number of notices
+  const getGridClass = () => {
+    const noticeCount = content.notices?.length || 0;
+    
+    if (noticeCount === 0) {
+      return 'grid-cols-1';
+    } else if (noticeCount === 1) {
+      // Single notice - make it full width
+      return 'grid-cols-1';
+    } else if (noticeCount === 2) {
+      // Two notices - show as two columns
+      return 'grid-cols-1 md:grid-cols-2';
+    } else {
+      // Three or more notices - default to 2 columns
+      return 'grid-cols-1 md:grid-cols-2';
+    }
+  };
+
+  // Determine maximum width for single notice
+  const getMaxWidthClass = () => {
+    const noticeCount = content.notices?.length || 0;
+    
+    if (noticeCount === 1) {
+      // Full width for single notice
+      return 'max-w-4xl mx-auto';
+    } else {
+      // Default layout for multiple notices
+      return '';
+    }
+  };
+
   return (
     <section
       key={component.id || index}
@@ -71,11 +102,13 @@ export default function NoticeRenderer({ component, index }) {
 
         {/* Notices List - Only show if notices exist */}
         {content.notices && content.notices.length > 0 && (
-          <div className="grid md:grid-cols-2 gap-8 text-left">
+          <div className={`grid ${getGridClass()} gap-8 text-left ${getMaxWidthClass()}`}>
             {content.notices.map((notice, noticeIndex) => (
               <div
                 key={noticeIndex}
-                className="rounded-2xl p-6 border border-gray-200 transition duration-300 hover:shadow-lg hover:border-transparent"
+                className={`rounded-2xl p-6 border border-gray-200 transition duration-300 hover:shadow-lg hover:border-transparent ${
+                  content.notices.length === 1 ? 'w-full' : ''
+                }`}
                 style={{
                   backgroundColor: content.noticeBoxBgColor || '#FFFFFF',
                   backgroundImage: notice.desc && `linear-gradient(to right, ${content.noticeBoxHoverBgColor || '#FFE3E5'}, ${content.noticeBoxHoverBgColor || '#FFF0E5'})`
@@ -84,7 +117,9 @@ export default function NoticeRenderer({ component, index }) {
                 {/* Notice Title - Only show if exists */}
                 {notice.title && (
                   <h3 
-                    className="font-extrabold leading-tight text-lg mb-2"
+                    className={`font-extrabold leading-tight ${
+                      content.notices.length === 1 ? 'text-2xl md:text-3xl' : 'text-lg'
+                    } mb-2`}
                     style={{ color: content.noticeTitleColor || '#0B1633' }}
                   >
                     {notice.title}
@@ -94,7 +129,9 @@ export default function NoticeRenderer({ component, index }) {
                 {/* Notice Description - Only show if exists */}
                 {notice.desc && (
                   <p 
-                    className="text-sm mb-3 leading-relaxed"
+                    className={`leading-relaxed ${
+                      content.notices.length === 1 ? 'text-base md:text-lg' : 'text-sm'
+                    } mb-3`}
                     style={{ color: content.noticeDescColor || '#6B7280' }}
                   >
                     {notice.desc}
@@ -104,7 +141,9 @@ export default function NoticeRenderer({ component, index }) {
                 {/* Notice Date - Only show if exists */}
                 {notice.date && (
                   <p 
-                    className="text-xs"
+                    className={`${
+                      content.notices.length === 1 ? 'text-sm' : 'text-xs'
+                    }`}
                     style={{ color: content.noticeDateColor || '#9CA3AF' }}
                   >
                     {notice.date}

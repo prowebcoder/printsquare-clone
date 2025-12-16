@@ -1,13 +1,55 @@
-// components/PageBuilder/editors/MultiTableEditor.js
+// components/PageBuilder/editors/MultiTableEditor.js - Complete fixed version
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Trash2, Plus, ChevronUp, ChevronDown, Rows, Columns, Link } from 'lucide-react';
 
 const MultiTableEditor = ({ component, onUpdate }) => {
   const [expandedTables, setExpandedTables] = useState({});
   const [bulkAddRows, setBulkAddRows] = useState({});
   const [bulkAddColumns, setBulkAddColumns] = useState({});
+
+  // Migration function to ensure consistent data format
+  const migrateTables = (tables) => {
+    if (!tables) return [];
+    
+    return tables.map(table => {
+      const headers = table.headers || [];
+      const rows = table.rows ? table.rows.map(row => {
+        if (Array.isArray(row)) {
+          return {
+            cells: [...row],
+            url: ''
+          };
+        }
+        return {
+          cells: row.cells || [],
+          url: row.url || ''
+        };
+      }) : [];
+      
+      return {
+        title: table.title || '',
+        headers,
+        rows
+      };
+    });
+  };
+
+  const getTables = () => {
+    return migrateTables(component.content?.tables);
+  };
+
+  // Initialize with migrated data on mount
+  useEffect(() => {
+    const currentTables = component.content?.tables;
+    const migratedTables = migrateTables(currentTables);
+    
+    // Only update if format is different
+    if (JSON.stringify(currentTables) !== JSON.stringify(migratedTables)) {
+      onUpdate(component.id, { tables: migratedTables });
+    }
+  }, []);
 
   const toggleTableExpansion = (index) => {
     setExpandedTables(prev => ({
@@ -17,170 +59,114 @@ const MultiTableEditor = ({ component, onUpdate }) => {
   };
 
   const handleTableChange = (tableIndex, field, value) => {
-    const newTables = [...(component.content?.tables || [])];
-    newTables[tableIndex] = { ...newTables[tableIndex], [field]: value };
-    onUpdate(component.id, { tables: newTables });
+    const tables = getTables();
+    tables[tableIndex] = { ...tables[tableIndex], [field]: value };
+    onUpdate(component.id, { tables });
   };
 
   const handleHeaderChange = (tableIndex, headerIndex, value) => {
-    const newTables = [...(component.content?.tables || [])];
-    if (!newTables[tableIndex].headers) {
-      newTables[tableIndex].headers = [];
+    const tables = getTables();
+    if (!tables[tableIndex].headers) {
+      tables[tableIndex].headers = [];
     }
-    newTables[tableIndex].headers[headerIndex] = value;
-    onUpdate(component.id, { tables: newTables });
+    tables[tableIndex].headers[headerIndex] = value;
+    onUpdate(component.id, { tables });
   };
 
-  // Handle cell change
   const handleCellChange = (tableIndex, rowIndex, cellIndex, value) => {
-    const newTables = [...(component.content?.tables || [])];
-    if (!newTables[tableIndex].rows) {
-      newTables[tableIndex].rows = [];
+    const tables = getTables();
+    if (!tables[tableIndex].rows[rowIndex].cells) {
+      tables[tableIndex].rows[rowIndex].cells = [];
     }
-    if (!newTables[tableIndex].rows[rowIndex]) {
-      // Initialize as object if it's not
-      newTables[tableIndex].rows[rowIndex] = { cells: [], url: '' };
-    }
-    
-    // Ensure cells array exists
-    if (!newTables[tableIndex].rows[rowIndex].cells) {
-      newTables[tableIndex].rows[rowIndex].cells = [];
-    }
-    
-    newTables[tableIndex].rows[rowIndex].cells[cellIndex] = value;
-    onUpdate(component.id, { tables: newTables });
+    tables[tableIndex].rows[rowIndex].cells[cellIndex] = value;
+    onUpdate(component.id, { tables });
   };
 
-  // Handle URL change for a row
   const handleUrlChange = (tableIndex, rowIndex, value) => {
-    const newTables = [...(component.content?.tables || [])];
-    if (!newTables[tableIndex].rows) {
-      newTables[tableIndex].rows = [];
-    }
-    if (!newTables[tableIndex].rows[rowIndex]) {
-      newTables[tableIndex].rows[rowIndex] = { cells: [], url: '' };
-    }
-    
-    // Ensure it's an object with url property
-    if (typeof newTables[tableIndex].rows[rowIndex] === 'object') {
-      newTables[tableIndex].rows[rowIndex].url = value;
-    } else {
-      // Convert from array to object
-      newTables[tableIndex].rows[rowIndex] = {
-        cells: newTables[tableIndex].rows[rowIndex],
-        url: value
-      };
-    }
-    
-    onUpdate(component.id, { tables: newTables });
+    const tables = getTables();
+    tables[tableIndex].rows[rowIndex].url = value;
+    onUpdate(component.id, { tables });
   };
 
   const addTable = () => {
-    const newTables = [...(component.content?.tables || []), {
+    const tables = getTables();
+    const newTable = {
       title: 'New Table',
       headers: ['Header 1', 'Header 2', 'Header 3'],
       rows: [
         { cells: ['Data 1', 'Data 2', 'Data 3'], url: '' },
         { cells: ['Data 4', 'Data 5', 'Data 6'], url: '' }
       ]
-    }];
-    onUpdate(component.id, { tables: newTables });
+    };
+    onUpdate(component.id, { tables: [...tables, newTable] });
   };
 
   const removeTable = (index) => {
-    const newTables = (component.content?.tables || []).filter((_, i) => i !== index);
+    const tables = getTables();
+    const newTables = tables.filter((_, i) => i !== index);
     onUpdate(component.id, { tables: newTables });
   };
 
   const addRow = (tableIndex, count = 1) => {
-    const newTables = [...(component.content?.tables || [])];
-    const headersCount = newTables[tableIndex].headers?.length || 3;
-    
-    if (!newTables[tableIndex].rows) {
-      newTables[tableIndex].rows = [];
-    }
+    const tables = getTables();
+    const headersCount = tables[tableIndex].headers?.length || 3;
     
     for (let i = 0; i < count; i++) {
       const newRow = {
         cells: Array(headersCount).fill('New Data'),
         url: ''
       };
-      newTables[tableIndex].rows.push(newRow);
+      tables[tableIndex].rows.push(newRow);
     }
     
-    onUpdate(component.id, { tables: newTables });
+    onUpdate(component.id, { tables });
     setBulkAddRows(prev => ({ ...prev, [tableIndex]: '' }));
   };
 
   const removeRow = (tableIndex, rowIndex) => {
-    const newTables = [...(component.content?.tables || [])];
-    newTables[tableIndex].rows = newTables[tableIndex].rows?.filter((_, i) => i !== rowIndex) || [];
-    onUpdate(component.id, { tables: newTables });
+    const tables = getTables();
+    tables[tableIndex].rows = tables[tableIndex].rows.filter((_, i) => i !== rowIndex);
+    onUpdate(component.id, { tables });
   };
 
   const addColumn = (tableIndex, count = 1) => {
-    const newTables = [...(component.content?.tables || [])];
+    const tables = getTables();
+    const currentHeadersCount = tables[tableIndex].headers?.length || 0;
     
     // Add headers
-    if (!newTables[tableIndex].headers) {
-      newTables[tableIndex].headers = [];
+    if (!tables[tableIndex].headers) {
+      tables[tableIndex].headers = [];
     }
     
-    const currentHeadersCount = newTables[tableIndex].headers.length;
     for (let i = 0; i < count; i++) {
-      newTables[tableIndex].headers.push(`Header ${currentHeadersCount + i + 1}`);
+      tables[tableIndex].headers.push(`Header ${currentHeadersCount + i + 1}`);
     }
     
-    // Add columns to each row
-    if (newTables[tableIndex].rows) {
-      newTables[tableIndex].rows = newTables[tableIndex].rows.map(row => {
-        // Handle both old array format and new object format
-        if (Array.isArray(row)) {
-          return {
-            cells: [...row, ...Array(count).fill('New Data')],
-            url: ''
-          };
-        } else {
-          return {
-            ...row,
-            cells: [...(row.cells || []), ...Array(count).fill('New Data')]
-          };
-        }
-      });
-    } else {
-      newTables[tableIndex].rows = [{
-        cells: Array(newTables[tableIndex].headers.length).fill('New Data'),
-        url: ''
-      }];
-    }
+    // Add column to each row
+    tables[tableIndex].rows = tables[tableIndex].rows.map(row => ({
+      cells: [...(row.cells || []), ...Array(count).fill('New Data')],
+      url: row.url || ''
+    }));
     
-    onUpdate(component.id, { tables: newTables });
+    onUpdate(component.id, { tables });
     setBulkAddColumns(prev => ({ ...prev, [tableIndex]: '' }));
   };
 
   const removeColumn = (tableIndex, columnIndex) => {
-    const newTables = [...(component.content?.tables || [])];
+    const tables = getTables();
     
     // Remove header
-    if (newTables[tableIndex].headers) {
-      newTables[tableIndex].headers = newTables[tableIndex].headers.filter((_, i) => i !== columnIndex);
+    if (tables[tableIndex].headers) {
+      tables[tableIndex].headers = tables[tableIndex].headers.filter((_, i) => i !== columnIndex);
     }
     
     // Remove column from each row
-    if (newTables[tableIndex].rows) {
-      newTables[tableIndex].rows = newTables[tableIndex].rows.map(row => {
-        if (Array.isArray(row)) {
-          return row.filter((_, i) => i !== columnIndex);
-        } else {
-          return {
-            ...row,
-            cells: row.cells?.filter((_, i) => i !== columnIndex) || []
-          };
-        }
-      });
-    }
+    tables[tableIndex].rows = tables[tableIndex].rows.map(row => ({
+      cells: (row.cells || []).filter((_, i) => i !== columnIndex),
+      url: row.url || ''
+    }));
     
-    onUpdate(component.id, { tables: newTables });
+    onUpdate(component.id, { tables });
   };
 
   const handleLayoutChange = (field, value) => {
@@ -190,60 +176,31 @@ const MultiTableEditor = ({ component, onUpdate }) => {
   };
 
   const clearTable = (tableIndex) => {
-    const newTables = [...(component.content?.tables || [])];
-    newTables[tableIndex].rows = [];
-    onUpdate(component.id, { tables: newTables });
+    const tables = getTables();
+    tables[tableIndex].rows = [];
+    onUpdate(component.id, { tables });
   };
 
   const duplicateRow = (tableIndex, rowIndex) => {
-    const newTables = [...(component.content?.tables || [])];
-    const rowToDuplicate = newTables[tableIndex].rows[rowIndex];
-    
-    // Handle both formats
-    let duplicatedRow;
-    if (Array.isArray(rowToDuplicate)) {
-      duplicatedRow = [...rowToDuplicate];
-    } else {
-      duplicatedRow = {
-        cells: [...(rowToDuplicate.cells || [])],
-        url: rowToDuplicate.url || ''
-      };
-    }
-    
-    // Insert as object
-    if (Array.isArray(duplicatedRow)) {
-      duplicatedRow = { cells: duplicatedRow, url: '' };
-    }
-    
-    newTables[tableIndex].rows.splice(rowIndex + 1, 0, duplicatedRow);
-    onUpdate(component.id, { tables: newTables });
+    const tables = getTables();
+    const rowToDuplicate = tables[tableIndex].rows[rowIndex];
+    const duplicatedRow = {
+      cells: [...(rowToDuplicate.cells || [])],
+      url: rowToDuplicate.url || ''
+    };
+    tables[tableIndex].rows.splice(rowIndex + 1, 0, duplicatedRow);
+    onUpdate(component.id, { tables });
   };
 
   const moveRow = (tableIndex, fromIndex, toIndex) => {
-    const newTables = [...(component.content?.tables || [])];
-    const rows = newTables[tableIndex].rows;
+    const tables = getTables();
+    const rows = tables[tableIndex].rows;
     const [movedRow] = rows.splice(fromIndex, 1);
     rows.splice(toIndex, 0, movedRow);
-    onUpdate(component.id, { tables: newTables });
+    onUpdate(component.id, { tables });
   };
 
-  // Get row data with backward compatibility
-  const getRowData = (row, cellIndex) => {
-    if (Array.isArray(row)) {
-      return row[cellIndex] || '';
-    } else {
-      return row.cells?.[cellIndex] || '';
-    }
-  };
-
-  // Get row URL with backward compatibility
-  const getRowUrl = (row) => {
-    if (Array.isArray(row)) {
-      return '';
-    } else {
-      return row.url || '';
-    }
-  };
+  const tables = getTables();
 
   return (
     <div className="space-y-6">
@@ -298,7 +255,7 @@ const MultiTableEditor = ({ component, onUpdate }) => {
           </button>
         </div>
 
-        {component.content?.tables?.map((table, tableIndex) => (
+        {tables.map((table, tableIndex) => (
           <div key={tableIndex} className="border border-gray-300 rounded-lg mb-4 bg-white overflow-hidden">
             {/* Table Header */}
             <div className="bg-gray-50 px-4 py-3 border-b border-gray-300 flex justify-between items-center">
@@ -518,7 +475,7 @@ const MultiTableEditor = ({ component, onUpdate }) => {
                               </div>
                             </div>
                             
-                            {/* Cells */}
+                            {/* Cells and URL */}
                             <div className="flex-1">
                               <div className="mb-3">
                                 <div className="flex items-center gap-2 mb-1">
@@ -527,7 +484,7 @@ const MultiTableEditor = ({ component, onUpdate }) => {
                                 </div>
                                 <input
                                   type="text"
-                                  value={getRowUrl(row)}
+                                  value={row.url || ''}
                                   onChange={(e) => handleUrlChange(tableIndex, rowIndex, e.target.value)}
                                   className="w-full p-2 border border-blue-300 rounded text-sm"
                                   placeholder="https://example.com (Leave empty for no link)"
@@ -549,7 +506,7 @@ const MultiTableEditor = ({ component, onUpdate }) => {
                                       </span>
                                       <input
                                         type="text"
-                                        value={getRowData(row, cellIndex)}
+                                        value={row.cells?.[cellIndex] || ''}
                                         onChange={(e) => handleCellChange(tableIndex, rowIndex, cellIndex, e.target.value)}
                                         className="p-2 border border-gray-300 rounded text-sm min-w-0"
                                         placeholder={`Cell ${cellIndex + 1}`}
@@ -576,16 +533,16 @@ const MultiTableEditor = ({ component, onUpdate }) => {
                           </div>
                           
                           {/* URL Preview */}
-                          {getRowUrl(row) && (
+                          {row.url && (
                             <div className="mt-2 p-2 bg-blue-50 rounded text-xs">
                               <span className="font-medium text-blue-700">Link Preview:</span>
                               <a 
-                                href={getRowUrl(row)} 
+                                href={row.url} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
                                 className="ml-2 text-blue-600 hover:underline truncate block"
                               >
-                                {getRowUrl(row)}
+                                {row.url}
                               </a>
                             </div>
                           )}
@@ -612,7 +569,7 @@ const MultiTableEditor = ({ component, onUpdate }) => {
           </div>
         ))}
 
-        {(!component.content?.tables || component.content.tables.length === 0) && (
+        {(tables.length === 0) && (
           <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
             <p className="text-gray-500 mb-3">No tables added yet</p>
             <button

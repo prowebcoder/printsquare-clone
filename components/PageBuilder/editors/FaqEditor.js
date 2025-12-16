@@ -1,3 +1,4 @@
+// components/PageBuilder/editors/FaqEditor.js
 "use client";
 
 import { useState, useCallback } from 'react';

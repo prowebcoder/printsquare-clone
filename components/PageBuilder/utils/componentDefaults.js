@@ -142,30 +142,32 @@ imageWithTabs: {
   imageBorderRadius: '0.5rem'
 },
       tabsFaq: {
-      title: 'Frequently Asked Questions',
-      tabs: [
+  title: 'Frequently Asked Questions',
+  tabs: [
+    {
+      name: 'ORDER',
+      faqs: [
         {
-          name: 'ORDER',
-          faqs: [
-            {
-              question: 'Terms of Portfolio usage agreement',
-              answer: 'All designs and content submitted for printing remain the intellectual property of the client. Print Seoul only uses them for printing and delivery purposes.'
-            }
-          ]
+          question: 'Terms of Portfolio usage agreement',
+          answer: '<p>All designs and content submitted for printing remain the intellectual property of the client. Print Seoul only uses them for printing and delivery purposes.</p>'
         }
-      ],
-      backgroundType: 'gradient',
-      gradientFrom: '#f5f3ef',
-      gradientTo: '#e8e3dd',
-      titleColor: '#0B1633',
-      highlightedColor: '#FF4B2B',
-      activeTabBg: '#e21b36',
-      activeTabText: '#ffffff',
-      inactiveTabBg: '#ffffff',
-      inactiveTabText: '#666666',
-      questionColor: '#1f2937',
-      answerColor: '#6b7280'
-    },
+      ]
+    }
+  ],
+  backgroundType: 'gradient',
+  gradientFrom: '#f5f3ef',
+  gradientTo: '#e8e3dd',
+  titleColor: '#0B1633',
+  highlightedColor: '#FF4B2B',
+  activeTabBg: '#e21b36',
+  activeTabText: '#ffffff',
+  inactiveTabBg: '#ffffff',
+  inactiveTabText: '#666666',
+  questionColor: '#1f2937',
+  answerColor: '#6b7280'
+},
+
+
       freeSample: {
   title: 'Free Sample Service',
   description1: 'Curious about the paper texture or print quality before ordering? Experience it yourself with our free sample service.',
@@ -757,42 +759,41 @@ contactUs: {
   heroTitleColor: '#1F2937',
   heroTitleSize: 'text-3xl md:text-5xl',
   
-  // Contact cards
-  contactCards: [
-    {
-      title: 'Our Office',
-      icon: 'mapPin',
-      content: "Print Seoul Headquarters<br />105, Seoul Printing Avenue,<br />Mapo-gu, Seoul, South Korea",
-      bgColor: '#FFFFFF',
-      borderColor: 'transparent',
-      iconBgColor: 'rgba(255, 75, 43, 0.2)',
-      iconColor: '#FF4B2B',
-      titleColor: '#1F2937',
-      textColor: '#6B7280'
-    },
-    {
-      title: 'Call Us',
-      icon: 'phone',
-      content: "+82 10-3456-7890<br />Mon–Fri, 9:00 AM–6:00 PM",
-      bgColor: '#FFFFFF',
-      borderColor: 'transparent',
-      iconBgColor: 'rgba(255, 75, 43, 0.2)',
-      iconColor: '#FF4B2B',
-      titleColor: '#1F2937',
-      textColor: '#6B7280'
-    },
-    {
-      title: 'Email Us',
-      icon: 'mail',
-      content: "support@printseoul.com<br />info@printseoul.com",
-      bgColor: '#FFFFFF',
-      borderColor: 'transparent',
-      iconBgColor: 'rgba(255, 75, 43, 0.2)',
-      iconColor: '#FF4B2B',
-      titleColor: '#1F2937',
-      textColor: '#6B7280'
-    }
-  ],
+ contactCards: [
+  {
+    title: 'Our Office',
+    icon: 'mapPin',
+    content: "A-208 2F, Seoul Business Agency (SBA)<br />400, World Cup buk-ro<br />Mapo-gu, Seoul, Republic of Korea",
+    bgColor: '#FFFFFF',
+    borderColor: 'transparent',
+    iconBgColor: 'rgba(255, 75, 43, 0.2)',
+    iconColor: '#FF4B2B',
+    titleColor: '#1F2937',
+    textColor: '#6B7280'
+  },
+  {
+    title: 'Call Us',
+    icon: 'phone',
+    content: "+82 10-3456-7890<br />Mon–Fri, 9:00 AM–6:00 PM",
+    bgColor: '#FFFFFF',
+    borderColor: 'transparent',
+    iconBgColor: 'rgba(255, 75, 43, 0.2)',
+    iconColor: '#FF4B2B',
+    titleColor: '#1F2937',
+    textColor: '#6B7280'
+  },
+  {
+    title: 'Email Us',
+    icon: 'mail',
+    content: "support@printseoul.com<br />info@printseoul.com",
+    bgColor: '#FFFFFF',
+    borderColor: 'transparent',
+    iconBgColor: 'rgba(255, 75, 43, 0.2)',
+    iconColor: '#FF4B2B',
+    titleColor: '#1F2937',
+    textColor: '#6B7280'
+  }
+],
   
   // Card styling
   cardHoverEffect: true,

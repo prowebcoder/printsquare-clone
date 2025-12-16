@@ -2,7 +2,350 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Plus, Trash2, GripVertical } from 'lucide-react';
+import { Plus, Trash2, GripVertical, Bold, Italic, Underline, List, ListOrdered, AlignLeft, AlignCenter, AlignRight, Link, Unlink } from 'lucide-react';
+
+// Rich Text Editor Component
+const RichTextEditor = ({ value, onChange, placeholder = "Enter text..." }) => {
+  const editorRef = useRef(null);
+  const [showLinkInput, setShowLinkInput] = useState(false);
+  const [linkUrl, setLinkUrl] = useState('');
+  const [isBold, setIsBold] = useState(false);
+  const [isItalic, setIsItalic] = useState(false);
+  const [isUnderline, setIsUnderline] = useState(false);
+  const [alignment, setAlignment] = useState('left');
+
+  // Initialize editor content
+  useEffect(() => {
+    if (editorRef.current) {
+      editorRef.current.innerHTML = value || '';
+      updateToolbarState();
+    }
+  }, []);
+
+  // Update content when value changes from parent
+  useEffect(() => {
+    if (editorRef.current && value !== editorRef.current.innerHTML) {
+      editorRef.current.innerHTML = value || '';
+      updateToolbarState();
+    }
+  }, [value]);
+
+  const updateToolbarState = () => {
+    if (!editorRef.current) return;
+    
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      const parentElement = range.commonAncestorContainer.parentElement;
+      
+      if (parentElement) {
+        setIsBold(parentElement.style.fontWeight === 'bold' || 
+                 parentElement.tagName === 'B' || 
+                 parentElement.tagName === 'STRONG');
+        setIsItalic(parentElement.style.fontStyle === 'italic' || 
+                   parentElement.tagName === 'I' || 
+                   parentElement.tagName === 'EM');
+        setIsUnderline(parentElement.style.textDecoration === 'underline');
+        setAlignment(parentElement.style.textAlign || 'left');
+      }
+    }
+  };
+
+  const handleInput = () => {
+    if (editorRef.current) {
+      const html = editorRef.current.innerHTML;
+      onChange(html);
+      updateToolbarState();
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    // Handle Enter key for proper line breaks
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      document.execCommand('insertHTML', false, '<p><br></p>');
+      handleInput();
+    }
+    
+    // Handle Shift+Enter for line break
+    if (e.key === 'Enter' && e.shiftKey) {
+      e.preventDefault();
+      document.execCommand('insertHTML', false, '<br>');
+      handleInput();
+    }
+  };
+
+  const execCommand = (command, value = null) => {
+    document.execCommand(command, false, value);
+    editorRef.current.focus();
+    handleInput();
+  };
+
+  const toggleFormat = (command, style, stateSetter) => {
+    if (editorRef.current) {
+      editorRef.current.focus();
+      execCommand(command);
+      
+      // Toggle state
+      if (stateSetter) {
+        if (command === 'bold') setIsBold(!isBold);
+        if (command === 'italic') setIsItalic(!isItalic);
+        if (command === 'underline') setIsUnderline(!isUnderline);
+      }
+    }
+  };
+
+  const toggleList = (type) => {
+    if (editorRef.current) {
+      editorRef.current.focus();
+      
+      // Check if we're already in a list of this type
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        let parent = range.commonAncestorContainer;
+        
+        // Find the list parent
+        while (parent && parent !== editorRef.current) {
+          if (parent.tagName === 'UL' || parent.tagName === 'OL') {
+            // We're in a list, check if it's the same type
+            if ((type === 'insertUnorderedList' && parent.tagName === 'UL') ||
+                (type === 'insertOrderedList' && parent.tagName === 'OL')) {
+              // Remove the list
+              execCommand('removeFormat');
+              return;
+            }
+            break;
+          }
+          parent = parent.parentNode;
+        }
+      }
+      
+      // Create new list
+      execCommand(type);
+    }
+  };
+
+  const insertLink = () => {
+    if (!linkUrl.trim()) {
+      setShowLinkInput(false);
+      return;
+    }
+    
+    const url = linkUrl.startsWith('http') ? linkUrl : `https://${linkUrl}`;
+    execCommand('createLink', url);
+    setShowLinkInput(false);
+    setLinkUrl('');
+  };
+
+  const removeLink = () => {
+    execCommand('unlink');
+  };
+
+  const setTextAlignment = (align) => {
+    if (editorRef.current) {
+      editorRef.current.focus();
+      execCommand('justify' + align.charAt(0).toUpperCase() + align.slice(1));
+      setAlignment(align);
+    }
+  };
+
+  const clearFormatting = () => {
+    if (editorRef.current) {
+      editorRef.current.focus();
+      execCommand('removeFormat');
+      setIsBold(false);
+      setIsItalic(false);
+      setIsUnderline(false);
+      setAlignment('left');
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      {/* Toolbar */}
+      <div className="flex flex-wrap items-center gap-1 p-2 border border-gray-300 rounded-t-lg bg-gray-50">
+        {/* Formatting buttons */}
+        <button
+          type="button"
+          onClick={() => toggleFormat('bold', 'bold', setIsBold)}
+          className={`p-1 rounded ${isBold ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-200'}`}
+          title="Bold"
+        >
+          <Bold size={16} />
+        </button>
+        <button
+          type="button"
+          onClick={() => toggleFormat('italic', 'italic', setIsItalic)}
+          className={`p-1 rounded ${isItalic ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-200'}`}
+          title="Italic"
+        >
+          <Italic size={16} />
+        </button>
+        <button
+          type="button"
+          onClick={() => toggleFormat('underline', 'underline', setIsUnderline)}
+          className={`p-1 rounded ${isUnderline ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-200'}`}
+          title="Underline"
+        >
+          <Underline size={16} />
+        </button>
+        
+        <div className="w-px h-6 bg-gray-300 mx-1" />
+        
+        {/* Lists */}
+        <button
+          type="button"
+          onClick={() => toggleList('insertUnorderedList')}
+          className="p-1 rounded hover:bg-gray-200"
+          title="Bulleted List"
+        >
+          <List size={16} />
+        </button>
+        <button
+          type="button"
+          onClick={() => toggleList('insertOrderedList')}
+          className="p-1 rounded hover:bg-gray-200"
+          title="Numbered List"
+        >
+          <ListOrdered size={16} />
+        </button>
+        
+        <div className="w-px h-6 bg-gray-300 mx-1" />
+        
+        {/* Alignment */}
+        <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={() => setTextAlignment('left')}
+            className={`p-1 rounded ${alignment === 'left' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-200'}`}
+            title="Align Left"
+          >
+            <AlignLeft size={16} />
+          </button>
+          <button
+            type="button"
+            onClick={() => setTextAlignment('center')}
+            className={`p-1 rounded ${alignment === 'center' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-200'}`}
+            title="Align Center"
+          >
+            <AlignCenter size={16} />
+          </button>
+          <button
+            type="button"
+            onClick={() => setTextAlignment('right')}
+            className={`p-1 rounded ${alignment === 'right' ? 'bg-blue-100 text-blue-700' : 'hover:bg-gray-200'}`}
+            title="Align Right"
+          >
+            <AlignRight size={16} />
+          </button>
+        </div>
+        
+        <div className="w-px h-6 bg-gray-300 mx-1" />
+        
+        {/* Links */}
+        {!showLinkInput ? (
+          <button
+            type="button"
+            onClick={() => setShowLinkInput(true)}
+            className="p-1 rounded hover:bg-gray-200"
+            title="Insert Link"
+          >
+            <Link size={16} />
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={removeLink}
+            className="p-1 rounded hover:bg-gray-200"
+            title="Remove Link"
+          >
+            <Unlink size={16} />
+          </button>
+        )}
+        
+        <div className="w-px h-6 bg-gray-300 mx-1" />
+        
+        {/* Clear formatting */}
+        <button
+          type="button"
+          onClick={clearFormatting}
+          className="px-2 py-1 text-xs rounded hover:bg-gray-200"
+        >
+          Clear
+        </button>
+      </div>
+      
+      {/* Link Input */}
+      {showLinkInput && (
+        <div className="p-2 border border-blue-300 rounded bg-blue-50">
+          <div className="flex items-center gap-2 mb-1">
+            <input
+              type="text"
+              value={linkUrl}
+              onChange={(e) => setLinkUrl(e.target.value)}
+              placeholder="https://example.com"
+              className="flex-1 px-2 py-1 text-sm border rounded"
+              autoFocus
+              onKeyDown={(e) => e.key === 'Enter' && insertLink()}
+            />
+            <button
+              type="button"
+              onClick={insertLink}
+              className="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
+            >
+              Insert
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowLinkInput(false)}
+              className="px-2 py-1 text-xs bg-gray-600 text-white rounded hover:bg-gray-700"
+            >
+              Cancel
+            </button>
+          </div>
+          <p className="text-xs text-gray-600">
+            Enter URL and press Enter or click Insert
+          </p>
+        </div>
+      )}
+
+      {/* Editor */}
+      <div
+        ref={editorRef}
+        contentEditable
+        onInput={handleInput}
+        onKeyDown={handleKeyDown}
+        onClick={updateToolbarState}
+        onBlur={handleInput}
+        className="min-h-[120px] p-3 border border-gray-300 rounded-b-lg bg-white overflow-y-auto focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        style={{ 
+          textAlign: alignment,
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'break-word'
+        }}
+        data-placeholder={placeholder}
+      />
+      
+      {/* Placeholder */}
+      {(!value || value === '<p></p>' || value === '<p><br></p>') && (
+        <div className="absolute top-12 left-3 pointer-events-none text-gray-400">
+          {placeholder}
+        </div>
+      )}
+      
+      {/* Help Text */}
+      <div className="text-xs text-gray-500 mt-1">
+        <div className="flex flex-wrap gap-2">
+          <span>• <strong>Enter:</strong> New paragraph</span>
+          <span>• <strong>Shift+Enter:</strong> Line break</span>
+          <span>• <strong>Ctrl+B/I/U:</strong> Bold/Italic/Underline</span>
+          <span>• Select text to format</span>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const TabsFaqEditor = ({ component, onUpdate }) => {
   const [activeTab, setActiveTab] = useState(0);
@@ -17,7 +360,7 @@ const TabsFaqEditor = ({ component, onUpdate }) => {
           faqs: [
             {
               question: 'Terms of Portfolio usage agreement',
-              answer: 'All designs and content submitted for printing remain the intellectual property of the client. Print Seoul only uses them for printing and delivery purposes.'
+              answer: '<p>All designs and content submitted for printing remain the intellectual property of the client. Print Seoul only uses them for printing and delivery purposes.</p>'
             }
           ]
         }
@@ -25,9 +368,9 @@ const TabsFaqEditor = ({ component, onUpdate }) => {
       onUpdate(component.id, { tabs: defaultTabs });
       hasInitializedRef.current = true;
     }
-  }, []); // Empty dependency array - run once on mount
+  }, []);
 
-  // Memoized handlers to prevent unnecessary re-renders
+  // Memoized handlers
   const handleTabChange = useCallback((tabIndex, field, value) => {
     const tabs = [...(component.content?.tabs || [])];
     tabs[tabIndex] = { ...tabs[tabIndex], [field]: value };
@@ -70,7 +413,7 @@ const TabsFaqEditor = ({ component, onUpdate }) => {
       tabs[tabIndex].faqs = tabs[tabIndex].faqs || [];
       tabs[tabIndex].faqs.push({
         question: 'New question?',
-        answer: 'Answer goes here...'
+        answer: '<p>Answer goes here...</p>'
       });
       onUpdate(component.id, { tabs });
     }
@@ -388,12 +731,10 @@ const TabsFaqEditor = ({ component, onUpdate }) => {
                         </div>
                         <div>
                           <label className="block text-xs text-gray-600 mb-1">Answer</label>
-                          <textarea
-                            value={faq.answer}
-                            onChange={(e) => handleFaqChange(activeTab, faqIndex, 'answer', e.target.value)}
-                            rows={3}
-                            className="w-full p-2 border border-gray-300 rounded text-sm"
-                            placeholder="Enter answer"
+                          <RichTextEditor
+                            value={faq.answer || ''}
+                            onChange={(value) => handleFaqChange(activeTab, faqIndex, 'answer', value)}
+                            placeholder="Enter answer (supports rich text formatting)"
                           />
                         </div>
                       </div>
