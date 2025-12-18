@@ -54,6 +54,23 @@ const FreeSampleEditor = ({ component, onUpdate }) => {
     }
   };
 
+  // Handle button type change
+  const handleButtonTypeChange = (type) => {
+    if (type === 'modal') {
+      // When switching to modal, clear the link and add modal identifier
+      onUpdate(component.id, { 
+        buttonType: 'modal',
+        buttonLink: '#request-sample-modal'
+      });
+    } else {
+      // When switching to link, keep any existing link or set default
+      onUpdate(component.id, { 
+        buttonType: 'link',
+        buttonLink: component.content?.buttonLink || ''
+      });
+    }
+  };
+
   return (
     <div className="space-y-4 p-3">
       {/* Title Section */}
@@ -218,6 +235,68 @@ const FreeSampleEditor = ({ component, onUpdate }) => {
         )}
       </div>
 
+      {/* Button Type Selection */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Button Type</label>
+        <div className="flex gap-4 mb-3">
+          <label className="flex items-center cursor-pointer">
+            <input
+              type="radio"
+              name={`buttonType-${component.id}`}
+              value="link"
+              checked={component.content?.buttonType !== 'modal'}
+              onChange={() => handleButtonTypeChange('link')}
+              className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+            />
+            <span className="text-sm text-gray-700">Simple Link</span>
+          </label>
+          <label className="flex items-center cursor-pointer">
+            <input
+              type="radio"
+              name={`buttonType-${component.id}`}
+              value="modal"
+              checked={component.content?.buttonType === 'modal'}
+              onChange={() => handleButtonTypeChange('modal')}
+              className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+            />
+            <span className="text-sm text-gray-700">Open Sample Modal</span>
+          </label>
+        </div>
+        
+        {component.content?.buttonType !== 'modal' && (
+          <div className="mt-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Button Link</label>
+            <input
+              type="text"
+              value={component.content?.buttonLink || ''}
+              onChange={(e) => onUpdate(component.id, { buttonLink: e.target.value })}
+              className="w-full p-2 border border-gray-300 rounded"
+              placeholder="https://example.com or mailto:email@example.com"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Enter a URL or email link (e.g., mailto:support@example.com)
+            </p>
+          </div>
+        )}
+        
+        {component.content?.buttonType === 'modal' && (
+          <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-start">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-blue-700">
+                  This button will open the Sample Request Modal when clicked.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Button Section */}
       <div className="grid grid-cols-2 gap-3">
         <div>
@@ -228,16 +307,6 @@ const FreeSampleEditor = ({ component, onUpdate }) => {
             onChange={(e) => onUpdate(component.id, { buttonText: e.target.value })}
             className="w-full p-2 border border-gray-300 rounded"
             placeholder="Button text"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Button Link</label>
-          <input
-            type="text"
-            value={component.content?.buttonLink || ''}
-            onChange={(e) => onUpdate(component.id, { buttonLink: e.target.value })}
-            className="w-full p-2 border border-gray-300 rounded"
-            placeholder="Button link"
           />
         </div>
       </div>
