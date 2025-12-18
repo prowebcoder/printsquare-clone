@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 // ===== DEFAULT CONFIG =====
 const HARDQUOTE_DEFAULT_CONFIG = {
@@ -706,7 +707,7 @@ const HardQuoteForm = () => {
   const [configVersion, setConfigVersion] = useState(0);
 
   const [sizeUnit, setSizeUnit] = useState('INCH');
-  const [paperUnit, setPaperUnit] = useState('GSM');
+  const [paperUnit, setPaperUnit] = useState('US');
   const [selectedSize, setSelectedSize] = useState('6x9');
   const [customWidth, setCustomWidth] = useState('');
   const [customHeight, setCustomHeight] = useState('');
@@ -1274,8 +1275,25 @@ const HardQuoteForm = () => {
                   <span className="font-semibold">Note:</span> Please select only the inside page count. Cover pages are calculated separately.
                 </p>
               </div>
+
+              <div className="flex flex-wrap gap-4 mt-6">
+                <button className="px-6 cursor-pointer py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
+                  Edit Page Layout
+                </button>
+                <Link href="/papers" target="_blank" rel="noopener noreferrer">
+  <button className="px-6 cursor-pointer py-3 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors">
+    View Paper Gallery
+  </button>
+</Link>
+                <Link href="/api/upload?file=Hardcover_Book_Layout_Guide-1765781169239.zip">
+                <button className="px-6 cursor-pointer py-3 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors">
+                  Download Guide
+                </button>
+			  </Link>
+              </div>
             </div>
           </div>
+          
 
           {/* Right Column - Pricing & Options */}
           <div className="space-y-8">

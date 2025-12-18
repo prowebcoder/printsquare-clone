@@ -915,7 +915,7 @@ const SaddleQuoteForm = () => {
   // Form State Management
   const [bindingType, setBindingType] = useState('SADDLE');
   const [sizeUnit, setSizeUnit] = useState('INCH');
-  const [paperUnit, setPaperUnit] = useState('GSM');
+  const [paperUnit, setPaperUnit] = useState('US');
   const [selectedSize, setSelectedSize] = useState('8.5 x 11');
   const [customWidth, setCustomWidth] = useState('');
   const [customHeight, setCustomHeight] = useState('');
@@ -1636,12 +1636,16 @@ const SaddleQuoteForm = () => {
                 <button className="px-6 cursor-pointer py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
                   Edit Page Layout
                 </button>
-                <button className="px-6 cursor-pointer py-3 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors">
-                  View Paper Gallery
-                </button>
+                <Link href="/papers" target="_blank" rel="noopener noreferrer">
+  <button className="px-6 cursor-pointer py-3 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors">
+    View Paper Gallery
+  </button>
+</Link>
+                <Link href="/api/upload?file=Saddle_Stitching_Layout_Guide-1765781186500.zip">
                 <button className="px-6 cursor-pointer py-3 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors">
                   Download Guide
                 </button>
+			  </Link>
               </div>
             </div>
           </div>

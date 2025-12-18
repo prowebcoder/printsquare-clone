@@ -1,6 +1,7 @@
 // components/pages/quote/perfect-binding/PrintQuoteForm.js
 'use client';
 import React, { useState, useCallback, useEffect } from 'react';
+import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { useRouter } from 'next/navigation';
 
@@ -932,7 +933,7 @@ const PrintQuoteForm = () => {
   // Form State Management
   const [bindingType, setBindingType] = useState('PERFECT');
   const [sizeUnit, setSizeUnit] = useState('INCH');
-  const [paperUnit, setPaperUnit] = useState('GSM');
+  const [paperUnit, setPaperUnit] = useState('US');
   const [selectedSize, setSelectedSize] = useState('8.5 x 11');
   const [customWidth, setCustomWidth] = useState('');
   const [customHeight, setCustomHeight] = useState('');
@@ -1653,12 +1654,16 @@ const PrintQuoteForm = () => {
                 <button className="px-6 cursor-pointer py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
                   Edit Page Layout
                 </button>
-                <button className="px-6 cursor-pointer py-3 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors">
-                  View Paper Gallery
-                </button>
+                <Link href="/papers" target="_blank" rel="noopener noreferrer">
+  <button className="px-6 cursor-pointer py-3 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors">
+    View Paper Gallery
+  </button>
+</Link>
+                <Link href="/api/upload?file=Perfect_Binding_Layout_Guide-1765780887838.zip">
                 <button className="px-6 cursor-pointer py-3 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors">
                   Download Guide
                 </button>
+			  </Link>
               </div>
             </div>
           </div>

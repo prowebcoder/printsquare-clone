@@ -352,44 +352,48 @@ videoWithText: {
 },
 
       multiColumn: {
-        columnsPerRowDesktop: 3,
-        columnsPerRowMobile: 1,
-        columns: [
-          {
-            image: '',
-            heading: 'Feature One',
-            text: 'Description for feature one.',
-            buttonText: 'Learn More', 
-            buttonLink: '/default',
-            buttonIcon: '',
-            buttonStyle: 'primary',
-            buttonColor: '#3b82f6',
-            buttonTextColor: '#ffffff'
-          },
-          {
-            image: '',
-            heading: 'Feature Two',
-            text: 'Description for feature two.',
-            buttonText: 'Learn More', 
-            buttonLink: '/default',
-            buttonIcon: '',
-            buttonStyle: 'primary',
-            buttonColor: '#3b82f6',
-            buttonTextColor: '#ffffff'
-          },
-          {
-            image: '',
-            heading: 'Feature Three',
-            text: 'Description for feature three.',
-            buttonText: 'Learn More', 
-            buttonLink: '/default',
-            buttonIcon: '',
-            buttonStyle: 'primary',
-            buttonColor: '#3b82f6',
-            buttonTextColor: '#ffffff'
-          }
-        ]
-      },
+  columnsPerRowDesktop: 3,
+  columnsPerRowMobile: 1,
+  columnGap: '8', // Default to gap-8
+  columns: [
+    {
+      image: '',
+      heading: 'Feature One',
+      text: 'Description for feature one.',
+      buttonText: 'Learn More', 
+      buttonLink: '/default',
+      buttonIcon: '',
+      buttonStyle: 'primary',
+      buttonColor: '#3b82f6',
+      buttonTextColor: '#ffffff',
+      textAlignment: 'center' // Added default text alignment
+    },
+    {
+      image: '',
+      heading: 'Feature Two',
+      text: 'Description for feature two.',
+      buttonText: 'Learn More', 
+      buttonLink: '/default',
+      buttonIcon: '',
+      buttonStyle: 'primary',
+      buttonColor: '#3b82f6',
+      buttonTextColor: '#ffffff',
+      textAlignment: 'center' // Added default text alignment
+    },
+    {
+      image: '',
+      heading: 'Feature Three',
+      text: 'Description for feature three.',
+      buttonText: 'Learn More', 
+      buttonLink: '/default',
+      buttonIcon: '',
+      buttonStyle: 'primary',
+      buttonColor: '#3b82f6',
+      buttonTextColor: '#ffffff',
+      textAlignment: 'center' // Added default text alignment
+    }
+  ]
+},
 
       
       multiTable: {

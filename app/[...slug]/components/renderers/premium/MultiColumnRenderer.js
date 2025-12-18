@@ -7,6 +7,7 @@ export default function MultiColumnRenderer({ component, index }) {
   const columns = content.columns || [];
   const columnsPerRowDesktop = content.columnsPerRowDesktop || 3;
   const columnsPerRowMobile = content.columnsPerRowMobile || 1;
+  const columnGap = content.columnGap || '8'; // Default to gap-8
   
   console.log(`🎨 Rendering MultiColumn:`, content);
 
@@ -27,22 +28,35 @@ export default function MultiColumnRenderer({ component, index }) {
     6: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-6'
   };
 
+  // Map gap values to Tailwind classes
+  const gapClasses = {
+    '0': 'gap-0',
+    '2': 'gap-2',
+    '4': 'gap-4',
+    '6': 'gap-6',
+    '8': 'gap-8'
+  };
+
+  // Map text alignment to Tailwind classes
+  const textAlignmentClasses = {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right'
+  };
+
   // Function to get download URL
   const getDownloadUrl = (fileUrl) => {
     if (!fileUrl) return '';
     
-    // If it's already our API URL, return as is
     if (fileUrl.includes('/api/upload?file=')) {
       return fileUrl;
     }
     
-    // If it's a direct uploads link, convert to API URL
     if (fileUrl.includes('/uploads/')) {
       const filename = fileUrl.split('/uploads/')[1];
       return `/api/upload?file=${filename}`;
     }
     
-    // For external URLs, return as is
     return fileUrl;
   };
 
@@ -50,13 +64,11 @@ export default function MultiColumnRenderer({ component, index }) {
   const getFileNameFromUrl = (url) => {
     if (!url) return 'download.zip';
     
-    // Extract from query parameter
     if (url.includes('?file=')) {
       const fileParam = url.split('?file=')[1];
       return decodeURIComponent(fileParam.split('&')[0]);
     }
     
-    // Extract from path
     const parts = url.split('/');
     return decodeURIComponent(parts[parts.length - 1]);
   };
@@ -64,11 +76,12 @@ export default function MultiColumnRenderer({ component, index }) {
   return (
     <section key={component.id || index} className="py-16 bg-white">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className={`grid ${gridClasses[columnsPerRowMobile]} ${gridClasses[columnsPerRowDesktop]} gap-8`}>
+        <div className={`grid ${gridClasses[columnsPerRowMobile]} ${gridClasses[columnsPerRowDesktop]} ${gapClasses[columnGap]}`}>
           {columns.map((column, columnIndex) => {
             const IconComponent = column.buttonIcon ? iconMap[column.buttonIcon] : null;
             const downloadUrl = column.buttonFile ? getDownloadUrl(column.buttonFile) : '';
             const fileName = column.buttonFile ? getFileNameFromUrl(column.buttonFile) : '';
+            const textAlignment = textAlignmentClasses[column.textAlignment || 'center'];
             
             return (
               <div 
@@ -89,7 +102,7 @@ export default function MultiColumnRenderer({ component, index }) {
                 )}
 
                 {/* Content */}
-                <div className="text-center flex-1 flex flex-col w-full">
+                <div className={`${textAlignment} flex-1 flex flex-col w-full`}>
                   {/* Heading */}
                   {column.heading && (
                     <h3 className="text-xl font-extrabold leading-tight text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">
@@ -109,75 +122,79 @@ export default function MultiColumnRenderer({ component, index }) {
                     <div className="mt-auto pt-4">
                       {column.buttonType === 'file' && downloadUrl ? (
                         // File download link
-                        <a
-                          href={downloadUrl}
-                          download={fileName}
-                          className={`
-                            inline-flex items-center gap-2 px-6 py-3 font-medium rounded-lg transition-all duration-200
-                            ${column.buttonStyle === 'primary' ? 'shadow-lg hover:shadow-xl' : ''}
-                            ${column.buttonStyle === 'secondary' ? 'shadow-sm hover:shadow-md' : ''}
-                            ${column.buttonStyle === 'outline' ? 'border-2 bg-transparent hover:bg-opacity-10' : ''}
-                            ${column.buttonStyle === 'ghost' ? 'bg-transparent hover:bg-gray-100' : ''}
-                          `}
-                          style={{
-                            ...(column.buttonStyle === 'primary' && {
-                              backgroundColor: column.buttonColor || '#3b82f6',
-                              color: column.buttonTextColor || '#ffffff',
-                            }),
-                            ...(column.buttonStyle === 'secondary' && {
-                              backgroundColor: column.buttonColor || '#6b7280',
-                              color: column.buttonTextColor || '#ffffff',
-                            }),
-                            ...(column.buttonStyle === 'outline' && {
-                              borderColor: column.buttonColor || '#3b82f6',
-                              color: column.buttonColor || '#3b82f6',
-                              backgroundColor: 'transparent',
-                            }),
-                            ...(column.buttonStyle === 'ghost' && {
-                              color: column.buttonColor || '#3b82f6',
-                              backgroundColor: 'transparent',
-                            }),
-                          }}
-                        >
-                          {column.buttonText}
-                          {IconComponent && <IconComponent size={16} />}
-                        </a>
+                        <div className={textAlignment === 'text-left' ? '' : textAlignment === 'text-right' ? 'flex justify-end' : 'flex justify-center'}>
+                          <a
+                            href={downloadUrl}
+                            download={fileName}
+                            className={`
+                              inline-flex items-center gap-2 px-6 py-3 font-medium rounded-lg transition-all duration-200
+                              ${column.buttonStyle === 'primary' ? 'shadow-lg hover:shadow-xl' : ''}
+                              ${column.buttonStyle === 'secondary' ? 'shadow-sm hover:shadow-md' : ''}
+                              ${column.buttonStyle === 'outline' ? 'border-2 bg-transparent hover:bg-opacity-10' : ''}
+                              ${column.buttonStyle === 'ghost' ? 'bg-transparent hover:bg-gray-100' : ''}
+                            `}
+                            style={{
+                              ...(column.buttonStyle === 'primary' && {
+                                backgroundColor: column.buttonColor || '#3b82f6',
+                                color: column.buttonTextColor || '#ffffff',
+                              }),
+                              ...(column.buttonStyle === 'secondary' && {
+                                backgroundColor: column.buttonColor || '#6b7280',
+                                color: column.buttonTextColor || '#ffffff',
+                              }),
+                              ...(column.buttonStyle === 'outline' && {
+                                borderColor: column.buttonColor || '#3b82f6',
+                                color: column.buttonColor || '#3b82f6',
+                                backgroundColor: 'transparent',
+                              }),
+                              ...(column.buttonStyle === 'ghost' && {
+                                color: column.buttonColor || '#3b82f6',
+                                backgroundColor: 'transparent',
+                              }),
+                            }}
+                          >
+                            {column.buttonText}
+                            {IconComponent && <IconComponent size={16} />}
+                          </a>
+                        </div>
                       ) : (
                         // Regular link button
-                        <Link
-                          href={column.buttonLink || '#'}
-                          target={column.buttonLink?.startsWith('http') ? '_blank' : '_self'}
-                          rel={column.buttonLink?.startsWith('http') ? 'noopener noreferrer' : ''}
-                          className={`
-                            inline-flex items-center gap-2 px-6 py-3 font-medium rounded-lg transition-all duration-200
-                            ${column.buttonStyle === 'primary' ? 'shadow-lg hover:shadow-xl' : ''}
-                            ${column.buttonStyle === 'secondary' ? 'shadow-sm hover:shadow-md' : ''}
-                            ${column.buttonStyle === 'outline' ? 'border-2 bg-transparent hover:bg-opacity-10' : ''}
-                            ${column.buttonStyle === 'ghost' ? 'bg-transparent hover:bg-gray-100' : ''}
-                          `}
-                          style={{
-                            ...(column.buttonStyle === 'primary' && {
-                              backgroundColor: column.buttonColor || '#3b82f6',
-                              color: column.buttonTextColor || '#ffffff',
-                            }),
-                            ...(column.buttonStyle === 'secondary' && {
-                              backgroundColor: column.buttonColor || '#6b7280',
-                              color: column.buttonTextColor || '#ffffff',
-                            }),
-                            ...(column.buttonStyle === 'outline' && {
-                              borderColor: column.buttonColor || '#3b82f6',
-                              color: column.buttonColor || '#3b82f6',
-                              backgroundColor: 'transparent',
-                            }),
-                            ...(column.buttonStyle === 'ghost' && {
-                              color: column.buttonColor || '#3b82f6',
-                              backgroundColor: 'transparent',
-                            }),
-                          }}
-                        >
-                          {column.buttonText}
-                          {IconComponent && <IconComponent size={16} />}
-                        </Link>
+                        <div className={textAlignment === 'text-left' ? '' : textAlignment === 'text-right' ? 'flex justify-end' : 'flex justify-center'}>
+                          <Link
+                            href={column.buttonLink || '#'}
+                            target={column.buttonLink?.startsWith('http') ? '_blank' : '_self'}
+                            rel={column.buttonLink?.startsWith('http') ? 'noopener noreferrer' : ''}
+                            className={`
+                              inline-flex items-center gap-2 px-6 py-3 font-medium rounded-lg transition-all duration-200
+                              ${column.buttonStyle === 'primary' ? 'shadow-lg hover:shadow-xl' : ''}
+                              ${column.buttonStyle === 'secondary' ? 'shadow-sm hover:shadow-md' : ''}
+                              ${column.buttonStyle === 'outline' ? 'border-2 bg-transparent hover:bg-opacity-10' : ''}
+                              ${column.buttonStyle === 'ghost' ? 'bg-transparent hover:bg-gray-100' : ''}
+                            `}
+                            style={{
+                              ...(column.buttonStyle === 'primary' && {
+                                backgroundColor: column.buttonColor || '#3b82f6',
+                                color: column.buttonTextColor || '#ffffff',
+                              }),
+                              ...(column.buttonStyle === 'secondary' && {
+                                backgroundColor: column.buttonColor || '#6b7280',
+                                color: column.buttonTextColor || '#ffffff',
+                              }),
+                              ...(column.buttonStyle === 'outline' && {
+                                borderColor: column.buttonColor || '#3b82f6',
+                                color: column.buttonColor || '#3b82f6',
+                                backgroundColor: 'transparent',
+                              }),
+                              ...(column.buttonStyle === 'ghost' && {
+                                color: column.buttonColor || '#3b82f6',
+                                backgroundColor: 'transparent',
+                              }),
+                            }}
+                          >
+                            {column.buttonText}
+                            {IconComponent && <IconComponent size={16} />}
+                          </Link>
+                        </div>
                       )}
                     </div>
                   )}

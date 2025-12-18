@@ -20,6 +20,22 @@ const MultiColumnEditor = ({ component, onUpdate }) => {
     { value: 'file', label: 'File', icon: FileArchive },
   ];
 
+  // Text alignment options
+  const textAlignmentOptions = [
+    { value: 'left', label: 'Left' },
+    { value: 'center', label: 'Center' },
+    { value: 'right', label: 'Right' },
+  ];
+
+  // Column gap options with 5 steps
+  const columnGapOptions = [
+    { value: '0', label: 'None (0px)', class: 'gap-0' },
+    { value: '2', label: 'Small (8px)', class: 'gap-2' },
+    { value: '4', label: 'Medium (16px)', class: 'gap-4' },
+    { value: '6', label: 'Large (24px)', class: 'gap-6' },
+    { value: '8', label: 'X-Large (32px)', class: 'gap-8' },
+  ];
+
   const handleColumnImageUpload = async (index, file) => {
     if (!file) return;
 
@@ -67,61 +83,60 @@ const MultiColumnEditor = ({ component, onUpdate }) => {
     }
   };
 
-  // New function to handle ZIP file upload
-  // In the MultiColumnEditor.js, update the upload handler
-const handleZipFileUpload = async (index, file) => {
-  if (!file) return;
+  // Handle ZIP file upload
+  const handleZipFileUpload = async (index, file) => {
+    if (!file) return;
 
-  const isZip = file.type === 'application/zip' || 
-               file.type === 'application/x-zip-compressed' ||
-               file.name.endsWith('.zip');
+    const isZip = file.type === 'application/zip' || 
+                 file.type === 'application/x-zip-compressed' ||
+                 file.name.endsWith('.zip');
 
-  if (!isZip) {
-    alert('Please select a ZIP file');
-    return;
-  }
-
-  if (file.size > 50 * 1024 * 1024) {
-    alert('ZIP file size must be less than 50MB');
-    return;
-  }
-
-  setUploadingFiles(prev => ({ ...prev, [index]: true }));
-
-  try {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const response = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData,
-    });
-
-    const result = await response.json();
-
-    if (result.success) {
-      const newColumns = [...(component.content?.columns || [])];
-      newColumns[index] = { 
-        ...newColumns[index], 
-        buttonFile: result.imageUrl, // This will be /api/upload?file=filename.zip
-        fileSize: result.fileSize,
-        fileName: result.filename,
-        buttonType: 'file'
-      };
-      onUpdate(component.id, { columns: newColumns });
-    } else {
-      alert('Upload failed: ' + (result.error || 'Unknown error'));
+    if (!isZip) {
+      alert('Please select a ZIP file');
+      return;
     }
-  } catch (error) {
-    console.error('Upload error:', error);
-    alert('Upload failed. Please try again.');
-  } finally {
-    setUploadingFiles(prev => ({ ...prev, [index]: false }));
-    if (zipFileInputRefs.current[index]) {
-      zipFileInputRefs.current[index].value = '';
+
+    if (file.size > 50 * 1024 * 1024) {
+      alert('ZIP file size must be less than 50MB');
+      return;
     }
-  }
-};
+
+    setUploadingFiles(prev => ({ ...prev, [index]: true }));
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        const newColumns = [...(component.content?.columns || [])];
+        newColumns[index] = { 
+          ...newColumns[index], 
+          buttonFile: result.imageUrl,
+          fileSize: result.fileSize,
+          fileName: result.filename,
+          buttonType: 'file'
+        };
+        onUpdate(component.id, { columns: newColumns });
+      } else {
+        alert('Upload failed: ' + (result.error || 'Unknown error'));
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      alert('Upload failed. Please try again.');
+    } finally {
+      setUploadingFiles(prev => ({ ...prev, [index]: false }));
+      if (zipFileInputRefs.current[index]) {
+        zipFileInputRefs.current[index].value = '';
+      }
+    }
+  };
 
   // Helper function to format file size
   const formatFileSize = (bytes) => {
@@ -160,12 +175,13 @@ const handleZipFileUpload = async (index, file) => {
       text: 'Column description text...',
       buttonText: 'Learn More',
       buttonLink: '#',
-      buttonType: 'link', // Default to link
+      buttonType: 'link',
       buttonIcon: '',
       buttonStyle: 'primary',
-      buttonColor: '#3b82f6', // blue-600
-      buttonTextColor: '#ffffff', // white
-      buttonFile: '', // For file uploads
+      buttonColor: '#3b82f6',
+      buttonTextColor: '#ffffff',
+      textAlignment: 'center', // Default text alignment
+      buttonFile: '',
       fileSize: '',
       fileName: '',
       fileDescription: ''
@@ -186,11 +202,11 @@ const handleZipFileUpload = async (index, file) => {
 
   // Default color presets
   const colorPresets = {
-    primary: '#3b82f6', // blue-600
-    secondary: '#6b7280', // gray-500
-    success: '#10b981', // emerald-500
-    danger: '#ef4444', // red-500
-    warning: '#f59e0b', // amber-500
+    primary: '#3b82f6',
+    secondary: '#6b7280',
+    success: '#10b981',
+    danger: '#ef4444',
+    warning: '#f59e0b',
   };
 
   return (
@@ -198,7 +214,9 @@ const handleZipFileUpload = async (index, file) => {
       {/* Layout Settings */}
       <div className="bg-gray-50 p-4 rounded-lg">
         <h3 className="text-lg font-medium text-gray-900 mb-3">Layout Settings</h3>
-        <div className="grid grid-cols-2 gap-4">
+        
+        {/* Columns per Row Settings */}
+        <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Columns per Row (Desktop)
@@ -230,8 +248,64 @@ const handleZipFileUpload = async (index, file) => {
             </select>
           </div>
         </div>
-        <p className="text-xs text-gray-500 mt-2">
-          Configure how many columns display per row on different screen sizes.
+
+        {/* Column Gap Settings */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Column Gap: <span className="font-normal text-gray-600">
+              {(() => {
+                const selectedGap = columnGapOptions.find(
+                  gap => gap.value === (component.content?.columnGap || '8')
+                );
+                return selectedGap ? selectedGap.label : 'Medium (16px)';
+              })()}
+            </span>
+          </label>
+          
+          <div className="flex items-center gap-4">
+            <input
+              type="range"
+              min="0"
+              max="4"
+              step="1"
+              value={columnGapOptions.findIndex(gap => gap.value === (component.content?.columnGap || '8'))}
+              onChange={(e) => {
+                const selectedGap = columnGapOptions[parseInt(e.target.value)];
+                handleLayoutChange('columnGap', selectedGap.value);
+              }}
+              className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            />
+            
+            <div className="flex items-center gap-1">
+              {columnGapOptions.map((gap, index) => (
+                <button
+                  key={gap.value}
+                  type="button"
+                  onClick={() => handleLayoutChange('columnGap', gap.value)}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center text-xs ${
+                    gap.value === (component.content?.columnGap || '8')
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                  }`}
+                  title={gap.label}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+          </div>
+          
+          <div className="flex justify-between text-xs text-gray-500 mt-2">
+            <span>None</span>
+            <span>Small</span>
+            <span>Medium</span>
+            <span>Large</span>
+            <span>X-Large</span>
+          </div>
+        </div>
+
+        <p className="text-xs text-gray-500">
+          Configure the layout and spacing of your columns.
         </p>
       </div>
 
@@ -348,6 +422,32 @@ const handleZipFileUpload = async (index, file) => {
                 rows={4}
                 placeholder="Column description text"
               />
+            </div>
+
+            {/* Text Alignment Settings */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Text Alignment</label>
+              <div className="grid grid-cols-3 gap-2">
+                {textAlignmentOptions.map((alignment) => (
+                  <button
+                    key={alignment.value}
+                    type="button"
+                    onClick={() => handleColumnChange(index, 'textAlignment', alignment.value)}
+                    className={`p-3 border rounded-lg flex items-center justify-center ${
+                      (column.textAlignment || 'center') === alignment.value
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-300 hover:bg-gray-50'
+                    }`}
+                  >
+                    <span className={`text-lg font-bold ${alignment.value === 'left' ? 'text-left' : alignment.value === 'center' ? 'text-center' : 'text-right'}`}>
+                      {alignment.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+              <p className="text-xs text-gray-500 mt-2">
+                Set how text and content align within this column
+              </p>
             </div>
 
             {/* Button Settings */}
@@ -566,7 +666,7 @@ const handleZipFileUpload = async (index, file) => {
               {column.buttonText && (
                 <div className="mt-3 p-3 bg-gray-50 rounded-lg">
                   <label className="block text-xs text-gray-500 mb-2">Button Preview:</label>
-                  <div className="flex justify-center">
+                  <div className={`flex ${(column.textAlignment || 'center') === 'left' ? 'justify-start' : (column.textAlignment || 'center') === 'right' ? 'justify-end' : 'justify-center'}`}>
                     <div
                       className={`
                         inline-flex items-center gap-2 px-6 py-3 font-medium rounded-lg transition-colors duration-200 cursor-default
