@@ -4,6 +4,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import PageEditModal from './PageEditModal'; // Add this import
 
 // ===== SADDLE-STITCHING-SPECIFIC DEFAULT CONFIG =====
 const SADDLEQUOTE_DEFAULT_CONFIG = {
@@ -235,6 +236,71 @@ const getOptionPrice = (options, selectedValue) => {
 };
 
 const formatCurrency = (amount) => `$${amount.toFixed(2)}`;
+
+// ===== PAGE EDITS COST CALCULATION =====
+const calculatePageEditsCost = (edits, PAPER_OPTIONS, PRINT_COLORS) => {
+  if (!edits || edits.length === 0) return 0;
+  
+  let totalCost = 0;
+  
+  edits.forEach(edit => {
+    let editCost = 0;
+    
+    switch(edit.type) {
+      case 'PAPER':
+        // Paper change cost logic
+        if (edit.data.paperChange) {
+          // Paper type change cost
+          const paperOption = PAPER_OPTIONS.inside.find(opt => opt.value === edit.data.paper);
+          editCost += (paperOption?.price || 0) * edit.pages.length;
+        }
+        
+        if (edit.data.colorChange) {
+          // Color change cost
+          const colorOption = PRINT_COLORS.find(opt => opt.value === edit.data.color);
+          editCost += (colorOption?.price || 0) * edit.pages.length;
+        }
+        
+        if (edit.data.sizeChange) {
+          // Size change cost (custom size premium)
+          editCost += 25 * edit.pages.length; // $25 per page for custom size
+        }
+        break;
+        
+      case 'FOLD':
+        // Fold cost logic
+        editCost = 15 * edit.pages.length; // $15 per fold per page
+        break;
+        
+      case 'ADDON':
+        // Addon cost logic
+        const addonPrices = {
+          'FOIL': 20,      // $20 per page for foil stamping
+          'UV': 15,        // $15 per page for UV
+          'EMUV': 30,      // $30 per page for embossed-UV
+          'EMBOSS': 25,    // $25 per page for embossing
+          'DIECUT': 35,    // $35 per page for die-cut
+        };
+        
+        editCost = (addonPrices[edit.data.addonType] || 0) * edit.pages.length;
+        
+        // Size multiplier
+        const sizeMultipliers = {
+          'SMALL': 0.5,
+          'MEDIUM': 1,
+          'LARGE': 1.5,
+          'FULL': 2,
+        };
+        
+        editCost *= (sizeMultipliers[edit.data.addonSize] || 1);
+        break;
+    }
+    
+    totalCost += editCost;
+  });
+  
+  return totalCost;
+};
 
 // ===== SHIPPING MODAL COMPONENT =====
 const ShippingModal = ({ isOpen, onClose, formData }) => {
@@ -941,12 +1007,18 @@ const SaddleQuoteForm = () => {
   // Subscription Cards State
   const [subscriptionCards, setSubscriptionCards] = useState([]);
   
+  // Page Edits State - NEW
+  const [pageEdits, setPageEdits] = useState([]);
+  
   // Add-ons State
   const [addOns, setAddOns] = useState([]);
   const [showAddOnModal, setShowAddOnModal] = useState(false);
   
   // Shipping Modal State
   const [showShippingModal, setShowShippingModal] = useState(false);
+
+  // Page Edit Modal State - NEW
+  const [showPageEditModal, setShowPageEditModal] = useState(false);
 
   // Quantity & Options State
   const [quantity, setQuantity] = useState(200);
@@ -1047,6 +1119,9 @@ const SaddleQuoteForm = () => {
     setConfigVersion(prev => prev + 1);
   };
 
+  // Calculate page edits cost
+  const pageEditsCost = calculatePageEditsCost(pageEdits, PAPER_OPTIONS, PRINT_COLORS);
+
   // Handlers
   const handleNumberInput = (setter) => (e) => {
     const value = e.target.value;
@@ -1124,6 +1199,15 @@ const SaddleQuoteForm = () => {
     setSubscriptionCards(subscriptionCards.filter((_, i) => i !== index));
   };
 
+  // Page Edits Management - NEW
+  const handlePageEditsSave = (edits) => {
+    console.log('Page edits saved:', edits);
+    setPageEdits(edits);
+    
+    // You can add a notification here
+    alert(`${edits.length} page edit${edits.length !== 1 ? 's' : ''} saved successfully!`);
+  };
+
   // Add-ons Management
   const handleAddOnSelect = (addOn) => {
     setAddOns([...addOns, { ...addOn, id: Date.now() }]);
@@ -1133,7 +1217,7 @@ const SaddleQuoteForm = () => {
     setAddOns(addOns.filter(addOn => addOn.id !== id));
   };
 
-  // Price Calculation - FIXED
+  // Price Calculation - UPDATED with page edits cost
   const calculatePricing = useCallback(() => {
     const baseCostPerPage = formConfig?.pricing?.costPerPage || 0.05;
     const baseSetupCost = formConfig?.pricing?.baseSetupCost || 200;
@@ -1173,13 +1257,14 @@ const SaddleQuoteForm = () => {
     const directMailUnitCost = directMailing.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.directMail, directMailing.type) : 0;
     const directMailCost = directMailing.enabled ? quantity * directMailUnitCost : 0;
     const addOnsCost = addOns.reduce((total, addOn) => total + addOn.price, 0);
+    const pageEditsCost = calculatePageEditsCost(pageEdits, PAPER_OPTIONS, PRINT_COLORS);
 
     // Categorize costs
     const materialCost = coverPaperCost + insidePaperCost;
     const colorCost = coverColorCost + insideColorCost;
     const coverCost = coverFinishCost + coverFoldCost;
     const additionalServicesCost = proofCost + holePunchCost + dustCoverCost + subscriptionCardCost + 
-                                 slipcaseCost + shrinkWrapCost + directMailCost + addOnsCost;
+                                 slipcaseCost + shrinkWrapCost + directMailCost + addOnsCost + pageEditsCost;
 
     const totalAmount = basePrintCost + materialCost + colorCost + coverCost + additionalServicesCost;
 
@@ -1196,12 +1281,13 @@ const SaddleQuoteForm = () => {
       shrinkWrapping: shrinkWrapCost,
       directMailing: directMailCost,
       addOns: addOnsCost,
+      pageEdits: pageEditsCost,
       total: totalAmount,
     };
   }, [
     pageCount, quantity, selectedSize, isCustomSize, coverPaper, insidePaper, 
     coverColor, insideColor, coverFinish, coverFold, proof, holePunching,
-    dustCover, subscriptionCards.length, slipcase, shrinkWrapping, directMailing, addOns, formConfig
+    dustCover, subscriptionCards.length, slipcase, shrinkWrapping, directMailing, addOns, pageEdits, formConfig
   ]);
 
   const prices = calculatePricing();
@@ -1232,9 +1318,10 @@ const SaddleQuoteForm = () => {
       const proofCost = getOptionPrice(ADDITIONAL_OPTIONS.proof, proof);
       const holePunchCost = holePunching.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.holePunch, holePunching.type) : 0;
       const slipcaseCost = getOptionPrice(ADDITIONAL_OPTIONS.slipcase, slipcase);
+      const pageEditsCost = calculatePageEditsCost(pageEdits, PAPER_OPTIONS, PRINT_COLORS);
       
       const additionalCosts = coverPaperCost + insidePaperCost + coverColorCost + insideColorCost + 
-                            coverFinishCost + coverFoldCost + proofCost + holePunchCost + slipcaseCost;
+                            coverFinishCost + coverFoldCost + proofCost + holePunchCost + slipcaseCost + pageEditsCost;
       
       const total = basePrintCost + additionalCosts;
       
@@ -1249,9 +1336,9 @@ const SaddleQuoteForm = () => {
     const quantities = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
     const newPricingData = quantities.map(qty => calculatePriceForQuantity(qty));
     setPricingData(newPricingData);
-  }, [pageCount, selectedSize, isCustomSize, coverPaper, insidePaper, coverColor, insideColor, coverFinish, coverFold, proof, holePunching, slipcase, formConfig]);
+  }, [pageCount, selectedSize, isCustomSize, coverPaper, insidePaper, coverColor, insideColor, coverFinish, coverFold, proof, holePunching, slipcase, pageEdits, formConfig]);
 
-  // NEW: Handle Add to Cart function
+  // NEW: Handle Add to Cart function - UPDATED with page edits
   const handleAddToCart = () => {
     const formData = {
       bindingType,
@@ -1275,7 +1362,8 @@ const SaddleQuoteForm = () => {
         paper: insidePaper, 
         weight: insideWeight, 
         color: insideColor, 
-        subscriptionCards 
+        subscriptionCards,
+        pageEdits // Added page edits
       },
       quantity,
       options: { 
@@ -1302,7 +1390,8 @@ const SaddleQuoteForm = () => {
         binding: bindingEdge,
         cover: coverPaper,
         printColor: coverColor,
-        quantity: quantity
+        quantity: quantity,
+        pageEditsCount: pageEdits.length // Added page edits count
       }
     };
     
@@ -1324,12 +1413,29 @@ const SaddleQuoteForm = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 font-sans">
+      {/* Page Edit Modal */}
+      <PageEditModal
+        isOpen={showPageEditModal}
+        onClose={() => setShowPageEditModal(false)}
+        onSaveChanges={handlePageEditsSave}
+        pageCount={pageCount}
+        currentConfig={{
+          paper: insidePaper,
+          weight: insideWeight,
+          color: insideColor,
+          size: selectedSize,
+          customSize: isCustomSize ? { width: customWidth, height: customHeight } : null
+        }}
+      />
+      
+      {/* AddOn Modal */}
       <AddOnModal 
         isOpen={showAddOnModal}
         onClose={() => setShowAddOnModal(false)}
         onSelectAddOn={handleAddOnSelect}
       />
       
+      {/* Shipping Modal */}
       <ShippingModal
         isOpen={showShippingModal}
         onClose={() => setShowShippingModal(false)}
@@ -1633,20 +1739,58 @@ const SaddleQuoteForm = () => {
               ))}
 
               <div className="flex flex-wrap gap-4 mt-6">
-                <button className="px-6 cursor-pointer py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors">
+                <button 
+                  onClick={() => setShowPageEditModal(true)}
+                  className="px-6 cursor-pointer py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition-colors shadow-sm flex items-center gap-2"
+                >
                   Edit Page Layout
+                  {pageEdits.length > 0 && (
+                    <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                      {pageEdits.length} edit{pageEdits.length !== 1 ? 's' : ''}
+                    </span>
+                  )}
                 </button>
                 <Link href="/papers" target="_blank" rel="noopener noreferrer">
-  <button className="px-6 cursor-pointer py-3 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors">
-    View Paper Gallery
-  </button>
-</Link>
+                  <button className="px-6 cursor-pointer py-3 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors">
+                    View Paper Gallery
+                  </button>
+                </Link>
                 <Link href="/api/upload?file=Saddle_Stitching_Layout_Guide-1765781186500.zip">
-                <button className="px-6 cursor-pointer py-3 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors">
-                  Download Guide
-                </button>
-			  </Link>
+                  <button className="px-6 cursor-pointer py-3 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors">
+                    Download Guide
+                  </button>
+                </Link>
               </div>
+
+              {/* Page Edits Summary */}
+              {pageEdits.length > 0 && (
+                <div className="mt-6 p-4 bg-indigo-50 border border-indigo-200 rounded-xl">
+                  <h4 className="text-lg font-semibold text-indigo-900 mb-2">Page Layout Edits Summary</h4>
+                  <div className="space-y-2">
+                    {pageEdits.map((edit, index) => (
+                      <div key={edit.id} className="flex justify-between items-center text-sm">
+                        <span className="text-gray-700">
+                          {edit.type === 'PAPER' && '📄 Paper/Print/Size changes'}
+                          {edit.type === 'FOLD' && '📏 Fold additions'}
+                          {edit.type === 'ADDON' && `✨ ${edit.data.addonType} addon`}
+                          <span className="text-gray-500 ml-2">
+                            (pages: {edit.pages.join(', ')})
+                          </span>
+                        </span>
+                        <span className="font-medium text-indigo-700">
+                          +{formatCurrency(15 * edit.pages.length)} {/* Simplified cost */}
+                        </span>
+                      </div>
+                    ))}
+                    <div className="pt-2 border-t border-indigo-200 mt-2">
+                      <div className="flex justify-between items-center font-semibold">
+                        <span>Total Page Edits Cost:</span>
+                        <span className="text-indigo-900">+{formatCurrency(pageEditsCost)}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -1781,7 +1925,7 @@ const SaddleQuoteForm = () => {
                 </ToggleOption>
               </div>
 
-              {/* Price Breakdown */}
+              {/* Price Breakdown - UPDATED with Page Edits */}
               <div className="mt-8 border-t pt-6">
                 <h4 className="text-lg font-bold text-gray-900 mb-4">Price Breakdown</h4>
                 <div className="space-y-3 text-sm">
@@ -1798,6 +1942,13 @@ const SaddleQuoteForm = () => {
                     { label: 'Slipcase', value: prices.slipcase, show: prices.slipcase > 0 },
                     { label: 'Shrink Wrapping', value: prices.shrinkWrapping, show: prices.shrinkWrapping > 0 },
                     { label: 'Direct Mailing', value: prices.directMailing, show: prices.directMailing > 0 },
+                    
+                    // NEW: Page Layout Edits
+                    { 
+                      label: `Page Layout Edits (${pageEdits.length} change${pageEdits.length !== 1 ? 's' : ''})`, 
+                      value: prices.pageEdits, 
+                      show: pageEdits.length > 0 
+                    },
                   ].map((item, index) => 
                     item.show !== false && (
                       <div key={index} className="flex justify-between items-center">
@@ -1812,6 +1963,30 @@ const SaddleQuoteForm = () => {
                     <span className="text-xl font-bold text-indigo-600">{formatCurrency(prices.total)}</span>
                   </div>
                 </div>
+
+                {/* Page Edits Detailed Breakdown */}
+                {pageEdits.length > 0 && (
+                  <div className="mt-6 pt-6 border-t border-gray-200">
+                    <h5 className="font-semibold text-gray-800 mb-3">Page Layout Edits Details:</h5>
+                    <div className="space-y-2 text-xs">
+                      {pageEdits.map((edit, index) => (
+                        <div key={edit.id} className="flex justify-between items-center text-gray-600">
+                          <span>
+                            {edit.type === 'PAPER' && '📄 Paper/Print/Size changes'}
+                            {edit.type === 'FOLD' && '📏 Fold additions'}
+                            {edit.type === 'ADDON' && `✨ ${edit.data.addonType} addon`}
+                            <span className="text-gray-400 ml-2">
+                              (pages: {edit.pages.join(', ')})
+                            </span>
+                          </span>
+                          <span className="font-medium">
+                            +{formatCurrency(15 * edit.pages.length)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Action Buttons - UPDATED FOR CART */}
@@ -1827,6 +2002,11 @@ const SaddleQuoteForm = () => {
                   className="flex-1 cursor-pointer px-2 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-green-700 transition-all shadow-sm flex items-center justify-center"
                 >
                   {generalSettings.submitButtonText}
+                  {pageEdits.length > 0 && (
+                    <span className="ml-2 bg-white text-green-600 text-xs px-2 py-1 rounded-full">
+                      {pageEdits.length} edit{pageEdits.length !== 1 ? 's' : ''}
+                    </span>
+                  )}
                 </button>
               </div>
             </div>

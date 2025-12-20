@@ -1,4 +1,4 @@
-// printsquare-clone/app/admin/dashboard/forms/page.js
+// app/admin/dashboard/forms/page.js
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';

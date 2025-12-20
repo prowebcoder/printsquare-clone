@@ -1,4 +1,4 @@
-// app/api/admin/forms/hard-quote/route.js
+// app/api/admin/forms/print-quote/route.js
 export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
 import dbConnect from "@/lib/mongodb";
