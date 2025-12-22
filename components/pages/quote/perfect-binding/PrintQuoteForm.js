@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { useRouter } from 'next/navigation';
-import PageEditModal from './PageEditModal'; // Add this import
+import PageEditModal from './PageEditModal';
 
 // ===== ENHANCED DEFAULT CONFIG =====
 const PRINTQUOTE_DEFAULT_CONFIG = {
@@ -47,19 +47,19 @@ const PRINTQUOTE_DEFAULT_CONFIG = {
       },
       {
         value: 'UNCOATED_W',
-        label: 'Uncoated',
+        label: 'Hi Uncoated',
         description: 'Matte and very much used',
         price: 0
       },
       {
         value: 'MONTBLANC_EW',
-        label: 'Premium',
+        label: 'Hi Premium',
         description: 'Used for high-end magazines and catalogs',
         price: 150
       },
       {
         value: 'NEWPLUS_W',
-        label: 'New Plus',
+        label: 'Hi New Plus',
         description: 'Affordable and suitable for mass printing',
         price: 0
       },
@@ -80,9 +80,13 @@ const PRINTQUOTE_DEFAULT_CONFIG = {
       { value: 'GLOSS', label: 'Gloss', price: 0 },
       { value: 'MATTE', label: 'Matte', price: 0 },
       { value: 'HI-PLUS', label: 'Hi-Plus', price: 25 },
-      { value: 'UNCOATED', label: 'Uncoated', price: 0 },
+      { value: 'HI-QMATTE', label: 'Hi-Q Matte', price: 50 },
+      { value: 'UNCOATED', label: 'Hi Uncoated', price: 0 },
+      { value: 'MONTBLANC_EW', label: 'Hi Premium', price: 75 },
+      { value: 'NEWPLUS_W', label: 'Hi New Plus', price: 20 },
       { value: 'TEXTBOOK', label: 'Textbook', price: 30 },
       { value: 'COLORED', label: 'Colored', price: 40 },
+      { value: 'TRANSLUCENT', label: 'Translucent', price: 80 },
     ],
     subscription: [
       { value: 'MATTE', label: 'Matte', price: 0 },
@@ -141,7 +145,6 @@ const PRINTQUOTE_DEFAULT_CONFIG = {
     { value: 'SELECT', label: 'Front of page no.' },
   ],
   pageCounts: Array.from({ length: (880 - 24) / 2 + 1 }, (_, i) => 24 + i * 2),
-  weightOptions: ['100', '120', '150', '250', '300'],
   quantities: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
   customSizeInstructions: {
     INCH: "📏 Minimum: 4\" × 4\" | Maximum: 11.8\" × 14.3\"",
@@ -160,49 +163,293 @@ const PRINTQUOTE_DEFAULT_CONFIG = {
   }
 };
 
+// ===== PAPER WEIGHT OPTIONS CONFIGURATION =====
+const PAPER_WEIGHT_OPTIONS = {
+  // Cover Paper Options
+  cover: {
+    GLOSS: [
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '80# text', label: '80# text (120 gsm)' },
+      { value: '100# text', label: '100# text (150 gsm)' },
+      { value: '67# cover', label: '67# cover (180 gsm)' },
+      { value: '74# cover', label: '74# cover (200 gsm)' },
+      { value: '92# cover', label: '92# cover (250 gsm)' },
+      { value: '110# cover', label: '110# cover (300 gsm)' }
+    ],
+    MATTE: [
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '80# text', label: '80# text (120 gsm)' },
+      { value: '100# text', label: '100# text (150 gsm)' },
+      { value: '67# cover', label: '67# cover (180 gsm)' },
+      { value: '74# cover', label: '74# cover (200 gsm)' },
+      { value: '92# cover', label: '92# cover (250 gsm)' },
+      { value: '110# cover', label: '110# cover (300 gsm)' }
+    ],
+    'HI-PLUS': [
+      { value: '60# text', label: '60# text (90 gsm)' },
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '80# text', label: '80# text (120 gsm)' }
+    ],
+    'HI-QMATTE': [
+      { value: '89# text', label: '89# text (135 gsm)' },
+      { value: '109# text', label: '109# text (165 gsm)' }
+    ],
+    UNCOATED_W: [
+      { value: '100# text', label: '100# text (150 gsm)' },
+      { value: '67# cover', label: '67# cover (180 gsm)' },
+      { value: '81# cover', label: '81# cover (220 gsm)' },
+      { value: '96# cover', label: '96# cover (260 gsm)' }
+    ],
+    MONTBLANC_EW: [
+      { value: '60# text', label: '60# text (90 gsm)' },
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '88# text', label: '88# text (130 gsm)' },
+      { value: '108# text', label: '108# text (160 gsm)' },
+      { value: '70# cover', label: '70# cover (190 gsm)' },
+      { value: '78# cover', label: '78# cover (210 gsm)' },
+      { value: '89# cover', label: '89# cover (240 gsm)' }
+    ],
+    NEWPLUS_W: [
+      { value: '47# text', label: '47# text (70 gsm)' },
+      { value: '54# text', label: '54# text (80 gsm)' },
+      { value: '68# text', label: '68# text (100 gsm)' }
+    ],
+    TEXTBOOK: [
+      { value: '51# text', label: '51# text (75 gsm)' }
+    ],
+    TRANSLUCENT: [
+      { value: '54# text', label: '54# text (80 gsm)' },
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '88# text', label: '88# text (130 gsm)' },
+      { value: '100# text', label: '100# text (150 gsm)' },
+      { value: '63# cover', label: '63# cover (170 gsm)' },
+      { value: '74# cover', label: '74# cover (200 gsm)' },
+      { value: '81# cover', label: '81# cover (220 gsm)' }
+    ]
+  },
+  
+  // Inside Paper Options
+  inside: {
+    GLOSS: [
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '80# text', label: '80# text (120 gsm)' },
+      { value: '100# text', label: '100# text (150 gsm)' },
+      { value: '67# cover', label: '67# cover (180 gsm)' },
+      { value: '74# cover', label: '74# cover (200 gsm)' },
+      { value: '92# cover', label: '92# cover (250 gsm)' }
+    ],
+    MATTE: [
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '80# text', label: '80# text (120 gsm)' },
+      { value: '100# text', label: '100# text (150 gsm)' },
+      { value: '67# cover', label: '67# cover (180 gsm)' },
+      { value: '74# cover', label: '74# cover (200 gsm)' },
+      { value: '92# cover', label: '92# cover (250 gsm)' }
+    ],
+    'HI-PLUS': [
+      { value: '60# text', label: '60# text (90 gsm)' },
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '80# text', label: '80# text (120 gsm)' }
+    ],
+    'HI-QMATTE': [
+      { value: '89# text', label: '89# text (135 gsm)' },
+      { value: '109# text', label: '109# text (165 gsm)' }
+    ],
+    UNCOATED: [
+      { value: '47# text', label: '47# text (70 gsm)' },
+      { value: '54# text', label: '54# text (80 gsm)' },
+      { value: '60# text', label: '60# text (90 gsm)' },
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '80# text', label: '80# text (120 gsm)' },
+      { value: '100# text', label: '100# text (150 gsm)' },
+      { value: '67# cover', label: '67# cover (180 gsm)' },
+      { value: '81# cover', label: '81# cover (220 gsm)' }
+    ],
+    MONTBLANC_EW: [
+      { value: '60# text', label: '60# text (90 gsm)' },
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '88# text', label: '88# text (130 gsm)' },
+      { value: '108# text', label: '108# text (160 gsm)' },
+      { value: '70# cover', label: '70# cover (190 gsm)' },
+      { value: '78# cover', label: '78# cover (210 gsm)' }
+    ],
+    NEWPLUS_W: [
+      { value: '47# text', label: '47# text (70 gsm)' },
+      { value: '54# text', label: '54# text (80 gsm)' },
+      { value: '68# text', label: '68# text (100 gsm)' }
+    ],
+    TEXTBOOK: [
+      { value: '51# text', label: '51# text (75 gsm)' }
+    ],
+    TRANSLUCENT: [
+      { value: '54# text', label: '54# text (80 gsm)' },
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '88# text', label: '88# text (130 gsm)' },
+      { value: '100# text', label: '100# text (150 gsm)' },
+      { value: '63# cover', label: '63# cover (170 gsm)' },
+      { value: '74# cover', label: '74# cover (200 gsm)' },
+      { value: '81# cover', label: '81# cover (220 gsm)' }
+    ],
+    COLORED: [
+      { value: 'A-BE01', label: 'A-BE01', image: '/forms/A-BE01.png' },
+      { value: 'A-BE10', label: 'A-BE10', image: '/forms/A-BE10.png' },
+      { value: 'A-BE15', label: 'A-BE15', image: '/forms/A-BE15.png' },
+      { value: 'A-BE30', label: 'A-BE30', image: '/forms/A-BE30.png' },
+      { value: 'A-BE42', label: 'A-BE42', image: '/forms/A-BE42.png' },
+      { value: 'A-BE50', label: 'A-BE50', image: '/forms/A-BE50.png' },
+      { value: 'A-BE51', label: 'A-BE51', image: '/forms/A-BE51.png' },
+      { value: 'A-BE75', label: 'A-BE75', image: '/forms/A-BE75.png' },
+      { value: 'A-BE83', label: 'A-BE83', image: '/forms/A-BE83.png' },
+      { value: 'A-BE85', label: 'A-BE85', image: '/forms/A-BE85.png' },
+      { value: 'B-BE16', label: 'B-BE16', image: '/forms/B-BE16.png' },
+      { value: 'B-BE17', label: 'B-BE17', image: '/forms/B-BE17.png' },
+      { value: 'B-BE24', label: 'B-BE24', image: '/forms/B-BE24.png' },
+      { value: 'B-BE80', label: 'B-BE80', image: '/forms/B-BE80.png' },
+      { value: 'B-BE81', label: 'B-BE81', image: '/forms/B-BE81.png' },
+      { value: 'C-BE36', label: 'C-BE36', image: '/forms/C-BE36.png' },
+      { value: 'C-BE54', label: 'C-BE54', image: '/forms/C-BE54.png' },
+      { value: 'C-BE66', label: 'C-BE66', image: '/forms/C-BE66.png' },
+      { value: 'C-BE73', label: 'C-BE73', image: '/forms/C-BE73.png' },
+      { value: 'D-BE18', label: 'D-BE18', image: '/forms/D-BE18.png' },
+      { value: 'D-BE32', label: 'D-BE32', image: '/forms/D-BE32.png' },
+      { value: 'D-BE35', label: 'D-BE35', image: '/forms/D-BE35.png' },
+      { value: 'D-BE69', label: 'D-BE69', image: '/forms/D-BE69.png' },
+      { value: 'D-BE76', label: 'D-BE76', image: '/forms/D-BE76.png' },
+      { value: 'E-BE05', label: 'E-BE05', image: '/forms/E-BE05.png' }
+    ]
+  }
+};
+
 // ===== PAPER WEIGHT CONVERSION DATA =====
 const PAPER_WEIGHT_CONVERSIONS = {
-  '100': { 
+  // Text weights
+  '60# text': { 
+    gsm: '90 gsm',
+    us: '60# text',
+    pt: '2.5 pt',
+    kg: '77 kg'
+  },
+  '68# text': { 
     gsm: '100 gsm',
     us: '68# text',
     pt: '3.2 pt',
     kg: '86 kg'
   },
-  '120': { 
+  '80# text': { 
     gsm: '120 gsm',
     us: '80# text',
     pt: '3.8 pt',
     kg: '103 kg'
   },
-  '150': { 
+  '88# text': { 
+    gsm: '130 gsm',
+    us: '88# text',
+    pt: '4.2 pt',
+    kg: '112 kg'
+  },
+  '100# text': { 
     gsm: '150 gsm',
     us: '100# text',
     pt: '4.8 pt',
     kg: '129 kg'
   },
-  '180': { 
+  '108# text': { 
+    gsm: '160 gsm',
+    us: '108# text',
+    pt: '5.1 pt',
+    kg: '138 kg'
+  },
+  '109# text': { 
+    gsm: '165 gsm',
+    us: '109# text',
+    pt: '5.3 pt',
+    kg: '142 kg'
+  },
+  // Cover weights
+  '67# cover': { 
     gsm: '180 gsm',
     us: '67# cover',
     pt: '5.9 pt',
     kg: '155 kg'
   },
-  '200': { 
+  '70# cover': { 
+    gsm: '190 gsm',
+    us: '70# cover',
+    pt: '6.2 pt',
+    kg: '163 kg'
+  },
+  '74# cover': { 
     gsm: '200 gsm',
     us: '74# cover',
     pt: '7.1 pt',
     kg: '172 kg'
   },
-  '250': { 
+  '78# cover': { 
+    gsm: '210 gsm',
+    us: '78# cover',
+    pt: '7.5 pt',
+    kg: '181 kg'
+  },
+  '81# cover': { 
+    gsm: '220 gsm',
+    us: '81# cover',
+    pt: '8.0 pt',
+    kg: '189 kg'
+  },
+  '89# cover': { 
+    gsm: '240 gsm',
+    us: '89# cover',
+    pt: '8.7 pt',
+    kg: '206 kg'
+  },
+  '92# cover': { 
     gsm: '250 gsm',
     us: '92# cover',
     pt: '9.1 pt',
     kg: '215 kg'
   },
-  '300': { 
+  '96# cover': { 
+    gsm: '260 gsm',
+    us: '96# cover',
+    pt: '9.5 pt',
+    kg: '224 kg'
+  },
+  '110# cover': { 
     gsm: '300 gsm',
     us: '110# cover',
     pt: '11.3 pt',
     kg: '258 kg'
+  },
+  // Special weights
+  '47# text': { 
+    gsm: '70 gsm',
+    us: '47# text',
+    pt: '2.0 pt',
+    kg: '60 kg'
+  },
+  '51# text': { 
+    gsm: '75 gsm',
+    us: '51# text',
+    pt: '2.2 pt',
+    kg: '65 kg'
+  },
+  '54# text': { 
+    gsm: '80 gsm',
+    us: '54# text',
+    pt: '2.3 pt',
+    kg: '69 kg'
+  },
+  '63# cover': { 
+    gsm: '170 gsm',
+    us: '63# cover',
+    pt: '5.5 pt',
+    kg: '146 kg'
+  },
+  '89# text': { 
+    gsm: '135 gsm',
+    us: '89# text',
+    pt: '4.3 pt',
+    kg: '116 kg'
   }
 };
 
@@ -290,9 +537,8 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
     setLoading(true);
     setError('');
     
-    // Mock shipping calculation based on quantity and weight
     setTimeout(() => {
-      const baseWeight = (formData.quantity * 0.2) + (formData.pageCount * 0.01); // Simplified weight calculation
+      const baseWeight = (formData.quantity * 0.2) + (formData.pageCount * 0.01);
       let calculatedCost = 0;
       
       switch(shippingMethod) {
@@ -312,7 +558,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
           calculatedCost = 25 + (baseWeight * 0.5);
       }
       
-      // Add international premium
       if (country !== 'US') {
         calculatedCost *= 1.5;
       }
@@ -343,7 +588,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
         </div>
         
         <div className="space-y-6">
-          {/* Order Summary */}
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <h4 className="font-semibold text-gray-900 mb-2">Order Summary</h4>
             <div className="grid grid-cols-2 gap-2 text-sm">
@@ -358,7 +602,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
             </div>
           </div>
 
-          {/* Shipping Form */}
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -426,7 +669,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
             </div>
           </div>
 
-          {/* Calculate Button */}
           <button
             onClick={calculateShipping}
             disabled={loading}
@@ -445,7 +687,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
             )}
           </button>
 
-          {/* Shipping Result */}
           {shippingCost && (
             <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
               <h4 className="font-semibold text-green-900 mb-2">Shipping Cost Calculated</h4>
@@ -469,7 +710,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
             </div>
           )}
 
-          {/* Action Buttons */}
           <div className="flex space-x-4 pt-4 border-t border-gray-200">
             <button
               onClick={onClose}
@@ -480,7 +720,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
             {shippingCost && (
               <button
                 onClick={() => {
-                  // Add shipping to order
                   alert(`Shipping added: $${shippingCost.cost} for ${shippingCost.method}`);
                   onClose();
                 }}
@@ -496,51 +735,177 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
   );
 };
 
-// ===== PAPER WEIGHT SELECTOR COMPONENT =====
-const PaperWeightSelector = ({ paperUnit, weightValue, onChange, label = "" }) => {
+// ===== IMAGE PREVIEW MODAL =====
+const ImagePreviewModal = ({ isOpen, imageUrl, onClose }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+        <div className="flex justify-between items-center p-4 border-b border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900">Color Preview</h3>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <span className="text-2xl text-gray-500">×</span>
+          </button>
+        </div>
+        <div className="p-8 flex items-center justify-center bg-gray-100 min-h-[60vh]">
+          <img 
+            src={imageUrl} 
+            alt="Color preview"
+            className="max-w-full max-h-[70vh] object-contain"
+            onError={(e) => {
+              e.target.src = '/images/placeholder-color-large.png';
+              e.target.alt = 'Color preview not available';
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ===== UPDATED PAPER WEIGHT SELECTOR COMPONENT =====
+const PaperWeightSelector = ({ 
+  paperType, 
+  paperUnit, 
+  weightValue, 
+  onChange, 
+  label = "", 
+  isCover = true,
+  showImages = false 
+}) => {
+  const [showImagePreview, setShowImagePreview] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+
+  // Get weight options based on paper type and whether it's cover or inside
   const getWeightOptions = () => {
-    return Object.keys(PAPER_WEIGHT_CONVERSIONS).map(key => {
-      const conversion = PAPER_WEIGHT_CONVERSIONS[key];
-      let labelText = '';
+    const category = isCover ? 'cover' : 'inside';
+    const options = PAPER_WEIGHT_OPTIONS[category]?.[paperType] || [];
+    
+    // If paper type is COLORED and we need to show images
+    if (paperType === 'COLORED' && showImages) {
+      return options.map(option => ({
+        ...option,
+        label: option.label
+      }));
+    }
+    
+    // For regular paper types, convert label based on paper unit
+    return options.map(option => {
+      const conversion = PAPER_WEIGHT_CONVERSIONS[option.value];
+      if (!conversion) return option;
       
+      let labelText = option.label;
       switch(paperUnit) {
         case 'GSM':
-          labelText = conversion.gsm;
+          labelText = `${option.value} (${conversion.gsm})`;
           break;
         case 'US':
-          labelText = conversion.us;
+          labelText = `${option.value}`;
           break;
         case 'PT':
-          labelText = conversion.pt;
+          labelText = `${option.value} (${conversion.pt})`;
           break;
         case 'KG':
-          labelText = conversion.kg;
+          labelText = `${option.value} (${conversion.kg})`;
           break;
         default:
-          labelText = conversion.gsm;
+          labelText = option.label;
       }
       
       return {
-        value: key,
+        ...option,
         label: labelText
       };
     });
   };
 
+  const weightOptions = getWeightOptions();
+  const selectedOption = weightOptions.find(opt => opt.value === weightValue);
+  const isColoredPaper = paperType === 'COLORED' && showImages;
+
+  const handleImagePreview = (imageUrl) => {
+    setPreviewImage(imageUrl);
+    setShowImagePreview(true);
+  };
+
+  if (isColoredPaper) {
+    return (
+      <div className="space-y-2">
+        {label && <p className="text-sm font-semibold text-gray-700 mb-2">{label}</p>}
+        <select
+          value={weightValue}
+          onChange={onChange}
+          className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors"
+        >
+          <option value="">Select a color option</option>
+          {weightOptions.map((option, index) => (
+            <option key={`${option.value}-${index}`} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        
+        {/* Image preview for colored options */}
+        {weightValue && selectedOption?.image && (
+          <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm font-medium text-gray-700">Color Preview:</p>
+              <button
+                type="button"
+                onClick={() => handleImagePreview(selectedOption.image)}
+                className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+              >
+                View Full Size
+              </button>
+            </div>
+            <div className="relative h-32 w-full bg-white border border-gray-300 rounded-md overflow-hidden">
+              <img 
+                src={selectedOption.image} 
+                alt={selectedOption.label}
+                className="object-contain w-full h-full"
+                onError={(e) => {
+                  e.target.src = '/images/placeholder-color.png';
+                  e.target.alt = 'Color preview not available';
+                }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div>
-      {label && <p className="text-sm font-semibold mb-2 text-gray-700 opacity-0">{label}</p>}
+      {label && <p className="text-sm font-semibold mb-2 text-gray-700">{label}</p>}
       <select
         value={weightValue}
         onChange={onChange}
         className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors"
+        disabled={weightOptions.length === 0}
       >
-        {getWeightOptions().map((option, index) => (
-          <option key={`${option.value}-${index}`} value={option.value}>
-            {option.label}
-          </option>
-        ))}
+        {weightOptions.length === 0 ? (
+          <option value="">No weight options available for this paper type</option>
+        ) : (
+          <>
+            <option value="">Select weight</option>
+            {weightOptions.map((option, index) => (
+              <option key={`${option.value}-${index}`} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </>
+        )}
       </select>
+      {selectedOption && (
+        <p className="text-xs text-gray-500 mt-1">
+          Available weights may vary based on paper type selection
+        </p>
+      )}
     </div>
   );
 };
@@ -704,9 +1069,11 @@ const DustCoverSettings = ({ dustCover, onUpdate, onRemove, paperUnit }) => {
               showDescription={true}
             />
             <PaperWeightSelector
+              paperType={dustCover.paper}
               paperUnit={paperUnit}
               weightValue={dustCover.gsm}
               onChange={(e) => handleChange('gsm', e.target.value)}
+              isCover={true}
             />
             <SelectDropdown
               options={PRINTQUOTE_DEFAULT_CONFIG.printColors}
@@ -815,9 +1182,11 @@ const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, position
               className="w-full"
             />
             <PaperWeightSelector
+              paperType={card.paper}
               paperUnit={paperUnit}
               weightValue={card.gsm}
               onChange={(e) => handleChange('gsm', e.target.value)}
+              isCover={false}
             />
             <SelectDropdown
               options={PRINTQUOTE_DEFAULT_CONFIG.printColors}
@@ -1007,7 +1376,7 @@ const PrintQuoteForm = () => {
   
   // Cover State
   const [coverPaper, setCoverPaper] = useState('MATTE');
-  const [coverWeight, setCoverWeight] = useState('250');
+  const [coverWeight, setCoverWeight] = useState('');
   const [coverColor, setCoverColor] = useState('CMYK');
   const [coverFinish, setCoverFinish] = useState('MATTE');
   const [coverFold, setCoverFold] = useState('NONE');
@@ -1019,14 +1388,17 @@ const PrintQuoteForm = () => {
   // Inside Page State
   const [pageCount, setPageCount] = useState(96);
   const [insidePaper, setInsidePaper] = useState('MATTE');
-  const [insideWeight, setInsideWeight] = useState('100');
-  const [insideColor, setInsideColor] = useState('CMYK');
+  const [insideWeight, setInsideWeight] = useState('');
   
   // Subscription Cards State
   const [subscriptionCards, setSubscriptionCards] = useState([]);
   
-  // Page Edits State - NEW
+  // Page Edits State
   const [pageEdits, setPageEdits] = useState([]);
+  
+  // Image Preview State
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
   
   // Add-ons State
   const [addOns, setAddOns] = useState([]);
@@ -1035,12 +1407,13 @@ const PrintQuoteForm = () => {
   // Shipping Modal State
   const [showShippingModal, setShowShippingModal] = useState(false);
 
-  // Page Edit Modal State - NEW
+  // Page Edit Modal State
   const [showPageEditModal, setShowPageEditModal] = useState(false);
 
   // Quantity & Options State
   const [quantity, setQuantity] = useState(200);
   const [selectedQuantityIndex, setSelectedQuantityIndex] = useState(1);
+  const [insideColor, setInsideColor] = useState('CMYK');
   const [proof, setProof] = useState('ONLINE');
   const [holePunching, setHolePunching] = useState({ enabled: false, type: '6' });
   const [slipcase, setSlipcase] = useState('NONE');
@@ -1060,6 +1433,21 @@ const PrintQuoteForm = () => {
   const getSizeDisplayLabel = (size) => {
     return SIZE_CONVERSIONS[sizeUnit]?.[size] || size;
   };
+
+  // Set default weights when paper type changes
+  useEffect(() => {
+    // Set default cover weight when cover paper changes
+    const coverWeights = PAPER_WEIGHT_OPTIONS.cover[coverPaper];
+    if (coverWeights && coverWeights.length > 0 && !coverWeight) {
+      setCoverWeight(coverWeights[0].value);
+    }
+    
+    // Set default inside weight when inside paper changes
+    const insideWeights = PAPER_WEIGHT_OPTIONS.inside[insidePaper];
+    if (insideWeights && insideWeights.length > 0 && !insideWeight) {
+      setInsideWeight(insideWeights[0].value);
+    }
+  }, [coverPaper, insidePaper, coverWeight, insideWeight]);
 
   // Fetch form configuration
   const fetchFormConfig = async () => {
@@ -1125,7 +1513,6 @@ const PrintQuoteForm = () => {
   const ADDITIONAL_OPTIONS = formConfig?.additionalOptions || PRINTQUOTE_DEFAULT_CONFIG.additionalOptions;
   const POSITIONS = formConfig?.positions || PRINTQUOTE_DEFAULT_CONFIG.positions;
   const PAGE_COUNTS = formConfig?.pageCounts || PRINTQUOTE_DEFAULT_CONFIG.pageCounts;
-  const WEIGHT_OPTIONS = formConfig?.weightOptions || PRINTQUOTE_DEFAULT_CONFIG.weightOptions;
   const QUANTITIES = formConfig?.quantities || PRINTQUOTE_DEFAULT_CONFIG.quantities;
 
   const generalSettings = formConfig?.general || PRINTQUOTE_DEFAULT_CONFIG.general;
@@ -1139,6 +1526,35 @@ const PrintQuoteForm = () => {
 
   // Calculate page edits cost
   const pageEditsCost = calculatePageEditsCost(pageEdits, PAPER_OPTIONS, PRINT_COLORS);
+
+  // Get weight-based pricing
+  const getWeightPrice = (weightValue) => {
+    const weightPrices = {
+      '47# text': 10,
+      '51# text': 12,
+      '54# text': 15,
+      '60# text': 18,
+      '68# text': 20,
+      '80# text': 25,
+      '88# text': 30,
+      '89# text': 32,
+      '100# text': 35,
+      '108# text': 38,
+      '109# text': 40,
+      '63# cover': 45,
+      '67# cover': 50,
+      '70# cover': 55,
+      '74# cover': 60,
+      '78# cover': 65,
+      '81# cover': 70,
+      '89# cover': 75,
+      '92# cover': 80,
+      '96# cover': 85,
+      '110# cover': 90,
+    };
+    
+    return weightPrices[weightValue] || 0;
+  };
 
   // Handlers
   const handleNumberInput = (setter) => (e) => {
@@ -1180,7 +1596,7 @@ const PrintQuoteForm = () => {
       width: '',
       height: '',
       paper: 'GLOSS',
-      gsm: '150',
+      gsm: '68# text',
       printColor: 'CMYK',
       finish: 'MATTE'
     });
@@ -1201,7 +1617,7 @@ const PrintQuoteForm = () => {
       const newCard = {
         id: Date.now(),
         width: '', height: '', position: 'FRONT', selectedPage: '',
-        paper: 'MATTE', gsm: '100', printColor: 'CMYK', finish: 'NONE'
+        paper: 'MATTE', gsm: '68# text', printColor: 'CMYK', finish: 'NONE'
       };
       setSubscriptionCards([...subscriptionCards, newCard]);
     }
@@ -1217,12 +1633,10 @@ const PrintQuoteForm = () => {
     setSubscriptionCards(subscriptionCards.filter((_, i) => i !== index));
   };
 
-  // Page Edits Management - NEW
+  // Page Edits Management
   const handlePageEditsSave = (edits) => {
     console.log('Page edits saved:', edits);
     setPageEdits(edits);
-    
-    // You can add a notification here
     alert(`${edits.length} page edit${edits.length !== 1 ? 's' : ''} saved successfully!`);
   };
 
@@ -1235,7 +1649,13 @@ const PrintQuoteForm = () => {
     setAddOns(addOns.filter(addOn => addOn.id !== id));
   };
 
-  // Price Calculation - UPDATED with page edits cost
+  // Handle image preview
+  const handleImagePreview = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowImageModal(true);
+  };
+
+  // Price Calculation - UPDATED with weight pricing
   const calculatePricing = useCallback(() => {
     const baseCostPerPage = formConfig?.pricing?.costPerPage || 0.05;
     const baseSetupCost = formConfig?.pricing?.baseSetupCost || 200;
@@ -1276,9 +1696,13 @@ const PrintQuoteForm = () => {
     const directMailCost = directMailing.enabled ? quantity * directMailUnitCost : 0;
     const addOnsCost = addOns.reduce((total, addOn) => total + addOn.price, 0);
     const pageEditsCost = calculatePageEditsCost(pageEdits, PAPER_OPTIONS, PRINT_COLORS);
+    
+    // Weight-based costs
+    const coverWeightCost = getWeightPrice(coverWeight);
+    const insideWeightCost = getWeightPrice(insideWeight);
 
     // Categorize costs
-    const materialCost = coverPaperCost + insidePaperCost;
+    const materialCost = coverPaperCost + insidePaperCost + coverWeightCost + insideWeightCost;
     const colorCost = coverColorCost + insideColorCost;
     const coverCost = coverFinishCost + coverFoldCost;
     const additionalServicesCost = proofCost + holePunchCost + dustCoverCost + subscriptionCardCost + 
@@ -1300,12 +1724,15 @@ const PrintQuoteForm = () => {
       directMailing: directMailCost,
       addOns: addOnsCost,
       pageEdits: pageEditsCost,
+      coverWeight: coverWeightCost,
+      insideWeight: insideWeightCost,
       total: totalAmount,
     };
   }, [
     pageCount, quantity, selectedSize, isCustomSize, coverPaper, insidePaper, 
     coverColor, insideColor, coverFinish, coverFold, proof, holePunching,
-    dustCover, subscriptionCards.length, slipcase, shrinkWrapping, directMailing, addOns, pageEdits, formConfig
+    dustCover, subscriptionCards.length, slipcase, shrinkWrapping, directMailing, addOns, pageEdits,
+    coverWeight, insideWeight, formConfig
   ]);
 
   const prices = calculatePricing();
@@ -1337,9 +1764,12 @@ const PrintQuoteForm = () => {
       const holePunchCost = holePunching.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.holePunch, holePunching.type) : 0;
       const slipcaseCost = getOptionPrice(ADDITIONAL_OPTIONS.slipcase, slipcase);
       const pageEditsCost = calculatePageEditsCost(pageEdits, PAPER_OPTIONS, PRINT_COLORS);
+      const coverWeightCost = getWeightPrice(coverWeight);
+      const insideWeightCost = getWeightPrice(insideWeight);
       
       const additionalCosts = coverPaperCost + insidePaperCost + coverColorCost + insideColorCost + 
-                            coverFinishCost + coverFoldCost + proofCost + holePunchCost + slipcaseCost + pageEditsCost;
+                            coverFinishCost + coverFoldCost + proofCost + holePunchCost + slipcaseCost + 
+                            pageEditsCost + coverWeightCost + insideWeightCost;
       
       const total = basePrintCost + additionalCosts;
       
@@ -1354,9 +1784,9 @@ const PrintQuoteForm = () => {
     const quantities = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
     const newPricingData = quantities.map(qty => calculatePriceForQuantity(qty));
     setPricingData(newPricingData);
-  }, [pageCount, selectedSize, isCustomSize, coverPaper, insidePaper, coverColor, insideColor, coverFinish, coverFold, proof, holePunching, slipcase, pageEdits, formConfig]);
+  }, [pageCount, selectedSize, isCustomSize, coverPaper, insidePaper, coverColor, insideColor, coverFinish, coverFold, proof, holePunching, slipcase, pageEdits, coverWeight, insideWeight, formConfig]);
 
-  // Handle Add to Cart function - UPDATED with page edits
+  // Handle Add to Cart function
   const handleAddToCart = () => {
     const formData = {
       bindingType,
@@ -1381,7 +1811,7 @@ const PrintQuoteForm = () => {
         weight: insideWeight, 
         color: insideColor, 
         subscriptionCards,
-        pageEdits // Added page edits
+        pageEdits
       },
       quantity,
       options: { 
@@ -1407,9 +1837,12 @@ const PrintQuoteForm = () => {
         pages: pageCount,
         binding: bindingEdge,
         cover: coverPaper,
+        coverWeight: coverWeight,
+        insidePaper: insidePaper,
+        insideWeight: insideWeight,
         printColor: coverColor,
         quantity: quantity,
-        pageEditsCount: pageEdits.length // Added page edits count
+        pageEditsCount: pageEdits.length
       }
     };
     
@@ -1444,6 +1877,13 @@ const PrintQuoteForm = () => {
           size: selectedSize,
           customSize: isCustomSize ? { width: customWidth, height: customHeight } : null
         }}
+      />
+      
+      {/* Image Preview Modal */}
+      <ImagePreviewModal
+        isOpen={showImageModal}
+        imageUrl={selectedImage}
+        onClose={() => setShowImageModal(false)}
       />
       
       {/* AddOn Modal */}
@@ -1596,10 +2036,12 @@ const PrintQuoteForm = () => {
                   showDescription={true}
                 />
                 <PaperWeightSelector
+                  paperType={coverPaper}
                   paperUnit={paperUnit}
                   label='Weight'
                   weightValue={coverWeight}
                   onChange={(e) => setCoverWeight(e.target.value)}
+                  isCover={true}
                 />
                 <SelectDropdown 
                   label="Print Color" 
@@ -1723,10 +2165,13 @@ const PrintQuoteForm = () => {
                   showDescription={false}
                 />
                 <PaperWeightSelector
-                  label="Paper Weight" 
+                  paperType={insidePaper}
                   paperUnit={paperUnit}
+                  label="Paper Weight" 
                   weightValue={insideWeight}
                   onChange={(e) => setInsideWeight(e.target.value)}
+                  isCover={false}
+                  showImages={insidePaper === 'COLORED'}
                 />
                 <SelectDropdown 
                   label="Print Color" 
@@ -1796,7 +2241,7 @@ const PrintQuoteForm = () => {
                           </span>
                         </span>
                         <span className="font-medium text-indigo-700">
-                          +{formatCurrency(15 * edit.pages.length)} {/* Simplified cost */}
+                          +{formatCurrency(15 * edit.pages.length)}
                         </span>
                       </div>
                     ))}
@@ -1943,13 +2388,15 @@ const PrintQuoteForm = () => {
                 </ToggleOption>
               </div>
 
-              {/* Price Breakdown - UPDATED with Page Edits */}
+              {/* Price Breakdown - UPDATED with Page Edits and Weight Costs */}
               <div className="mt-8 border-t pt-6">
                 <h4 className="text-lg font-bold text-gray-900 mb-4">Price Breakdown</h4>
                 <div className="space-y-3 text-sm">
                   {[
                     { label: 'Base Printing', value: prices.basePrinting },
                     { label: 'Premium Materials', value: prices.materials, show: prices.materials > 0 },
+                    { label: 'Cover Weight', value: prices.coverWeight, show: prices.coverWeight > 0 },
+                    { label: 'Inside Paper Weight', value: prices.insideWeight, show: prices.insideWeight > 0 },
                     { label: 'Color Options', value: prices.color, show: prices.color > 0 },
                     { label: 'Cover Finishes', value: prices.cover, show: prices.cover > 0 },
                     { label: 'Digital Proof', value: prices.proof, show: prices.proof > 0 },
@@ -1961,7 +2408,7 @@ const PrintQuoteForm = () => {
                     { label: 'Shrink Wrapping', value: prices.shrinkWrapping, show: prices.shrinkWrapping > 0 },
                     { label: 'Direct Mailing', value: prices.directMailing, show: prices.directMailing > 0 },
                     
-                    // NEW: Page Layout Edits
+                    // Page Layout Edits
                     { 
                       label: `Page Layout Edits (${pageEdits.length} change${pageEdits.length !== 1 ? 's' : ''})`, 
                       value: prices.pageEdits, 

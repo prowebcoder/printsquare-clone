@@ -860,6 +860,11 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                           {item.description}
                         </p>
                       )}
+                      {field === 'desc' && item.desc && (
+                        <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                          {item.desc}
+                        </p>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -1036,7 +1041,89 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                           />
                         </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              Submit Button Text
+                            </label>
+                            <input
+                              type="text"
+                              value={config.general?.submitButtonText || ''}
+                              onChange={(e) => updateNestedConfig('general.submitButtonText', e.target.value)}
+                              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              Shipping Button Text
+                            </label>
+                            <input
+                              type="text"
+                              value={config.general?.shippingButtonText || ''}
+                              onChange={(e) => updateNestedConfig('general.shippingButtonText', e.target.value)}
+                              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Disclaimer/Note
+                          </label>
+                          <textarea
+                            value={config.general?.disclaimer || ''}
+                            onChange={(e) => updateNestedConfig('general.disclaimer', e.target.value)}
+                            rows={3}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                            placeholder="Add any disclaimer or note for users"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Spine Width Display
+                          </label>
+                          <input
+                            type="text"
+                            value={config.spineWidth || ''}
+                            onChange={(e) => updateNestedConfig('spineWidth', e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                            placeholder="e.g., 0.178&quot;"
+                          />
+                          <p className="text-xs text-gray-500 mt-2">This will be displayed in the Binding Details section</p>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Custom Size Instructions
+                          </label>
+                          <textarea
+                            value={config.customSizeInstructions || ''}
+                            onChange={(e) => updateNestedConfig('customSizeInstructions', e.target.value)}
+                            rows={3}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                            placeholder="Instructions for custom size input"
+                          />
+                        </div>
                       </div>
+                    </div>
+                  )}
+
+                  {/* Sizes & Dimensions */}
+                  {activeTab === 'sizes' && (
+                    <div className="space-y-6">
+                      <h3 className="text-xl font-semibold text-gray-900">Sizes & Dimensions</h3>
+                      {renderEditableArray('Standard Sizes', 'sizes', ['value', 'label', 'price'])}
+                    </div>
+                  )}
+
+                  {/* Binding Options */}
+                  {activeTab === 'binding' && (
+                    <div className="space-y-6">
+                      <h3 className="text-xl font-semibold text-gray-900">Binding Options</h3>
+                      {renderEditableArray('Binding Edges', 'bindingEdges', ['value', 'label', 'desc', 'price'])}
                     </div>
                   )}
 
@@ -1045,7 +1132,136 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                   {activeTab === 'paper-inside' && renderPaperOptionsWithWeights('inside')}
                   {activeTab === 'paper-subscription' && renderPaperOptionsWithWeights('subscription')}
 
-                  {/* Other tabs remain the same... */}
+                  {/* Color Options */}
+                  {activeTab === 'colors' && (
+                    <div className="space-y-6">
+                      <h3 className="text-xl font-semibold text-gray-900">Color Options</h3>
+                      {renderEditableArray('Print Colors', 'printColors', ['value', 'label', 'price', 'description'])}
+                    </div>
+                  )}
+
+                  {/* Cover Finishes */}
+                  {activeTab === 'finishes' && (
+                    <div className="space-y-6">
+                      <h3 className="text-xl font-semibold text-gray-900">Cover Finishes</h3>
+                      {renderEditableArray('Cover Finishes', 'coverFinishes', ['value', 'label', 'price', 'description'])}
+                    </div>
+                  )}
+
+                  {/* Cover Folds */}
+                  {activeTab === 'folds' && (
+                    <div className="space-y-6">
+                      <h3 className="text-xl font-semibold text-gray-900">Cover Folds</h3>
+                      {renderEditableArray('Cover Folds', 'coverFolds', ['value', 'label', 'price', 'description'])}
+                    </div>
+                  )}
+
+                  {/* Additional Services */}
+                  {activeTab === 'additional' && (
+                    <div className="space-y-6">
+                      <h3 className="text-xl font-semibold text-gray-900">Additional Services</h3>
+                      
+                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                        <p className="text-sm text-blue-800">
+                          <span className="font-semibold">Note:</span> Configure additional services for proofing, hole punching, slipcases, shrink wrapping, direct mailing, and numbering.
+                        </p>
+                      </div>
+
+                      <div className="space-y-8">
+                        <div>
+                          <h4 className="text-lg font-medium text-gray-900 mb-4">Proof Types</h4>
+                          {renderEditableArray('', 'additionalOptions.proof', ['value', 'label', 'price', 'description'])}
+                        </div>
+
+                        <div>
+                          <h4 className="text-lg font-medium text-gray-900 mb-4">Hole Punch Options</h4>
+                          {renderEditableArray('', 'additionalOptions.holePunch', ['value', 'label', 'price', 'description'])}
+                        </div>
+
+                        <div>
+                          <h4 className="text-lg font-medium text-gray-900 mb-4">Slipcase Options</h4>
+                          {renderEditableArray('', 'additionalOptions.slipcase', ['value', 'label', 'price', 'description'])}
+                        </div>
+
+                        <div>
+                          <h4 className="text-lg font-medium text-gray-900 mb-4">Shrink Wrap Options</h4>
+                          {renderEditableArray('', 'additionalOptions.shrinkWrap', ['value', 'label', 'price', 'description'])}
+                        </div>
+
+                        <div>
+                          <h4 className="text-lg font-medium text-gray-900 mb-4">Direct Mail Options</h4>
+                          {renderEditableArray('', 'additionalOptions.directMail', ['value', 'label', 'price', 'description'])}
+                        </div>
+
+                        <div>
+                          <h4 className="text-lg font-medium text-gray-900 mb-4">Numbering Options</h4>
+                          {renderEditableArray('', 'additionalOptions.numbering', ['value', 'label', 'price', 'description'])}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Card Positions */}
+                  {activeTab === 'positions' && (
+                    <div className="space-y-6">
+                      <h3 className="text-xl font-semibold text-gray-900">Card Positions</h3>
+                      {renderEditableArray('Insertion Positions', 'positions', ['value', 'label', 'description'])}
+                    </div>
+                  )}
+
+                  {/* Page Count Options */}
+                  {activeTab === 'page-counts' && (
+                    <div className="space-y-6">
+                      <h3 className="text-xl font-semibold text-gray-900">Page Count Options</h3>
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+                        <p className="text-sm text-yellow-800">
+                          <span className="font-semibold">Note:</span> Page counts are auto-generated from 24 to 880 in increments of 2. This is calculated automatically based on your settings below.
+                        </p>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Minimum Pages
+                          </label>
+                          <input
+                            type="number"
+                            value={24}
+                            disabled
+                            className="w-full p-3 border border-gray-300 rounded-lg bg-gray-100"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">Fixed at 24 pages minimum</p>
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Maximum Pages
+                          </label>
+                          <input
+                            type="number"
+                            value={880}
+                            disabled
+                            className="w-full p-3 border border-gray-300 rounded-lg bg-gray-100"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">Fixed at 880 pages maximum</p>
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Increment
+                          </label>
+                          <input
+                            type="number"
+                            value={2}
+                            disabled
+                            className="w-full p-3 border border-gray-300 rounded-lg bg-gray-100"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">Fixed at 2-page increments</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Global Weight Options */}
                   {activeTab === 'weights' && (
                     <div className="space-y-6">
@@ -1060,17 +1276,187 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </div>
                   )}
 
+                  {/* Quantity Options */}
+                  {activeTab === 'quantities' && (
+                    <div className="space-y-6">
+                      <h3 className="text-xl font-semibold text-gray-900">Quantity Options</h3>
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+                        <p className="text-sm text-yellow-800">
+                          <span className="font-semibold">Note:</span> These quantities will appear in the pricing table. You can add or remove quantities as needed.
+                        </p>
+                      </div>
+                      {renderEditableArray('Available Quantities', 'quantities', ['value'])}
+                    </div>
+                  )}
+
                   {/* Pricing Settings */}
                   {activeTab === 'pricing' && (
                     <div className="space-y-6">
                       <h3 className="text-xl font-semibold text-gray-900">Pricing Settings</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Pricing inputs remain the same... */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Base Setup Cost ($)
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="number"
+                              step="0.01"
+                              value={config.pricing?.baseSetupCost || 0}
+                              onChange={(e) => updateNestedConfig('pricing.baseSetupCost', parseFloat(e.target.value) || 0)}
+                              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors pl-10"
+                            />
+                            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                              $
+                            </div>
+                          </div>
+                          <p className="text-xs text-gray-500 mt-1">Fixed setup cost for all orders</p>
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Cost Per Page ($)
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="number"
+                              step="0.001"
+                              value={config.pricing?.costPerPage || 0}
+                              onChange={(e) => updateNestedConfig('pricing.costPerPage', parseFloat(e.target.value) || 0)}
+                              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors pl-10"
+                            />
+                            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                              $
+                            </div>
+                          </div>
+                          <p className="text-xs text-gray-500 mt-1">Cost per page (multiplied by quantity)</p>
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Custom Size Multiplier
+                          </label>
+                          <input
+                            type="number"
+                            step="0.1"
+                            value={config.pricing?.customSizeMultiplier || 1.0}
+                            onChange={(e) => updateNestedConfig('pricing.customSizeMultiplier', parseFloat(e.target.value) || 1.0)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">Multiplier for custom sizes (e.g., 1.2 = 20% extra)</p>
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Standard Size Multiplier
+                          </label>
+                          <input
+                            type="number"
+                            step="0.1"
+                            value={config.pricing?.standardSizeMultiplier || 1.0}
+                            onChange={(e) => updateNestedConfig('pricing.standardSizeMultiplier', parseFloat(e.target.value) || 1.0)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">Multiplier for non-standard sizes</p>
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Dust Cover Base Cost ($)
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="number"
+                              step="0.01"
+                              value={config.pricing?.dustCoverBaseCost || 0}
+                              onChange={(e) => updateNestedConfig('pricing.dustCoverBaseCost', parseFloat(e.target.value) || 0)}
+                              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors pl-10"
+                            />
+                            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                              $
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Dust Cover Per Copy ($)
+                          </label>
+                          <div className="relative">
+                            <input
+                              type="number"
+                              step="0.001"
+                              value={config.pricing?.dustCoverPerCopy || 0}
+                              onChange={(e) => updateNestedConfig('pricing.dustCoverPerCopy', parseFloat(e.target.value) || 0)}
+                              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors pl-10"
+                            />
+                            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                              $
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Rush Fee Percentage (%)
+                          </label>
+                          <input
+                            type="number"
+                            step="1"
+                            value={config.pricing?.rushFeePercentage || 0}
+                            onChange={(e) => updateNestedConfig('pricing.rushFeePercentage', parseFloat(e.target.value) || 0)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">Percentage added for rush orders</p>
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Max Subscription Cards
+                          </label>
+                          <input
+                            type="number"
+                            value={config.maxSubscriptionCards || 10}
+                            onChange={(e) => updateNestedConfig('maxSubscriptionCards', parseInt(e.target.value) || 10)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                          />
+                          <p className="text-xs text-gray-500 mt-1">Maximum number of subscription cards allowed</p>
+                        </div>
                       </div>
                     </div>
                   )}
 
-                  {/* Add other tabs as needed... */}
+                  {/* Shipping Options */}
+                  {activeTab === 'shipping' && (
+                    <div className="space-y-6">
+                      <h3 className="text-xl font-semibold text-gray-900">Shipping Options</h3>
+                      
+                      <div className="space-y-8">
+                        <div>
+                          <h4 className="text-lg font-medium text-gray-900 mb-4">Domestic Shipping</h4>
+                          {renderEditableArray('', 'shippingOptions.domestic', ['service', 'price', 'days'])}
+                        </div>
+                        
+                        <div>
+                          <h4 className="text-lg font-medium text-gray-900 mb-4">International Shipping</h4>
+                          {renderEditableArray('', 'shippingOptions.international', ['service', 'price', 'days'])}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Volume Discounts */}
+                  {activeTab === 'volume-discounts' && (
+                    <div className="space-y-6">
+                      <h3 className="text-xl font-semibold text-gray-900">Volume Discounts</h3>
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+                        <p className="text-sm text-yellow-800">
+                          <span className="font-semibold">Note:</span> Configure automatic discounts based on order quantity.
+                        </p>
+                      </div>
+                      {renderEditableArray('Volume Discounts', 'pricing.volumeDiscounts', ['quantity', 'discount'])}
+                    </div>
+                  )}
                 </div>
               </div>
 
