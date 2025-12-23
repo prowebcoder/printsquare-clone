@@ -1,64 +1,107 @@
-// components/pages/quote/saddle-stitching/SaddleQuoteForm.js
+// components/pages/quote/perfect-binding/SaddleQuoteForm.js
 'use client';
 import React, { useState, useCallback, useEffect } from 'react';
+import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import PageEditModal from './PageEditModal'; // Add this import
+import PageEditModal from './PageEditModal';
 
-// ===== SADDLE-STITCHING-SPECIFIC DEFAULT CONFIG =====
+// ===== ENHANCED DEFAULT CONFIG WITH IMAGES =====
 const SADDLEQUOTE_DEFAULT_CONFIG = {
   general: {
-    title: "Saddle Stitching Book Printing Quote",
-    description: "Configure your perfect saddle stitched book with our professional printing services. Get instant pricing and add to cart in minutes.",
+    title: "Perfect Binding Book Printing Quote",
+    description: "Configure your perfect bound book with our professional printing services. Get instant pricing and add to cart in minutes.",
     submitButtonText: "Add to Cart",
     shippingButtonText: "Calculate Shipping"
   },
   bindingEdges: [
-    { value: 'LEFT', label: 'Left Side', desc: 'Binding on the left, most common' },
-    { value: 'RIGHT', label: 'Right Side', desc: 'First inside page starts from the right' },
-    { value: 'TOP', label: 'Top Side', desc: 'Binding on the top, a.k.a calendar binding' },
+    { 
+      value: 'LEFT', 
+      label: 'Left Side', 
+      desc: 'Binding on the left, most common',
+      image: '/forms/edge01.png'
+    },
+    { 
+      value: 'RIGHT', 
+      label: 'Right Side', 
+      desc: 'First inside page starts from the right',
+      image: '/forms/edge02.png'
+    },
+    { 
+      value: 'TOP', 
+      label: 'Top Side', 
+      desc: 'Binding on the top, a.k.a calendar binding',
+      image: '/forms/edge03.png'
+    },
   ],
   paperOptions: {
     cover: [
-      { 
-        value: 'MATTE', 
-        label: 'Matte', 
-        description: 'Highly used like Gloss',
-        price: 0 
-      },
-      { 
-        value: 'GLOSS', 
-        label: 'Gloss', 
+      {
+        value: 'GLOSS',
+        label: 'Gloss',
         description: 'Brilliant-gloss, very affordable so highly used',
-        price: 0 
+        price: 0
       },
-      { 
-        value: 'HI-PLUS', 
-        label: 'Hi-Plus', 
+      {
+        value: 'MATTE',
+        label: 'Matte',
+        description: 'Highly used like Gloss',
+        price: 0
+      },
+      {
+        value: 'HI-PLUS',
+        label: 'Hi-Plus',
         description: 'Thicker than Matte. Good printability',
-        price: 50 
+        price: 50
       },
-      { 
-        value: 'HI-QMATTE', 
-        label: 'Hi-Q Matte', 
+      {
+        value: 'HI-QMATTE',
+        label: 'Hi-Q Matte',
         description: 'Thicker than Matte, Premium grade',
-        price: 100 
+        price: 100
       },
-      { 
-        value: 'PREMIUM', 
-        label: 'Premium', 
+      {
+        value: 'UNCOATED_W',
+        label: 'Hi Uncoated',
+        description: 'Matte and very much used',
+        price: 0
+      },
+      {
+        value: 'MONTBLANC_EW',
+        label: 'Hi Premium',
         description: 'Used for high-end magazines and catalogs',
-        price: 150 
+        price: 150
+      },
+      {
+        value: 'NEWPLUS_W',
+        label: 'Hi New Plus',
+        description: 'Affordable and suitable for mass printing',
+        price: 0
+      },
+      {
+        value: 'TEXTBOOK',
+        label: 'Textbook',
+        description: 'For educational book',
+        price: 0
+      },
+      {
+        value: 'TRANSLUCENT',
+        label: 'Translucent',
+        description: 'Translucent paper',
+        price: 0
       },
     ],
     inside: [
       { value: 'GLOSS', label: 'Gloss', price: 0 },
       { value: 'MATTE', label: 'Matte', price: 0 },
       { value: 'HI-PLUS', label: 'Hi-Plus', price: 25 },
-      { value: 'UNCOATED', label: 'Uncoated', price: 0 },
+      { value: 'HI-QMATTE', label: 'Hi-Q Matte', price: 50 },
+      { value: 'UNCOATED', label: 'Hi Uncoated', price: 0 },
+      { value: 'MONTBLANC_EW', label: 'Hi Premium', price: 75 },
+      { value: 'NEWPLUS_W', label: 'Hi New Plus', price: 20 },
       { value: 'TEXTBOOK', label: 'Textbook', price: 30 },
       { value: 'COLORED', label: 'Colored', price: 40 },
+      { value: 'TRANSLUCENT', label: 'Translucent', price: 80 },
     ],
     subscription: [
       { value: 'MATTE', label: 'Matte', price: 0 },
@@ -68,12 +111,42 @@ const SADDLEQUOTE_DEFAULT_CONFIG = {
     ]
   },
   printColors: [
-    { value: 'CMYK', label: 'Full color', price: 0 },
-    { value: 'CMYK_PMS1', label: 'Full color + 1 Spot color', price: 75 },
-    { value: 'CMYK_PMS2', label: 'Full color + 2 Spot color', price: 150 },
-    { value: 'BW', label: 'Black only', price: -100 },
-    { value: 'BW_PMS1', label: 'Black + 1 Spot color', price: -25 },
-    { value: 'BW_PMS2', label: 'Black + 2 Spot color', price: 50 },
+    { 
+      value: 'CMYK', 
+      label: 'Full color', 
+      price: 0,
+      image: '/forms/d1.png'
+    },
+    { 
+      value: 'CMYK_PMS1', 
+      label: 'Full color + 1 Spot color', 
+      price: 75,
+      image: '/forms/d2.png'
+    },
+    { 
+      value: 'CMYK_PMS2', 
+      label: 'Full color + 2 Spot color', 
+      price: 150,
+      image: '/forms/d3.png'
+    },
+    { 
+      value: 'BW', 
+      label: 'Black only', 
+      price: -100,
+      image: '/forms/d4.png'
+    },
+    { 
+      value: 'BW_PMS1', 
+      label: 'Black + 1 Spot color', 
+      price: -25,
+      image: '/forms/d5.png'
+    },
+    { 
+      value: 'BW_PMS2', 
+      label: 'Black + 2 Spot color', 
+      price: 50,
+      image: '/forms/d6.png'
+    },
   ],
   coverFinishes: [
     { value: 'MATTE', label: 'Matte lamination', price: 50 },
@@ -117,7 +190,6 @@ const SADDLEQUOTE_DEFAULT_CONFIG = {
     { value: 'SELECT', label: 'Front of page no.' },
   ],
   pageCounts: Array.from({ length: (880 - 24) / 2 + 1 }, (_, i) => 24 + i * 2),
-  weightOptions: ['100', '120', '150', '180', '200', '250', '300'],
   quantities: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
   customSizeInstructions: {
     INCH: "📏 Minimum: 4\" × 4\" | Maximum: 11.8\" × 14.3\"",
@@ -136,49 +208,288 @@ const SADDLEQUOTE_DEFAULT_CONFIG = {
   }
 };
 
+// ===== PAPER WEIGHT OPTIONS CONFIGURATION =====
+const PAPER_WEIGHT_OPTIONS = {
+  cover: {
+    GLOSS: [
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '80# text', label: '80# text (120 gsm)' },
+      { value: '100# text', label: '100# text (150 gsm)' },
+      { value: '67# cover', label: '67# cover (180 gsm)' },
+      { value: '74# cover', label: '74# cover (200 gsm)' },
+      { value: '92# cover', label: '92# cover (250 gsm)' },
+      { value: '110# cover', label: '110# cover (300 gsm)' }
+    ],
+    MATTE: [
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '80# text', label: '80# text (120 gsm)' },
+      { value: '100# text', label: '100# text (150 gsm)' },
+      { value: '67# cover', label: '67# cover (180 gsm)' },
+      { value: '74# cover', label: '74# cover (200 gsm)' },
+      { value: '92# cover', label: '92# cover (250 gsm)' },
+      { value: '110# cover', label: '110# cover (300 gsm)' }
+    ],
+    'HI-PLUS': [
+      { value: '60# text', label: '60# text (90 gsm)' },
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '80# text', label: '80# text (120 gsm)' }
+    ],
+    'HI-QMATTE': [
+      { value: '89# text', label: '89# text (135 gsm)' },
+      { value: '109# text', label: '109# text (165 gsm)' }
+    ],
+    UNCOATED_W: [
+      { value: '100# text', label: '100# text (150 gsm)' },
+      { value: '67# cover', label: '67# cover (180 gsm)' },
+      { value: '81# cover', label: '81# cover (220 gsm)' },
+      { value: '96# cover', label: '96# cover (260 gsm)' }
+    ],
+    MONTBLANC_EW: [
+      { value: '60# text', label: '60# text (90 gsm)' },
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '88# text', label: '88# text (130 gsm)' },
+      { value: '108# text', label: '108# text (160 gsm)' },
+      { value: '70# cover', label: '70# cover (190 gsm)' },
+      { value: '78# cover', label: '78# cover (210 gsm)' },
+      { value: '89# cover', label: '89# cover (240 gsm)' }
+    ],
+    NEWPLUS_W: [
+      { value: '47# text', label: '47# text (70 gsm)' },
+      { value: '54# text', label: '54# text (80 gsm)' },
+      { value: '68# text', label: '68# text (100 gsm)' }
+    ],
+    TEXTBOOK: [
+      { value: '51# text', label: '51# text (75 gsm)' }
+    ],
+    TRANSLUCENT: [
+      { value: '54# text', label: '54# text (80 gsm)' },
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '88# text', label: '88# text (130 gsm)' },
+      { value: '100# text', label: '100# text (150 gsm)' },
+      { value: '63# cover', label: '63# cover (170 gsm)' },
+      { value: '74# cover', label: '74# cover (200 gsm)' },
+      { value: '81# cover', label: '81# cover (220 gsm)' }
+    ]
+  },
+  
+  inside: {
+    GLOSS: [
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '80# text', label: '80# text (120 gsm)' },
+      { value: '100# text', label: '100# text (150 gsm)' },
+      { value: '67# cover', label: '67# cover (180 gsm)' },
+      { value: '74# cover', label: '74# cover (200 gsm)' },
+      { value: '92# cover', label: '92# cover (250 gsm)' }
+    ],
+    MATTE: [
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '80# text', label: '80# text (120 gsm)' },
+      { value: '100# text', label: '100# text (150 gsm)' },
+      { value: '67# cover', label: '67# cover (180 gsm)' },
+      { value: '74# cover', label: '74# cover (200 gsm)' },
+      { value: '92# cover', label: '92# cover (250 gsm)' }
+    ],
+    'HI-PLUS': [
+      { value: '60# text', label: '60# text (90 gsm)' },
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '80# text', label: '80# text (120 gsm)' }
+    ],
+    'HI-QMATTE': [
+      { value: '89# text', label: '89# text (135 gsm)' },
+      { value: '109# text', label: '109# text (165 gsm)' }
+    ],
+    UNCOATED: [
+      { value: '47# text', label: '47# text (70 gsm)' },
+      { value: '54# text', label: '54# text (80 gsm)' },
+      { value: '60# text', label: '60# text (90 gsm)' },
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '80# text', label: '80# text (120 gsm)' },
+      { value: '100# text', label: '100# text (150 gsm)' },
+      { value: '67# cover', label: '67# cover (180 gsm)' },
+      { value: '81# cover', label: '81# cover (220 gsm)' }
+    ],
+    MONTBLANC_EW: [
+      { value: '60# text', label: '60# text (90 gsm)' },
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '88# text', label: '88# text (130 gsm)' },
+      { value: '108# text', label: '108# text (160 gsm)' },
+      { value: '70# cover', label: '70# cover (190 gsm)' },
+      { value: '78# cover', label: '78# cover (210 gsm)' }
+    ],
+    NEWPLUS_W: [
+      { value: '47# text', label: '47# text (70 gsm)' },
+      { value: '54# text', label: '54# text (80 gsm)' },
+      { value: '68# text', label: '68# text (100 gsm)' }
+    ],
+    TEXTBOOK: [
+      { value: '51# text', label: '51# text (75 gsm)' }
+    ],
+    TRANSLUCENT: [
+      { value: '54# text', label: '54# text (80 gsm)' },
+      { value: '68# text', label: '68# text (100 gsm)' },
+      { value: '88# text', label: '88# text (130 gsm)' },
+      { value: '100# text', label: '100# text (150 gsm)' },
+      { value: '63# cover', label: '63# cover (170 gsm)' },
+      { value: '74# cover', label: '74# cover (200 gsm)' },
+      { value: '81# cover', label: '81# cover (220 gsm)' }
+    ],
+    COLORED: [
+      { value: 'A-BE01', label: 'A-BE01', image: '/forms/A-BE01.png' },
+      { value: 'A-BE10', label: 'A-BE10', image: '/forms/A-BE10.png' },
+      { value: 'A-BE15', label: 'A-BE15', image: '/forms/A-BE15.png' },
+      { value: 'A-BE30', label: 'A-BE30', image: '/forms/A-BE30.png' },
+      { value: 'A-BE42', label: 'A-BE42', image: '/forms/A-BE42.png' },
+      { value: 'A-BE50', label: 'A-BE50', image: '/forms/A-BE50.png' },
+      { value: 'A-BE51', label: 'A-BE51', image: '/forms/A-BE51.png' },
+      { value: 'A-BE75', label: 'A-BE75', image: '/forms/A-BE75.png' },
+      { value: 'A-BE83', label: 'A-BE83', image: '/forms/A-BE83.png' },
+      { value: 'A-BE85', label: 'A-BE85', image: '/forms/A-BE85.png' },
+      { value: 'B-BE16', label: 'B-BE16', image: '/forms/B-BE16.png' },
+      { value: 'B-BE17', label: 'B-BE17', image: '/forms/B-BE17.png' },
+      { value: 'B-BE24', label: 'B-BE24', image: '/forms/B-BE24.png' },
+      { value: 'B-BE80', label: 'B-BE80', image: '/forms/B-BE80.png' },
+      { value: 'B-BE81', label: 'B-BE81', image: '/forms/B-BE81.png' },
+      { value: 'C-BE36', label: 'C-BE36', image: '/forms/C-BE36.png' },
+      { value: 'C-BE54', label: 'C-BE54', image: '/forms/C-BE54.png' },
+      { value: 'C-BE66', label: 'C-BE66', image: '/forms/C-BE66.png' },
+      { value: 'C-BE73', label: 'C-BE73', image: '/forms/C-BE73.png' },
+      { value: 'D-BE18', label: 'D-BE18', image: '/forms/D-BE18.png' },
+      { value: 'D-BE32', label: 'D-BE32', image: '/forms/D-BE32.png' },
+      { value: 'D-BE35', label: 'D-BE35', image: '/forms/D-BE35.png' },
+      { value: 'D-BE69', label: 'D-BE69', image: '/forms/D-BE69.png' },
+      { value: 'D-BE76', label: 'D-BE76', image: '/forms/D-BE76.png' },
+      { value: 'E-BE05', label: 'E-BE05', image: '/forms/E-BE05.png' }
+    ]
+  }
+};
+
 // ===== PAPER WEIGHT CONVERSION DATA =====
 const PAPER_WEIGHT_CONVERSIONS = {
-  '100': { 
+  '60# text': { 
+    gsm: '90 gsm',
+    us: '60# text',
+    pt: '2.5 pt',
+    kg: '77 kg'
+  },
+  '68# text': { 
     gsm: '100 gsm',
     us: '68# text',
     pt: '3.2 pt',
     kg: '86 kg'
   },
-  '120': { 
+  '80# text': { 
     gsm: '120 gsm',
     us: '80# text',
     pt: '3.8 pt',
     kg: '103 kg'
   },
-  '150': { 
+  '88# text': { 
+    gsm: '130 gsm',
+    us: '88# text',
+    pt: '4.2 pt',
+    kg: '112 kg'
+  },
+  '100# text': { 
     gsm: '150 gsm',
     us: '100# text',
     pt: '4.8 pt',
     kg: '129 kg'
   },
-  '180': { 
+  '108# text': { 
+    gsm: '160 gsm',
+    us: '108# text',
+    pt: '5.1 pt',
+    kg: '138 kg'
+  },
+  '109# text': { 
+    gsm: '165 gsm',
+    us: '109# text',
+    pt: '5.3 pt',
+    kg: '142 kg'
+  },
+  '67# cover': { 
     gsm: '180 gsm',
     us: '67# cover',
     pt: '5.9 pt',
     kg: '155 kg'
   },
-  '200': { 
+  '70# cover': { 
+    gsm: '190 gsm',
+    us: '70# cover',
+    pt: '6.2 pt',
+    kg: '163 kg'
+  },
+  '74# cover': { 
     gsm: '200 gsm',
     us: '74# cover',
     pt: '7.1 pt',
     kg: '172 kg'
   },
-  '250': { 
+  '78# cover': { 
+    gsm: '210 gsm',
+    us: '78# cover',
+    pt: '7.5 pt',
+    kg: '181 kg'
+  },
+  '81# cover': { 
+    gsm: '220 gsm',
+    us: '81# cover',
+    pt: '8.0 pt',
+    kg: '189 kg'
+  },
+  '89# cover': { 
+    gsm: '240 gsm',
+    us: '89# cover',
+    pt: '8.7 pt',
+    kg: '206 kg'
+  },
+  '92# cover': { 
     gsm: '250 gsm',
     us: '92# cover',
     pt: '9.1 pt',
     kg: '215 kg'
   },
-  '300': { 
+  '96# cover': { 
+    gsm: '260 gsm',
+    us: '96# cover',
+    pt: '9.5 pt',
+    kg: '224 kg'
+  },
+  '110# cover': { 
     gsm: '300 gsm',
     us: '110# cover',
     pt: '11.3 pt',
     kg: '258 kg'
+  },
+  '47# text': { 
+    gsm: '70 gsm',
+    us: '47# text',
+    pt: '2.0 pt',
+    kg: '60 kg'
+  },
+  '51# text': { 
+    gsm: '75 gsm',
+    us: '51# text',
+    pt: '2.2 pt',
+    kg: '65 kg'
+  },
+  '54# text': { 
+    gsm: '80 gsm',
+    us: '54# text',
+    pt: '2.3 pt',
+    kg: '69 kg'
+  },
+  '63# cover': { 
+    gsm: '170 gsm',
+    us: '63# cover',
+    pt: '5.5 pt',
+    kg: '146 kg'
+  },
+  '89# text': { 
+    gsm: '135 gsm',
+    us: '89# text',
+    pt: '4.3 pt',
+    kg: '116 kg'
   }
 };
 
@@ -189,9 +500,6 @@ const SIZE_CONVERSIONS = {
     '7.5 x 10': '7.5" x 10"',
     '8.5 x 11': '8.5" x 11"',
     '9 x 12': '9" x 12"',
-    '8.5 x 5.5': '8.5" x 5.5"',
-    '10 x 7.5': '10" x 7.5"',
-    '11 x 8.5': '11" x 8.5"',
     'A6': '4.13" x 5.83"',
     'A5': '5.83" x 8.27"',
     'A4': '8.27" x 11.69"',
@@ -205,9 +513,6 @@ const SIZE_CONVERSIONS = {
     '7.5 x 10': '191 x 254 mm',
     '8.5 x 11': '216 x 279 mm',
     '9 x 12': '229 x 305 mm',
-    '8.5 x 5.5': '216 x 140 mm',
-    '10 x 7.5': '254 x 191 mm',
-    '11 x 8.5': '279 x 216 mm',
     'A6': '105 x 148 mm',
     'A5': '148 x 210 mm',
     'A4': '210 x 297 mm',
@@ -237,69 +542,283 @@ const getOptionPrice = (options, selectedValue) => {
 
 const formatCurrency = (amount) => `$${amount.toFixed(2)}`;
 
-// ===== PAGE EDITS COST CALCULATION =====
-const calculatePageEditsCost = (edits, PAPER_OPTIONS, PRINT_COLORS) => {
-  if (!edits || edits.length === 0) return 0;
-  
-  let totalCost = 0;
-  
-  edits.forEach(edit => {
-    let editCost = 0;
+// ===== IMAGE DROPDOWN COMPONENT =====
+const ImageDropdown = ({ 
+  label, 
+  options, 
+  selected, 
+  onChange, 
+  className = "", 
+  disabled = false,
+  showDescription = false,
+  showPrice = false
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const selectedOption = options?.find(opt => opt.value === selected);
+
+  return (
+    <div className={`relative ${className}`}>
+      {label && <p className="text-sm font-semibold mb-2 text-gray-700">{label}</p>}
+      
+      {/* Dropdown Button */}
+      <button
+        type="button"
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        disabled={disabled}
+        className={`w-full flex items-center justify-between p-3 border border-gray-300 rounded-lg shadow-sm text-left hover:border-gray-400 transition-all ${
+          disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white cursor-pointer'
+        } ${isOpen ? 'ring-2 ring-indigo-500 border-indigo-500' : ''}`}
+      >
+        <div className="flex items-center space-x-3">
+          {selectedOption?.image && (
+            <div className="w-10 h-10 flex-shrink-0 rounded-md overflow-hidden border border-gray-200">
+              <img 
+                src={selectedOption.image} 
+                alt={selectedOption.label}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.src = '/images/placeholder-color.png';
+                  e.target.alt = 'Image not available';
+                }}
+              />
+            </div>
+          )}
+          <div>
+            <span className="text-sm font-medium text-gray-900 block">
+              {selectedOption?.label || 'Select an option'}
+            </span>
+            {showDescription && selectedOption?.desc && (
+              <span className="text-xs text-gray-500 block mt-1">
+                {selectedOption.desc}
+              </span>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center space-x-2">
+          {showPrice && selectedOption?.price !== undefined && (
+            <span className={`text-sm font-semibold ${
+              selectedOption.price > 0 ? 'text-green-600' : 
+              selectedOption.price < 0 ? 'text-red-600' : 
+              'text-gray-600'
+            }`}>
+              {selectedOption.price > 0 ? `+$${selectedOption.price}` : 
+               selectedOption.price < 0 ? `-$${Math.abs(selectedOption.price)}` : 
+               'No extra charge'}
+            </span>
+          )}
+          <svg 
+            className={`w-4 h-4 text-gray-400 transform transition-transform ${isOpen ? 'rotate-180' : ''}`}
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </button>
+
+      {/* Dropdown Menu */}
+      {isOpen && (
+        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-80 overflow-y-auto">
+          <div className="py-1">
+            {options?.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => {
+                  onChange({ target: { value: option.value } });
+                  setIsOpen(false);
+                }}
+                className={`w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors ${
+                  selected === option.value ? 'bg-indigo-50' : ''
+                }`}
+              >
+                {option.image && (
+                  <div className="w-12 h-12 flex-shrink-0 rounded-md overflow-hidden border border-gray-200">
+                    <img 
+                      src={option.image} 
+                      alt={option.label}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.src = '/images/placeholder-color.png';
+                        e.target.alt = 'Image not available';
+                      }}
+                    />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{option.label}</p>
+                      {option.desc && (
+                        <p className="text-xs text-gray-500 mt-1">{option.desc}</p>
+                      )}
+                    </div>
+                    {showPrice && option.price !== undefined && (
+                      <span className={`text-sm font-semibold ml-2 ${
+                        option.price > 0 ? 'text-green-600' : 
+                        option.price < 0 ? 'text-red-600' : 
+                        'text-gray-600'
+                      }`}>
+                        {option.price > 0 ? `+$${option.price}` : 
+                         option.price < 0 ? `-$${Math.abs(option.price)}` : 
+                         'No extra charge'}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Close dropdown when clicking outside */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+    </div>
+  );
+};
+
+// ===== PAPER WEIGHT SELECTOR WITH IMAGE SUPPORT =====
+const PaperWeightSelector = ({ 
+  paperType, 
+  paperUnit, 
+  weightValue, 
+  onChange, 
+  label = "", 
+  isCover = true,
+  showImages = false 
+}) => {
+  const [showImagePreview, setShowImagePreview] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+
+  const getWeightOptions = () => {
+    const category = isCover ? 'cover' : 'inside';
+    const options = PAPER_WEIGHT_OPTIONS[category]?.[paperType] || [];
     
-    switch(edit.type) {
-      case 'PAPER':
-        // Paper change cost logic
-        if (edit.data.paperChange) {
-          // Paper type change cost
-          const paperOption = PAPER_OPTIONS.inside.find(opt => opt.value === edit.data.paper);
-          editCost += (paperOption?.price || 0) * edit.pages.length;
-        }
-        
-        if (edit.data.colorChange) {
-          // Color change cost
-          const colorOption = PRINT_COLORS.find(opt => opt.value === edit.data.color);
-          editCost += (colorOption?.price || 0) * edit.pages.length;
-        }
-        
-        if (edit.data.sizeChange) {
-          // Size change cost (custom size premium)
-          editCost += 25 * edit.pages.length; // $25 per page for custom size
-        }
-        break;
-        
-      case 'FOLD':
-        // Fold cost logic
-        editCost = 15 * edit.pages.length; // $15 per fold per page
-        break;
-        
-      case 'ADDON':
-        // Addon cost logic
-        const addonPrices = {
-          'FOIL': 20,      // $20 per page for foil stamping
-          'UV': 15,        // $15 per page for UV
-          'EMUV': 30,      // $30 per page for embossed-UV
-          'EMBOSS': 25,    // $25 per page for embossing
-          'DIECUT': 35,    // $35 per page for die-cut
-        };
-        
-        editCost = (addonPrices[edit.data.addonType] || 0) * edit.pages.length;
-        
-        // Size multiplier
-        const sizeMultipliers = {
-          'SMALL': 0.5,
-          'MEDIUM': 1,
-          'LARGE': 1.5,
-          'FULL': 2,
-        };
-        
-        editCost *= (sizeMultipliers[edit.data.addonSize] || 1);
-        break;
+    // For colored paper, return options with images
+    if (paperType === 'COLORED' && showImages) {
+      return options.map(option => ({
+        ...option,
+        label: option.label
+      }));
     }
     
-    totalCost += editCost;
-  });
-  
-  return totalCost;
+    // For regular paper types, convert label based on paper unit
+    return options.map(option => {
+      const conversion = PAPER_WEIGHT_CONVERSIONS[option.value];
+      if (!conversion) return option;
+      
+      let labelText = option.label;
+      switch(paperUnit) {
+        case 'GSM':
+          labelText = `${option.value} (${conversion.gsm})`;
+          break;
+        case 'US':
+          labelText = `${option.value}`;
+          break;
+        case 'PT':
+          labelText = `${option.value} (${conversion.pt})`;
+          break;
+        case 'KG':
+          labelText = `${option.value} (${conversion.kg})`;
+          break;
+        default:
+          labelText = option.label;
+      }
+      
+      return {
+        ...option,
+        label: labelText
+      };
+    });
+  };
+
+  const weightOptions = getWeightOptions();
+  const selectedOption = weightOptions.find(opt => opt.value === weightValue);
+  const isColoredPaper = paperType === 'COLORED' && showImages;
+
+  const handleImagePreview = (imageUrl) => {
+    setPreviewImage(imageUrl);
+    setShowImagePreview(true);
+  };
+
+  // Use ImageDropdown for colored paper
+  if (isColoredPaper) {
+    return (
+      <div className="space-y-2">
+        {label && <p className="text-sm font-semibold text-gray-700 mb-2">{label}</p>}
+        <ImageDropdown
+          options={weightOptions}
+          selected={weightValue}
+          onChange={onChange}
+          className="w-full"
+        />
+        
+        {/* Image preview for colored options */}
+        {weightValue && selectedOption?.image && (
+          <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm font-medium text-gray-700">Color Preview:</p>
+              <button
+                type="button"
+                onClick={() => handleImagePreview(selectedOption.image)}
+                className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+              >
+                View Full Size
+              </button>
+            </div>
+            <div className="relative h-32 w-full bg-white border border-gray-300 rounded-md overflow-hidden">
+              <img 
+                src={selectedOption.image} 
+                alt={selectedOption.label}
+                className="object-contain w-full h-full"
+                onError={(e) => {
+                  e.target.src = '/images/placeholder-color.png';
+                  e.target.alt = 'Color preview not available';
+                }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      {label && <p className="text-sm font-semibold mb-2 text-gray-700">{label}</p>}
+      <select
+        value={weightValue}
+        onChange={onChange}
+        className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors"
+        disabled={weightOptions.length === 0}
+      >
+        {weightOptions.length === 0 ? (
+          <option value="">No weight options available for this paper type</option>
+        ) : (
+          <>
+            <option value="">Select weight</option>
+            {weightOptions.map((option, index) => (
+              <option key={`${option.value}-${index}`} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </>
+        )}
+      </select>
+      {selectedOption && (
+        <p className="text-xs text-gray-500 mt-1">
+          Available weights may vary based on paper type selection
+        </p>
+      )}
+    </div>
+  );
 };
 
 // ===== SHIPPING MODAL COMPONENT =====
@@ -337,7 +856,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
     setLoading(true);
     setError('');
     
-    // Mock shipping calculation based on quantity and weight
     setTimeout(() => {
       const baseWeight = (formData.quantity * 0.2) + (formData.pageCount * 0.01);
       let calculatedCost = 0;
@@ -359,7 +877,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
           calculatedCost = 25 + (baseWeight * 0.5);
       }
       
-      // Add international premium
       if (country !== 'US') {
         calculatedCost *= 1.5;
       }
@@ -390,7 +907,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
         </div>
         
         <div className="space-y-6">
-          {/* Order Summary */}
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <h4 className="font-semibold text-gray-900 mb-2">Order Summary</h4>
             <div className="grid grid-cols-2 gap-2 text-sm">
@@ -405,7 +921,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
             </div>
           </div>
 
-          {/* Shipping Form */}
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -473,7 +988,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
             </div>
           </div>
 
-          {/* Calculate Button */}
           <button
             onClick={calculateShipping}
             disabled={loading}
@@ -492,7 +1006,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
             )}
           </button>
 
-          {/* Shipping Result */}
           {shippingCost && (
             <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
               <h4 className="font-semibold text-green-900 mb-2">Shipping Cost Calculated</h4>
@@ -516,7 +1029,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
             </div>
           )}
 
-          {/* Action Buttons */}
           <div className="flex space-x-4 pt-4 border-t border-gray-200">
             <button
               onClick={onClose}
@@ -527,7 +1039,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
             {shippingCost && (
               <button
                 onClick={() => {
-                  // Add shipping to order
                   alert(`Shipping added: $${shippingCost.cost} for ${shippingCost.method}`);
                   onClose();
                 }}
@@ -543,51 +1054,34 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
   );
 };
 
-// ===== PAPER WEIGHT SELECTOR COMPONENT =====
-const PaperWeightSelector = ({ paperUnit, weightValue, onChange, label = "" }) => {
-  const getWeightOptions = () => {
-    return Object.keys(PAPER_WEIGHT_CONVERSIONS).map(key => {
-      const conversion = PAPER_WEIGHT_CONVERSIONS[key];
-      let labelText = '';
-      
-      switch(paperUnit) {
-        case 'GSM':
-          labelText = conversion.gsm;
-          break;
-        case 'US':
-          labelText = conversion.us;
-          break;
-        case 'PT':
-          labelText = conversion.pt;
-          break;
-        case 'KG':
-          labelText = conversion.kg;
-          break;
-        default:
-          labelText = conversion.gsm;
-      }
-      
-      return {
-        value: key,
-        label: labelText
-      };
-    });
-  };
+// ===== IMAGE PREVIEW MODAL =====
+const ImagePreviewModal = ({ isOpen, imageUrl, onClose }) => {
+  if (!isOpen) return null;
 
   return (
-    <div>
-      {label && <p className="text-sm font-semibold mb-2 text-gray-700 opacity-0">{label}</p>}
-      <select
-        value={weightValue}
-        onChange={onChange}
-        className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors"
-      >
-        {getWeightOptions().map((option, index) => (
-          <option key={`${option.value}-${index}`} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+        <div className="flex justify-between items-center p-4 border-b border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900">Color Preview</h3>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <span className="text-2xl text-gray-500">×</span>
+          </button>
+        </div>
+        <div className="p-8 flex items-center justify-center bg-gray-100 min-h-[60vh]">
+          <img 
+            src={imageUrl} 
+            alt="Color preview"
+            className="max-w-full max-h-[70vh] object-contain"
+            onError={(e) => {
+              e.target.src = '/images/placeholder-color-large.png';
+              e.target.alt = 'Color preview not available';
+            }}
+          />
+        </div>
+      </div>
     </div>
   );
 };
@@ -751,15 +1245,18 @@ const DustCoverSettings = ({ dustCover, onUpdate, onRemove, paperUnit }) => {
               showDescription={true}
             />
             <PaperWeightSelector
+              paperType={dustCover.paper}
               paperUnit={paperUnit}
               weightValue={dustCover.gsm}
               onChange={(e) => handleChange('gsm', e.target.value)}
+              isCover={true}
             />
-            <SelectDropdown
+            <ImageDropdown
               options={SADDLEQUOTE_DEFAULT_CONFIG.printColors}
               selected={dustCover.printColor}
               onChange={(e) => handleChange('printColor', e.target.value)}
               className="w-full"
+              showPrice={true}
             />
             <SelectDropdown
               options={SADDLEQUOTE_DEFAULT_CONFIG.coverFinishes}
@@ -862,15 +1359,18 @@ const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, position
               className="w-full"
             />
             <PaperWeightSelector
+              paperType={card.paper}
               paperUnit={paperUnit}
               weightValue={card.gsm}
               onChange={(e) => handleChange('gsm', e.target.value)}
+              isCover={false}
             />
-            <SelectDropdown
+            <ImageDropdown
               options={SADDLEQUOTE_DEFAULT_CONFIG.printColors}
               selected={card.printColor}
               onChange={(e) => handleChange('printColor', e.target.value)}
               className="w-full"
+              showPrice={true}
             />
             <SelectDropdown
               options={SADDLEQUOTE_DEFAULT_CONFIG.coverFinishes.filter(opt => opt.value !== 'NONE')}
@@ -967,19 +1467,74 @@ const AddOnModal = ({ isOpen, onClose, onSelectAddOn }) => {
   );
 };
 
+// ===== PAGE EDITS COST CALCULATION =====
+const calculatePageEditsCost = (edits, PAPER_OPTIONS, PRINT_COLORS) => {
+  if (!edits || edits.length === 0) return 0;
+  
+  let totalCost = 0;
+  
+  edits.forEach(edit => {
+    let editCost = 0;
+    
+    switch(edit.type) {
+      case 'PAPER':
+        if (edit.data.paperChange) {
+          const paperOption = PAPER_OPTIONS.inside.find(opt => opt.value === edit.data.paper);
+          editCost += (paperOption?.price || 0) * edit.pages.length;
+        }
+        
+        if (edit.data.colorChange) {
+          const colorOption = PRINT_COLORS.find(opt => opt.value === edit.data.color);
+          editCost += (colorOption?.price || 0) * edit.pages.length;
+        }
+        
+        if (edit.data.sizeChange) {
+          editCost += 25 * edit.pages.length;
+        }
+        break;
+        
+      case 'FOLD':
+        editCost = 15 * edit.pages.length;
+        break;
+        
+      case 'ADDON':
+        const addonPrices = {
+          'FOIL': 20,
+          'UV': 15,
+          'EMUV': 30,
+          'EMBOSS': 25,
+          'DIECUT': 35,
+        };
+        
+        editCost = (addonPrices[edit.data.addonType] || 0) * edit.pages.length;
+        
+        const sizeMultipliers = {
+          'SMALL': 0.5,
+          'MEDIUM': 1,
+          'LARGE': 1.5,
+          'FULL': 2,
+        };
+        
+        editCost *= (sizeMultipliers[edit.data.addonSize] || 1);
+        break;
+    }
+    
+    totalCost += editCost;
+  });
+  
+  return totalCost;
+};
+
 // ===== MAIN COMPONENT =====
 const SaddleQuoteForm = () => {
-  // Import cart context and router
   const { addToCart } = useCart();
   const router = useRouter();
 
-  // Configuration state
   const [formConfig, setFormConfig] = useState(SADDLEQUOTE_DEFAULT_CONFIG);
   const [loading, setLoading] = useState(true);
   const [configVersion, setConfigVersion] = useState(0);
 
-  // Form State Management
-  const [bindingType, setBindingType] = useState('SADDLE');
+  const [bindingType, setBindingType] = useState('PERFECT');
   const [sizeUnit, setSizeUnit] = useState('INCH');
   const [paperUnit, setPaperUnit] = useState('US');
   const [selectedSize, setSelectedSize] = useState('8.5 x 11');
@@ -987,74 +1542,71 @@ const SaddleQuoteForm = () => {
   const [customHeight, setCustomHeight] = useState('');
   const [bindingEdge, setBindingEdge] = useState('LEFT');
   
-  // Cover State
   const [coverPaper, setCoverPaper] = useState('MATTE');
-  const [coverWeight, setCoverWeight] = useState('250');
+  const [coverWeight, setCoverWeight] = useState('');
   const [coverColor, setCoverColor] = useState('CMYK');
   const [coverFinish, setCoverFinish] = useState('MATTE');
   const [coverFold, setCoverFold] = useState('NONE');
   const [foldWidth, setFoldWidth] = useState('');
   
-  // Dust Cover State
   const [dustCover, setDustCover] = useState(null);
   
-  // Inside Page State
   const [pageCount, setPageCount] = useState(96);
   const [insidePaper, setInsidePaper] = useState('MATTE');
-  const [insideWeight, setInsideWeight] = useState('100');
-  const [insideColor, setInsideColor] = useState('CMYK');
+  const [insideWeight, setInsideWeight] = useState('');
   
-  // Subscription Cards State
   const [subscriptionCards, setSubscriptionCards] = useState([]);
-  
-  // Page Edits State - NEW
   const [pageEdits, setPageEdits] = useState([]);
-  
-  // Add-ons State
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
   const [addOns, setAddOns] = useState([]);
   const [showAddOnModal, setShowAddOnModal] = useState(false);
-  
-  // Shipping Modal State
   const [showShippingModal, setShowShippingModal] = useState(false);
-
-  // Page Edit Modal State - NEW
   const [showPageEditModal, setShowPageEditModal] = useState(false);
 
-  // Quantity & Options State
   const [quantity, setQuantity] = useState(200);
   const [selectedQuantityIndex, setSelectedQuantityIndex] = useState(1);
+  const [insideColor, setInsideColor] = useState('CMYK');
   const [proof, setProof] = useState('ONLINE');
   const [holePunching, setHolePunching] = useState({ enabled: false, type: '6' });
   const [slipcase, setSlipcase] = useState('NONE');
   const [shrinkWrapping, setShrinkWrapping] = useState({ enabled: false, type: '1' });
   const [directMailing, setDirectMailing] = useState({ enabled: false, type: 'ALL' });
 
-  // Derived State
   const isCustomSize = selectedSize === 'Custom Size';
   const [pricingData, setPricingData] = useState(getPricingData());
 
-  // Available sizes based on unit
   const availableSizes = sizeUnit === 'INCH' 
-    ? ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', '8.5 x 5.5', '10 x 7.5', '11 x 8.5', 'A6', 'A5', 'A4', 'B6', 'B5', 'B4', 'Custom Size']
-    : ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', '8.5 x 5.5', '10 x 7.5', '11 x 8.5', 'A6', 'A5', 'A4', 'B6', 'B5', 'B4', 'Custom Size'];
+    ? ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', 'A6', 'A5', 'A4', 'B6', 'B5', 'B4', 'Custom Size']
+    : ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', 'A6', 'A5', 'A4', 'B6', 'B5', 'B4', 'Custom Size'];
 
-  // Get display label for size
   const getSizeDisplayLabel = (size) => {
     return SIZE_CONVERSIONS[sizeUnit]?.[size] || size;
   };
 
-  // Fetch form configuration
+  useEffect(() => {
+    const coverWeights = PAPER_WEIGHT_OPTIONS.cover[coverPaper];
+    if (coverWeights && coverWeights.length > 0 && !coverWeight) {
+      setCoverWeight(coverWeights[0].value);
+    }
+    
+    const insideWeights = PAPER_WEIGHT_OPTIONS.inside[insidePaper];
+    if (insideWeights && insideWeights.length > 0 && !insideWeight) {
+      setInsideWeight(insideWeights[0].value);
+    }
+  }, [coverPaper, insidePaper, coverWeight, insideWeight]);
+
   const fetchFormConfig = async () => {
     try {
-      console.log('🔄 Fetching saddle form configuration from API...');
+      console.log('🔄 Fetching perfect binding form configuration from API...');
       const res = await fetch('/api/admin/forms/saddle-quote');
       
       if (res.ok) {
         const apiConfig = await res.json();
-        console.log('📥 Saddle API Response received');
+        console.log('📥 Perfect binding API Response received');
         
         if (apiConfig && Object.keys(apiConfig).length > 0) {
-          console.log('✅ Using saddle API configuration');
+          console.log('✅ Using perfect binding API configuration');
           
           const mergedConfig = {
             ...SADDLEQUOTE_DEFAULT_CONFIG,
@@ -1079,15 +1631,15 @@ const SaddleQuoteForm = () => {
           
           setFormConfig(mergedConfig);
         } else {
-          console.log('⚠️ API returned empty, using saddle defaults');
+          console.log('⚠️ API returned empty, using perfect binding defaults');
           setFormConfig(SADDLEQUOTE_DEFAULT_CONFIG);
         }
       } else {
-        console.log('❌ API error, using saddle defaults');
+        console.log('❌ API error, using perfect binding defaults');
         setFormConfig(SADDLEQUOTE_DEFAULT_CONFIG);
       }
     } catch (error) {
-      console.error('❌ Error fetching saddle form configuration:', error);
+      console.error('❌ Error fetching perfect binding form configuration:', error);
       setFormConfig(SADDLEQUOTE_DEFAULT_CONFIG);
     } finally {
       setLoading(false);
@@ -1098,7 +1650,6 @@ const SaddleQuoteForm = () => {
     fetchFormConfig();
   }, [configVersion]);
 
-  // Configuration constants
   const BINDING_EDGES = formConfig?.bindingEdges || SADDLEQUOTE_DEFAULT_CONFIG.bindingEdges;
   const PAPER_OPTIONS = formConfig?.paperOptions || SADDLEQUOTE_DEFAULT_CONFIG.paperOptions;
   const PRINT_COLORS = formConfig?.printColors || SADDLEQUOTE_DEFAULT_CONFIG.printColors;
@@ -1107,7 +1658,6 @@ const SaddleQuoteForm = () => {
   const ADDITIONAL_OPTIONS = formConfig?.additionalOptions || SADDLEQUOTE_DEFAULT_CONFIG.additionalOptions;
   const POSITIONS = formConfig?.positions || SADDLEQUOTE_DEFAULT_CONFIG.positions;
   const PAGE_COUNTS = formConfig?.pageCounts || SADDLEQUOTE_DEFAULT_CONFIG.pageCounts;
-  const WEIGHT_OPTIONS = formConfig?.weightOptions || SADDLEQUOTE_DEFAULT_CONFIG.weightOptions;
   const QUANTITIES = formConfig?.quantities || SADDLEQUOTE_DEFAULT_CONFIG.quantities;
 
   const generalSettings = formConfig?.general || SADDLEQUOTE_DEFAULT_CONFIG.general;
@@ -1119,10 +1669,36 @@ const SaddleQuoteForm = () => {
     setConfigVersion(prev => prev + 1);
   };
 
-  // Calculate page edits cost
   const pageEditsCost = calculatePageEditsCost(pageEdits, PAPER_OPTIONS, PRINT_COLORS);
 
-  // Handlers
+  const getWeightPrice = (weightValue) => {
+    const weightPrices = {
+      '47# text': 10,
+      '51# text': 12,
+      '54# text': 15,
+      '60# text': 18,
+      '68# text': 20,
+      '80# text': 25,
+      '88# text': 30,
+      '89# text': 32,
+      '100# text': 35,
+      '108# text': 38,
+      '109# text': 40,
+      '63# cover': 45,
+      '67# cover': 50,
+      '70# cover': 55,
+      '74# cover': 60,
+      '78# cover': 65,
+      '81# cover': 70,
+      '89# cover': 75,
+      '92# cover': 80,
+      '96# cover': 85,
+      '110# cover': 90,
+    };
+    
+    return weightPrices[weightValue] || 0;
+  };
+
   const handleNumberInput = (setter) => (e) => {
     const value = e.target.value;
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
@@ -1156,13 +1732,12 @@ const SaddleQuoteForm = () => {
     setQuantity(pricingData[index].quantity);
   };
 
-  // Dust Cover Management
   const addDustCover = () => {
     setDustCover({
       width: '',
       height: '',
       paper: 'GLOSS',
-      gsm: '150',
+      gsm: '68# text',
       printColor: 'CMYK',
       finish: 'MATTE'
     });
@@ -1176,14 +1751,13 @@ const SaddleQuoteForm = () => {
     setDustCover(null);
   };
 
-  // Subscription Card Management
   const addSubscriptionCard = () => {
     const maxCards = formConfig?.maxSubscriptionCards || 10;
     if (subscriptionCards.length < maxCards) {
       const newCard = {
         id: Date.now(),
         width: '', height: '', position: 'FRONT', selectedPage: '',
-        paper: 'MATTE', gsm: '100', printColor: 'CMYK', finish: 'NONE'
+        paper: 'MATTE', gsm: '68# text', printColor: 'CMYK', finish: 'NONE'
       };
       setSubscriptionCards([...subscriptionCards, newCard]);
     }
@@ -1199,16 +1773,12 @@ const SaddleQuoteForm = () => {
     setSubscriptionCards(subscriptionCards.filter((_, i) => i !== index));
   };
 
-  // Page Edits Management - NEW
   const handlePageEditsSave = (edits) => {
     console.log('Page edits saved:', edits);
     setPageEdits(edits);
-    
-    // You can add a notification here
     alert(`${edits.length} page edit${edits.length !== 1 ? 's' : ''} saved successfully!`);
   };
 
-  // Add-ons Management
   const handleAddOnSelect = (addOn) => {
     setAddOns([...addOns, { ...addOn, id: Date.now() }]);
   };
@@ -1217,7 +1787,11 @@ const SaddleQuoteForm = () => {
     setAddOns(addOns.filter(addOn => addOn.id !== id));
   };
 
-  // Price Calculation - UPDATED with page edits cost
+  const handleImagePreview = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowImageModal(true);
+  };
+
   const calculatePricing = useCallback(() => {
     const baseCostPerPage = formConfig?.pricing?.costPerPage || 0.05;
     const baseSetupCost = formConfig?.pricing?.baseSetupCost || 200;
@@ -1228,18 +1802,14 @@ const SaddleQuoteForm = () => {
     const subscriptionCardBaseCost = formConfig?.pricing?.subscriptionCardBaseCost || 25;
     const subscriptionCardPerCopy = formConfig?.pricing?.subscriptionCardPerCopy || 0.02;
     
-    // Base printing cost: setup + (pages × cost per page × quantity)
     let basePrintCost = baseSetupCost + (pageCount * baseCostPerPage * quantity);
     
-    // Apply size multipliers
     if (isCustomSize) {
       basePrintCost *= customSizeMultiplier;
     } else if (selectedSize !== '8.5 x 11' && selectedSize !== 'A4') {
-      // Apply standard size multiplier for non-standard sizes
       basePrintCost *= standardSizeMultiplier;
     }
     
-    // Get option costs
     const coverPaperCost = getOptionPrice(PAPER_OPTIONS.cover, coverPaper);
     const insidePaperCost = getOptionPrice(PAPER_OPTIONS.inside, insidePaper);
     const coverColorCost = getOptionPrice(PRINT_COLORS, coverColor);
@@ -1258,9 +1828,11 @@ const SaddleQuoteForm = () => {
     const directMailCost = directMailing.enabled ? quantity * directMailUnitCost : 0;
     const addOnsCost = addOns.reduce((total, addOn) => total + addOn.price, 0);
     const pageEditsCost = calculatePageEditsCost(pageEdits, PAPER_OPTIONS, PRINT_COLORS);
+    
+    const coverWeightCost = getWeightPrice(coverWeight);
+    const insideWeightCost = getWeightPrice(insideWeight);
 
-    // Categorize costs
-    const materialCost = coverPaperCost + insidePaperCost;
+    const materialCost = coverPaperCost + insidePaperCost + coverWeightCost + insideWeightCost;
     const colorCost = coverColorCost + insideColorCost;
     const coverCost = coverFinishCost + coverFoldCost;
     const additionalServicesCost = proofCost + holePunchCost + dustCoverCost + subscriptionCardCost + 
@@ -1282,17 +1854,19 @@ const SaddleQuoteForm = () => {
       directMailing: directMailCost,
       addOns: addOnsCost,
       pageEdits: pageEditsCost,
+      coverWeight: coverWeightCost,
+      insideWeight: insideWeightCost,
       total: totalAmount,
     };
   }, [
     pageCount, quantity, selectedSize, isCustomSize, coverPaper, insidePaper, 
     coverColor, insideColor, coverFinish, coverFold, proof, holePunching,
-    dustCover, subscriptionCards.length, slipcase, shrinkWrapping, directMailing, addOns, pageEdits, formConfig
+    dustCover, subscriptionCards.length, slipcase, shrinkWrapping, directMailing, addOns, pageEdits,
+    coverWeight, insideWeight, formConfig
   ]);
 
   const prices = calculatePricing();
 
-  // Update pricing data when configuration changes
   useEffect(() => {
     const calculatePriceForQuantity = (qty) => {
       const baseCostPerPage = formConfig?.pricing?.costPerPage || 0.05;
@@ -1308,7 +1882,6 @@ const SaddleQuoteForm = () => {
         basePrintCost *= standardSizeMultiplier;
       }
       
-      // Add all other costs (simplified for pricing table)
       const coverPaperCost = getOptionPrice(PAPER_OPTIONS.cover, coverPaper);
       const insidePaperCost = getOptionPrice(PAPER_OPTIONS.inside, insidePaper);
       const coverColorCost = getOptionPrice(PRINT_COLORS, coverColor);
@@ -1319,9 +1892,12 @@ const SaddleQuoteForm = () => {
       const holePunchCost = holePunching.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.holePunch, holePunching.type) : 0;
       const slipcaseCost = getOptionPrice(ADDITIONAL_OPTIONS.slipcase, slipcase);
       const pageEditsCost = calculatePageEditsCost(pageEdits, PAPER_OPTIONS, PRINT_COLORS);
+      const coverWeightCost = getWeightPrice(coverWeight);
+      const insideWeightCost = getWeightPrice(insideWeight);
       
       const additionalCosts = coverPaperCost + insidePaperCost + coverColorCost + insideColorCost + 
-                            coverFinishCost + coverFoldCost + proofCost + holePunchCost + slipcaseCost + pageEditsCost;
+                            coverFinishCost + coverFoldCost + proofCost + holePunchCost + slipcaseCost + 
+                            pageEditsCost + coverWeightCost + insideWeightCost;
       
       const total = basePrintCost + additionalCosts;
       
@@ -1336,9 +1912,8 @@ const SaddleQuoteForm = () => {
     const quantities = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
     const newPricingData = quantities.map(qty => calculatePriceForQuantity(qty));
     setPricingData(newPricingData);
-  }, [pageCount, selectedSize, isCustomSize, coverPaper, insidePaper, coverColor, insideColor, coverFinish, coverFold, proof, holePunching, slipcase, pageEdits, formConfig]);
+  }, [pageCount, selectedSize, isCustomSize, coverPaper, insidePaper, coverColor, insideColor, coverFinish, coverFold, proof, holePunching, slipcase, pageEdits, coverWeight, insideWeight, formConfig]);
 
-  // NEW: Handle Add to Cart function - UPDATED with page edits
   const handleAddToCart = () => {
     const formData = {
       bindingType,
@@ -1363,7 +1938,7 @@ const SaddleQuoteForm = () => {
         weight: insideWeight, 
         color: insideColor, 
         subscriptionCards,
-        pageEdits // Added page edits
+        pageEdits
       },
       quantity,
       options: { 
@@ -1378,8 +1953,8 @@ const SaddleQuoteForm = () => {
     };
     
     const cartItem = {
-      type: 'saddle-stitching',
-      productName: `Saddle Stitched Book - ${selectedSize}`,
+      type: 'perfect-binding',
+      productName: `Perfect Bound Book - ${selectedSize}`,
       quantity: quantity,
       price: prices.total / quantity,
       total: prices.total,
@@ -1389,16 +1964,16 @@ const SaddleQuoteForm = () => {
         pages: pageCount,
         binding: bindingEdge,
         cover: coverPaper,
+        coverWeight: coverWeight,
+        insidePaper: insidePaper,
+        insideWeight: insideWeight,
         printColor: coverColor,
         quantity: quantity,
-        pageEditsCount: pageEdits.length // Added page edits count
+        pageEditsCount: pageEdits.length
       }
     };
     
-    // Add to cart
     addToCart(cartItem);
-    
-    // Redirect to cart page
     router.push('/cart');
   };
 
@@ -1413,7 +1988,6 @@ const SaddleQuoteForm = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 font-sans">
-      {/* Page Edit Modal */}
       <PageEditModal
         isOpen={showPageEditModal}
         onClose={() => setShowPageEditModal(false)}
@@ -1428,14 +2002,18 @@ const SaddleQuoteForm = () => {
         }}
       />
       
-      {/* AddOn Modal */}
+      <ImagePreviewModal
+        isOpen={showImageModal}
+        imageUrl={selectedImage}
+        onClose={() => setShowImageModal(false)}
+      />
+      
       <AddOnModal 
         isOpen={showAddOnModal}
         onClose={() => setShowAddOnModal(false)}
         onSelectAddOn={handleAddOnSelect}
       />
       
-      {/* Shipping Modal */}
       <ShippingModal
         isOpen={showShippingModal}
         onClose={() => setShowShippingModal(false)}
@@ -1443,7 +2021,6 @@ const SaddleQuoteForm = () => {
       />
       
       <div className="max-w-7xl mx-auto">
-        {/* Header Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             {generalSettings.title}
@@ -1453,7 +2030,6 @@ const SaddleQuoteForm = () => {
           </p>
         </div>
 
-        {/* Unit Selection */}
         <div className="mb-12 bg-white rounded-2xl shadow-lg p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Measurement Units</h2>
           <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
@@ -1481,12 +2057,9 @@ const SaddleQuoteForm = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          {/* Left & Middle Columns */}
           <div className="lg:col-span-2 space-y-8">
             
-            {/* Size & Binding Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Size Selection */}
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                   <span className="mr-2">📐</span>
@@ -1532,17 +2105,17 @@ const SaddleQuoteForm = () => {
                 )}
               </div>
 
-              {/* Binding Edge */}
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                   <span className="mr-2">📖</span>
                   Binding Details
                 </h3>
-                <SelectDropdown
+                <ImageDropdown
                   label="Binding Edge"
                   options={BINDING_EDGES}
                   selected={bindingEdge}
                   onChange={(e) => setBindingEdge(e.target.value)}
+                  showDescription={true}
                 />
                 <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
                   <p className="text-sm text-blue-800">
@@ -1552,7 +2125,6 @@ const SaddleQuoteForm = () => {
               </div>
             </div>
 
-            {/* Cover Section */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b border-gray-200">
                 <h3 className="text-2xl font-bold text-gray-900 flex items-center">
@@ -1569,7 +2141,7 @@ const SaddleQuoteForm = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-6">
                 <SelectDropdown 
                   label="Paper Type" 
                   options={PAPER_OPTIONS.cover} 
@@ -1578,16 +2150,19 @@ const SaddleQuoteForm = () => {
                   showDescription={true}
                 />
                 <PaperWeightSelector
+                  paperType={coverPaper}
                   paperUnit={paperUnit}
                   label='Weight'
                   weightValue={coverWeight}
                   onChange={(e) => setCoverWeight(e.target.value)}
+                  isCover={true}
                 />
-                <SelectDropdown 
-                  label="Print Color" 
-                  options={PRINT_COLORS} 
-                  selected={coverColor} 
-                  onChange={(e) => setCoverColor(e.target.value)} 
+                <ImageDropdown
+                  label="Print Color"
+                  options={PRINT_COLORS}
+                  selected={coverColor}
+                  onChange={(e) => setCoverColor(e.target.value)}
+                  showPrice={true}
                 />
                 <SelectDropdown 
                   label="Cover Finish" 
@@ -1618,7 +2193,6 @@ const SaddleQuoteForm = () => {
                 )}
               </div>
 
-              {/* Add-ons Display */}
               {addOns.length > 0 && (
                 <div className="mb-6">
                   <h4 className="text-sm font-semibold text-gray-700 mb-3">Selected Add-ons</h4>
@@ -1663,7 +2237,6 @@ const SaddleQuoteForm = () => {
                 )}
               </div>
 
-              {/* Dust Cover Settings */}
               {dustCover && (
                 <DustCoverSettings 
                   dustCover={dustCover}
@@ -1674,7 +2247,6 @@ const SaddleQuoteForm = () => {
               )}
             </div>
 
-            {/* Inside Page Section */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b border-gray-200">
                 <h3 className="text-2xl font-bold text-gray-900 flex items-center">
@@ -1690,7 +2262,7 @@ const SaddleQuoteForm = () => {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-6">
                 <SelectDropdown
                   label="Page Count"
                   options={PAGE_COUNTS.map(c => ({ value: c, label: `${c} pages` }))}
@@ -1705,16 +2277,20 @@ const SaddleQuoteForm = () => {
                   showDescription={false}
                 />
                 <PaperWeightSelector
-                  label="Paper Weight" 
+                  paperType={insidePaper}
                   paperUnit={paperUnit}
+                  label="Paper Weight" 
                   weightValue={insideWeight}
                   onChange={(e) => setInsideWeight(e.target.value)}
+                  isCover={false}
+                  showImages={insidePaper === 'COLORED'}
                 />
-                <SelectDropdown 
-                  label="Print Color" 
-                  options={PRINT_COLORS} 
-                  selected={insideColor} 
-                  onChange={(e) => setInsideColor(e.target.value)} 
+                <ImageDropdown
+                  label="Print Color"
+                  options={PRINT_COLORS}
+                  selected={insideColor}
+                  onChange={(e) => setInsideColor(e.target.value)}
+                  showPrice={true}
                 />
               </div>
 
@@ -1724,7 +2300,6 @@ const SaddleQuoteForm = () => {
                 </p>
               </div>
 
-              {/* Subscription Cards */}
               {subscriptionCards.map((card, index) => (
                 <SubscriptionCard
                   key={card.id}
@@ -1762,7 +2337,6 @@ const SaddleQuoteForm = () => {
                 </Link>
               </div>
 
-              {/* Page Edits Summary */}
               {pageEdits.length > 0 && (
                 <div className="mt-6 p-4 bg-indigo-50 border border-indigo-200 rounded-xl">
                   <h4 className="text-lg font-semibold text-indigo-900 mb-2">Page Layout Edits Summary</h4>
@@ -1778,7 +2352,7 @@ const SaddleQuoteForm = () => {
                           </span>
                         </span>
                         <span className="font-medium text-indigo-700">
-                          +{formatCurrency(15 * edit.pages.length)} {/* Simplified cost */}
+                          +{formatCurrency(15 * edit.pages.length)}
                         </span>
                       </div>
                     ))}
@@ -1794,10 +2368,8 @@ const SaddleQuoteForm = () => {
             </div>
           </div>
 
-          {/* Right Column - Pricing & Options */}
           <div className="space-y-8">
             
-            {/* Quantity Input */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                 <span className="mr-2">🔢</span>
@@ -1812,7 +2384,6 @@ const SaddleQuoteForm = () => {
               />
             </div>
 
-            {/* Pricing Table */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <h3 className="text-xl font-bold text-gray-900 mb-4">Volume Pricing</h3>
               
@@ -1867,7 +2438,6 @@ const SaddleQuoteForm = () => {
               </div>
             </div>
 
-            {/* Additional Options */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <h3 className="text-xl font-bold text-gray-900 mb-6 pb-4 border-b border-gray-200">
                 Additional Services
@@ -1925,13 +2495,14 @@ const SaddleQuoteForm = () => {
                 </ToggleOption>
               </div>
 
-              {/* Price Breakdown - UPDATED with Page Edits */}
               <div className="mt-8 border-t pt-6">
                 <h4 className="text-lg font-bold text-gray-900 mb-4">Price Breakdown</h4>
                 <div className="space-y-3 text-sm">
                   {[
                     { label: 'Base Printing', value: prices.basePrinting },
                     { label: 'Premium Materials', value: prices.materials, show: prices.materials > 0 },
+                    { label: 'Cover Weight', value: prices.coverWeight, show: prices.coverWeight > 0 },
+                    { label: 'Inside Paper Weight', value: prices.insideWeight, show: prices.insideWeight > 0 },
                     { label: 'Color Options', value: prices.color, show: prices.color > 0 },
                     { label: 'Cover Finishes', value: prices.cover, show: prices.cover > 0 },
                     { label: 'Digital Proof', value: prices.proof, show: prices.proof > 0 },
@@ -1943,7 +2514,6 @@ const SaddleQuoteForm = () => {
                     { label: 'Shrink Wrapping', value: prices.shrinkWrapping, show: prices.shrinkWrapping > 0 },
                     { label: 'Direct Mailing', value: prices.directMailing, show: prices.directMailing > 0 },
                     
-                    // NEW: Page Layout Edits
                     { 
                       label: `Page Layout Edits (${pageEdits.length} change${pageEdits.length !== 1 ? 's' : ''})`, 
                       value: prices.pageEdits, 
@@ -1964,7 +2534,6 @@ const SaddleQuoteForm = () => {
                   </div>
                 </div>
 
-                {/* Page Edits Detailed Breakdown */}
                 {pageEdits.length > 0 && (
                   <div className="mt-6 pt-6 border-t border-gray-200">
                     <h5 className="font-semibold text-gray-800 mb-3">Page Layout Edits Details:</h5>
@@ -1989,7 +2558,6 @@ const SaddleQuoteForm = () => {
                 )}
               </div>
 
-              {/* Action Buttons - UPDATED FOR CART */}
               <div className="flex flex-col sm:flex-row gap-2 mt-8">
                 <button 
                   onClick={() => setShowShippingModal(true)}
