@@ -6,7 +6,7 @@ import { useCart } from '@/context/CartContext';
 import { useRouter } from 'next/navigation';
 import PageEditModal from './PageEditModal';
 
-// ===== ENHANCED DEFAULT CONFIG =====
+// ===== ENHANCED DEFAULT CONFIG WITH IMAGES =====
 const PRINTQUOTE_DEFAULT_CONFIG = {
   general: {
     title: "Perfect Binding Book Printing Quote",
@@ -15,9 +15,24 @@ const PRINTQUOTE_DEFAULT_CONFIG = {
     shippingButtonText: "Calculate Shipping"
   },
   bindingEdges: [
-    { value: 'LEFT', label: 'Left Side', desc: 'Binding on the left, most common' },
-    { value: 'RIGHT', label: 'Right Side', desc: 'First inside page starts from the right' },
-    { value: 'TOP', label: 'Top Side', desc: 'Binding on the top, a.k.a calendar binding' },
+    { 
+      value: 'LEFT', 
+      label: 'Left Side', 
+      desc: 'Binding on the left, most common',
+      image: '/forms/edge01.png'
+    },
+    { 
+      value: 'RIGHT', 
+      label: 'Right Side', 
+      desc: 'First inside page starts from the right',
+      image: '/forms/edge02.png'
+    },
+    { 
+      value: 'TOP', 
+      label: 'Top Side', 
+      desc: 'Binding on the top, a.k.a calendar binding',
+      image: '/forms/edge03.png'
+    },
   ],
   paperOptions: {
     cover: [
@@ -96,12 +111,42 @@ const PRINTQUOTE_DEFAULT_CONFIG = {
     ]
   },
   printColors: [
-    { value: 'CMYK', label: 'Full color', price: 0 },
-    { value: 'CMYK_PMS1', label: 'Full color + 1 Spot color', price: 75 },
-    { value: 'CMYK_PMS2', label: 'Full color + 2 Spot color', price: 150 },
-    { value: 'BW', label: 'Black only', price: -100 },
-    { value: 'BW_PMS1', label: 'Black + 1 Spot color', price: -25 },
-    { value: 'BW_PMS2', label: 'Black + 2 Spot color', price: 50 },
+    { 
+      value: 'CMYK', 
+      label: 'Full color', 
+      price: 0,
+      image: '/forms/d1.png'
+    },
+    { 
+      value: 'CMYK_PMS1', 
+      label: 'Full color + 1 Spot color', 
+      price: 75,
+      image: '/forms/d2.png'
+    },
+    { 
+      value: 'CMYK_PMS2', 
+      label: 'Full color + 2 Spot color', 
+      price: 150,
+      image: '/forms/d3.png'
+    },
+    { 
+      value: 'BW', 
+      label: 'Black only', 
+      price: -100,
+      image: '/forms/d4.png'
+    },
+    { 
+      value: 'BW_PMS1', 
+      label: 'Black + 1 Spot color', 
+      price: -25,
+      image: '/forms/d5.png'
+    },
+    { 
+      value: 'BW_PMS2', 
+      label: 'Black + 2 Spot color', 
+      price: 50,
+      image: '/forms/d6.png'
+    },
   ],
   coverFinishes: [
     { value: 'MATTE', label: 'Matte lamination', price: 50 },
@@ -165,7 +210,6 @@ const PRINTQUOTE_DEFAULT_CONFIG = {
 
 // ===== PAPER WEIGHT OPTIONS CONFIGURATION =====
 const PAPER_WEIGHT_OPTIONS = {
-  // Cover Paper Options
   cover: {
     GLOSS: [
       { value: '68# text', label: '68# text (100 gsm)' },
@@ -228,7 +272,6 @@ const PAPER_WEIGHT_OPTIONS = {
     ]
   },
   
-  // Inside Paper Options
   inside: {
     GLOSS: [
       { value: '68# text', label: '68# text (100 gsm)' },
@@ -322,7 +365,6 @@ const PAPER_WEIGHT_OPTIONS = {
 
 // ===== PAPER WEIGHT CONVERSION DATA =====
 const PAPER_WEIGHT_CONVERSIONS = {
-  // Text weights
   '60# text': { 
     gsm: '90 gsm',
     us: '60# text',
@@ -365,7 +407,6 @@ const PAPER_WEIGHT_CONVERSIONS = {
     pt: '5.3 pt',
     kg: '142 kg'
   },
-  // Cover weights
   '67# cover': { 
     gsm: '180 gsm',
     us: '67# cover',
@@ -420,7 +461,6 @@ const PAPER_WEIGHT_CONVERSIONS = {
     pt: '11.3 pt',
     kg: '258 kg'
   },
-  // Special weights
   '47# text': { 
     gsm: '70 gsm',
     us: '47# text',
@@ -501,6 +541,285 @@ const getOptionPrice = (options, selectedValue) => {
 };
 
 const formatCurrency = (amount) => `$${amount.toFixed(2)}`;
+
+// ===== IMAGE DROPDOWN COMPONENT =====
+const ImageDropdown = ({ 
+  label, 
+  options, 
+  selected, 
+  onChange, 
+  className = "", 
+  disabled = false,
+  showDescription = false,
+  showPrice = false
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const selectedOption = options?.find(opt => opt.value === selected);
+
+  return (
+    <div className={`relative ${className}`}>
+      {label && <p className="text-sm font-semibold mb-2 text-gray-700">{label}</p>}
+      
+      {/* Dropdown Button */}
+      <button
+        type="button"
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        disabled={disabled}
+        className={`w-full flex items-center justify-between p-3 border border-gray-300 rounded-lg shadow-sm text-left hover:border-gray-400 transition-all ${
+          disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white cursor-pointer'
+        } ${isOpen ? 'ring-2 ring-indigo-500 border-indigo-500' : ''}`}
+      >
+        <div className="flex items-center space-x-3">
+          {selectedOption?.image && (
+            <div className="w-10 h-10 flex-shrink-0 rounded-md overflow-hidden border border-gray-200">
+              <img 
+                src={selectedOption.image} 
+                alt={selectedOption.label}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.src = '/images/placeholder-color.png';
+                  e.target.alt = 'Image not available';
+                }}
+              />
+            </div>
+          )}
+          <div>
+            <span className="text-sm font-medium text-gray-900 block">
+              {selectedOption?.label || 'Select an option'}
+            </span>
+            {showDescription && selectedOption?.desc && (
+              <span className="text-xs text-gray-500 block mt-1">
+                {selectedOption.desc}
+              </span>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center space-x-2">
+          {showPrice && selectedOption?.price !== undefined && (
+            <span className={`text-sm font-semibold ${
+              selectedOption.price > 0 ? 'text-green-600' : 
+              selectedOption.price < 0 ? 'text-red-600' : 
+              'text-gray-600'
+            }`}>
+              {selectedOption.price > 0 ? `+$${selectedOption.price}` : 
+               selectedOption.price < 0 ? `-$${Math.abs(selectedOption.price)}` : 
+               'No extra charge'}
+            </span>
+          )}
+          <svg 
+            className={`w-4 h-4 text-gray-400 transform transition-transform ${isOpen ? 'rotate-180' : ''}`}
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </button>
+
+      {/* Dropdown Menu */}
+      {isOpen && (
+        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-80 overflow-y-auto">
+          <div className="py-1">
+            {options?.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => {
+                  onChange({ target: { value: option.value } });
+                  setIsOpen(false);
+                }}
+                className={`w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors ${
+                  selected === option.value ? 'bg-indigo-50' : ''
+                }`}
+              >
+                {option.image && (
+                  <div className="w-12 h-12 flex-shrink-0 rounded-md overflow-hidden border border-gray-200">
+                    <img 
+                      src={option.image} 
+                      alt={option.label}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.src = '/images/placeholder-color.png';
+                        e.target.alt = 'Image not available';
+                      }}
+                    />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{option.label}</p>
+                      {option.desc && (
+                        <p className="text-xs text-gray-500 mt-1">{option.desc}</p>
+                      )}
+                    </div>
+                    {showPrice && option.price !== undefined && (
+                      <span className={`text-sm font-semibold ml-2 ${
+                        option.price > 0 ? 'text-green-600' : 
+                        option.price < 0 ? 'text-red-600' : 
+                        'text-gray-600'
+                      }`}>
+                        {option.price > 0 ? `+$${option.price}` : 
+                         option.price < 0 ? `-$${Math.abs(option.price)}` : 
+                         'No extra charge'}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Close dropdown when clicking outside */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+    </div>
+  );
+};
+
+// ===== PAPER WEIGHT SELECTOR WITH IMAGE SUPPORT =====
+const PaperWeightSelector = ({ 
+  paperType, 
+  paperUnit, 
+  weightValue, 
+  onChange, 
+  label = "", 
+  isCover = true,
+  showImages = false 
+}) => {
+  const [showImagePreview, setShowImagePreview] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+
+  const getWeightOptions = () => {
+    const category = isCover ? 'cover' : 'inside';
+    const options = PAPER_WEIGHT_OPTIONS[category]?.[paperType] || [];
+    
+    // For colored paper, return options with images
+    if (paperType === 'COLORED' && showImages) {
+      return options.map(option => ({
+        ...option,
+        label: option.label
+      }));
+    }
+    
+    // For regular paper types, convert label based on paper unit
+    return options.map(option => {
+      const conversion = PAPER_WEIGHT_CONVERSIONS[option.value];
+      if (!conversion) return option;
+      
+      let labelText = option.label;
+      switch(paperUnit) {
+        case 'GSM':
+          labelText = `${option.value} (${conversion.gsm})`;
+          break;
+        case 'US':
+          labelText = `${option.value}`;
+          break;
+        case 'PT':
+          labelText = `${option.value} (${conversion.pt})`;
+          break;
+        case 'KG':
+          labelText = `${option.value} (${conversion.kg})`;
+          break;
+        default:
+          labelText = option.label;
+      }
+      
+      return {
+        ...option,
+        label: labelText
+      };
+    });
+  };
+
+  const weightOptions = getWeightOptions();
+  const selectedOption = weightOptions.find(opt => opt.value === weightValue);
+  const isColoredPaper = paperType === 'COLORED' && showImages;
+
+  const handleImagePreview = (imageUrl) => {
+    setPreviewImage(imageUrl);
+    setShowImagePreview(true);
+  };
+
+  // Use ImageDropdown for colored paper
+  if (isColoredPaper) {
+    return (
+      <div className="space-y-2">
+        {label && <p className="text-sm font-semibold text-gray-700 mb-2">{label}</p>}
+        <ImageDropdown
+          options={weightOptions}
+          selected={weightValue}
+          onChange={onChange}
+          className="w-full"
+        />
+        
+        {/* Image preview for colored options */}
+        {weightValue && selectedOption?.image && (
+          <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm font-medium text-gray-700">Color Preview:</p>
+              <button
+                type="button"
+                onClick={() => handleImagePreview(selectedOption.image)}
+                className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+              >
+                View Full Size
+              </button>
+            </div>
+            <div className="relative h-32 w-full bg-white border border-gray-300 rounded-md overflow-hidden">
+              <img 
+                src={selectedOption.image} 
+                alt={selectedOption.label}
+                className="object-contain w-full h-full"
+                onError={(e) => {
+                  e.target.src = '/images/placeholder-color.png';
+                  e.target.alt = 'Color preview not available';
+                }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      {label && <p className="text-sm font-semibold mb-2 text-gray-700">{label}</p>}
+      <select
+        value={weightValue}
+        onChange={onChange}
+        className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors"
+        disabled={weightOptions.length === 0}
+      >
+        {weightOptions.length === 0 ? (
+          <option value="">No weight options available for this paper type</option>
+        ) : (
+          <>
+            <option value="">Select weight</option>
+            {weightOptions.map((option, index) => (
+              <option key={`${option.value}-${index}`} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </>
+        )}
+      </select>
+      {selectedOption && (
+        <p className="text-xs text-gray-500 mt-1">
+          Available weights may vary based on paper type selection
+        </p>
+      )}
+    </div>
+  );
+};
 
 // ===== SHIPPING MODAL COMPONENT =====
 const ShippingModal = ({ isOpen, onClose, formData }) => {
@@ -767,149 +1086,6 @@ const ImagePreviewModal = ({ isOpen, imageUrl, onClose }) => {
   );
 };
 
-// ===== UPDATED PAPER WEIGHT SELECTOR COMPONENT =====
-const PaperWeightSelector = ({ 
-  paperType, 
-  paperUnit, 
-  weightValue, 
-  onChange, 
-  label = "", 
-  isCover = true,
-  showImages = false 
-}) => {
-  const [showImagePreview, setShowImagePreview] = useState(false);
-  const [previewImage, setPreviewImage] = useState('');
-
-  // Get weight options based on paper type and whether it's cover or inside
-  const getWeightOptions = () => {
-    const category = isCover ? 'cover' : 'inside';
-    const options = PAPER_WEIGHT_OPTIONS[category]?.[paperType] || [];
-    
-    // If paper type is COLORED and we need to show images
-    if (paperType === 'COLORED' && showImages) {
-      return options.map(option => ({
-        ...option,
-        label: option.label
-      }));
-    }
-    
-    // For regular paper types, convert label based on paper unit
-    return options.map(option => {
-      const conversion = PAPER_WEIGHT_CONVERSIONS[option.value];
-      if (!conversion) return option;
-      
-      let labelText = option.label;
-      switch(paperUnit) {
-        case 'GSM':
-          labelText = `${option.value} (${conversion.gsm})`;
-          break;
-        case 'US':
-          labelText = `${option.value}`;
-          break;
-        case 'PT':
-          labelText = `${option.value} (${conversion.pt})`;
-          break;
-        case 'KG':
-          labelText = `${option.value} (${conversion.kg})`;
-          break;
-        default:
-          labelText = option.label;
-      }
-      
-      return {
-        ...option,
-        label: labelText
-      };
-    });
-  };
-
-  const weightOptions = getWeightOptions();
-  const selectedOption = weightOptions.find(opt => opt.value === weightValue);
-  const isColoredPaper = paperType === 'COLORED' && showImages;
-
-  const handleImagePreview = (imageUrl) => {
-    setPreviewImage(imageUrl);
-    setShowImagePreview(true);
-  };
-
-  if (isColoredPaper) {
-    return (
-      <div className="space-y-2">
-        {label && <p className="text-sm font-semibold text-gray-700 mb-2">{label}</p>}
-        <select
-          value={weightValue}
-          onChange={onChange}
-          className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors"
-        >
-          <option value="">Select a color option</option>
-          {weightOptions.map((option, index) => (
-            <option key={`${option.value}-${index}`} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-        
-        {/* Image preview for colored options */}
-        {weightValue && selectedOption?.image && (
-          <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-sm font-medium text-gray-700">Color Preview:</p>
-              <button
-                type="button"
-                onClick={() => handleImagePreview(selectedOption.image)}
-                className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
-              >
-                View Full Size
-              </button>
-            </div>
-            <div className="relative h-32 w-full bg-white border border-gray-300 rounded-md overflow-hidden">
-              <img 
-                src={selectedOption.image} 
-                alt={selectedOption.label}
-                className="object-contain w-full h-full"
-                onError={(e) => {
-                  e.target.src = '/images/placeholder-color.png';
-                  e.target.alt = 'Color preview not available';
-                }}
-              />
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      {label && <p className="text-sm font-semibold mb-2 text-gray-700">{label}</p>}
-      <select
-        value={weightValue}
-        onChange={onChange}
-        className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors"
-        disabled={weightOptions.length === 0}
-      >
-        {weightOptions.length === 0 ? (
-          <option value="">No weight options available for this paper type</option>
-        ) : (
-          <>
-            <option value="">Select weight</option>
-            {weightOptions.map((option, index) => (
-              <option key={`${option.value}-${index}`} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </>
-        )}
-      </select>
-      {selectedOption && (
-        <p className="text-xs text-gray-500 mt-1">
-          Available weights may vary based on paper type selection
-        </p>
-      )}
-    </div>
-  );
-};
-
 // ===== REUSABLE COMPONENTS =====
 const RadioGroup = ({ label, name, options, selected, onChange, className = "" }) => (
   <div className={`flex items-center space-x-4 ${className}`}>
@@ -1075,11 +1251,12 @@ const DustCoverSettings = ({ dustCover, onUpdate, onRemove, paperUnit }) => {
               onChange={(e) => handleChange('gsm', e.target.value)}
               isCover={true}
             />
-            <SelectDropdown
+            <ImageDropdown
               options={PRINTQUOTE_DEFAULT_CONFIG.printColors}
               selected={dustCover.printColor}
               onChange={(e) => handleChange('printColor', e.target.value)}
               className="w-full"
+              showPrice={true}
             />
             <SelectDropdown
               options={PRINTQUOTE_DEFAULT_CONFIG.coverFinishes}
@@ -1188,11 +1365,12 @@ const SubscriptionCard = ({ card, index, onUpdate, onRemove, pageCount, position
               onChange={(e) => handleChange('gsm', e.target.value)}
               isCover={false}
             />
-            <SelectDropdown
+            <ImageDropdown
               options={PRINTQUOTE_DEFAULT_CONFIG.printColors}
               selected={card.printColor}
               onChange={(e) => handleChange('printColor', e.target.value)}
               className="w-full"
+              showPrice={true}
             />
             <SelectDropdown
               options={PRINTQUOTE_DEFAULT_CONFIG.coverFinishes.filter(opt => opt.value !== 'NONE')}
@@ -1300,43 +1478,36 @@ const calculatePageEditsCost = (edits, PAPER_OPTIONS, PRINT_COLORS) => {
     
     switch(edit.type) {
       case 'PAPER':
-        // Paper change cost logic
         if (edit.data.paperChange) {
-          // Paper type change cost
           const paperOption = PAPER_OPTIONS.inside.find(opt => opt.value === edit.data.paper);
           editCost += (paperOption?.price || 0) * edit.pages.length;
         }
         
         if (edit.data.colorChange) {
-          // Color change cost
           const colorOption = PRINT_COLORS.find(opt => opt.value === edit.data.color);
           editCost += (colorOption?.price || 0) * edit.pages.length;
         }
         
         if (edit.data.sizeChange) {
-          // Size change cost (custom size premium)
-          editCost += 25 * edit.pages.length; // $25 per page for custom size
+          editCost += 25 * edit.pages.length;
         }
         break;
         
       case 'FOLD':
-        // Fold cost logic
-        editCost = 15 * edit.pages.length; // $15 per fold per page
+        editCost = 15 * edit.pages.length;
         break;
         
       case 'ADDON':
-        // Addon cost logic
         const addonPrices = {
-          'FOIL': 20,      // $20 per page for foil stamping
-          'UV': 15,        // $15 per page for UV
-          'EMUV': 30,      // $30 per page for embossed-UV
-          'EMBOSS': 25,    // $25 per page for embossing
-          'DIECUT': 35,    // $35 per page for die-cut
+          'FOIL': 20,
+          'UV': 15,
+          'EMUV': 30,
+          'EMBOSS': 25,
+          'DIECUT': 35,
         };
         
         editCost = (addonPrices[edit.data.addonType] || 0) * edit.pages.length;
         
-        // Size multiplier
         const sizeMultipliers = {
           'SMALL': 0.5,
           'MEDIUM': 1,
@@ -1356,16 +1527,13 @@ const calculatePageEditsCost = (edits, PAPER_OPTIONS, PRINT_COLORS) => {
 
 // ===== MAIN COMPONENT =====
 const PrintQuoteForm = () => {
-  // Import cart context and router
   const { addToCart } = useCart();
   const router = useRouter();
 
-  // Configuration state
   const [formConfig, setFormConfig] = useState(PRINTQUOTE_DEFAULT_CONFIG);
   const [loading, setLoading] = useState(true);
   const [configVersion, setConfigVersion] = useState(0);
 
-  // Form State Management
   const [bindingType, setBindingType] = useState('PERFECT');
   const [sizeUnit, setSizeUnit] = useState('INCH');
   const [paperUnit, setPaperUnit] = useState('US');
@@ -1374,7 +1542,6 @@ const PrintQuoteForm = () => {
   const [customHeight, setCustomHeight] = useState('');
   const [bindingEdge, setBindingEdge] = useState('LEFT');
   
-  // Cover State
   const [coverPaper, setCoverPaper] = useState('MATTE');
   const [coverWeight, setCoverWeight] = useState('');
   const [coverColor, setCoverColor] = useState('CMYK');
@@ -1382,35 +1549,21 @@ const PrintQuoteForm = () => {
   const [coverFold, setCoverFold] = useState('NONE');
   const [foldWidth, setFoldWidth] = useState('');
   
-  // Dust Cover State
   const [dustCover, setDustCover] = useState(null);
   
-  // Inside Page State
   const [pageCount, setPageCount] = useState(96);
   const [insidePaper, setInsidePaper] = useState('MATTE');
   const [insideWeight, setInsideWeight] = useState('');
   
-  // Subscription Cards State
   const [subscriptionCards, setSubscriptionCards] = useState([]);
-  
-  // Page Edits State
   const [pageEdits, setPageEdits] = useState([]);
-  
-  // Image Preview State
   const [showImageModal, setShowImageModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
-  
-  // Add-ons State
   const [addOns, setAddOns] = useState([]);
   const [showAddOnModal, setShowAddOnModal] = useState(false);
-  
-  // Shipping Modal State
   const [showShippingModal, setShowShippingModal] = useState(false);
-
-  // Page Edit Modal State
   const [showPageEditModal, setShowPageEditModal] = useState(false);
 
-  // Quantity & Options State
   const [quantity, setQuantity] = useState(200);
   const [selectedQuantityIndex, setSelectedQuantityIndex] = useState(1);
   const [insideColor, setInsideColor] = useState('CMYK');
@@ -1420,36 +1573,29 @@ const PrintQuoteForm = () => {
   const [shrinkWrapping, setShrinkWrapping] = useState({ enabled: false, type: '1' });
   const [directMailing, setDirectMailing] = useState({ enabled: false, type: 'ALL' });
 
-  // Derived State
   const isCustomSize = selectedSize === 'Custom Size';
   const [pricingData, setPricingData] = useState(getPricingData());
 
-  // Available sizes based on unit
   const availableSizes = sizeUnit === 'INCH' 
     ? ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', 'A6', 'A5', 'A4', 'B6', 'B5', 'B4', 'Custom Size']
     : ['5.5 x 8.5', '7.5 x 10', '8.5 x 11', '9 x 12', 'A6', 'A5', 'A4', 'B6', 'B5', 'B4', 'Custom Size'];
 
-  // Get display label for size
   const getSizeDisplayLabel = (size) => {
     return SIZE_CONVERSIONS[sizeUnit]?.[size] || size;
   };
 
-  // Set default weights when paper type changes
   useEffect(() => {
-    // Set default cover weight when cover paper changes
     const coverWeights = PAPER_WEIGHT_OPTIONS.cover[coverPaper];
     if (coverWeights && coverWeights.length > 0 && !coverWeight) {
       setCoverWeight(coverWeights[0].value);
     }
     
-    // Set default inside weight when inside paper changes
     const insideWeights = PAPER_WEIGHT_OPTIONS.inside[insidePaper];
     if (insideWeights && insideWeights.length > 0 && !insideWeight) {
       setInsideWeight(insideWeights[0].value);
     }
   }, [coverPaper, insidePaper, coverWeight, insideWeight]);
 
-  // Fetch form configuration
   const fetchFormConfig = async () => {
     try {
       console.log('🔄 Fetching perfect binding form configuration from API...');
@@ -1504,7 +1650,6 @@ const PrintQuoteForm = () => {
     fetchFormConfig();
   }, [configVersion]);
 
-  // Configuration constants
   const BINDING_EDGES = formConfig?.bindingEdges || PRINTQUOTE_DEFAULT_CONFIG.bindingEdges;
   const PAPER_OPTIONS = formConfig?.paperOptions || PRINTQUOTE_DEFAULT_CONFIG.paperOptions;
   const PRINT_COLORS = formConfig?.printColors || PRINTQUOTE_DEFAULT_CONFIG.printColors;
@@ -1524,10 +1669,8 @@ const PrintQuoteForm = () => {
     setConfigVersion(prev => prev + 1);
   };
 
-  // Calculate page edits cost
   const pageEditsCost = calculatePageEditsCost(pageEdits, PAPER_OPTIONS, PRINT_COLORS);
 
-  // Get weight-based pricing
   const getWeightPrice = (weightValue) => {
     const weightPrices = {
       '47# text': 10,
@@ -1556,7 +1699,6 @@ const PrintQuoteForm = () => {
     return weightPrices[weightValue] || 0;
   };
 
-  // Handlers
   const handleNumberInput = (setter) => (e) => {
     const value = e.target.value;
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
@@ -1590,7 +1732,6 @@ const PrintQuoteForm = () => {
     setQuantity(pricingData[index].quantity);
   };
 
-  // Dust Cover Management
   const addDustCover = () => {
     setDustCover({
       width: '',
@@ -1610,7 +1751,6 @@ const PrintQuoteForm = () => {
     setDustCover(null);
   };
 
-  // Subscription Card Management
   const addSubscriptionCard = () => {
     const maxCards = formConfig?.maxSubscriptionCards || 10;
     if (subscriptionCards.length < maxCards) {
@@ -1633,14 +1773,12 @@ const PrintQuoteForm = () => {
     setSubscriptionCards(subscriptionCards.filter((_, i) => i !== index));
   };
 
-  // Page Edits Management
   const handlePageEditsSave = (edits) => {
     console.log('Page edits saved:', edits);
     setPageEdits(edits);
     alert(`${edits.length} page edit${edits.length !== 1 ? 's' : ''} saved successfully!`);
   };
 
-  // Add-ons Management
   const handleAddOnSelect = (addOn) => {
     setAddOns([...addOns, { ...addOn, id: Date.now() }]);
   };
@@ -1649,13 +1787,11 @@ const PrintQuoteForm = () => {
     setAddOns(addOns.filter(addOn => addOn.id !== id));
   };
 
-  // Handle image preview
   const handleImagePreview = (imageUrl) => {
     setSelectedImage(imageUrl);
     setShowImageModal(true);
   };
 
-  // Price Calculation - UPDATED with weight pricing
   const calculatePricing = useCallback(() => {
     const baseCostPerPage = formConfig?.pricing?.costPerPage || 0.05;
     const baseSetupCost = formConfig?.pricing?.baseSetupCost || 200;
@@ -1666,18 +1802,14 @@ const PrintQuoteForm = () => {
     const subscriptionCardBaseCost = formConfig?.pricing?.subscriptionCardBaseCost || 25;
     const subscriptionCardPerCopy = formConfig?.pricing?.subscriptionCardPerCopy || 0.02;
     
-    // Base printing cost: setup + (pages × cost per page × quantity)
     let basePrintCost = baseSetupCost + (pageCount * baseCostPerPage * quantity);
     
-    // Apply size multipliers
     if (isCustomSize) {
       basePrintCost *= customSizeMultiplier;
     } else if (selectedSize !== '8.5 x 11' && selectedSize !== 'A4') {
-      // Apply standard size multiplier for non-standard sizes
       basePrintCost *= standardSizeMultiplier;
     }
     
-    // Get option costs
     const coverPaperCost = getOptionPrice(PAPER_OPTIONS.cover, coverPaper);
     const insidePaperCost = getOptionPrice(PAPER_OPTIONS.inside, insidePaper);
     const coverColorCost = getOptionPrice(PRINT_COLORS, coverColor);
@@ -1697,11 +1829,9 @@ const PrintQuoteForm = () => {
     const addOnsCost = addOns.reduce((total, addOn) => total + addOn.price, 0);
     const pageEditsCost = calculatePageEditsCost(pageEdits, PAPER_OPTIONS, PRINT_COLORS);
     
-    // Weight-based costs
     const coverWeightCost = getWeightPrice(coverWeight);
     const insideWeightCost = getWeightPrice(insideWeight);
 
-    // Categorize costs
     const materialCost = coverPaperCost + insidePaperCost + coverWeightCost + insideWeightCost;
     const colorCost = coverColorCost + insideColorCost;
     const coverCost = coverFinishCost + coverFoldCost;
@@ -1737,7 +1867,6 @@ const PrintQuoteForm = () => {
 
   const prices = calculatePricing();
 
-  // Update pricing data when configuration changes
   useEffect(() => {
     const calculatePriceForQuantity = (qty) => {
       const baseCostPerPage = formConfig?.pricing?.costPerPage || 0.05;
@@ -1753,7 +1882,6 @@ const PrintQuoteForm = () => {
         basePrintCost *= standardSizeMultiplier;
       }
       
-      // Add all other costs (simplified for pricing table)
       const coverPaperCost = getOptionPrice(PAPER_OPTIONS.cover, coverPaper);
       const insidePaperCost = getOptionPrice(PAPER_OPTIONS.inside, insidePaper);
       const coverColorCost = getOptionPrice(PRINT_COLORS, coverColor);
@@ -1786,7 +1914,6 @@ const PrintQuoteForm = () => {
     setPricingData(newPricingData);
   }, [pageCount, selectedSize, isCustomSize, coverPaper, insidePaper, coverColor, insideColor, coverFinish, coverFold, proof, holePunching, slipcase, pageEdits, coverWeight, insideWeight, formConfig]);
 
-  // Handle Add to Cart function
   const handleAddToCart = () => {
     const formData = {
       bindingType,
@@ -1846,10 +1973,7 @@ const PrintQuoteForm = () => {
       }
     };
     
-    // Add to cart
     addToCart(cartItem);
-    
-    // Redirect to cart page
     router.push('/cart');
   };
 
@@ -1864,7 +1988,6 @@ const PrintQuoteForm = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 font-sans">
-      {/* Page Edit Modal */}
       <PageEditModal
         isOpen={showPageEditModal}
         onClose={() => setShowPageEditModal(false)}
@@ -1879,21 +2002,18 @@ const PrintQuoteForm = () => {
         }}
       />
       
-      {/* Image Preview Modal */}
       <ImagePreviewModal
         isOpen={showImageModal}
         imageUrl={selectedImage}
         onClose={() => setShowImageModal(false)}
       />
       
-      {/* AddOn Modal */}
       <AddOnModal 
         isOpen={showAddOnModal}
         onClose={() => setShowAddOnModal(false)}
         onSelectAddOn={handleAddOnSelect}
       />
       
-      {/* Shipping Modal */}
       <ShippingModal
         isOpen={showShippingModal}
         onClose={() => setShowShippingModal(false)}
@@ -1901,7 +2021,6 @@ const PrintQuoteForm = () => {
       />
       
       <div className="max-w-7xl mx-auto">
-        {/* Header Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             {generalSettings.title}
@@ -1911,7 +2030,6 @@ const PrintQuoteForm = () => {
           </p>
         </div>
 
-        {/* Unit Selection */}
         <div className="mb-12 bg-white rounded-2xl shadow-lg p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Measurement Units</h2>
           <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
@@ -1939,12 +2057,9 @@ const PrintQuoteForm = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          {/* Left & Middle Columns */}
           <div className="lg:col-span-2 space-y-8">
             
-            {/* Size & Binding Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Size Selection */}
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                   <span className="mr-2">📐</span>
@@ -1990,17 +2105,17 @@ const PrintQuoteForm = () => {
                 )}
               </div>
 
-              {/* Binding Edge */}
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                   <span className="mr-2">📖</span>
                   Binding Details
                 </h3>
-                <SelectDropdown
+                <ImageDropdown
                   label="Binding Edge"
                   options={BINDING_EDGES}
                   selected={bindingEdge}
                   onChange={(e) => setBindingEdge(e.target.value)}
+                  showDescription={true}
                 />
                 <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
                   <p className="text-sm text-blue-800">
@@ -2010,7 +2125,6 @@ const PrintQuoteForm = () => {
               </div>
             </div>
 
-            {/* Cover Section */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b border-gray-200">
                 <h3 className="text-2xl font-bold text-gray-900 flex items-center">
@@ -2027,7 +2141,7 @@ const PrintQuoteForm = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-6">
                 <SelectDropdown 
                   label="Paper Type" 
                   options={PAPER_OPTIONS.cover} 
@@ -2043,11 +2157,12 @@ const PrintQuoteForm = () => {
                   onChange={(e) => setCoverWeight(e.target.value)}
                   isCover={true}
                 />
-                <SelectDropdown 
-                  label="Print Color" 
-                  options={PRINT_COLORS} 
-                  selected={coverColor} 
-                  onChange={(e) => setCoverColor(e.target.value)} 
+                <ImageDropdown
+                  label="Print Color"
+                  options={PRINT_COLORS}
+                  selected={coverColor}
+                  onChange={(e) => setCoverColor(e.target.value)}
+                  showPrice={true}
                 />
                 <SelectDropdown 
                   label="Cover Finish" 
@@ -2078,7 +2193,6 @@ const PrintQuoteForm = () => {
                 )}
               </div>
 
-              {/* Add-ons Display */}
               {addOns.length > 0 && (
                 <div className="mb-6">
                   <h4 className="text-sm font-semibold text-gray-700 mb-3">Selected Add-ons</h4>
@@ -2123,7 +2237,6 @@ const PrintQuoteForm = () => {
                 )}
               </div>
 
-              {/* Dust Cover Settings */}
               {dustCover && (
                 <DustCoverSettings 
                   dustCover={dustCover}
@@ -2134,7 +2247,6 @@ const PrintQuoteForm = () => {
               )}
             </div>
 
-            {/* Inside Page Section */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b border-gray-200">
                 <h3 className="text-2xl font-bold text-gray-900 flex items-center">
@@ -2150,7 +2262,7 @@ const PrintQuoteForm = () => {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-6">
                 <SelectDropdown
                   label="Page Count"
                   options={PAGE_COUNTS.map(c => ({ value: c, label: `${c} pages` }))}
@@ -2173,11 +2285,12 @@ const PrintQuoteForm = () => {
                   isCover={false}
                   showImages={insidePaper === 'COLORED'}
                 />
-                <SelectDropdown 
-                  label="Print Color" 
-                  options={PRINT_COLORS} 
-                  selected={insideColor} 
-                  onChange={(e) => setInsideColor(e.target.value)} 
+                <ImageDropdown
+                  label="Print Color"
+                  options={PRINT_COLORS}
+                  selected={insideColor}
+                  onChange={(e) => setInsideColor(e.target.value)}
+                  showPrice={true}
                 />
               </div>
 
@@ -2187,7 +2300,6 @@ const PrintQuoteForm = () => {
                 </p>
               </div>
 
-              {/* Subscription Cards */}
               {subscriptionCards.map((card, index) => (
                 <SubscriptionCard
                   key={card.id}
@@ -2225,7 +2337,6 @@ const PrintQuoteForm = () => {
                 </Link>
               </div>
 
-              {/* Page Edits Summary */}
               {pageEdits.length > 0 && (
                 <div className="mt-6 p-4 bg-indigo-50 border border-indigo-200 rounded-xl">
                   <h4 className="text-lg font-semibold text-indigo-900 mb-2">Page Layout Edits Summary</h4>
@@ -2257,10 +2368,8 @@ const PrintQuoteForm = () => {
             </div>
           </div>
 
-          {/* Right Column - Pricing & Options */}
           <div className="space-y-8">
             
-            {/* Quantity Input */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                 <span className="mr-2">🔢</span>
@@ -2275,7 +2384,6 @@ const PrintQuoteForm = () => {
               />
             </div>
 
-            {/* Pricing Table */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <h3 className="text-xl font-bold text-gray-900 mb-4">Volume Pricing</h3>
               
@@ -2330,7 +2438,6 @@ const PrintQuoteForm = () => {
               </div>
             </div>
 
-            {/* Additional Options */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <h3 className="text-xl font-bold text-gray-900 mb-6 pb-4 border-b border-gray-200">
                 Additional Services
@@ -2388,7 +2495,6 @@ const PrintQuoteForm = () => {
                 </ToggleOption>
               </div>
 
-              {/* Price Breakdown - UPDATED with Page Edits and Weight Costs */}
               <div className="mt-8 border-t pt-6">
                 <h4 className="text-lg font-bold text-gray-900 mb-4">Price Breakdown</h4>
                 <div className="space-y-3 text-sm">
@@ -2408,7 +2514,6 @@ const PrintQuoteForm = () => {
                     { label: 'Shrink Wrapping', value: prices.shrinkWrapping, show: prices.shrinkWrapping > 0 },
                     { label: 'Direct Mailing', value: prices.directMailing, show: prices.directMailing > 0 },
                     
-                    // Page Layout Edits
                     { 
                       label: `Page Layout Edits (${pageEdits.length} change${pageEdits.length !== 1 ? 's' : ''})`, 
                       value: prices.pageEdits, 
@@ -2429,7 +2534,6 @@ const PrintQuoteForm = () => {
                   </div>
                 </div>
 
-                {/* Page Edits Detailed Breakdown */}
                 {pageEdits.length > 0 && (
                   <div className="mt-6 pt-6 border-t border-gray-200">
                     <h5 className="font-semibold text-gray-800 mb-3">Page Layout Edits Details:</h5>
@@ -2454,7 +2558,6 @@ const PrintQuoteForm = () => {
                 )}
               </div>
 
-              {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-2 mt-8">
                 <button 
                   onClick={() => setShowShippingModal(true)}

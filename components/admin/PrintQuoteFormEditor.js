@@ -1,9 +1,8 @@
 // components/admin/PrintQuoteFormEditor.js
 'use client';
 import { useState, useEffect } from 'react';
-import { Save, Eye, Plus, Trash2, DollarSign, Edit2, Check, X } from 'lucide-react';
+import { Save, Eye, Plus, Trash2, DollarSign, Edit2, Check, X, Image as ImageIcon } from 'lucide-react';
 
-// Enhanced default configuration with weightOptions for each paper type
 const PRINTQUOTE_DEFAULT_CONFIG = {
   general: {
     title: "Perfect Binding Book Printing Quote",
@@ -20,9 +19,27 @@ const PRINTQUOTE_DEFAULT_CONFIG = {
     { value: 'custom', label: 'Custom Size', price: 100 }
   ],
   bindingEdges: [
-    { value: 'LEFT', label: 'Left Side', desc: 'Binding on the left, most common', price: 0 },
-    { value: 'RIGHT', label: 'Right Side', desc: 'First inside page starts from the right', price: 50 },
-    { value: 'TOP', label: 'Top Side', desc: 'Binding on the top, a.k.a calendar binding', price: 75 },
+    { 
+      value: 'LEFT', 
+      label: 'Left Side', 
+      desc: 'Binding on the left, most common', 
+      price: 0,
+      image: '/forms/edge01.png'
+    },
+    { 
+      value: 'RIGHT', 
+      label: 'Right Side', 
+      desc: 'First inside page starts from the right', 
+      price: 50,
+      image: '/forms/edge02.png'
+    },
+    { 
+      value: 'TOP', 
+      label: 'Top Side', 
+      desc: 'Binding on the top, a.k.a calendar binding', 
+      price: 75,
+      image: '/forms/edge03.png'
+    },
   ],
   paperOptions: {
     cover: [
@@ -216,12 +233,48 @@ const PRINTQUOTE_DEFAULT_CONFIG = {
     ]
   },
   printColors: [
-    { value: 'CMYK', label: 'Full color', price: 0, description: 'Standard 4-color process' },
-    { value: 'CMYK_PMS1', label: 'Full color + 1 Spot color', price: 75, description: '4-color + 1 Pantone spot color' },
-    { value: 'CMYK_PMS2', label: 'Full color + 2 Spot color', price: 150, description: '4-color + 2 Pantone spot colors' },
-    { value: 'BW', label: 'Black only', price: -100, description: 'Single color black printing' },
-    { value: 'BW_PMS1', label: 'Black + 1 Spot color', price: -25, description: 'Black + 1 Pantone spot color' },
-    { value: 'BW_PMS2', label: 'Black + 2 Spot color', price: 50, description: 'Black + 2 Pantone spot colors' },
+    { 
+      value: 'CMYK', 
+      label: 'Full color', 
+      price: 0, 
+      description: 'Standard 4-color process',
+      image: '/forms/d1.png'
+    },
+    { 
+      value: 'CMYK_PMS1', 
+      label: 'Full color + 1 Spot color', 
+      price: 75, 
+      description: '4-color + 1 Pantone spot color',
+      image: '/forms/d2.png'
+    },
+    { 
+      value: 'CMYK_PMS2', 
+      label: 'Full color + 2 Spot color', 
+      price: 150, 
+      description: '4-color + 2 Pantone spot colors',
+      image: '/forms/d3.png'
+    },
+    { 
+      value: 'BW', 
+      label: 'Black only', 
+      price: -100, 
+      description: 'Single color black printing',
+      image: '/forms/d4.png'
+    },
+    { 
+      value: 'BW_PMS1', 
+      label: 'Black + 1 Spot color', 
+      price: -25, 
+      description: 'Black + 1 Pantone spot color',
+      image: '/forms/d5.png'
+    },
+    { 
+      value: 'BW_PMS2', 
+      label: 'Black + 2 Spot color', 
+      price: 50, 
+      description: 'Black + 2 Pantone spot colors',
+      image: '/forms/d6.png'
+    },
   ],
   coverFinishes: [
     { value: 'MATTE', label: 'Matte lamination', price: 50, description: 'Non-reflective finish' },
@@ -330,8 +383,8 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
   const [saving, setSaving] = useState(false);
   const [editingWeight, setEditingWeight] = useState(null);
   const [expandedPaper, setExpandedPaper] = useState({});
+  const [imageUploading, setImageUploading] = useState({});
 
-  // Initialize with saved config or defaults
   useEffect(() => {
     if (formConfig && Object.keys(formConfig).length > 0) {
       console.log('📥 Loading saved config:', formConfig);
@@ -342,7 +395,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
     }
   }, [formConfig]);
 
-  // Helper function to update nested properties
   const updateNestedConfig = (path, value) => {
     const keys = path.split('.');
     setConfig(prev => {
@@ -360,7 +412,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
     });
   };
 
-  // Helper function to update array items in nested paths
   const updateArrayItem = (path, index, field, value) => {
     const keys = path.split('.');
     setConfig(prev => {
@@ -384,7 +435,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
     });
   };
 
-  // Update weight option for a specific paper
   const updatePaperWeightOption = (paperType, paperIndex, weightIndex, field, value) => {
     setConfig(prev => {
       const newConfig = JSON.parse(JSON.stringify(prev));
@@ -404,7 +454,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
     });
   };
 
-  // Add weight option to a paper
   const addWeightOption = (paperType, paperIndex) => {
     setConfig(prev => {
       const newConfig = JSON.parse(JSON.stringify(prev));
@@ -424,7 +473,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
     });
   };
 
-  // Remove weight option from a paper
   const removeWeightOption = (paperType, paperIndex, weightIndex) => {
     setConfig(prev => {
       const newConfig = JSON.parse(JSON.stringify(prev));
@@ -438,7 +486,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
     });
   };
 
-  // Add item to array
   const addArrayItem = (path, newItem) => {
     const keys = path.split('.');
     setConfig(prev => {
@@ -460,7 +507,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
     });
   };
 
-  // Remove item from array
   const removeArrayItem = (path, index) => {
     const keys = path.split('.');
     setConfig(prev => {
@@ -481,7 +527,33 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
     });
   };
 
-  // Handle saving configuration
+  const handleImageUpload = async (path, index, field) => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const uploadKey = `${path}-${index}-${field}`;
+      setImageUploading(prev => ({ ...prev, [uploadKey]: true }));
+      
+      try {
+        const imageUrl = URL.createObjectURL(file);
+        updateArrayItem(path, index, field, imageUrl);
+        console.log('Image uploaded (local):', imageUrl);
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        alert('Error uploading image. Please try again.');
+      } finally {
+        setImageUploading(prev => ({ ...prev, [uploadKey]: false }));
+      }
+    };
+    
+    input.click();
+  };
+
   const handleSave = async () => {
     if (saving) return;
     
@@ -497,7 +569,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
     }
   };
 
-  // Toggle paper expansion
   const togglePaperExpansion = (paperType, paperIndex) => {
     const key = `${paperType}-${paperIndex}`;
     setExpandedPaper(prev => ({
@@ -506,7 +577,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
     }));
   };
 
-  // Render paper options with weight options
   const renderPaperOptionsWithWeights = (type) => {
     const paperTypes = {
       'cover': { title: 'Cover Paper', path: 'paperOptions.cover' },
@@ -528,7 +598,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
             
             return (
               <div key={paperIndex} className="border border-gray-300 rounded-xl overflow-hidden bg-white">
-                {/* Paper Header */}
                 <div className="bg-gray-50 p-4 border-b border-gray-200">
                   <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-4">
@@ -558,7 +627,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                   </div>
                 </div>
                 
-                {/* Paper Details */}
                 <div className={`${isExpanded ? 'block' : 'hidden'}`}>
                   <div className="p-6 border-b border-gray-200">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -623,7 +691,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     )}
                   </div>
                   
-                  {/* Weight Options Section */}
                   <div className="p-6 bg-gray-50">
                     <div className="flex justify-between items-center mb-4">
                       <h5 className="font-semibold text-gray-900">Available Weight Options</h5>
@@ -713,7 +780,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
           })}
         </div>
         
-        {/* Add New Paper Button */}
         <div className="pt-4 border-t border-gray-200">
           <button
             onClick={() => {
@@ -740,8 +806,7 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
     );
   };
 
-  // Render editable array with multiple fields
-  const renderEditableArray = (title, path, fields, isNested = false) => {
+  const renderEditableArray = (title, path, fields, isNested = false, hasImages = false) => {
     const getArray = () => {
       const keys = path.split('.');
       let current = config;
@@ -753,6 +818,8 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
     };
 
     const array = getArray();
+    const hasImageField = fields.includes('image') || hasImages;
+    const gridCols = hasImageField ? 'lg:grid-cols-5' : 'lg:grid-cols-4';
 
     return (
       <div className="space-y-4 mb-6">
@@ -769,6 +836,8 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                   acc[field] = 'New Item';
                 } else if (field === 'value') {
                   acc[field] = `NEW_${Date.now()}`;
+                } else if (field === 'image') {
+                  acc[field] = '';
                 } else if (field === 'service') {
                   acc[field] = 'NEW_SERVICE';
                 } else if (field === 'days') {
@@ -794,14 +863,25 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
             <div key={index} className="border border-gray-200 rounded-xl overflow-hidden bg-white">
               <div className="bg-gray-50 p-4 border-b border-gray-200 flex justify-between items-center">
                 <div className="flex items-center">
-                  {item.label && (
-                    <span className="font-medium text-gray-900">{item.label}</span>
+                  {item.image && (
+                    <div className="mr-3 w-10 h-10 rounded overflow-hidden border border-gray-200">
+                      <img 
+                        src={item.image} 
+                        alt={item.label || 'Preview'} 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
                   )}
-                  {item.value && (
-                    <code className="ml-2 px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
-                      {item.value}
-                    </code>
-                  )}
+                  <div>
+                    {item.label && (
+                      <span className="font-medium text-gray-900">{item.label}</span>
+                    )}
+                    {item.value && (
+                      <code className="ml-2 px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
+                        {item.value}
+                      </code>
+                    )}
+                  </div>
                 </div>
                 <button
                   onClick={() => removeArrayItem(path, index)}
@@ -813,60 +893,110 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
               </div>
               
               <div className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {fields.map(field => (
-                    <div key={field} className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700 capitalize">
-                        {field === 'price' ? (
-                          <div className="flex items-center">
-                            <DollarSign size={14} className="mr-1" />
-                            {field}
-                          </div>
-                        ) : field}
-                      </label>
-                      {field === 'price' ? (
-                        <div className="relative">
-                          <input
-                            type="number"
-                            step="0.01"
-                            value={item[field] || 0}
-                            onChange={(e) => {
-                              const value = parseFloat(e.target.value) || 0;
-                              updateArrayItem(path, index, field, value);
-                            }}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors pl-10"
-                            placeholder="0.00"
-                          />
-                          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                            $
+                <div className={`grid grid-cols-1 md:grid-cols-2 ${gridCols} gap-4`}>
+                  {fields.map(field => {
+                    if (field === 'image') {
+                      return (
+                        <div key={field} className="space-y-2">
+                          <label className="block text-sm font-medium text-gray-700 capitalize">
+                            <div className="flex items-center">
+                              <ImageIcon size={14} className="mr-1" />
+                              {field}
+                            </div>
+                          </label>
+                          <div className="space-y-2">
+                            <div className="flex items-center space-x-2">
+                              <input
+                                type="text"
+                                value={item[field] || ''}
+                                onChange={(e) => updateArrayItem(path, index, field, e.target.value)}
+                                className="flex-1 p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors text-sm"
+                                placeholder="/forms/image.png"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => handleImageUpload(path, index, field)}
+                                disabled={imageUploading[`${path}-${index}-${field}`]}
+                                className="px-3 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors text-sm"
+                              >
+                                {imageUploading[`${path}-${index}-${field}`] ? 'Uploading...' : 'Upload'}
+                              </button>
+                            </div>
+                            {item[field] && (
+                              <div className="mt-2">
+                                <p className="text-xs text-gray-500 mb-1">Preview:</p>
+                                <div className="w-20 h-20 rounded overflow-hidden border border-gray-300">
+                                  <img 
+                                    src={item[field]} 
+                                    alt="Preview" 
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                      e.target.src = '/images/placeholder-color.png';
+                                      e.target.alt = 'Image not available';
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </div>
-                      ) : (
-                        <input
-                          type={field === 'quantity' || field === 'discount' ? 'number' : 'text'}
-                          value={item[field] || ''}
-                          onChange={(e) => {
-                            const value = field === 'quantity' || field === 'discount' 
-                              ? parseInt(e.target.value) || 0 
-                              : e.target.value;
-                            updateArrayItem(path, index, field, value);
-                          }}
-                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-                          placeholder={`Enter ${field}`}
-                        />
-                      )}
-                      {field === 'description' && item.description && (
-                        <p className="text-xs text-gray-500 mt-1 line-clamp-2">
-                          {item.description}
-                        </p>
-                      )}
-                      {field === 'desc' && item.desc && (
-                        <p className="text-xs text-gray-500 mt-1 line-clamp-2">
-                          {item.desc}
-                        </p>
-                      )}
-                    </div>
-                  ))}
+                      );
+                    }
+                    
+                    return (
+                      <div key={field} className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-700 capitalize">
+                          {field === 'price' ? (
+                            <div className="flex items-center">
+                              <DollarSign size={14} className="mr-1" />
+                              {field}
+                            </div>
+                          ) : field}
+                        </label>
+                        {field === 'price' ? (
+                          <div className="relative">
+                            <input
+                              type="number"
+                              step="0.01"
+                              value={item[field] || 0}
+                              onChange={(e) => {
+                                const value = parseFloat(e.target.value) || 0;
+                                updateArrayItem(path, index, field, value);
+                              }}
+                              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors pl-10"
+                              placeholder="0.00"
+                            />
+                            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                              $
+                            </div>
+                          </div>
+                        ) : (
+                          <input
+                            type={field === 'quantity' || field === 'discount' ? 'number' : 'text'}
+                            value={item[field] || ''}
+                            onChange={(e) => {
+                              const value = field === 'quantity' || field === 'discount' 
+                                ? parseInt(e.target.value) || 0 
+                                : e.target.value;
+                              updateArrayItem(path, index, field, value);
+                            }}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                            placeholder={`Enter ${field}`}
+                          />
+                        )}
+                        {field === 'description' && item.description && (
+                          <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                            {item.description}
+                          </p>
+                        )}
+                        {field === 'desc' && item.desc && (
+                          <p className="text-xs text-gray-500 mt-1 line-clamp-2">
+                            {item.desc}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -878,7 +1008,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-white border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
@@ -905,11 +1034,10 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
             </div>
           </div>
 
-          {/* Tabs */}
           <div className="flex space-x-8 overflow-x-auto pb-2">
             {[
-              'general', 'sizes', 'binding', 'paper-cover', 'paper-inside', 
-              'paper-subscription', 'colors', 'finishes', 'folds', 'additional',
+              'general', 'sizes', 'binding', 'colors', 'paper-cover', 'paper-inside', 
+              'paper-subscription', 'finishes', 'folds', 'additional',
               'positions', 'page-counts', 'weights', 'quantities', 'pricing', 
               'shipping', 'volume-discounts'
             ].map(tab => (
@@ -960,7 +1088,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Navigation Sidebar */}
             <div className="lg:col-span-1">
               <div className="bg-white rounded-xl shadow-sm border p-5 sticky top-8">
                 <h3 className="font-semibold text-gray-900 mb-4 text-lg">Configuration Sections</h3>
@@ -969,10 +1096,10 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     { id: 'general', label: 'General Settings', icon: '⚙️' },
                     { id: 'sizes', label: 'Sizes & Dimensions', icon: '📐' },
                     { id: 'binding', label: 'Binding Options', icon: '📖' },
+                    { id: 'colors', label: 'Color Options', icon: '🎨' },
                     { id: 'paper-cover', label: 'Cover Paper', icon: '🟫' },
                     { id: 'paper-inside', label: 'Inside Paper', icon: '📄' },
                     { id: 'paper-subscription', label: 'Subscription Paper', icon: '💳' },
-                    { id: 'colors', label: 'Color Options', icon: '🎨' },
                     { id: 'finishes', label: 'Cover Finishes', icon: '✨' },
                     { id: 'folds', label: 'Cover Folds', icon: '📐' },
                     { id: 'additional', label: 'Additional Services', icon: '➕' },
@@ -1002,18 +1129,16 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                 <div className="mt-8 pt-6 border-t border-gray-200">
                   <div className="p-3 bg-blue-50 rounded-lg">
                     <p className="text-xs text-blue-800">
-                      <span className="font-semibold">💡 Tip:</span> Each paper type can have different weight options with individual pricing.
+                      <span className="font-semibold">💡 Tip:</span> Binding Edge and Print Color options support images for better visualization.
                     </p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Editor Content */}
             <div className="lg:col-span-3">
               <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
                 <div className="p-8 space-y-8">
-                  {/* General Settings */}
                   {activeTab === 'general' && (
                     <div className="space-y-6">
                       <h3 className="text-xl font-semibold text-gray-900">General Settings</h3>
@@ -1111,7 +1236,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </div>
                   )}
 
-                  {/* Sizes & Dimensions */}
                   {activeTab === 'sizes' && (
                     <div className="space-y-6">
                       <h3 className="text-xl font-semibold text-gray-900">Sizes & Dimensions</h3>
@@ -1119,28 +1243,37 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </div>
                   )}
 
-                  {/* Binding Options */}
                   {activeTab === 'binding' && (
                     <div className="space-y-6">
                       <h3 className="text-xl font-semibold text-gray-900">Binding Options</h3>
-                      {renderEditableArray('Binding Edges', 'bindingEdges', ['value', 'label', 'desc', 'price'])}
+                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                        <p className="text-sm text-blue-800">
+                          <span className="font-semibold">💡 Note:</span> Binding Edge options support images. Recommended image paths: 
+                          /forms/edge01.png (Left Side), /forms/edge02.png (Right Side), /forms/edge03.png (Top Side)
+                        </p>
+                      </div>
+                      {renderEditableArray('Binding Edges', 'bindingEdges', ['value', 'label', 'desc', 'price', 'image'], false, true)}
                     </div>
                   )}
 
-                  {/* Paper Options */}
+                  {activeTab === 'colors' && (
+                    <div className="space-y-6">
+                      <h3 className="text-xl font-semibold text-gray-900">Color Options</h3>
+                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                        <p className="text-sm text-blue-800">
+                          <span className="font-semibold">💡 Note:</span> Print Color options support images. Recommended image paths:
+                          /forms/d1.png (Full color), /forms/d2.png (Full color + 1 Spot color), /forms/d3.png (Full color + 2 Spot color),
+                          /forms/d4.png (Black only), /forms/d5.png (Black + 1 Spot color), /forms/d6.png (Black + 2 Spot color)
+                        </p>
+                      </div>
+                      {renderEditableArray('Print Colors', 'printColors', ['value', 'label', 'price', 'description', 'image'], false, true)}
+                    </div>
+                  )}
+
                   {activeTab === 'paper-cover' && renderPaperOptionsWithWeights('cover')}
                   {activeTab === 'paper-inside' && renderPaperOptionsWithWeights('inside')}
                   {activeTab === 'paper-subscription' && renderPaperOptionsWithWeights('subscription')}
 
-                  {/* Color Options */}
-                  {activeTab === 'colors' && (
-                    <div className="space-y-6">
-                      <h3 className="text-xl font-semibold text-gray-900">Color Options</h3>
-                      {renderEditableArray('Print Colors', 'printColors', ['value', 'label', 'price', 'description'])}
-                    </div>
-                  )}
-
-                  {/* Cover Finishes */}
                   {activeTab === 'finishes' && (
                     <div className="space-y-6">
                       <h3 className="text-xl font-semibold text-gray-900">Cover Finishes</h3>
@@ -1148,7 +1281,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </div>
                   )}
 
-                  {/* Cover Folds */}
                   {activeTab === 'folds' && (
                     <div className="space-y-6">
                       <h3 className="text-xl font-semibold text-gray-900">Cover Folds</h3>
@@ -1156,7 +1288,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </div>
                   )}
 
-                  {/* Additional Services */}
                   {activeTab === 'additional' && (
                     <div className="space-y-6">
                       <h3 className="text-xl font-semibold text-gray-900">Additional Services</h3>
@@ -1201,7 +1332,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </div>
                   )}
 
-                  {/* Card Positions */}
                   {activeTab === 'positions' && (
                     <div className="space-y-6">
                       <h3 className="text-xl font-semibold text-gray-900">Card Positions</h3>
@@ -1209,7 +1339,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </div>
                   )}
 
-                  {/* Page Count Options */}
                   {activeTab === 'page-counts' && (
                     <div className="space-y-6">
                       <h3 className="text-xl font-semibold text-gray-900">Page Count Options</h3>
@@ -1262,7 +1391,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </div>
                   )}
 
-                  {/* Global Weight Options */}
                   {activeTab === 'weights' && (
                     <div className="space-y-6">
                       <h3 className="text-xl font-semibold text-gray-900">Global Weight Options</h3>
@@ -1276,7 +1404,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </div>
                   )}
 
-                  {/* Quantity Options */}
                   {activeTab === 'quantities' && (
                     <div className="space-y-6">
                       <h3 className="text-xl font-semibold text-gray-900">Quantity Options</h3>
@@ -1289,7 +1416,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </div>
                   )}
 
-                  {/* Pricing Settings */}
                   {activeTab === 'pricing' && (
                     <div className="space-y-6">
                       <h3 className="text-xl font-semibold text-gray-900">Pricing Settings</h3>
@@ -1426,7 +1552,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </div>
                   )}
 
-                  {/* Shipping Options */}
                   {activeTab === 'shipping' && (
                     <div className="space-y-6">
                       <h3 className="text-xl font-semibold text-gray-900">Shipping Options</h3>
@@ -1445,7 +1570,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                     </div>
                   )}
 
-                  {/* Volume Discounts */}
                   {activeTab === 'volume-discounts' && (
                     <div className="space-y-6">
                       <h3 className="text-xl font-semibold text-gray-900">Volume Discounts</h3>
@@ -1460,7 +1584,6 @@ export default function PrintQuoteFormEditor({ formConfig, onSave }) {
                 </div>
               </div>
 
-              {/* Save Button Footer */}
               <div className="mt-8 flex justify-end">
                 <button
                   onClick={handleSave}
