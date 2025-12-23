@@ -1,9 +1,10 @@
-"use client";  // Add this at the top since we're using React state
+// app/[...slug]/components/renderers/premium/WeightConverterRenderer.js
+"use client";
 
 import { useState, useEffect } from 'react';
 
 export default function WeightConverterRenderer({ component, index }) {
-  const content = component.content || {};
+  const content = component?.content || {};
   const { title = 'Paper Weight Converter', description = 'Convert between pounds (lbs) and grams per square meter (gsm) for different paper types.' } = content;
 
   // Use local state for interactive elements
@@ -11,7 +12,7 @@ export default function WeightConverterRenderer({ component, index }) {
   const [weight, setWeight] = useState(content.weight || '');
   const [results, setResults] = useState(content.results || {});
 
-  // Paper type conversion factors (same as in editor)
+  // Paper type conversion factors
   const paperTypes = {
     text: { name: 'Text', lbsToGsmFactor: 1.4805, gsmToLbsFactor: 0.6754 },
     cover: { name: 'Cover', lbsToGsmFactor: 2.7048, gsmToLbsFactor: 0.3697 },
@@ -22,9 +23,11 @@ export default function WeightConverterRenderer({ component, index }) {
 
   // Update state when content changes (if component is edited in admin)
   useEffect(() => {
-    setConversionOption(content.conversionOption || 'lbsToGsm');
-    setWeight(content.weight || '');
-    setResults(content.results || {});
+    if (content) {
+      setConversionOption(content.conversionOption || 'lbsToGsm');
+      setWeight(content.weight || '');
+      setResults(content.results || {});
+    }
   }, [content]);
 
   const handleConvert = () => {
@@ -62,8 +65,24 @@ export default function WeightConverterRenderer({ component, index }) {
     }
   };
 
+  // Format display value based on conversion option
+  const getResultLabel = (value) => {
+    if (!value) return '0.00';
+    return value;
+  };
+
+  // Get unit labels
+  const getUnitLabels = () => {
+    if (conversionOption === 'lbsToGsm') {
+      return { input: 'lbs', output: 'gsm' };
+    }
+    return { input: 'gsm', output: 'lbs' };
+  };
+
+  const unitLabels = getUnitLabels();
+
   return (
-    <section key={component.id || index} className="py-16 bg-white">
+    <section key={component?.id || index} className="py-16 bg-white">
       <div className="max-w-4xl mx-auto px-6 lg:px-8">
         {/* Title and Description */}
         <div className="text-center mb-12">
@@ -82,32 +101,40 @@ export default function WeightConverterRenderer({ component, index }) {
             <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Conversion Option
+                  Conversion Direction
                 </label>
                 <select
                   value={conversionOption}
-                  onChange={(e) => setConversionOption(e.target.value)}
+                  onChange={(e) => {
+                    setConversionOption(e.target.value);
+                    setResults({}); // Clear results when direction changes
+                  }}
                   className="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                 >
-                  <option value="lbsToGsm">lbs to gsm</option>
-                  <option value="gsmToLbs">gsm to lbs</option>
+                  <option value="lbsToGsm">lbs → gsm (Pounds to Grams per square meter)</option>
+                  <option value="gsmToLbs">gsm → lbs (Grams per square meter to Pounds)</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Weight
+                  Weight in {unitLabels.input}
                 </label>
-                <input
-                  type="number"
-                  value={weight}
-                  onChange={(e) => setWeight(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  className="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  placeholder="Enter weight"
-                  min="0"
-                  step="0.01"
-                />
+                <div className="relative">
+                  <input
+                    type="number"
+                    value={weight}
+                    onChange={(e) => setWeight(e.target.value)}
+                    onKeyDown={handleKeyPress}
+                    className="w-full p-3 border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors pr-12"
+                    placeholder={`Enter weight in ${unitLabels.input}`}
+                    min="0"
+                    step="0.01"
+                  />
+                  <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                    {unitLabels.input}
+                  </span>
+                </div>
               </div>
 
               <button
@@ -115,7 +142,7 @@ export default function WeightConverterRenderer({ component, index }) {
                 disabled={!weight || parseFloat(weight) <= 0}
                 className="w-full px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors shadow-sm"
               >
-                Convert
+                Convert to {unitLabels.output}
               </button>
               
               <div className="text-sm text-gray-500">
@@ -126,20 +153,26 @@ export default function WeightConverterRenderer({ component, index }) {
             {/* Results Section */}
             <div className="bg-white rounded-lg border border-gray-200 p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
-                Conversion Results
+                Conversion Results ({unitLabels.output})
               </h3>
-              <div className="space-y-3">
-                {paperTypeList.map((paperType) => (
-                  <div key={paperType.key} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
-                    <span className="font-medium text-gray-700">{paperType.name}</span>
-                    <span className="text-gray-900 font-mono text-lg">
-                      {results[paperType.key] || '0.00'}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              {Object.keys(results).length === 0 && (
+              {Object.keys(results).length > 0 ? (
+                <div className="space-y-3">
+                  {paperTypeList.map((paperType) => (
+                    <div key={paperType.key} className="flex items-center justify-between py-3 px-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors">
+                      <div>
+                        <span className="font-medium text-gray-700">{paperType.name}</span>
+                        <span className="text-sm text-gray-500 ml-2">Paper</span>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-gray-900 font-mono text-lg block">
+                          {getResultLabel(results[paperType.key])}
+                        </span>
+                        <span className="text-sm text-gray-500">{unitLabels.output}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
                 <div className="text-center py-8 text-gray-500">
                   <div className="text-4xl mb-2">📊</div>
                   <p>Results will appear here</p>
