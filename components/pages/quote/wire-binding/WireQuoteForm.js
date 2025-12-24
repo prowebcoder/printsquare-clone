@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import PageEditModal from './PageEditModal'; // Add this import
+import PageEditModal from './PageEditModal';
 
 // ===== WIRE BINDING CONFIG =====
 const WIREQUOTE_DEFAULT_CONFIG = {
@@ -43,25 +43,252 @@ const WIREQUOTE_DEFAULT_CONFIG = {
   ],
   paperOptions: {
     cover: [
-      { value: 'MATTE', label: 'Matte', price: 0 },
-      { value: 'GLOSS', label: 'Gloss', price: 0 },
-      { value: 'HI-QMYSTIC', label: 'Hi-Q Mystic', price: 25 },
-      { value: 'UNCOATED_W', label: 'Uncoated White', price: 0 }
+      { 
+        value: 'GLOSS', 
+        label: 'Gloss', 
+        description: 'Brilliant-gloss, very affordable so highly used',
+        price: 0,
+        weightOptions: [
+          { value: '74# cover', label: '74# cover (200 gsm)', price: 0 },
+          { value: '92# cover', label: '92# cover (250 gsm)', price: 10 },
+          { value: '110# cover', label: '110# cover (300 gsm)', price: 20 }
+        ]
+      },
+      { 
+        value: 'MATTE', 
+        label: 'Matte', 
+        description: 'Highly used like Gloss',
+        price: 0,
+        weightOptions: [
+          { value: '74# cover', label: '74# cover (200 gsm)', price: 0 },
+          { value: '92# cover', label: '92# cover (250 gsm)', price: 10 },
+          { value: '110# cover', label: '110# cover (300 gsm)', price: 20 }
+        ]
+      },
+      { 
+        value: 'UNCOATED', 
+        label: 'Uncoated', 
+        description: 'Matte and very much used',
+        price: 0,
+        weightOptions: [
+          { value: '67# cover', label: '67# cover (180 gsm)', price: 0 },
+          { value: '81# cover', label: '81# cover (220 gsm)', price: 10 },
+          { value: '96# cover', label: '96# cover (260 gsm)', price: 20 }
+        ]
+      },
+      { 
+        value: 'PREMIUM', 
+        label: 'Premium', 
+        description: 'Used for high-end magazines and catalogs',
+        price: 50,
+        weightOptions: [
+          { value: '70# cover', label: '70# cover (190 gsm)', price: 20 },
+          { value: '78# cover', label: '78# cover (210 gsm)', price: 30 },
+          { value: '89# cover', label: '89# cover (240 gsm)', price: 40 }
+        ]
+      },
+      { 
+        value: 'MERMAID', 
+        label: 'Mermaid', 
+        description: 'Specialty paper with unique texture',
+        price: 75,
+        weightOptions: [
+          { value: '74# cover', label: '74# cover (200 gsm)', price: 25 },
+          { value: '92# cover', label: '92# cover (250 gsm)', price: 35 },
+          { value: '110# cover', label: '110# cover (300 gsm)', price: 45 },
+          { value: '129# cover', label: '129# cover (350 gsm)', price: 55 }
+        ]
+      },
+      { 
+        value: 'HI-QMYSTIC', 
+        label: 'Hi-Q Mystic', 
+        description: 'Premium glossy with special coating',
+        price: 25,
+        weightOptions: [
+          { value: '74# cover', label: '74# cover (200 gsm)', price: 15 },
+          { value: '92# cover', label: '92# cover (250 gsm)', price: 25 },
+          { value: '110# cover', label: '110# cover (300 gsm)', price: 35 }
+        ]
+      }
     ],
     inside: [
-      { value: 'MATTE', label: 'Matte', price: 0 },
-      { value: 'GLOSS', label: 'Gloss', price: 0 },
-      { value: 'HI-PLUS', label: 'Hi-Plus', price: 20 },
-      { value: 'UNCOATED_W', label: 'Uncoated White', price: 0 }
+      { 
+        value: 'GLOSS', 
+        label: 'Gloss', 
+        price: 0,
+        weightOptions: [
+          { value: '68# text', label: '68# text (100 gsm)', price: 0 },
+          { value: '80# text', label: '80# text (120 gsm)', price: 5 },
+          { value: '100# text', label: '100# text (150 gsm)', price: 10 },
+          { value: '67# cover', label: '67# cover (180 gsm)', price: 20 },
+          { value: '74# cover', label: '74# cover (200 gsm)', price: 25 },
+          { value: '92# cover', label: '92# cover (250 gsm)', price: 35 }
+        ]
+      },
+      { 
+        value: 'MATTE', 
+        label: 'Matte', 
+        price: 0,
+        weightOptions: [
+          { value: '68# text', label: '68# text (100 gsm)', price: 0 },
+          { value: '80# text', label: '80# text (120 gsm)', price: 5 },
+          { value: '100# text', label: '100# text (150 gsm)', price: 10 },
+          { value: '67# cover', label: '67# cover (180 gsm)', price: 20 },
+          { value: '74# cover', label: '74# cover (200 gsm)', price: 25 },
+          { value: '92# cover', label: '92# cover (250 gsm)', price: 35 }
+        ]
+      },
+      { 
+        value: 'HI-PLUS', 
+        label: 'Hi-Plus', 
+        price: 20,
+        weightOptions: [
+          { value: '60# text', label: '60# text (90 gsm)', price: 10 },
+          { value: '68# text', label: '68# text (100 gsm)', price: 15 },
+          { value: '80# text', label: '80# text (120 gsm)', price: 20 }
+        ]
+      },
+      { 
+        value: 'HI-Q MATTE', 
+        label: 'Hi-Q Matte', 
+        price: 35,
+        weightOptions: [
+          { value: '89# text', label: '89# text (135 gsm)', price: 20 },
+          { value: '109# text', label: '109# text (165 gsm)', price: 25 }
+        ]
+      },
+      { 
+        value: 'HI UNCOATED', 
+        label: 'Hi Uncoated', 
+        price: 0,
+        weightOptions: [
+          { value: '47# text', label: '47# text (70 gsm)', price: 0 },
+          { value: '54# text', label: '54# text (80 gsm)', price: 5 },
+          { value: '60# text', label: '60# text (90 gsm)', price: 10 },
+          { value: '68# text', label: '68# text (100 gsm)', price: 15 },
+          { value: '80# text', label: '80# text (120 gsm)', price: 20 },
+          { value: '100# text', label: '100# text (150 gsm)', price: 25 },
+          { value: '67# cover', label: '67# cover (180 gsm)', price: 30 },
+          { value: '81# cover', label: '81# cover (220 gsm)', price: 35 }
+        ]
+      },
+      { 
+        value: 'HI PREMIUM', 
+        label: 'Hi Premium', 
+        price: 45,
+        weightOptions: [
+          { value: '60# text', label: '60# text (90 gsm)', price: 20 },
+          { value: '68# text', label: '68# text (100 gsm)', price: 25 },
+          { value: '88# text', label: '88# text (130 gsm)', price: 30 },
+          { value: '108# text', label: '108# text (160 gsm)', price: 35 },
+          { value: '70# cover', label: '70# cover (190 gsm)', price: 40 },
+          { value: '78# cover', label: '78# cover (210 gsm)', price: 45 }
+        ]
+      },
+      { 
+        value: 'HI NEW PLUS', 
+        label: 'Hi New Plus', 
+        price: 15,
+        weightOptions: [
+          { value: '47# text', label: '47# text (70 gsm)', price: 5 },
+          { value: '54# text', label: '54# text (80 gsm)', price: 10 },
+          { value: '68# text', label: '68# text (100 gsm)', price: 15 }
+        ]
+      },
+      { 
+        value: 'TEXTBOOK', 
+        label: 'Textbook', 
+        price: 30,
+        weightOptions: [
+          { value: '51# text', label: '51# text (75 gsm)', price: 15 }
+        ]
+      },
+      { 
+        value: 'TRANSLUCENT', 
+        label: 'Translucent', 
+        price: 80,
+        weightOptions: [
+          { value: '54# text', label: '54# text (80 gsm)', price: 25 },
+          { value: '68# text', label: '68# text (100 gsm)', price: 30 },
+          { value: '88# text', label: '88# text (130 gsm)', price: 35 },
+          { value: '100# text', label: '100# text (150 gsm)', price: 40 },
+          { value: '63# cover', label: '63# cover (170 gsm)', price: 45 },
+          { value: '74# cover', label: '74# cover (200 gsm)', price: 50 },
+          { value: '81# cover', label: '81# cover (220 gsm)', price: 55 }
+        ]
+      },
+      { 
+        value: 'COLORED', 
+        label: 'Colored', 
+        price: 40,
+        weightOptions: [
+          { value: 'A-BE01', label: 'A-BE01', image: '/forms/A-BE01.png', price: 0 },
+          { value: 'A-BE10', label: 'A-BE10', image: '/forms/A-BE10.png', price: 0 },
+          { value: 'A-BE15', label: 'A-BE15', image: '/forms/A-BE15.png', price: 0 },
+          { value: 'A-BE30', label: 'A-BE30', image: '/forms/A-BE30.png', price: 0 },
+          { value: 'A-BE42', label: 'A-BE42', image: '/forms/A-BE42.png', price: 0 },
+          { value: 'A-BE50', label: 'A-BE50', image: '/forms/A-BE50.png', price: 0 },
+          { value: 'A-BE51', label: 'A-BE51', image: '/forms/A-BE51.png', price: 0 },
+          { value: 'A-BE75', label: 'A-BE75', image: '/forms/A-BE75.png', price: 0 },
+          { value: 'A-BE83', label: 'A-BE83', image: '/forms/A-BE83.png', price: 0 },
+          { value: 'A-BE85', label: 'A-BE85', image: '/forms/A-BE85.png', price: 0 },
+          { value: 'B-BE16', label: 'B-BE16', image: '/forms/B-BE16.png', price: 0 },
+          { value: 'B-BE17', label: 'B-BE17', image: '/forms/B-BE17.png', price: 0 },
+          { value: 'B-BE24', label: 'B-BE24', image: '/forms/B-BE24.png', price: 0 },
+          { value: 'B-BE80', label: 'B-BE80', image: '/forms/B-BE80.png', price: 0 },
+          { value: 'B-BE81', label: 'B-BE81', image: '/forms/B-BE81.png', price: 0 },
+          { value: 'C-BE36', label: 'C-BE36', image: '/forms/C-BE36.png', price: 0 },
+          { value: 'C-BE54', label: 'C-BE54', image: '/forms/C-BE54.png', price: 0 },
+          { value: 'C-BE66', label: 'C-BE66', image: '/forms/C-BE66.png', price: 0 },
+          { value: 'C-BE73', label: 'C-BE73', image: '/forms/C-BE73.png', price: 0 },
+          { value: 'D-BE18', label: 'D-BE18', image: '/forms/D-BE18.png', price: 0 },
+          { value: 'D-BE32', label: 'D-BE32', image: '/forms/D-BE32.png', price: 0 },
+          { value: 'D-BE35', label: 'D-BE35', image: '/forms/D-BE35.png', price: 0 },
+          { value: 'D-BE69', label: 'D-BE69', image: '/forms/D-BE69.png', price: 0 },
+          { value: 'D-BE76', label: 'D-BE76', image: '/forms/D-BE76.png', price: 0 },
+          { value: 'E-BE05', label: 'E-BE05', image: '/forms/E-BE05.png', price: 0 }
+        ]
+      }
     ]
   },
+  // UPDATED: Added images to print colors
   printColors: [
-    { value: 'CMYK', label: 'Full color', price: 0 },
-    { value: 'CMYK_PMS1', label: 'Full color + 1 Spot color', price: 75 },
-    { value: 'CMYK_PMS2', label: 'Full color + 2 Spot color', price: 150 },
-    { value: 'BW', label: 'Black only', price: -100 },
-    { value: 'BW_PMS1', label: 'Black + 1 Spot color', price: -25 },
-    { value: 'BW_PMS2', label: 'Black + 2 Spot color', price: 50 }
+    { 
+      value: 'CMYK', 
+      label: 'Full color', 
+      price: 0,
+      image: '/forms/d1.png'
+    },
+    { 
+      value: 'CMYK_PMS1', 
+      label: 'Full color + 1 Spot color', 
+      price: 75,
+      image: '/forms/d2.png'
+    },
+    { 
+      value: 'CMYK_PMS2', 
+      label: 'Full color + 2 Spot color', 
+      price: 150,
+      image: '/forms/d3.png'
+    },
+    { 
+      value: 'BW', 
+      label: 'Black only', 
+      price: -100,
+      image: '/forms/d4.png'
+    },
+    { 
+      value: 'BW_PMS1', 
+      label: 'Black + 1 Spot color', 
+      price: -25,
+      image: '/forms/d5.png'
+    },
+    { 
+      value: 'BW_PMS2', 
+      label: 'Black + 2 Spot color', 
+      price: 50,
+      image: '/forms/d6.png'
+    }
   ],
   coverFinishes: [
     { value: 'NONE', label: 'None', price: 0 },
@@ -105,7 +332,6 @@ const WIREQUOTE_DEFAULT_CONFIG = {
     { value: 'SELECT', label: 'Front of page no.' },
   ],
   pageCounts: [24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96, 100, 104, 108, 112, 116, 120, 124, 128, 132, 136, 140, 144, 148, 152, 156, 160],
-  weightOptions: ['80', '100', '120', '150', '200', '250', '300'],
   quantities: [200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000],
   customSizeInstructions: {
     INCH: "📏 Minimum: 4\" × 4\" | Maximum: 11.8\" × 14.3\"",
@@ -122,47 +348,137 @@ const WIREQUOTE_DEFAULT_CONFIG = {
 
 // ===== PAPER WEIGHT CONVERSION DATA =====
 const PAPER_WEIGHT_CONVERSIONS = {
-  '80': { 
+  '47# text': { 
+    gsm: '70 gsm',
+    us: '47# text',
+    pt: '2.0 pt',
+    kg: '60 kg'
+  },
+  '51# text': { 
+    gsm: '75 gsm',
+    us: '51# text',
+    pt: '2.2 pt',
+    kg: '65 kg'
+  },
+  '54# text': { 
     gsm: '80 gsm',
     us: '54# text',
-    pt: '2.5 pt',
+    pt: '2.3 pt',
     kg: '69 kg'
   },
-  '100': { 
+  '60# text': { 
+    gsm: '90 gsm',
+    us: '60# text',
+    pt: '2.5 pt',
+    kg: '77 kg'
+  },
+  '68# text': { 
     gsm: '100 gsm',
     us: '68# text',
     pt: '3.2 pt',
     kg: '86 kg'
   },
-  '120': { 
-    gsm: '120 gsm',
-    us: '80# text',
-    pt: '3.8 pt',
-    kg: '103 kg'
-  },
-  '150': { 
-    gsm: '150 gsm',
-    us: '100# text',
-    pt: '4.8 pt',
-    kg: '129 kg'
-  },
-  '200': { 
+  '74# cover': { 
     gsm: '200 gsm',
     us: '74# cover',
     pt: '7.1 pt',
     kg: '172 kg'
   },
-  '250': { 
+  '80# text': { 
+    gsm: '120 gsm',
+    us: '80# text',
+    pt: '3.8 pt',
+    kg: '103 kg'
+  },
+  '88# text': { 
+    gsm: '130 gsm',
+    us: '88# text',
+    pt: '4.2 pt',
+    kg: '112 kg'
+  },
+  '89# text': { 
+    gsm: '135 gsm',
+    us: '89# text',
+    pt: '4.3 pt',
+    kg: '116 kg'
+  },
+  '92# cover': { 
     gsm: '250 gsm',
     us: '92# cover',
     pt: '9.1 pt',
     kg: '215 kg'
   },
-  '300': { 
+  '96# cover': { 
+    gsm: '260 gsm',
+    us: '96# cover',
+    pt: '9.5 pt',
+    kg: '224 kg'
+  },
+  '100# text': { 
+    gsm: '150 gsm',
+    us: '100# text',
+    pt: '4.8 pt',
+    kg: '129 kg'
+  },
+  '108# text': { 
+    gsm: '160 gsm',
+    us: '108# text',
+    pt: '5.1 pt',
+    kg: '138 kg'
+  },
+  '109# text': { 
+    gsm: '165 gsm',
+    us: '109# text',
+    pt: '5.3 pt',
+    kg: '142 kg'
+  },
+  '110# cover': { 
     gsm: '300 gsm',
     us: '110# cover',
     pt: '11.3 pt',
     kg: '258 kg'
+  },
+  '129# cover': { 
+    gsm: '350 gsm',
+    us: '129# cover',
+    pt: '13.5 pt',
+    kg: '301 kg'
+  },
+  '63# cover': { 
+    gsm: '170 gsm',
+    us: '63# cover',
+    pt: '5.5 pt',
+    kg: '146 kg'
+  },
+  '67# cover': { 
+    gsm: '180 gsm',
+    us: '67# cover',
+    pt: '5.9 pt',
+    kg: '155 kg'
+  },
+  '70# cover': { 
+    gsm: '190 gsm',
+    us: '70# cover',
+    pt: '6.2 pt',
+    kg: '163 kg'
+  },
+  '78# cover': { 
+    gsm: '210 gsm',
+    us: '78# cover',
+    pt: '7.5 pt',
+    kg: '181 kg'
+  },
+  '81# cover': { 
+    gsm: '220 gsm',
+    us: '81# cover',
+    pt: '8.0 pt',
+    kg: '189 kg'
+  },
+  '89# cover': { 
+    gsm: '240 gsm',
+    us: '89# cover',
+    pt: '8.7 pt',
+    kg: '206 kg'
   }
 };
 
@@ -217,6 +533,15 @@ const getOptionPrice = (options, selectedValue) => {
   return option ? (option.price || 0) : 0;
 };
 
+const getWeightOptionPrice = (paperType, weightValue) => {
+  if (!paperType || !weightValue) return 0;
+  const paperOption = WIREQUOTE_DEFAULT_CONFIG.paperOptions.cover.concat(WIREQUOTE_DEFAULT_CONFIG.paperOptions.inside)
+    .find(opt => opt.value === paperType);
+  if (!paperOption || !paperOption.weightOptions) return 0;
+  const weightOption = paperOption.weightOptions.find(opt => opt.value === weightValue);
+  return weightOption ? (weightOption.price || 0) : 0;
+};
+
 const formatCurrency = (amount) => `$${amount.toFixed(2)}`;
 
 // ===== PAGE EDITS COST CALCULATION =====
@@ -230,43 +555,36 @@ const calculatePageEditsCost = (edits, PAPER_OPTIONS, PRINT_COLORS) => {
     
     switch(edit.type) {
       case 'PAPER':
-        // Paper change cost logic
         if (edit.data.paperChange) {
-          // Paper type change cost
           const paperOption = PAPER_OPTIONS.inside.find(opt => opt.value === edit.data.paper);
           editCost += (paperOption?.price || 0) * edit.pages.length;
         }
         
         if (edit.data.colorChange) {
-          // Color change cost
           const colorOption = PRINT_COLORS.find(opt => opt.value === edit.data.color);
           editCost += (colorOption?.price || 0) * edit.pages.length;
         }
         
         if (edit.data.sizeChange) {
-          // Size change cost (custom size premium)
-          editCost += 25 * edit.pages.length; // $25 per page for custom size
+          editCost += 25 * edit.pages.length;
         }
         break;
         
       case 'FOLD':
-        // Fold cost logic
-        editCost = 15 * edit.pages.length; // $15 per fold per page
+        editCost = 15 * edit.pages.length;
         break;
         
       case 'ADDON':
-        // Addon cost logic
         const addonPrices = {
-          'FOIL': 20,      // $20 per page for foil stamping
-          'UV': 15,        // $15 per page for UV
-          'EMUV': 30,      // $30 per page for embossed-UV
-          'EMBOSS': 25,    // $25 per page for embossing
-          'DIECUT': 35,    // $35 per page for die-cut
+          'FOIL': 20,
+          'UV': 15,
+          'EMUV': 30,
+          'EMBOSS': 25,
+          'DIECUT': 35,
         };
         
         editCost = (addonPrices[edit.data.addonType] || 0) * edit.pages.length;
         
-        // Size multiplier
         const sizeMultipliers = {
           'SMALL': 0.5,
           'MEDIUM': 1,
@@ -319,9 +637,8 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
     setLoading(true);
     setError('');
     
-    // Mock shipping calculation based on quantity and weight
     setTimeout(() => {
-      const baseWeight = (formData.quantity * 0.15) + (formData.pageCount * 0.008); // Simplified weight calculation
+      const baseWeight = (formData.quantity * 0.15) + (formData.pageCount * 0.008);
       let calculatedCost = 0;
       
       switch(shippingMethod) {
@@ -341,7 +658,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
           calculatedCost = 25 + (baseWeight * 0.4);
       }
       
-      // Add international premium
       if (country !== 'US') {
         calculatedCost *= 1.5;
       }
@@ -372,7 +688,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
         </div>
         
         <div className="space-y-6">
-          {/* Order Summary */}
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <h4 className="font-semibold text-gray-900 mb-2">Order Summary</h4>
             <div className="grid grid-cols-2 gap-2 text-sm">
@@ -387,7 +702,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
             </div>
           </div>
 
-          {/* Shipping Form */}
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -455,7 +769,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
             </div>
           </div>
 
-          {/* Calculate Button */}
           <button
             onClick={calculateShipping}
             disabled={loading}
@@ -474,7 +787,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
             )}
           </button>
 
-          {/* Shipping Result */}
           {shippingCost && (
             <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-4">
               <h4 className="font-semibold text-green-900 mb-2">Shipping Cost Calculated</h4>
@@ -498,7 +810,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
             </div>
           )}
 
-          {/* Action Buttons */}
           <div className="flex space-x-4 pt-4 border-t border-gray-200">
             <button
               onClick={onClose}
@@ -509,7 +820,6 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
             {shippingCost && (
               <button
                 onClick={() => {
-                  // Add shipping to order
                   alert(`Shipping added: $${shippingCost.cost} for ${shippingCost.method}`);
                   onClose();
                 }}
@@ -525,65 +835,311 @@ const ShippingModal = ({ isOpen, onClose, formData }) => {
   );
 };
 
-// ===== PAPER WEIGHT SELECTOR COMPONENT =====
-const PaperWeightSelector = ({ paperUnit, weightValue, onChange, label = "", availableWeights = null }) => {
+// ===== IMAGE DROPDOWN COMPONENT =====
+const ImageDropdown = ({ 
+  label, 
+  options, 
+  selected, 
+  onChange, 
+  className = "", 
+  disabled = false,
+  showDescription = false,
+  showPrice = false
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const selectedOption = options?.find(opt => opt.value === selected);
+
+  return (
+    <div className={`relative ${className}`}>
+      {label && <p className="text-sm font-semibold mb-2 text-gray-700">{label}</p>}
+      
+      <button
+        type="button"
+        onClick={() => !disabled && setIsOpen(!isOpen)}
+        disabled={disabled}
+        className={`w-full flex items-center justify-between p-3 border border-gray-300 rounded-lg shadow-sm text-left hover:border-gray-400 transition-all ${
+          disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white cursor-pointer'
+        } ${isOpen ? 'ring-2 ring-indigo-500 border-indigo-500' : ''}`}
+      >
+        <div className="flex items-center space-x-3">
+          {selectedOption?.image && (
+            <div className="w-10 h-10 flex-shrink-0 rounded-md overflow-hidden border border-gray-200">
+              <img 
+                src={selectedOption.image} 
+                alt={selectedOption.label}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.src = '/images/placeholder-color.png';
+                  e.target.alt = 'Image not available';
+                }}
+              />
+            </div>
+          )}
+          <div>
+            <span className="text-sm font-medium text-gray-900 block">
+              {selectedOption?.label || 'Select an option'}
+            </span>
+            {showDescription && selectedOption?.desc && (
+              <span className="text-xs text-gray-500 block mt-1">
+                {selectedOption.desc}
+              </span>
+            )}
+          </div>
+        </div>
+        <div className="flex items-center space-x-2">
+          {showPrice && selectedOption?.price !== undefined && (
+            <span className={`text-sm font-semibold ${
+              selectedOption.price > 0 ? 'text-green-600' : 
+              selectedOption.price < 0 ? 'text-red-600' : 
+              'text-gray-600'
+            }`}>
+              {selectedOption.price > 0 ? `+$${selectedOption.price}` : 
+               selectedOption.price < 0 ? `-$${Math.abs(selectedOption.price)}` : 
+               'No extra charge'}
+            </span>
+          )}
+          <svg 
+            className={`w-4 h-4 text-gray-400 transform transition-transform ${isOpen ? 'rotate-180' : ''}`}
+            fill="none" 
+            stroke="currentColor" 
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </button>
+
+      {isOpen && (
+        <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-80 overflow-y-auto">
+          <div className="py-1">
+            {options?.map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => {
+                  onChange({ target: { value: option.value } });
+                  setIsOpen(false);
+                }}
+                className={`w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors ${
+                  selected === option.value ? 'bg-indigo-50' : ''
+                }`}
+              >
+                {option.image && (
+                  <div className="w-12 h-12 flex-shrink-0 rounded-md overflow-hidden border border-gray-200">
+                    <img 
+                      src={option.image} 
+                      alt={option.label}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.src = '/images/placeholder-color.png';
+                        e.target.alt = 'Image not available';
+                      }}
+                    />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{option.label}</p>
+                      {option.desc && (
+                        <p className="text-xs text-gray-500 mt-1">{option.desc}</p>
+                      )}
+                    </div>
+                    {showPrice && option.price !== undefined && (
+                      <span className={`text-sm font-semibold ml-2 ${
+                        option.price > 0 ? 'text-green-600' : 
+                        option.price < 0 ? 'text-red-600' : 
+                        'text-gray-600'
+                      }`}>
+                        {option.price > 0 ? `+$${option.price}` : 
+                         option.price < 0 ? `-$${Math.abs(option.price)}` : 
+                         'No extra charge'}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-40" 
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+    </div>
+  );
+};
+
+// ===== PAPER WEIGHT SELECTOR WITH IMAGE SUPPORT =====
+const PaperWeightSelector = ({ 
+  paperType, 
+  paperUnit, 
+  weightValue, 
+  onChange, 
+  label = "", 
+  isCover = true,
+  showImages = false,
+  className = ""
+}) => {
+  const [showImagePreview, setShowImagePreview] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+
   const getWeightOptions = () => {
-    let weightKeys = availableWeights || Object.keys(PAPER_WEIGHT_CONVERSIONS);
+    const paperOptions = WIREQUOTE_DEFAULT_CONFIG.paperOptions[isCover ? 'cover' : 'inside'];
+    const paperOption = paperOptions.find(opt => opt.value === paperType);
     
-    return weightKeys.map(key => {
-      const conversion = PAPER_WEIGHT_CONVERSIONS[key];
-      if (!conversion) return null;
+    if (!paperOption || !paperOption.weightOptions) {
+      return [];
+    }
+    
+    if (paperType === 'COLORED' && showImages) {
+      return paperOption.weightOptions.map(option => ({
+        ...option,
+        label: option.label
+      }));
+    }
+    
+    return paperOption.weightOptions.map(option => {
+      const conversion = PAPER_WEIGHT_CONVERSIONS[option.value];
+      if (!conversion) return option;
       
-      let labelText = '';
-      
+      let labelText = option.label;
       switch(paperUnit) {
         case 'GSM':
-          labelText = conversion.gsm;
+          labelText = `${option.value} (${conversion.gsm})`;
           break;
         case 'US':
-          labelText = conversion.us;
+          labelText = `${option.value}`;
           break;
         case 'PT':
-          labelText = conversion.pt;
+          labelText = `${option.value} (${conversion.pt})`;
           break;
         case 'KG':
-          labelText = conversion.kg;
+          labelText = `${option.value} (${conversion.kg})`;
           break;
         default:
-          labelText = conversion.gsm;
+          labelText = option.label;
       }
       
       return {
-        value: key,
+        ...option,
         label: labelText
       };
-    }).filter(Boolean);
+    });
   };
 
-  const options = getWeightOptions();
-  
-  // If current weight value is not in available options, select the first available
-  useEffect(() => {
-    if (options.length > 0 && !options.find(opt => opt.value === weightValue)) {
-      onChange({ target: { value: options[0].value } });
-    }
-  }, [options, weightValue, onChange]);
+  const weightOptions = getWeightOptions();
+  const selectedOption = weightOptions.find(opt => opt.value === weightValue);
+  const isColoredPaper = paperType === 'COLORED' && showImages;
+
+  const handleImagePreview = (imageUrl) => {
+    setPreviewImage(imageUrl);
+    setShowImagePreview(true);
+  };
+
+  if (isColoredPaper) {
+    return (
+      <div className={`space-y-2 ${className}`}>
+        {label && <p className="text-sm font-semibold text-gray-700 mb-2">{label}</p>}
+        <ImageDropdown
+          options={weightOptions}
+          selected={weightValue}
+          onChange={onChange}
+          className="w-full"
+        />
+        
+        {weightValue && selectedOption?.image && (
+          <div className="mt-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm font-medium text-gray-700">Color Preview:</p>
+              <button
+                type="button"
+                onClick={() => handleImagePreview(selectedOption.image)}
+                className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+              >
+                View Full Size
+              </button>
+            </div>
+            <div className="relative h-32 w-full bg-white border border-gray-300 rounded-md overflow-hidden">
+              <img 
+                src={selectedOption.image} 
+                alt={selectedOption.label}
+                className="object-contain w-full h-full"
+                onError={(e) => {
+                  e.target.src = '/images/placeholder-color.png';
+                  e.target.alt = 'Color preview not available';
+                }}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
-    <div>
-      {label && <p className="text-sm font-semibold mb-2 text-gray-700 opacity-0">{label}</p>}
+    <div className={className}>
+      {label && <p className="text-sm font-semibold mb-2 text-gray-700">{label}</p>}
       <select
         value={weightValue}
         onChange={onChange}
         className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition-colors"
-        disabled={options.length === 0}
+        disabled={weightOptions.length === 0}
       >
-        {options.map((option, index) => (
-          <option key={`${option.value}-${index}`} value={option.value}>
-            {option.label}
-          </option>
-        ))}
+        {weightOptions.length === 0 ? (
+          <option value="">No weight options available for this paper type</option>
+        ) : (
+          <>
+            <option value="">Select weight</option>
+            {weightOptions.map((option, index) => (
+              <option key={`${option.value}-${index}`} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </>
+        )}
       </select>
+      {selectedOption && (
+        <p className="text-xs text-gray-500 mt-1">
+          Available weights may vary based on paper type selection
+        </p>
+      )}
+    </div>
+  );
+};
+
+// ===== IMAGE PREVIEW MODAL =====
+const ImagePreviewModal = ({ isOpen, imageUrl, onClose }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+        <div className="flex justify-between items-center p-4 border-b border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900">Color Preview</h3>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <span className="text-2xl text-gray-500">×</span>
+          </button>
+        </div>
+        <div className="p-8 flex items-center justify-center bg-gray-100 min-h-[60vh]">
+          <img 
+            src={imageUrl} 
+            alt="Color preview"
+            className="max-w-full max-h-[70vh] object-contain"
+            onError={(e) => {
+              e.target.src = '/images/placeholder-color-large.png';
+              e.target.alt = 'Color preview not available';
+            }}
+          />
+        </div>
+      </div>
     </div>
   );
 };
@@ -698,7 +1254,15 @@ const BindingEdgeSelector = ({ label, options, selected, onChange, className = "
           <div className="flex items-center space-x-3">
             {option.image && (
               <div className="w-12 h-12 bg-gray-100 rounded flex items-center justify-center">
-                <span className="text-xs font-semibold text-gray-600">Edge</span>
+                <img 
+                  src={option.image} 
+                  alt={option.label}
+                  className="w-10 h-10 object-contain"
+                  onError={(e) => {
+                    e.target.src = '/images/placeholder-color.png';
+                    e.target.alt = 'Image not available';
+                  }}
+                />
               </div>
             )}
             <div className="flex-1">
@@ -714,7 +1278,6 @@ const BindingEdgeSelector = ({ label, options, selected, onChange, className = "
 
 // ===== MAIN COMPONENT =====
 const WireQuoteForm = () => {
-  // Import cart context and router
   const { addToCart } = useCart();
   const router = useRouter();
 
@@ -722,7 +1285,6 @@ const WireQuoteForm = () => {
   const [loading, setLoading] = useState(true);
   const [configVersion, setConfigVersion] = useState(0);
 
-  // Form State Management
   const [sizeUnit, setSizeUnit] = useState('INCH');
   const [paperUnit, setPaperUnit] = useState('US');
   const [selectedSize, setSelectedSize] = useState('8.5x11-standard');
@@ -731,24 +1293,19 @@ const WireQuoteForm = () => {
   const [bindingEdge, setBindingEdge] = useState('LEFT');
   const [wireColor, setWireColor] = useState('BLACK');
   
-  // Cover State
   const [coverPaper, setCoverPaper] = useState('MATTE');
-  const [coverWeight, setCoverWeight] = useState('300');
+  const [coverWeight, setCoverWeight] = useState('');
   const [coverColor, setCoverColor] = useState('CMYK');
   const [coverFinish, setCoverFinish] = useState('NONE');
   const [coverFold, setCoverFold] = useState('NONE');
   const [foldWidth, setFoldWidth] = useState('');
   
-  // Inside Page State
   const [pageCount, setPageCount] = useState(96);
   const [insidePaper, setInsidePaper] = useState('MATTE');
-  const [insideWeight, setInsideWeight] = useState('100');
+  const [insideWeight, setInsideWeight] = useState('');
   const [insideColor, setInsideColor] = useState('CMYK');
   
-  // Page Edits State - NEW
   const [pageEdits, setPageEdits] = useState([]);
-  
-  // Quantity & Options State
   const [quantity, setQuantity] = useState(200);
   const [selectedQuantityIndex, setSelectedQuantityIndex] = useState(0);
   const [proof, setProof] = useState('ONLINE');
@@ -757,28 +1314,35 @@ const WireQuoteForm = () => {
   const [shrinkWrapping, setShrinkWrapping] = useState({ enabled: false, type: '1' });
   const [directMailing, setDirectMailing] = useState({ enabled: false, type: 'ALL' });
   
-  // Shipping Modal State
   const [showShippingModal, setShowShippingModal] = useState(false);
-
-  // Page Edit Modal State - NEW
   const [showPageEditModal, setShowPageEditModal] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState('');
 
-  // Derived State
   const isCustomSize = selectedSize === 'custom';
   const [pricingData, setPricingData] = useState(getPricingData());
 
-  // Available sizes based on unit
   const availableSizes = [
     '8.5x11-letter', '8.5x11-standard', '5.5x8.5', '6x9', '7x10', '9x12',
     'A6', 'A5', 'A4', 'B6', 'B5', 'B4', 'custom'
   ];
 
-  // Get display label for size
   const getSizeDisplayLabel = (size) => {
     return SIZE_CONVERSIONS[sizeUnit]?.[size] || size;
   };
 
-  // Fetch form configuration
+  useEffect(() => {
+    const coverWeights = formConfig.paperOptions.cover.find(opt => opt.value === coverPaper)?.weightOptions;
+    if (coverWeights && coverWeights.length > 0 && !coverWeight) {
+      setCoverWeight(coverWeights[0].value);
+    }
+    
+    const insideWeights = formConfig.paperOptions.inside.find(opt => opt.value === insidePaper)?.weightOptions;
+    if (insideWeights && insideWeights.length > 0 && !insideWeight) {
+      setInsideWeight(insideWeights[0].value);
+    }
+  }, [coverPaper, insidePaper, coverWeight, insideWeight, formConfig]);
+
   const fetchFormConfig = async () => {
     try {
       console.log('🔄 Fetching wire binding form configuration from API...');
@@ -799,7 +1363,8 @@ const WireQuoteForm = () => {
               ...apiConfig.general
             },
             paperOptions: {
-              ...WIREQUOTE_DEFAULT_CONFIG.paperOptions,
+              cover: [...WIREQUOTE_DEFAULT_CONFIG.paperOptions.cover],
+              inside: [...WIREQUOTE_DEFAULT_CONFIG.paperOptions.inside],
               ...apiConfig.paperOptions
             },
             additionalOptions: {
@@ -833,7 +1398,6 @@ const WireQuoteForm = () => {
     fetchFormConfig();
   }, [configVersion]);
 
-  // Configuration constants
   const BINDING_EDGES = formConfig?.bindingEdges || WIREQUOTE_DEFAULT_CONFIG.bindingEdges;
   const WIRE_COLORS = formConfig?.wireColors || WIREQUOTE_DEFAULT_CONFIG.wireColors;
   const PAPER_OPTIONS = formConfig?.paperOptions || WIREQUOTE_DEFAULT_CONFIG.paperOptions;
@@ -842,7 +1406,6 @@ const WireQuoteForm = () => {
   const COVER_FOLDS = formConfig?.coverFolds || WIREQUOTE_DEFAULT_CONFIG.coverFolds;
   const ADDITIONAL_OPTIONS = formConfig?.additionalOptions || WIREQUOTE_DEFAULT_CONFIG.additionalOptions;
   const PAGE_COUNTS = formConfig?.pageCounts || WIREQUOTE_DEFAULT_CONFIG.pageCounts;
-  const WEIGHT_OPTIONS = formConfig?.weightOptions || WIREQUOTE_DEFAULT_CONFIG.weightOptions;
   const QUANTITIES = formConfig?.quantities || WIREQUOTE_DEFAULT_CONFIG.quantities;
 
   const generalSettings = formConfig?.general || WIREQUOTE_DEFAULT_CONFIG.general;
@@ -853,7 +1416,6 @@ const WireQuoteForm = () => {
     setConfigVersion(prev => prev + 1);
   };
 
-  // Handlers
   const handleNumberInput = (setter) => (e) => {
     const value = e.target.value;
     if (value === '' || /^\d*\.?\d*$/.test(value)) {
@@ -887,19 +1449,14 @@ const WireQuoteForm = () => {
     setQuantity(pricingData[index].quantity);
   };
 
-  // Page Edits Management - NEW
   const handlePageEditsSave = (edits) => {
     console.log('Page edits saved:', edits);
     setPageEdits(edits);
-    
-    // You can add a notification here
     alert(`${edits.length} page edit${edits.length !== 1 ? 's' : ''} saved successfully!`);
   };
 
-  // Calculate page edits cost
-  const pageEditsCost = calculatePageEditsCost(pageEdits, PAPER_OPTIONS, PRINT_COLORS);
+  const pageEditsCost = calculatePageEditsCost(pageEdits, PAPER_OPTIONS.inside, PRINT_COLORS);
 
-  // Price Calculation - UPDATED with page edits cost
   const calculatePricing = useCallback(() => {
     const baseCostPerPage = formConfig?.pricing?.costPerPage || 0.06;
     const baseSetupCost = formConfig?.pricing?.baseSetupCost || 150;
@@ -907,18 +1464,14 @@ const WireQuoteForm = () => {
     const customSizeMultiplier = formConfig?.pricing?.customSizeMultiplier || 1.2;
     const standardSizeMultiplier = formConfig?.pricing?.standardSizeMultiplier || 1.1;
     
-    // Base printing cost: setup + wire binding + (pages × cost per page × quantity)
     let basePrintCost = baseSetupCost + wireBindingBaseCost + (pageCount * baseCostPerPage * quantity);
     
-    // Apply size multipliers
     if (isCustomSize) {
       basePrintCost *= customSizeMultiplier;
     } else if (selectedSize !== '8.5x11-standard' && selectedSize !== 'A4') {
-      // Apply standard size multiplier for non-standard sizes
       basePrintCost *= standardSizeMultiplier;
     }
     
-    // Get option costs
     const coverPaperCost = getOptionPrice(PAPER_OPTIONS.cover, coverPaper);
     const insidePaperCost = getOptionPrice(PAPER_OPTIONS.inside, insidePaper);
     const coverColorCost = getOptionPrice(PRINT_COLORS, coverColor);
@@ -932,10 +1485,11 @@ const WireQuoteForm = () => {
     const shrinkWrapCost = shrinkWrapping.enabled ? quantity * shrinkWrapUnitCost : 0;
     const directMailUnitCost = directMailing.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.directMail, directMailing.type) : 0;
     const directMailCost = directMailing.enabled ? quantity * directMailUnitCost : 0;
-    const pageEditsCost = calculatePageEditsCost(pageEdits, PAPER_OPTIONS, PRINT_COLORS);
+    const pageEditsCost = calculatePageEditsCost(pageEdits, PAPER_OPTIONS.inside, PRINT_COLORS);
+    const coverWeightCost = getWeightOptionPrice(coverPaper, coverWeight);
+    const insideWeightCost = getWeightOptionPrice(insidePaper, insideWeight);
 
-    // Categorize costs
-    const materialCost = coverPaperCost + insidePaperCost;
+    const materialCost = coverPaperCost + insidePaperCost + coverWeightCost + insideWeightCost;
     const colorCost = coverColorCost + insideColorCost + coverFinishCost + coverFoldCost;
     const additionalServicesCost = proofCost + holePunchCost + slipcaseCost + shrinkWrapCost + directMailCost + pageEditsCost;
 
@@ -951,17 +1505,18 @@ const WireQuoteForm = () => {
       shrinkWrapping: shrinkWrapCost,
       directMailing: directMailCost,
       pageEdits: pageEditsCost,
+      coverWeight: coverWeightCost,
+      insideWeight: insideWeightCost,
       total: totalAmount,
     };
   }, [
     pageCount, quantity, selectedSize, isCustomSize, coverPaper, insidePaper, 
     coverColor, insideColor, coverFinish, coverFold, proof, holePunching,
-    slipcase, shrinkWrapping, directMailing, pageEdits, formConfig
+    slipcase, shrinkWrapping, directMailing, pageEdits, coverWeight, insideWeight, formConfig
   ]);
 
   const prices = calculatePricing();
 
-  // Update pricing data when configuration changes - UPDATED with page edits
   useEffect(() => {
     const calculatePriceForQuantity = (qty) => {
       const baseCostPerPage = formConfig?.pricing?.costPerPage || 0.06;
@@ -978,7 +1533,6 @@ const WireQuoteForm = () => {
         basePrintCost *= standardSizeMultiplier;
       }
       
-      // Add all other costs (simplified for pricing table)
       const coverPaperCost = getOptionPrice(PAPER_OPTIONS.cover, coverPaper);
       const insidePaperCost = getOptionPrice(PAPER_OPTIONS.inside, insidePaper);
       const coverColorCost = getOptionPrice(PRINT_COLORS, coverColor);
@@ -988,10 +1542,13 @@ const WireQuoteForm = () => {
       const proofCost = getOptionPrice(ADDITIONAL_OPTIONS.proof, proof);
       const holePunchCost = holePunching.enabled ? getOptionPrice(ADDITIONAL_OPTIONS.holePunch, holePunching.type) : 0;
       const slipcaseCost = getOptionPrice(ADDITIONAL_OPTIONS.slipcase, slipcase);
-      const pageEditsCost = calculatePageEditsCost(pageEdits, PAPER_OPTIONS, PRINT_COLORS);
+      const pageEditsCost = calculatePageEditsCost(pageEdits, PAPER_OPTIONS.inside, PRINT_COLORS);
+      const coverWeightCost = getWeightOptionPrice(coverPaper, coverWeight);
+      const insideWeightCost = getWeightOptionPrice(insidePaper, insideWeight);
       
       const additionalCosts = coverPaperCost + insidePaperCost + coverColorCost + insideColorCost + 
-                            coverFinishCost + coverFoldCost + proofCost + holePunchCost + slipcaseCost + pageEditsCost;
+                            coverFinishCost + coverFoldCost + proofCost + holePunchCost + slipcaseCost + 
+                            pageEditsCost + coverWeightCost + insideWeightCost;
       
       const total = basePrintCost + additionalCosts;
       
@@ -1006,9 +1563,8 @@ const WireQuoteForm = () => {
     const quantities = [200, 300, 400, 500, 600, 700, 800, 900, 1000];
     const newPricingData = quantities.map(qty => calculatePriceForQuantity(qty));
     setPricingData(newPricingData);
-  }, [pageCount, selectedSize, isCustomSize, coverPaper, insidePaper, coverColor, insideColor, coverFinish, coverFold, proof, holePunching, slipcase, pageEdits, formConfig]);
+  }, [pageCount, selectedSize, isCustomSize, coverPaper, insidePaper, coverColor, insideColor, coverFinish, coverFold, proof, holePunching, slipcase, pageEdits, coverWeight, insideWeight, formConfig]);
 
-  // Handle Add to Cart function - UPDATED with page edits
   const handleAddToCart = () => {
     const formData = {
       sizeUnit,
@@ -1030,7 +1586,7 @@ const WireQuoteForm = () => {
         paper: insidePaper, 
         weight: insideWeight, 
         color: insideColor,
-        pageEdits // Added page edits
+        pageEdits
       },
       quantity,
       options: { 
@@ -1058,14 +1614,11 @@ const WireQuoteForm = () => {
         cover: coverPaper,
         printColor: coverColor,
         quantity: quantity,
-        pageEditsCount: pageEdits.length // Added page edits count
+        pageEditsCount: pageEdits.length
       }
     };
     
-    // Add to cart
     addToCart(cartItem);
-    
-    // Redirect to cart page
     router.push('/cart');
   };
 
@@ -1080,7 +1633,6 @@ const WireQuoteForm = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 font-sans">
-      {/* Page Edit Modal */}
       <PageEditModal
         isOpen={showPageEditModal}
         onClose={() => setShowPageEditModal(false)}
@@ -1101,6 +1653,12 @@ const WireQuoteForm = () => {
         formData={{ quantity, pageCount, selectedSize: getSizeDisplayLabel(selectedSize) }}
       />
       
+      <ImagePreviewModal
+        isOpen={showImageModal}
+        imageUrl={selectedImage}
+        onClose={() => setShowImageModal(false)}
+      />
+      
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
@@ -1111,7 +1669,6 @@ const WireQuoteForm = () => {
           </p>
         </div>
 
-        {/* Unit Selection */}
         <div className="mb-12 bg-white rounded-2xl shadow-lg p-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Measurement Units</h2>
           <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
@@ -1140,9 +1697,7 @@ const WireQuoteForm = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             
-            {/* Size & Binding Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Size Selection */}
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                   <span className="mr-2">📐</span>
@@ -1188,7 +1743,6 @@ const WireQuoteForm = () => {
                 )}
               </div>
 
-              {/* Binding Edge */}
               <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                 <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
                   <span className="mr-2">📖</span>
@@ -1213,7 +1767,7 @@ const WireQuoteForm = () => {
               </div>
             </div>
 
-            {/* Cover Section */}
+            {/* UPDATED: Cover Specifications with ImageDropdown for Print Color */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b border-gray-200">
                 <h3 className="text-2xl font-bold text-gray-900 flex items-center">
@@ -1230,25 +1784,30 @@ const WireQuoteForm = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-6">
                 <SelectDropdown 
                   label="Paper Type" 
                   options={PAPER_OPTIONS.cover} 
                   selected={coverPaper} 
-                  onChange={(e) => setCoverPaper(e.target.value)} 
+                  onChange={(e) => setCoverPaper(e.target.value)}
+                  showDescription={true}
                 />
                 <PaperWeightSelector
+                  paperType={coverPaper}
                   paperUnit={paperUnit}
                   label="Paper Weight"
                   weightValue={coverWeight}
                   onChange={(e) => setCoverWeight(e.target.value)}
-                  availableWeights={['200', '250', '300']}
+                  isCover={true}
                 />
-                <SelectDropdown 
-                  label="Print Color" 
-                  options={PRINT_COLORS} 
-                  selected={coverColor} 
-                  onChange={(e) => setCoverColor(e.target.value)} 
+                {/* UPDATED: Changed to ImageDropdown for cover print color */}
+                <ImageDropdown
+                  label="Print Color"
+                  options={PRINT_COLORS}
+                  selected={coverColor}
+                  onChange={(e) => setCoverColor(e.target.value)}
+                  className="w-full"
+                  showPrice={true}
                 />
                 <SelectDropdown 
                   label="Cover Finish" 
@@ -1284,7 +1843,7 @@ const WireQuoteForm = () => {
               </div>
             </div>
 
-            {/* Inside Page Section */}
+            {/* UPDATED: Inside Pages with ImageDropdown for Print Color */}
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 pb-4 border-b border-gray-200">
                 <h3 className="text-2xl font-bold text-gray-900 flex items-center">
@@ -1293,7 +1852,7 @@ const WireQuoteForm = () => {
                 </h3>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-6">
                 <SelectDropdown
                   label="Page Count"
                   options={PAGE_COUNTS.map(c => ({ value: c, label: `${c} pages` }))}
@@ -1307,17 +1866,22 @@ const WireQuoteForm = () => {
                   onChange={(e) => setInsidePaper(e.target.value)} 
                 />
                 <PaperWeightSelector
+                  paperType={insidePaper}
                   paperUnit={paperUnit}
                   label="Paper Weight"
                   weightValue={insideWeight}
                   onChange={(e) => setInsideWeight(e.target.value)}
-                  availableWeights={['80', '100', '120']}
+                  isCover={false}
+                  showImages={insidePaper === 'COLORED'}
                 />
-                <SelectDropdown 
-                  label="Print Color" 
-                  options={PRINT_COLORS} 
-                  selected={insideColor} 
-                  onChange={(e) => setInsideColor(e.target.value)} 
+                {/* UPDATED: Changed to ImageDropdown for inside print color */}
+                <ImageDropdown
+                  label="Print Color"
+                  options={PRINT_COLORS}
+                  selected={insideColor}
+                  onChange={(e) => setInsideColor(e.target.value)}
+                  className="w-full"
+                  showPrice={true}
                 />
               </div>
 
@@ -1351,7 +1915,6 @@ const WireQuoteForm = () => {
                 </Link>
               </div>
 
-              {/* Page Edits Summary */}
               {pageEdits.length > 0 && (
                 <div className="mt-6 p-4 bg-indigo-50 border border-indigo-200 rounded-xl">
                   <h4 className="text-lg font-semibold text-indigo-900 mb-2">Page Layout Edits Summary</h4>
@@ -1367,7 +1930,7 @@ const WireQuoteForm = () => {
                           </span>
                         </span>
                         <span className="font-medium text-indigo-700">
-                          +{formatCurrency(15 * edit.pages.length)} {/* Simplified cost */}
+                          +{formatCurrency(15 * edit.pages.length)}
                         </span>
                       </div>
                     ))}
@@ -1383,7 +1946,6 @@ const WireQuoteForm = () => {
             </div>
           </div>
 
-          {/* Right Column - Pricing & Options */}
           <div className="space-y-8">
             <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
               <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
@@ -1510,21 +2072,20 @@ const WireQuoteForm = () => {
                 </ToggleOption>
               </div>
 
-              {/* Price Breakdown - UPDATED with Page Edits */}
               <div className="mt-8 border-t pt-6">
                 <h4 className="text-lg font-bold text-gray-900 mb-4">Price Breakdown</h4>
                 <div className="space-y-3 text-sm">
                   {[
                     { label: 'Base Printing', value: prices.basePrinting },
                     { label: 'Premium Materials', value: prices.materials, show: prices.materials > 0 },
+                    { label: 'Cover Weight', value: prices.coverWeight, show: prices.coverWeight > 0 },
+                    { label: 'Inside Paper Weight', value: prices.insideWeight, show: prices.insideWeight > 0 },
                     { label: 'Color Options', value: prices.color, show: prices.color > 0 },
                     { label: 'Digital Proof', value: prices.proof, show: prices.proof > 0 },
                     { label: 'Hole Punching', value: prices.holePunching, show: prices.holePunching > 0 },
                     { label: 'Slipcase', value: prices.slipcase, show: prices.slipcase > 0 },
                     { label: 'Shrink Wrapping', value: prices.shrinkWrapping, show: prices.shrinkWrapping > 0 },
                     { label: 'Direct Mailing', value: prices.directMailing, show: prices.directMailing > 0 },
-                    
-                    // NEW: Page Layout Edits
                     { 
                       label: `Page Layout Edits (${pageEdits.length} change${pageEdits.length !== 1 ? 's' : ''})`, 
                       value: prices.pageEdits, 
@@ -1545,7 +2106,6 @@ const WireQuoteForm = () => {
                   </div>
                 </div>
 
-                {/* Page Edits Detailed Breakdown */}
                 {pageEdits.length > 0 && (
                   <div className="mt-6 pt-6 border-t border-gray-200">
                     <h5 className="font-semibold text-gray-800 mb-3">Page Layout Edits Details:</h5>
@@ -1570,7 +2130,6 @@ const WireQuoteForm = () => {
                 )}
               </div>
 
-              {/* Action Buttons - UPDATED WITH PAGE EDITS */}
               <div className="flex flex-col sm:flex-row gap-2 mt-8">
                 <button 
                   onClick={() => setShowShippingModal(true)}
