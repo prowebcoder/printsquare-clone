@@ -36,115 +36,411 @@ const HARDQUOTE_DEFAULT_CONFIG = {
       { 
         value: 'MATTE', 
         label: 'Matte', 
-        description: 'Matte finish, professional look'
+        description: 'Matte finish, professional look',
+        price: 0
       },
       { 
         value: 'GLOSS', 
         label: 'Gloss', 
-        description: 'Glossy finish, vibrant colors'
+        description: 'Glossy finish, vibrant colors',
+        price: 25
       },
       { 
         value: 'COLORED', 
         label: 'Colored', 
-        description: 'Colored paper options'
+        description: 'Colored paper options',
+        price: 40
       },
       { 
         value: 'LEATHACK91', 
         label: 'Leathack 91', 
-        description: 'Premium leather texture'
+        description: 'Premium leather texture',
+        price: 120
       },
       { 
         value: 'LEATHACK205', 
         label: 'Leathack 205', 
-        description: 'Enhanced leather finish'
+        description: 'Enhanced leather finish',
+        price: 150
       },
       { 
         value: 'LEATHACK210', 
         label: 'Leathack 210', 
-        description: 'Premium leather texture'
+        description: 'Premium leather texture',
+        price: 180
       },
       { 
         value: 'TANT', 
         label: 'Tant', 
-        description: 'Textured paper option'
+        description: 'Textured paper option',
+        price: 100
       },
       { 
         value: 'COLORED_KEN', 
         label: 'Colored - KEN', 
-        description: 'KEN colored options'
+        description: 'KEN colored options',
+        price: 50
       },
       { 
         value: 'COLORED_KEV', 
         label: 'Colored - KEV', 
-        description: 'KEV colored options'
+        description: 'KEV colored options',
+        price: 60
       },
       { 
         value: 'CLOTH', 
         label: 'Cloth', 
-        description: 'Cloth cover material'
+        description: 'Cloth cover material',
+        price: 80
       },
       { 
         value: 'CLOTH_GLOSS', 
         label: 'Cloth + Gloss', 
-        description: 'Cloth with gloss finish'
+        description: 'Cloth with gloss finish',
+        price: 100
       },
       { 
         value: 'CLOTH_MATTE', 
         label: 'Cloth + Matte', 
-        description: 'Cloth with matte finish'
+        description: 'Cloth with matte finish',
+        price: 90
       }
     ],
     inside: [
       { 
         value: 'GLOSS', 
         label: 'Gloss', 
-        description: 'Glossy finish, vibrant printing'
+        description: 'Glossy finish, vibrant printing',
+        price: 0
       },
       { 
         value: 'MATTE', 
         label: 'Matte', 
-        description: 'Matte finish, reduces glare'
+        description: 'Matte finish, reduces glare',
+        price: 0
       },
       { 
         value: 'HI-PLUS', 
         label: 'Hi-Plus', 
-        description: 'Premium heavy-weight paper'
+        description: 'Premium heavy-weight paper',
+        price: 25
       },
       { 
         value: 'HI-QMATTE', 
         label: 'Hi-Q Matte', 
-        description: 'High quality matte finish'
+        description: 'High quality matte finish',
+        price: 50
       },
       { 
         value: 'HIUNCOATED', 
         label: 'Hi Uncoated', 
-        description: 'Uncoated heavy paper'
+        description: 'Uncoated heavy paper',
+        price: 0
       },
       { 
         value: 'HIPREMIUM', 
         label: 'Hi Premium', 
-        description: 'Premium grade paper'
+        description: 'Premium grade paper',
+        price: 75
       },
       { 
         value: 'HINEWPLUS', 
         label: 'Hi New Plus', 
-        description: 'New premium paper'
+        description: 'New premium paper',
+        price: 20
       },
       { 
         value: 'TEXTBOOK', 
         label: 'Textbook', 
-        description: 'Textbook grade paper'
+        description: 'Textbook grade paper',
+        price: 30
       },
       { 
         value: 'TRANSLUCENT', 
         label: 'Translucent', 
-        description: 'Translucent paper option'
+        description: 'Translucent paper option',
+        price: 80
       },
       { 
         value: 'COLORED', 
         label: 'Colored', 
-        description: 'Colored interior paper'
+        description: 'Colored interior paper',
+        price: 40
       }
+    ]
+  },
+  
+  // COVER PAPER WEIGHT OPTIONS
+  coverPaperWeightOptions: {
+    'GLOSS': [
+      { value: '100# text', label: '100# text' }
+    ],
+    'MATTE': [
+      { value: '80# text', label: '80# text' }
+    ],
+    'COLORED': [
+      { value: 'A-BE01', label: 'A-BE01', image: '/forms/hard/A-BE01.png' },
+      { value: 'A-BE10', label: 'A-BE10', image: '/forms/hard/A-BE10.png' },
+      { value: 'A-BE15', label: 'A-BE15', image: '/forms/hard/A-BE15.png' },
+      { value: 'A-BE30', label: 'A-BE30', image: '/forms/hard/A-BE30.png' },
+      { value: 'A-BE42', label: 'A-BE42', image: '/forms/hard/A-BE42.png' },
+      { value: 'A-BE50', label: 'A-BE50', image: '/forms/hard/A-BE50.png' },
+      { value: 'A-BE51', label: 'A-BE51', image: '/forms/hard/A-BE51.png' },
+      { value: 'A-BE75', label: 'A-BE75', image: '/forms/hard/A-BE75.png' },
+      { value: 'A-BE83', label: 'A-BE83', image: '/forms/hard/A-BE83.png' },
+      { value: 'A-BE85', label: 'A-BE85', image: '/forms/hard/A-BE85.png' },
+      { value: 'B-BE16', label: 'B-BE16', image: '/forms/hard/B-BE16.png' },
+      { value: 'B-BE17', label: 'B-BE17', image: '/forms/hard/B-BE17.png' },
+      { value: 'B-BE24', label: 'B-BE24', image: '/forms/hard/B-BE24.png' },
+      { value: 'B-BE80', label: 'B-BE80', image: '/forms/hard/B-BE80.png' },
+      { value: 'B-BE81', label: 'B-BE81', image: '/forms/hard/B-BE81.png' },
+      { value: 'C-BE36', label: 'C-BE36', image: '/forms/hard/C-BE36.png' },
+      { value: 'C-BE54', label: 'C-BE54', image: '/forms/hard/C-BE54.png' },
+      { value: 'C-BE66', label: 'C-BE66', image: '/forms/hard/C-BE66.png' },
+      { value: 'C-BE73', label: 'C-BE73', image: '/forms/hard/C-BE73.png' },
+      { value: 'D-BE18', label: 'D-BE18', image: '/forms/hard/D-BE18.png' },
+      { value: 'D-BE32', label: 'D-BE32', image: '/forms/hard/D-BE32.png' },
+      { value: 'D-BE35', label: 'D-BE35', image: '/forms/hard/D-BE35.png' },
+      { value: 'D-BE69', label: 'D-BE69', image: '/forms/hard/D-BE69.png' },
+      { value: 'D-BE76', label: 'D-BE76', image: '/forms/hard/D-BE76.png' },
+      { value: 'E-BE05', label: 'E-BE05', image: '/forms/hard/E-BE05.png' }
+    ],
+    'LEATHACK91': [
+      { value: 'A-L912', label: 'A-L912', image: '/forms/hard/A-L912.png' },
+      { value: 'A-L913', label: 'A-L913', image: '/forms/hard/A-L913.png' },
+      { value: 'A-L914', label: 'A-L914', image: '/forms/hard/A-L914.png' },
+      { value: 'A-L915', label: 'A-L915', image: '/forms/hard/A-L915.png' },
+      { value: 'A-L916', label: 'A-L916', image: '/forms/hard/A-L916.png' },
+      { value: 'A-L917', label: 'A-L917', image: '/forms/hard/A-L917.png' },
+      { value: 'C-L918', label: 'C-L918', image: '/forms/hard/C-L918.png' },
+      { value: 'D-L910', label: 'D-L910', image: '/forms/hard/D-L910.png' },
+      { value: 'D-L919', label: 'D-L919', image: '/forms/hard/D-L919.png' }
+    ],
+    'LEATHACK205': [
+      { value: 'A-L2051', label: 'A-L2051', image: '/forms/hard/A-L2051.png' },
+      { value: 'A-L2052', label: 'A-L2052', image: '/forms/hard/A-L2052.png' },
+      { value: 'C-L2051', label: 'C-L2051', image: '/forms/hard/C-L2051.png' },
+      { value: 'D-L2052', label: 'D-L2052', image: '/forms/hard/D-L2052.png' },
+      { value: 'D-L2053', label: 'D-L2053', image: '/forms/hard/D-L2053.png' },
+      { value: 'D-L2054', label: 'D-L2054', image: '/forms/hard/D-L2054.png' }
+    ],
+    'LEATHACK210': [
+      { value: 'A-L2101', label: 'A-L2101', image: '/forms/hard/A-L2101.png' },
+      { value: 'B-L2102', label: 'B-L2102', image: '/forms/hard/B-L2102.png' },
+      { value: 'B-L2103', label: 'B-L2103', image: '/forms/hard/B-L2103.png' },
+      { value: 'D-L2104', label: 'D-L2104', image: '/forms/hard/D-L2104.png' }
+    ],
+    'TANT': [
+      { value: 'A-T01', label: 'A-T01', image: '/forms/hard/A-T01.png' },
+      { value: 'A-T02', label: 'A-T02', image: '/forms/hard/A-T02.png' },
+      { value: 'A-T03', label: 'A-T03', image: '/forms/hard/A-T03.png' },
+      { value: 'A-T04', label: 'A-T04', image: '/forms/hard/A-T04.png' },
+      { value: 'A-T05', label: 'A-T05', image: '/forms/hard/A-T05.png' },
+      { value: 'B-T06', label: 'B-T06', image: '/forms/hard/B-T06.png' },
+      { value: 'C-T07', label: 'C-T07', image: '/forms/hard/C-T07.png' },
+      { value: 'C-T08', label: 'C-T08', image: '/forms/hard/C-T08.png' },
+      { value: 'D-T09', label: 'D-T09', image: '/forms/hard/D-T09.png' }
+    ],
+    'COLORED_KEN': [
+      { value: 'KEN101', label: 'KEN101', image: '/forms/hard/KEN101.png' },
+      { value: 'KEN102', label: 'KEN102', image: '/forms/hard/KEN102.png' },
+      { value: 'KEN103', label: 'KEN103', image: '/forms/hard/KEN103.png' },
+      { value: 'KEN104', label: 'KEN104', image: '/forms/hard/KEN104.png' },
+      { value: 'KEN105', label: 'KEN105', image: '/forms/hard/KEN105.png' },
+      { value: 'KEN106', label: 'KEN106', image: '/forms/hard/KEN106.png' },
+      { value: 'KEN107', label: 'KEN107', image: '/forms/hard/KEN107.png' },
+      { value: 'KEN108', label: 'KEN108', image: '/forms/hard/KEN108.png' },
+      { value: 'KEN109', label: 'KEN109', image: '/forms/hard/KEN109.png' },
+      { value: 'KEN110', label: 'KEN110', image: '/forms/hard/KEN110.png' },
+      { value: 'KEN111', label: 'KEN111', image: '/forms/hard/KEN111.png' },
+      { value: 'KEN112', label: 'KEN112', image: '/forms/hard/KEN112.png' },
+      { value: 'KEN113', label: 'KEN113', image: '/forms/hard/KEN113.png' },
+      { value: 'KEN114', label: 'KEN114', image: '/forms/hard/KEN114.png' },
+      { value: 'KEN115', label: 'KEN115', image: '/forms/hard/KEN115.png' },
+      { value: 'KEN116', label: 'KEN116', image: '/forms/hard/KEN116.png' },
+      { value: 'KEN117', label: 'KEN117', image: '/forms/hard/KEN117.png' },
+      { value: 'KEN118', label: 'KEN118', image: '/forms/hard/KEN118.png' },
+      { value: 'KEN119', label: 'KEN119', image: '/forms/hard/KEN119.png' },
+      { value: 'KEN120', label: 'KEN120', image: '/forms/hard/KEN120.png' },
+      { value: 'KEN121', label: 'KEN121', image: '/forms/hard/KEN121.png' },
+      { value: 'KEN122', label: 'KEN122', image: '/forms/hard/KEN122.png' },
+      { value: 'KEN123', label: 'KEN123', image: '/forms/hard/KEN123.png' },
+      { value: 'KEN124', label: 'KEN124', image: '/forms/hard/KEN124.png' },
+      { value: 'KEN218', label: 'KEN218', image: '/forms/hard/KEN218.png' }
+    ],
+    'COLORED_KEV': [
+      { value: 'KEVV01', label: 'KEVV01', image: '/forms/hard/KEVV01.png' },
+      { value: 'KEVV02', label: 'KEVV02', image: '/forms/hard/KEVV02.png' },
+      { value: 'KEVV04', label: 'KEVV04', image: '/forms/hard/KEVV04.png' },
+      { value: 'KEVV07', label: 'KEVV07', image: '/forms/hard/KEVV07.png' },
+      { value: 'KEVV08', label: 'KEVV08', image: '/forms/hard/KEVV08.png' },
+      { value: 'KEVV09', label: 'KEVV09', image: '/forms/hard/KEVV09.png' },
+      { value: 'KEVV10', label: 'KEVV10', image: '/forms/hard/KEVV10.png' },
+      { value: 'KEVV11', label: 'KEVV11', image: '/forms/hard/KEVV11.png' },
+      { value: 'KEVV13', label: 'KEVV13', image: '/forms/hard/KEVV13.png' },
+      { value: 'KEVV14', label: 'KEVV14', image: '/forms/hard/KEVV14.png' },
+      { value: 'KEVV15', label: 'KEVV15', image: '/forms/hard/KEVV15.png' },
+      { value: 'KEVV16', label: 'KEVV16', image: '/forms/hard/KEVV16.png' },
+      { value: 'KEVV18', label: 'KEVV18', image: '/forms/hard/KEVV18.png' },
+      { value: 'KEVV19', label: 'KEVV19', image: '/forms/hard/KEVV19.png' },
+      { value: 'KEVV33', label: 'KEVV33', image: '/forms/hard/KEVV33.png' },
+      { value: 'KEVV61', label: 'KEVV61', image: '/forms/hard/KEVV61.png' },
+      { value: 'KEVV62', label: 'KEVV62', image: '/forms/hard/KEVV62.png' },
+      { value: 'KEVV63', label: 'KEVV63', image: '/forms/hard/KEVV63.png' }
+    ],
+    'CLOTH': [
+      { value: 'RD3', label: 'RD3', image: '/forms/hard/RD3.png' },
+      { value: 'RD4', label: 'RD4', image: '/forms/hard/RD4.png' },
+      { value: 'RD7', label: 'RD7', image: '/forms/hard/RD7.png' },
+      { value: 'RD8', label: 'RD8', image: '/forms/hard/RD8.png' },
+      { value: 'RD9', label: 'RD9', image: '/forms/hard/RD9.png' },
+      { value: 'RD10', label: 'RD10', image: '/forms/hard/RD10.png' },
+      { value: 'RD12', label: 'RD12', image: '/forms/hard/RD12.png' },
+      { value: 'RD13', label: 'RD13', image: '/forms/hard/RD13.png' },
+      { value: 'RD14', label: 'RD14', image: '/forms/hard/RD14.png' },
+      { value: 'RD15', label: 'RD15', image: '/forms/hard/RD15.png' },
+      { value: 'RD16', label: 'RD16', image: '/forms/hard/RD16.png' },
+      { value: 'RD17', label: 'RD17', image: '/forms/hard/RD17.png' },
+      { value: 'RD18', label: 'RD18', image: '/forms/hard/RD18.png' },
+      { value: 'RD19', label: 'RD19', image: '/forms/hard/RD19.png' },
+      { value: 'RD22', label: 'RD22', image: '/forms/hard/RD22.png' },
+      { value: 'RD25', label: 'RD25', image: '/forms/hard/RD25.png' },
+      { value: 'RD26', label: 'RD26', image: '/forms/hard/RD26.png' },
+      { value: 'RD28', label: 'RD28', image: '/forms/hard/RD28.png' },
+      { value: 'RD30', label: 'RD30', image: '/forms/hard/RD30.png' }
+    ],
+    'CLOTH_GLOSS': [
+      { value: 'RD3', label: 'RD3', image: '/forms/hard/RD3.png' },
+      { value: 'RD4', label: 'RD4', image: '/forms/hard/RD4.png' },
+      { value: 'RD7', label: 'RD7', image: '/forms/hard/RD7.png' },
+      { value: 'RD8', label: 'RD8', image: '/forms/hard/RD8.png' },
+      { value: 'RD9', label: 'RD9', image: '/forms/hard/RD9.png' },
+      { value: 'RD10', label: 'RD10', image: '/forms/hard/RD10.png' },
+      { value: 'RD12', label: 'RD12', image: '/forms/hard/RD12.png' },
+      { value: 'RD13', label: 'RD13', image: '/forms/hard/RD13.png' },
+      { value: 'RD14', label: 'RD14', image: '/forms/hard/RD14.png' },
+      { value: 'RD15', label: 'RD15', image: '/forms/hard/RD15.png' },
+      { value: 'RD16', label: 'RD16', image: '/forms/hard/RD16.png' },
+      { value: 'RD17', label: 'RD17', image: '/forms/hard/RD17.png' },
+      { value: 'RD18', label: 'RD18', image: '/forms/hard/RD18.png' },
+      { value: 'RD19', label: 'RD19', image: '/forms/hard/RD19.png' },
+      { value: 'RD22', label: 'RD22', image: '/forms/hard/RD22.png' },
+      { value: 'RD25', label: 'RD25', image: '/forms/hard/RD25.png' },
+      { value: 'RD26', label: 'RD26', image: '/forms/hard/RD26.png' },
+      { value: 'RD28', label: 'RD28', image: '/forms/hard/RD28.png' },
+      { value: 'RD30', label: 'RD30', image: '/forms/hard/RD30.png' }
+    ],
+    'CLOTH_MATTE': [
+      { value: 'RD3', label: 'RD3', image: '/forms/hard/RD3.png' },
+      { value: 'RD4', label: 'RD4', image: '/forms/hard/RD4.png' },
+      { value: 'RD7', label: 'RD7', image: '/forms/hard/RD7.png' },
+      { value: 'RD8', label: 'RD8', image: '/forms/hard/RD8.png' },
+      { value: 'RD9', label: 'RD9', image: '/forms/hard/RD9.png' },
+      { value: 'RD10', label: 'RD10', image: '/forms/hard/RD10.png' },
+      { value: 'RD12', label: 'RD12', image: '/forms/hard/RD12.png' },
+      { value: 'RD13', label: 'RD13', image: '/forms/hard/RD13.png' },
+      { value: 'RD14', label: 'RD14', image: '/forms/hard/RD14.png' },
+      { value: 'RD15', label: 'RD15', image: '/forms/hard/RD15.png' },
+      { value: 'RD16', label: 'RD16', image: '/forms/hard/RD16.png' },
+      { value: 'RD17', label: 'RD17', image: '/forms/hard/RD17.png' },
+      { value: 'RD18', label: 'RD18', image: '/forms/hard/RD18.png' },
+      { value: 'RD19', label: 'RD19', image: '/forms/hard/RD19.png' },
+      { value: 'RD22', label: 'RD22', image: '/forms/hard/RD22.png' },
+      { value: 'RD25', label: 'RD25', image: '/forms/hard/RD25.png' },
+      { value: 'RD26', label: 'RD26', image: '/forms/hard/RD26.png' },
+      { value: 'RD28', label: 'RD28', image: '/forms/hard/RD28.png' },
+      { value: 'RD30', label: 'RD30', image: '/forms/hard/RD30.png' }
+    ]
+  },
+  
+  // INSIDE PAPER WEIGHT OPTIONS
+  insidePaperWeightOptions: {
+    'GLOSS': [
+      { value: '68# text', label: '68# text' },
+      { value: '80# text', label: '80# text' },
+      { value: '100# text', label: '100# text' },
+      { value: '67# cover', label: '67# cover' },
+      { value: '74# cover', label: '74# cover' },
+      { value: '92# cover', label: '92# cover' }
+    ],
+    'MATTE': [
+      { value: '68# text', label: '68# text' },
+      { value: '80# text', label: '80# text' },
+      { value: '100# text', label: '100# text' },
+      { value: '67# cover', label: '67# cover' },
+      { value: '74# cover', label: '74# cover' },
+      { value: '92# cover', label: '92# cover' }
+    ],
+    'HI-PLUS': [
+      { value: '60# text', label: '60# text' },
+      { value: '68# text', label: '68# text' },
+      { value: '80# text', label: '80# text' }
+    ],
+    'HI-QMATTE': [
+      { value: '89# text', label: '89# text' },
+      { value: '109# text', label: '109# text' }
+    ],
+    'HIUNCOATED': [
+      { value: '47# text', label: '47# text' },
+      { value: '54# text', label: '54# text' },
+      { value: '60# text', label: '60# text' },
+      { value: '68# text', label: '68# text' },
+      { value: '80# text', label: '80# text' },
+      { value: '100# text', label: '100# text' },
+      { value: '67# cover', label: '67# cover' },
+      { value: '81# cover', label: '81# cover' }
+    ],
+    'HIPREMIUM': [
+      { value: '60# text', label: '60# text' },
+      { value: '68# text', label: '68# text' },
+      { value: '88# text', label: '88# text' },
+      { value: '108# text', label: '108# text' },
+      { value: '70# cover', label: '70# cover' },
+      { value: '78# cover', label: '78# cover' }
+    ],
+    'HINEWPLUS': [
+      { value: '47# text', label: '47# text' },
+      { value: '54# text', label: '54# text' },
+      { value: '68# text', label: '68# text' }
+    ],
+    'TEXTBOOK': [
+      { value: '51# text', label: '51# text' }
+    ],
+    'TRANSLUCENT': [
+      { value: '54# text', label: '54# text' },
+      { value: '68# text', label: '68# text' },
+      { value: '88# text', label: '88# text' },
+      { value: '100# text', label: '100# text' },
+      { value: '63# cover', label: '63# cover' },
+      { value: '74# cover', label: '74# cover' },
+      { value: '81# cover', label: '81# cover' }
+    ],
+    'COLORED': [
+      { value: 'A-BE01', label: 'A-BE01', image: '/forms/A-BE01.png' },
+      { value: 'A-BE10', label: 'A-BE10', image: '/forms/A-BE10.png' },
+      { value: 'A-BE15', label: 'A-BE15', image: '/forms/A-BE15.png' },
+      { value: 'A-BE30', label: 'A-BE30', image: '/forms/A-BE30.png' },
+      { value: 'A-BE42', label: 'A-BE42', image: '/forms/A-BE42.png' },
+      { value: 'A-BE50', label: 'A-BE50', image: '/forms/A-BE50.png' },
+      { value: 'A-BE51', label: 'A-BE51', image: '/forms/A-BE51.png' },
+      { value: 'A-BE75', label: 'A-BE75', image: '/forms/A-BE75.png' },
+      { value: 'A-BE83', label: 'A-BE83', image: '/forms/A-BE83.png' },
+      { value: 'A-BE85', label: 'A-BE85', image: '/forms/A-BE85.png' },
+      { value: 'B-BE16', label: 'B-BE16', image: '/forms/B-BE16.png' },
+      { value: 'B-BE17', label: 'B-BE17', image: '/forms/B-BE17.png' },
+      { value: 'B-BE24', label: 'B-BE24', image: '/forms/B-BE24.png' },
+      { value: 'B-BE80', label: 'B-BE80', image: '/forms/B-BE80.png' },
+      { value: 'B-BE81', label: 'B-BE81', image: '/forms/B-BE81.png' },
+      { value: 'C-BE36', label: 'C-BE36', image: '/forms/C-BE36.png' },
+      { value: 'C-BE54', label: 'C-BE54', image: '/forms/C-BE54.png' },
+      { value: 'C-BE66', label: 'C-BE66', image: '/forms/C-BE66.png' },
+      { value: 'C-BE73', label: 'C-BE73', image: '/forms/C-BE73.png' },
+      { value: 'D-BE18', label: 'D-BE18', image: '/forms/D-BE18.png' },
+      { value: 'D-BE32', label: 'D-BE32', image: '/forms/D-BE32.png' },
+      { value: 'D-BE35', label: 'D-BE35', image: '/forms/D-BE35.png' },
+      { value: 'D-BE69', label: 'D-BE69', image: '/forms/D-BE69.png' },
+      { value: 'D-BE76', label: 'D-BE76', image: '/forms/D-BE76.png' },
+      { value: 'E-BE05', label: 'E-BE05', image: '/forms/E-BE05.png' }
     ]
   },
   
@@ -965,18 +1261,18 @@ const PaperWeightSelector = ({ paperUnit, weightValue, onChange, label = "", opt
           labelText = conversion.pt;
           break;
         case 'KG':
-          labelText = conversion.kg;
-          break;
-        default:
-          labelText = conversion.gsm;
-      }
-      
-      return {
-        value: key,
-        label: labelText
-      };
-    });
-  };
+            labelText = conversion.kg;
+            break;
+          default:
+            labelText = conversion.gsm;
+        }
+        
+        return {
+          value: key,
+          label: labelText
+        };
+      });
+    };
 
   return (
     <div>
@@ -1212,13 +1508,13 @@ const HardQuoteForm = () => {
   const [bookmark, setBookmark] = useState('');
   
   const [coverPaper, setCoverPaper] = useState('MATTE');
-  const [coverWeight, setCoverWeight] = useState('150');
+  const [coverWeight, setCoverWeight] = useState('');
   const [coverColor, setCoverColor] = useState('CMYK');
   const [coverPaperOption, setCoverPaperOption] = useState('');
   
   const [pageCount, setPageCount] = useState(96);
   const [insidePaper, setInsidePaper] = useState('MATTE');
-  const [insideWeight, setInsideWeight] = useState('100');
+  const [insideWeight, setInsideWeight] = useState('');
   const [insideColor, setInsideColor] = useState('CMYK');
   const [insidePaperOption, setInsidePaperOption] = useState('');
   
@@ -1251,164 +1547,28 @@ const HardQuoteForm = () => {
     { value: 'custom', label: 'Custom Size' }
   ];
 
-  // Cover paper options based on selected type
+  // Get cover paper weight options based on selected type
   const getCoverPaperOptions = () => {
-    const coverPaperTypes = formConfig.coverPaperTypes || {};
     const paperType = coverPaper.toUpperCase();
-    
-    if (coverPaperTypes[paperType] && coverPaperTypes[paperType].options) {
-      return coverPaperTypes[paperType].options;
-    }
-    
-    // Default options if not configured
-    switch(paperType) {
-      case 'GLOSS':
-        return [{ value: '100# text', label: '100# text', image: '/forms/hard/gloss-100.png' }];
-      case 'MATTE':
-        return [{ value: '80# text', label: '80# text', image: '/forms/hard/matte-80.png' }];
-      case 'COLORED':
-        return [
-          { value: 'A-BE01', label: 'A-BE01', image: '/forms/hard/A-BE01.png' },
-          { value: 'A-BE10', label: 'A-BE10', image: '/forms/hard/A-BE10.png' },
-          { value: 'A-BE15', label: 'A-BE15', image: '/forms/hard/A-BE15.png' },
-          { value: 'A-BE30', label: 'A-BE30', image: '/forms/hard/A-BE30.png' },
-          { value: 'A-BE42', label: 'A-BE42', image: '/forms/hard/A-BE42.png' },
-          { value: 'A-BE50', label: 'A-BE50', image: '/forms/hard/A-BE50.png' },
-          { value: 'A-BE51', label: 'A-BE51', image: '/forms/hard/A-BE51.png' },
-          { value: 'A-BE75', label: 'A-BE75', image: '/forms/hard/A-BE75.png' },
-          { value: 'A-BE83', label: 'A-BE83', image: '/forms/hard/A-BE83.png' },
-          { value: 'A-BE85', label: 'A-BE85', image: '/forms/hard/A-BE85.png' },
-          { value: 'B-BE16', label: 'B-BE16', image: '/forms/hard/B-BE16.png' },
-          { value: 'B-BE17', label: 'B-BE17', image: '/forms/hard/B-BE17.png' },
-          { value: 'B-BE24', label: 'B-BE24', image: '/forms/hard/B-BE24.png' },
-          { value: 'B-BE80', label: 'B-BE80', image: '/forms/hard/B-BE80.png' },
-          { value: 'B-BE81', label: 'B-BE81', image: '/forms/hard/B-BE81.png' },
-          { value: 'C-BE36', label: 'C-BE36', image: '/forms/hard/C-BE36.png' },
-          { value: 'C-BE54', label: 'C-BE54', image: '/forms/hard/C-BE54.png' },
-          { value: 'C-BE66', label: 'C-BE66', image: '/forms/hard/C-BE66.png' },
-          { value: 'C-BE73', label: 'C-BE73', image: '/forms/hard/C-BE73.png' },
-          { value: 'D-BE18', label: 'D-BE18', image: '/forms/hard/D-BE18.png' },
-          { value: 'D-BE32', label: 'D-BE32', image: '/forms/hard/D-BE32.png' },
-          { value: 'D-BE35', label: 'D-BE35', image: '/forms/hard/D-BE35.png' },
-          { value: 'D-BE69', label: 'D-BE69', image: '/forms/hard/D-BE69.png' },
-          { value: 'D-BE76', label: 'D-BE76', image: '/forms/hard/D-BE76.png' },
-          { value: 'E-BE05', label: 'E-BE05', image: '/forms/hard/E-BE05.png' }
-        ];
-      default:
-        return [];
-    }
+    return formConfig.coverPaperWeightOptions?.[paperType] || [];
   };
 
-  // Inside paper options based on selected type
+  // Get inside paper weight options based on selected type
   const getInsidePaperOptions = () => {
-    const insidePaperOptions = formConfig.insidePaperOptions || {};
     const paperType = insidePaper.toUpperCase();
-    
-    if (insidePaperOptions[paperType] && insidePaperOptions[paperType].options) {
-      return insidePaperOptions[paperType].options;
-    }
-    
-    // Default options for colored paper
-    if (paperType === 'COLORED') {
-      return [
-        { value: 'A-BE01', label: 'A-BE01', image: '/forms/A-BE01.png' },
-        { value: 'A-BE10', label: 'A-BE10', image: '/forms/A-BE10.png' },
-        { value: 'A-BE15', label: 'A-BE15', image: '/forms/A-BE15.png' },
-        { value: 'A-BE30', label: 'A-BE30', image: '/forms/A-BE30.png' },
-        { value: 'A-BE42', label: 'A-BE42', image: '/forms/A-BE42.png' },
-        { value: 'A-BE50', label: 'A-BE50', image: '/forms/A-BE50.png' },
-        { value: 'A-BE51', label: 'A-BE51', image: '/forms/A-BE51.png' },
-        { value: 'A-BE75', label: 'A-BE75', image: '/forms/A-BE75.png' },
-        { value: 'A-BE83', label: 'A-BE83', image: '/forms/A-BE83.png' },
-        { value: 'A-BE85', label: 'A-BE85', image: '/forms/A-BE85.png' },
-        { value: 'B-BE16', label: 'B-BE16', image: '/forms/B-BE16.png' },
-        { value: 'B-BE17', label: 'B-BE17', image: '/forms/B-BE17.png' },
-        { value: 'B-BE24', label: 'B-BE24', image: '/forms/B-BE24.png' },
-        { value: 'B-BE80', label: 'B-BE80', image: '/forms/B-BE80.png' },
-        { value: 'B-BE81', label: 'B-BE81', image: '/forms/B-BE81.png' },
-        { value: 'C-BE36', label: 'C-BE36', image: '/forms/C-BE36.png' },
-        { value: 'C-BE54', label: 'C-BE54', image: '/forms/C-BE54.png' },
-        { value: 'C-BE66', label: 'C-BE66', image: '/forms/C-BE66.png' },
-        { value: 'C-BE73', label: 'C-BE73', image: '/forms/C-BE73.png' },
-        { value: 'D-BE18', label: 'D-BE18', image: '/forms/D-BE18.png' },
-        { value: 'D-BE32', label: 'D-BE32', image: '/forms/D-BE32.png' },
-        { value: 'D-BE35', label: 'D-BE35', image: '/forms/D-BE35.png' },
-        { value: 'D-BE69', label: 'D-BE69', image: '/forms/D-BE69.png' },
-        { value: 'D-BE76', label: 'D-BE76', image: '/forms/D-BE76.png' },
-        { value: 'E-BE05', label: 'E-BE05', image: '/forms/E-BE05.png' }
-      ];
-    }
-    
-    return [];
+    return formConfig.insidePaperWeightOptions?.[paperType] || [];
   };
 
-  // Get weight options for inside paper
-  const getInsideWeightOptions = () => {
-    switch(insidePaper.toUpperCase()) {
-      case 'GLOSS':
-      case 'MATTE':
-        return [
-          { value: '68# text', label: '68# text' },
-          { value: '80# text', label: '80# text' },
-          { value: '100# text', label: '100# text' },
-          { value: '67# cover', label: '67# cover' },
-          { value: '74# cover', label: '74# cover' },
-          { value: '92# cover', label: '92# cover' }
-        ];
-      case 'HI-PLUS':
-        return [
-          { value: '60# text', label: '60# text' },
-          { value: '68# text', label: '68# text' },
-          { value: '80# text', label: '80# text' }
-        ];
-      case 'HI-QMATTE':
-        return [
-          { value: '89# text', label: '89# text' },
-          { value: '109# text', label: '109# text' }
-        ];
-      case 'HIUNCOATED':
-        return [
-          { value: '47# text', label: '47# text' },
-          { value: '54# text', label: '54# text' },
-          { value: '60# text', label: '60# text' },
-          { value: '68# text', label: '68# text' },
-          { value: '80# text', label: '80# text' },
-          { value: '100# text', label: '100# text' },
-          { value: '67# cover', label: '67# cover' },
-          { value: '81# cover', label: '81# cover' }
-        ];
-      case 'HIPREMIUM':
-        return [
-          { value: '60# text', label: '60# text' },
-          { value: '68# text', label: '68# text' },
-          { value: '88# text', label: '88# text' },
-          { value: '108# text', label: '108# text' },
-          { value: '70# cover', label: '70# cover' },
-          { value: '78# cover', label: '78# cover' }
-        ];
-      case 'HINEWPLUS':
-        return [
-          { value: '47# text', label: '47# text' },
-          { value: '54# text', label: '54# text' },
-          { value: '68# text', label: '68# text' }
-        ];
-      case 'TEXTBOOK':
-        return [
-          { value: '51# text', label: '51# text' }
-        ];
-      case 'TRANSLUCENT':
-        return [
-          { value: '54# text', label: '54# text' },
-          { value: '68# text', label: '68# text' },
-          { value: '88# text', label: '88# text' },
-          { value: '100# text', label: '100# text' },
-          { value: '63# cover', label: '63# cover' },
-          { value: '74# cover', label: '74# cover' },
-          { value: '81# cover', label: '81# cover' }
-        ];
-      default:
-        return [];
-    }
+  // Handle cover paper type change
+  const handleCoverPaperChange = (e) => {
+    setCoverPaper(e.target.value);
+    setCoverPaperOption('');
+  };
+
+  // Handle inside paper type change
+  const handleInsidePaperChange = (e) => {
+    setInsidePaper(e.target.value);
+    setInsidePaperOption('');
   };
 
   const fetchFormConfig = async () => {
@@ -1548,18 +1708,6 @@ const HardQuoteForm = () => {
     alert(`${edits.length} page edit${edits.length !== 1 ? 's' : ''} saved successfully!`);
   };
 
-  // Handle cover paper type change
-  const handleCoverPaperChange = (e) => {
-    setCoverPaper(e.target.value);
-    setCoverPaperOption('');
-  };
-
-  // Handle inside paper type change
-  const handleInsidePaperChange = (e) => {
-    setInsidePaper(e.target.value);
-    setInsidePaperOption('');
-  };
-
   // Price Calculation
   const calculatePricing = useCallback(() => {
     const baseCostPerPage = formConfig?.pricing?.costPerPage || 0.08;
@@ -1578,6 +1726,8 @@ const HardQuoteForm = () => {
       basePrintCost *= standardSizeMultiplier;
     }
     
+    const coverPaperCost = getOptionPrice(PAPER_OPTIONS.cover, coverPaper);
+    const insidePaperCost = getOptionPrice(PAPER_OPTIONS.inside, insidePaper);
     const coverColorCost = getOptionPrice(PRINT_COLORS, coverColor);
     const insideColorCost = getOptionPrice(PRINT_COLORS, insideColor);
     const proofCost = getOptionPrice(ADDITIONAL_OPTIONS.proof, proof);
@@ -1591,12 +1741,14 @@ const HardQuoteForm = () => {
     const pageEditsCost = calculatePageEditsCost(pageEdits, PAPER_OPTIONS, PRINT_COLORS);
 
     const colorCost = coverColorCost + insideColorCost;
+    const paperCost = coverPaperCost + insidePaperCost;
     const additionalServicesCost = proofCost + holePunchCost + dustCoverCost + slipcaseCost + shrinkWrapCost + directMailCost + pageEditsCost;
 
-    const totalAmount = basePrintCost + colorCost + additionalServicesCost;
+    const totalAmount = basePrintCost + paperCost + colorCost + additionalServicesCost;
 
     return {
       basePrinting: basePrintCost,
+      paper: paperCost,
       color: colorCost,
       proof: proofCost,
       holePunching: holePunchCost,
@@ -1608,7 +1760,7 @@ const HardQuoteForm = () => {
       total: totalAmount,
     };
   }, [
-    pageCount, quantity, selectedSize, isCustomSize, coverColor, insideColor, 
+    pageCount, quantity, selectedSize, isCustomSize, coverPaper, insidePaper, coverColor, insideColor, 
     proof, holePunching, dustCover, slipcase, shrinkWrapping, directMailing, pageEdits, formConfig
   ]);
 
@@ -1631,13 +1783,15 @@ const HardQuoteForm = () => {
         basePrintCost *= standardSizeMultiplier;
       }
       
+      const coverPaperCost = getOptionPrice(PAPER_OPTIONS.cover, coverPaper);
+      const insidePaperCost = getOptionPrice(PAPER_OPTIONS.inside, insidePaper);
       const coverColorCost = getOptionPrice(PRINT_COLORS, coverColor);
       const insideColorCost = getOptionPrice(PRINT_COLORS, insideColor);
       const proofCost = getOptionPrice(ADDITIONAL_OPTIONS.proof, proof);
       const slipcaseCost = getOptionPrice(ADDITIONAL_OPTIONS.slipcase, slipcase);
       const pageEditsCost = calculatePageEditsCost(pageEdits, PAPER_OPTIONS, PRINT_COLORS);
       
-      const additionalCosts = coverColorCost + insideColorCost + proofCost + slipcaseCost + pageEditsCost;
+      const additionalCosts = coverPaperCost + insidePaperCost + coverColorCost + insideColorCost + proofCost + slipcaseCost + pageEditsCost;
       
       const total = basePrintCost + additionalCosts;
       
@@ -1652,7 +1806,7 @@ const HardQuoteForm = () => {
     const quantities = [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000];
     const newPricingData = quantities.map(qty => calculatePriceForQuantity(qty));
     setPricingData(newPricingData);
-  }, [pageCount, selectedSize, isCustomSize, coverColor, insideColor, proof, slipcase, pageEdits, formConfig]);
+  }, [pageCount, selectedSize, isCustomSize, coverPaper, insidePaper, coverColor, insideColor, proof, slipcase, pageEdits, formConfig]);
 
   // Handle Add to Cart function
   const handleAddToCart = () => {
@@ -1894,20 +2048,21 @@ const HardQuoteForm = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                {/* Cover Paper Type */}
-                <SelectDropdown 
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-6">
+                {/* Cover Paper Type with Price */}
+                <ImageDropdown 
                   label="Paper Type" 
                   options={PAPER_OPTIONS.cover} 
                   selected={coverPaper} 
                   onChange={handleCoverPaperChange}
                   showDescription={true}
+                  showPrice={true}
                 />
                 
                 {/* Cover Paper Option - Conditional based on selected type */}
-                {coverPaper && getCoverPaperOptions().length > 0 ? (
+                {getCoverPaperOptions().length > 0 ? (
                   <ImageDropdown
-                    label={coverPaper === 'GLOSS' ? 'Weight' : 'Color/Type'}
+                    label={coverPaper === 'GLOSS' || coverPaper === 'MATTE' ? 'Weight' : 'Color/Type'}
                     options={getCoverPaperOptions()}
                     selected={coverPaperOption}
                     onChange={(e) => setCoverPaperOption(e.target.value)}
@@ -1936,7 +2091,7 @@ const HardQuoteForm = () => {
               {coverPaperOption && (
                 <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-semibold text-gray-700">Selected {coverPaper === 'GLOSS' ? 'Weight' : 'Color'}:</p>
+                    <p className="text-sm font-semibold text-gray-700">Selected {coverPaper === 'GLOSS' || coverPaper === 'MATTE' ? 'Weight' : 'Color'}:</p>
                     <button
                       onClick={() => {
                         const selectedOption = getCoverPaperOptions().find(opt => opt.value === coverPaperOption);
@@ -2008,7 +2163,7 @@ const HardQuoteForm = () => {
                 </h3>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-6">
                 <SelectDropdown
                   label="Page Count"
                   options={PAGE_COUNTS.map(c => ({ value: c, label: `${c} pages` }))}
@@ -2016,38 +2171,40 @@ const HardQuoteForm = () => {
                   onChange={(e) => setPageCount(Number(e.target.value))}
                 />
                 
-                {/* Inside Paper Type */}
-                <SelectDropdown 
+                {/* Inside Paper Type with Price */}
+                <ImageDropdown 
                   label="Paper Type" 
                   options={PAPER_OPTIONS.inside} 
                   selected={insidePaper} 
                   onChange={handleInsidePaperChange}
                   showDescription={true}
+                  showPrice={true}
                 />
                 
                 {/* Inside Paper Weight/Option - Conditional */}
-                {insidePaper === 'COLORED' ? (
+                {getInsidePaperOptions().length > 0 ? (
                   <ImageDropdown
-                    label="Paper Color"
+                    label={insidePaper === 'COLORED' ? 'Paper Color' : 'Paper Weight'}
                     options={getInsidePaperOptions()}
                     selected={insidePaperOption}
                     onChange={(e) => setInsidePaperOption(e.target.value)}
                   />
                 ) : (
-                  <SelectDropdown
-                    label="Paper Weight"
-                    options={getInsideWeightOptions()}
-                    selected={insideWeight}
+                  <PaperWeightSelector
+                    paperUnit={paperUnit}
+                    label='Weight'
+                    weightValue={insideWeight}
                     onChange={(e) => setInsideWeight(e.target.value)}
+                    options={WEIGHT_OPTIONS}
                   />
                 )}
               </div>
 
               {/* Inside Paper Option Preview */}
-              {insidePaper === 'COLORED' && insidePaperOption && (
+              {insidePaperOption && (
                 <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-semibold text-gray-700">Selected Paper Color:</p>
+                    <p className="text-sm font-semibold text-gray-700">Selected {insidePaper === 'COLORED' ? 'Paper Color' : 'Paper Weight'}:</p>
                     <button
                       onClick={() => {
                         const selectedOption = getInsidePaperOptions().find(opt => opt.value === insidePaperOption);
@@ -2072,7 +2229,7 @@ const HardQuoteForm = () => {
                     )}
                     <div>
                       <p className="font-medium text-gray-900">{insidePaperOption}</p>
-                      <p className="text-sm text-gray-600">Colored Paper</p>
+                      <p className="text-sm text-gray-600">{insidePaper === 'COLORED' ? 'Colored Paper' : insidePaper}</p>
                     </div>
                   </div>
                 </div>
@@ -2284,6 +2441,7 @@ const HardQuoteForm = () => {
                 <div className="space-y-3 text-sm">
                   {[
                     { label: 'Base Printing', value: prices.basePrinting },
+                    { label: 'Paper Options', value: prices.paper, show: prices.paper > 0 },
                     { label: 'Color Options', value: prices.color, show: prices.color > 0 },
                     { label: 'Digital Proof', value: prices.proof, show: prices.proof > 0 },
                     { label: 'Hole Punching', value: prices.holePunching, show: prices.holePunching > 0 },

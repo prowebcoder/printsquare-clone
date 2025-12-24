@@ -188,318 +188,278 @@ const HARDQUOTE_DEFAULT_CONFIG = {
     ]
   },
   
-  // Cover paper types with their options and images
-  coverPaperTypes: {
-    'GLOSS': {
-      label: 'Gloss Finish',
-      options: [
-        { value: '100# text', label: '100# text', image: '/forms/hard/gloss-100.png' }
-      ]
-    },
-    'MATTE': {
-      label: 'Matte Finish',
-      options: [
-        { value: '80# text', label: '80# text', image: '/forms/hard/matte-80.png' }
-      ]
-    },
-    'COLORED': {
-      label: 'Colored Paper',
-      options: [
-        { value: 'A-BE01', label: 'A-BE01', image: '/forms/hard/A-BE01.png' },
-        { value: 'A-BE10', label: 'A-BE10', image: '/forms/hard/A-BE10.png' },
-        { value: 'A-BE15', label: 'A-BE15', image: '/forms/hard/A-BE15.png' },
-        { value: 'A-BE30', label: 'A-BE30', image: '/forms/hard/A-BE30.png' },
-        { value: 'A-BE42', label: 'A-BE42', image: '/forms/hard/A-BE42.png' },
-        { value: 'A-BE50', label: 'A-BE50', image: '/forms/hard/A-BE50.png' },
-        { value: 'A-BE51', label: 'A-BE51', image: '/forms/hard/A-BE51.png' },
-        { value: 'A-BE75', label: 'A-BE75', image: '/forms/hard/A-BE75.png' },
-        { value: 'A-BE83', label: 'A-BE83', image: '/forms/hard/A-BE83.png' },
-        { value: 'A-BE85', label: 'A-BE85', image: '/forms/hard/A-BE85.png' },
-        { value: 'B-BE16', label: 'B-BE16', image: '/forms/hard/B-BE16.png' },
-        { value: 'B-BE17', label: 'B-BE17', image: '/forms/hard/B-BE17.png' },
-        { value: 'B-BE24', label: 'B-BE24', image: '/forms/hard/B-BE24.png' },
-        { value: 'B-BE80', label: 'B-BE80', image: '/forms/hard/B-BE80.png' },
-        { value: 'B-BE81', label: 'B-BE81', image: '/forms/hard/B-BE81.png' },
-        { value: 'C-BE36', label: 'C-BE36', image: '/forms/hard/C-BE36.png' },
-        { value: 'C-BE54', label: 'C-BE54', image: '/forms/hard/C-BE54.png' },
-        { value: 'C-BE66', label: 'C-BE66', image: '/forms/hard/C-BE66.png' },
-        { value: 'C-BE73', label: 'C-BE73', image: '/forms/hard/C-BE73.png' },
-        { value: 'D-BE18', label: 'D-BE18', image: '/forms/hard/D-BE18.png' },
-        { value: 'D-BE32', label: 'D-BE32', image: '/forms/hard/D-BE32.png' },
-        { value: 'D-BE35', label: 'D-BE35', image: '/forms/hard/D-BE35.png' },
-        { value: 'D-BE69', label: 'D-BE69', image: '/forms/hard/D-BE69.png' },
-        { value: 'D-BE76', label: 'D-BE76', image: '/forms/hard/D-BE76.png' },
-        { value: 'E-BE05', label: 'E-BE05', image: '/forms/hard/E-BE05.png' }
-      ]
-    },
-    'LEATHACK91': {
-      label: 'Leathack 91',
-      options: [
-        { value: 'A-L912', label: 'A-L912', image: '/forms/hard/A-L912.png' },
-        { value: 'A-L913', label: 'A-L913', image: '/forms/hard/A-L913.png' },
-        { value: 'A-L914', label: 'A-L914', image: '/forms/hard/A-L914.png' },
-        { value: 'A-L915', label: 'A-L915', image: '/forms/hard/A-L915.png' },
-        { value: 'A-L916', label: 'A-L916', image: '/forms/hard/A-L916.png' },
-        { value: 'A-L917', label: 'A-L917', image: '/forms/hard/A-L917.png' },
-        { value: 'C-L918', label: 'C-L918', image: '/forms/hard/C-L918.png' },
-        { value: 'D-L910', label: 'D-L910', image: '/forms/hard/D-L910.png' },
-        { value: 'D-L919', label: 'D-L919', image: '/forms/hard/D-L919.png' }
-      ]
-    },
-    'LEATHACK205': {
-      label: 'Leathack 205',
-      options: [
-        { value: 'A-L2051', label: 'A-L2051', image: '/forms/hard/A-L2051.png' },
-        { value: 'A-L2052', label: 'A-L2052', image: '/forms/hard/A-L2052.png' },
-        { value: 'C-L2051', label: 'C-L2051', image: '/forms/hard/C-L2051.png' },
-        { value: 'D-L2052', label: 'D-L2052', image: '/forms/hard/D-L2052.png' },
-        { value: 'D-L2053', label: 'D-L2053', image: '/forms/hard/D-L2053.png' },
-        { value: 'D-L2054', label: 'D-L2054', image: '/forms/hard/D-L2054.png' }
-      ]
-    },
-    'LEATHACK210': {
-      label: 'Leathack 210',
-      options: [
-        { value: 'A-L2101', label: 'A-L2101', image: '/forms/hard/A-L2101.png' },
-        { value: 'B-L2102', label: 'B-L2102', image: '/forms/hard/B-L2102.png' },
-        { value: 'B-L2103', label: 'B-L2103', image: '/forms/hard/B-L2103.png' },
-        { value: 'D-L2104', label: 'D-L2104', image: '/forms/hard/D-L2104.png' }
-      ]
-    },
-    'TANT': {
-      label: 'Tant',
-      options: [
-        { value: 'A-T01', label: 'A-T01', image: '/forms/hard/A-T01.png' },
-        { value: 'A-T02', label: 'A-T02', image: '/forms/hard/A-T02.png' },
-        { value: 'A-T03', label: 'A-T03', image: '/forms/hard/A-T03.png' },
-        { value: 'A-T04', label: 'A-T04', image: '/forms/hard/A-T04.png' },
-        { value: 'A-T05', label: 'A-T05', image: '/forms/hard/A-T05.png' },
-        { value: 'B-T06', label: 'B-T06', image: '/forms/hard/B-T06.png' },
-        { value: 'C-T07', label: 'C-T07', image: '/forms/hard/C-T07.png' },
-        { value: 'C-T08', label: 'C-T08', image: '/forms/hard/C-T08.png' },
-        { value: 'D-T09', label: 'D-T09', image: '/forms/hard/D-T09.png' }
-      ]
-    },
-    'COLORED_KEN': {
-      label: 'Colored - KEN',
-      options: []
-    },
-    'COLORED_KEV': {
-      label: 'Colored - KEV',
-      options: [
-        { value: 'KEVV01', label: 'KEVV01', image: '/forms/hard/KEVV01.png' },
-        { value: 'KEVV02', label: 'KEVV02', image: '/forms/hard/KEVV02.png' },
-        { value: 'KEVV04', label: 'KEVV04', image: '/forms/hard/KEVV04.png' },
-        { value: 'KEVV07', label: 'KEVV07', image: '/forms/hard/KEVV07.png' },
-        { value: 'KEVV08', label: 'KEVV08', image: '/forms/hard/KEVV08.png' },
-        { value: 'KEVV09', label: 'KEVV09', image: '/forms/hard/KEVV09.png' },
-        { value: 'KEVV10', label: 'KEVV10', image: '/forms/hard/KEVV10.png' },
-        { value: 'KEVV11', label: 'KEVV11', image: '/forms/hard/KEVV11.png' },
-        { value: 'KEVV13', label: 'KEVV13', image: '/forms/hard/KEVV13.png' },
-        { value: 'KEVV14', label: 'KEVV14', image: '/forms/hard/KEVV14.png' },
-        { value: 'KEVV15', label: 'KEVV15', image: '/forms/hard/KEVV15.png' },
-        { value: 'KEVV16', label: 'KEVV16', image: '/forms/hard/KEVV16.png' },
-        { value: 'KEVV18', label: 'KEVV18', image: '/forms/hard/KEVV18.png' },
-        { value: 'KEVV19', label: 'KEVV19', image: '/forms/hard/KEVV19.png' },
-        { value: 'KEVV33', label: 'KEVV33', image: '/forms/hard/KEVV33.png' },
-        { value: 'KEVV61', label: 'KEVV61', image: '/forms/hard/KEVV61.png' },
-        { value: 'KEVV62', label: 'KEVV62', image: '/forms/hard/KEVV62.png' },
-        { value: 'KEVV63', label: 'KEVV63', image: '/forms/hard/KEVV63.png' }
-      ]
-    },
-    'CLOTH': {
-      label: 'Cloth',
-      options: [
-        { value: 'RD3', label: 'RD3', image: '/forms/hard/RD3.png' },
-        { value: 'RD4', label: 'RD4', image: '/forms/hard/RD4.png' },
-        { value: 'RD7', label: 'RD7', image: '/forms/hard/RD7.png' },
-        { value: 'RD8', label: 'RD8', image: '/forms/hard/RD8.png' },
-        { value: 'RD9', label: 'RD9', image: '/forms/hard/RD9.png' },
-        { value: 'RD10', label: 'RD10', image: '/forms/hard/RD10.png' },
-        { value: 'RD12', label: 'RD12', image: '/forms/hard/RD12.png' },
-        { value: 'RD13', label: 'RD13', image: '/forms/hard/RD13.png' },
-        { value: 'RD14', label: 'RD14', image: '/forms/hard/RD14.png' },
-        { value: 'RD15', label: 'RD15', image: '/forms/hard/RD15.png' },
-        { value: 'RD16', label: 'RD16', image: '/forms/hard/RD16.png' },
-        { value: 'RD17', label: 'RD17', image: '/forms/hard/RD17.png' },
-        { value: 'RD18', label: 'RD18', image: '/forms/hard/RD18.png' },
-        { value: 'RD19', label: 'RD19', image: '/forms/hard/RD19.png' },
-        { value: 'RD22', label: 'RD22', image: '/forms/hard/RD22.png' },
-        { value: 'RD25', label: 'RD25', image: '/forms/hard/RD25.png' },
-        { value: 'RD26', label: 'RD26', image: '/forms/hard/RD26.png' },
-        { value: 'RD28', label: 'RD28', image: '/forms/hard/RD28.png' },
-        { value: 'RD30', label: 'RD30', image: '/forms/hard/RD30.png' }
-      ]
-    },
-    'CLOTH_GLOSS': {
-      label: 'Cloth + Gloss',
-      options: [
-        { value: 'RD3', label: 'RD3', image: '/forms/hard/RD3.png' },
-        { value: 'RD4', label: 'RD4', image: '/forms/hard/RD4.png' },
-        { value: 'RD7', label: 'RD7', image: '/forms/hard/RD7.png' },
-        { value: 'RD8', label: 'RD8', image: '/forms/hard/RD8.png' },
-        { value: 'RD9', label: 'RD9', image: '/forms/hard/RD9.png' },
-        { value: 'RD10', label: 'RD10', image: '/forms/hard/RD10.png' },
-        { value: 'RD12', label: 'RD12', image: '/forms/hard/RD12.png' },
-        { value: 'RD13', label: 'RD13', image: '/forms/hard/RD13.png' },
-        { value: 'RD14', label: 'RD14', image: '/forms/hard/RD14.png' },
-        { value: 'RD15', label: 'RD15', image: '/forms/hard/RD15.png' },
-        { value: 'RD16', label: 'RD16', image: '/forms/hard/RD16.png' },
-        { value: 'RD17', label: 'RD17', image: '/forms/hard/RD17.png' },
-        { value: 'RD18', label: 'RD18', image: '/forms/hard/RD18.png' },
-        { value: 'RD19', label: 'RD19', image: '/forms/hard/RD19.png' },
-        { value: 'RD22', label: 'RD22', image: '/forms/hard/RD22.png' },
-        { value: 'RD25', label: 'RD25', image: '/forms/hard/RD25.png' },
-        { value: 'RD26', label: 'RD26', image: '/forms/hard/RD26.png' },
-        { value: 'RD28', label: 'RD28', image: '/forms/hard/RD28.png' },
-        { value: 'RD30', label: 'RD30', image: '/forms/hard/RD30.png' }
-      ]
-    },
-    'CLOTH_MATTE': {
-      label: 'Cloth + Matte',
-      options: [
-        { value: 'RD3', label: 'RD3', image: '/forms/hard/RD3.png' },
-        { value: 'RD4', label: 'RD4', image: '/forms/hard/RD4.png' },
-        { value: 'RD7', label: 'RD7', image: '/forms/hard/RD7.png' },
-        { value: 'RD8', label: 'RD8', image: '/forms/hard/RD8.png' },
-        { value: 'RD9', label: 'RD9', image: '/forms/hard/RD9.png' },
-        { value: 'RD10', label: 'RD10', image: '/forms/hard/RD10.png' },
-        { value: 'RD12', label: 'RD12', image: '/forms/hard/RD12.png' },
-        { value: 'RD13', label: 'RD13', image: '/forms/hard/RD13.png' },
-        { value: 'RD14', label: 'RD14', image: '/forms/hard/RD14.png' },
-        { value: 'RD15', label: 'RD15', image: '/forms/hard/RD15.png' },
-        { value: 'RD16', label: 'RD16', image: '/forms/hard/RD16.png' },
-        { value: 'RD17', label: 'RD17', image: '/forms/hard/RD17.png' },
-        { value: 'RD18', label: 'RD18', image: '/forms/hard/RD18.png' },
-        { value: 'RD19', label: 'RD19', image: '/forms/hard/RD19.png' },
-        { value: 'RD22', label: 'RD22', image: '/forms/hard/RD22.png' },
-        { value: 'RD25', label: 'RD25', image: '/forms/hard/RD25.png' },
-        { value: 'RD26', label: 'RD26', image: '/forms/hard/RD26.png' },
-        { value: 'RD28', label: 'RD28', image: '/forms/hard/RD28.png' },
-        { value: 'RD30', label: 'RD30', image: '/forms/hard/RD30.png' }
-      ]
-    }
+  // Cover paper weight options - UPDATED TO MATCH FORM STRUCTURE
+  coverPaperWeightOptions: {
+    'GLOSS': [
+      { value: '100# text', label: '100# text' }
+    ],
+    'MATTE': [
+      { value: '80# text', label: '80# text' }
+    ],
+    'COLORED': [
+      { value: 'A-BE01', label: 'A-BE01', image: '/forms/hard/A-BE01.png' },
+      { value: 'A-BE10', label: 'A-BE10', image: '/forms/hard/A-BE10.png' },
+      { value: 'A-BE15', label: 'A-BE15', image: '/forms/hard/A-BE15.png' },
+      { value: 'A-BE30', label: 'A-BE30', image: '/forms/hard/A-BE30.png' },
+      { value: 'A-BE42', label: 'A-BE42', image: '/forms/hard/A-BE42.png' },
+      { value: 'A-BE50', label: 'A-BE50', image: '/forms/hard/A-BE50.png' },
+      { value: 'A-BE51', label: 'A-BE51', image: '/forms/hard/A-BE51.png' },
+      { value: 'A-BE75', label: 'A-BE75', image: '/forms/hard/A-BE75.png' },
+      { value: 'A-BE83', label: 'A-BE83', image: '/forms/hard/A-BE83.png' },
+      { value: 'A-BE85', label: 'A-BE85', image: '/forms/hard/A-BE85.png' },
+      { value: 'B-BE16', label: 'B-BE16', image: '/forms/hard/B-BE16.png' },
+      { value: 'B-BE17', label: 'B-BE17', image: '/forms/hard/B-BE17.png' },
+      { value: 'B-BE24', label: 'B-BE24', image: '/forms/hard/B-BE24.png' },
+      { value: 'B-BE80', label: 'B-BE80', image: '/forms/hard/B-BE80.png' },
+      { value: 'B-BE81', label: 'B-BE81', image: '/forms/hard/B-BE81.png' },
+      { value: 'C-BE36', label: 'C-BE36', image: '/forms/hard/C-BE36.png' },
+      { value: 'C-BE54', label: 'C-BE54', image: '/forms/hard/C-BE54.png' },
+      { value: 'C-BE66', label: 'C-BE66', image: '/forms/hard/C-BE66.png' },
+      { value: 'C-BE73', label: 'C-BE73', image: '/forms/hard/C-BE73.png' },
+      { value: 'D-BE18', label: 'D-BE18', image: '/forms/hard/D-BE18.png' },
+      { value: 'D-BE32', label: 'D-BE32', image: '/forms/hard/D-BE32.png' },
+      { value: 'D-BE35', label: 'D-BE35', image: '/forms/hard/D-BE35.png' },
+      { value: 'D-BE69', label: 'D-BE69', image: '/forms/hard/D-BE69.png' },
+      { value: 'D-BE76', label: 'D-BE76', image: '/forms/hard/D-BE76.png' },
+      { value: 'E-BE05', label: 'E-BE05', image: '/forms/hard/E-BE05.png' }
+    ],
+    'LEATHACK91': [
+      { value: 'A-L912', label: 'A-L912', image: '/forms/hard/A-L912.png' },
+      { value: 'A-L913', label: 'A-L913', image: '/forms/hard/A-L913.png' },
+      { value: 'A-L914', label: 'A-L914', image: '/forms/hard/A-L914.png' },
+      { value: 'A-L915', label: 'A-L915', image: '/forms/hard/A-L915.png' },
+      { value: 'A-L916', label: 'A-L916', image: '/forms/hard/A-L916.png' },
+      { value: 'A-L917', label: 'A-L917', image: '/forms/hard/A-L917.png' },
+      { value: 'C-L918', label: 'C-L918', image: '/forms/hard/C-L918.png' },
+      { value: 'D-L910', label: 'D-L910', image: '/forms/hard/D-L910.png' },
+      { value: 'D-L919', label: 'D-L919', image: '/forms/hard/D-L919.png' }
+    ],
+    'LEATHACK205': [
+      { value: 'A-L2051', label: 'A-L2051', image: '/forms/hard/A-L2051.png' },
+      { value: 'A-L2052', label: 'A-L2052', image: '/forms/hard/A-L2052.png' },
+      { value: 'C-L2051', label: 'C-L2051', image: '/forms/hard/C-L2051.png' },
+      { value: 'D-L2052', label: 'D-L2052', image: '/forms/hard/D-L2052.png' },
+      { value: 'D-L2053', label: 'D-L2053', image: '/forms/hard/D-L2053.png' },
+      { value: 'D-L2054', label: 'D-L2054', image: '/forms/hard/D-L2054.png' }
+    ],
+    'LEATHACK210': [
+      { value: 'A-L2101', label: 'A-L2101', image: '/forms/hard/A-L2101.png' },
+      { value: 'B-L2102', label: 'B-L2102', image: '/forms/hard/B-L2102.png' },
+      { value: 'B-L2103', label: 'B-L2103', image: '/forms/hard/B-L2103.png' },
+      { value: 'D-L2104', label: 'D-L2104', image: '/forms/hard/D-L2104.png' }
+    ],
+    'TANT': [
+      { value: 'A-T01', label: 'A-T01', image: '/forms/hard/A-T01.png' },
+      { value: 'A-T02', label: 'A-T02', image: '/forms/hard/A-T02.png' },
+      { value: 'A-T03', label: 'A-T03', image: '/forms/hard/A-T03.png' },
+      { value: 'A-T04', label: 'A-T04', image: '/forms/hard/A-T04.png' },
+      { value: 'A-T05', label: 'A-T05', image: '/forms/hard/A-T05.png' },
+      { value: 'B-T06', label: 'B-T06', image: '/forms/hard/B-T06.png' },
+      { value: 'C-T07', label: 'C-T07', image: '/forms/hard/C-T07.png' },
+      { value: 'C-T08', label: 'C-T08', image: '/forms/hard/C-T08.png' },
+      { value: 'D-T09', label: 'D-T09', image: '/forms/hard/D-T09.png' }
+    ],
+    'COLORED_KEN': [
+      { value: 'KEN101', label: 'KEN101', image: '/forms/hard/KEN101.png' },
+      { value: 'KEN102', label: 'KEN102', image: '/forms/hard/KEN102.png' },
+      { value: 'KEN103', label: 'KEN103', image: '/forms/hard/KEN103.png' },
+      { value: 'KEN104', label: 'KEN104', image: '/forms/hard/KEN104.png' },
+      { value: 'KEN105', label: 'KEN105', image: '/forms/hard/KEN105.png' },
+      { value: 'KEN106', label: 'KEN106', image: '/forms/hard/KEN106.png' },
+      { value: 'KEN107', label: 'KEN107', image: '/forms/hard/KEN107.png' },
+      { value: 'KEN108', label: 'KEN108', image: '/forms/hard/KEN108.png' },
+      { value: 'KEN109', label: 'KEN109', image: '/forms/hard/KEN109.png' },
+      { value: 'KEN110', label: 'KEN110', image: '/forms/hard/KEN110.png' },
+      { value: 'KEN111', label: 'KEN111', image: '/forms/hard/KEN111.png' },
+      { value: 'KEN112', label: 'KEN112', image: '/forms/hard/KEN112.png' },
+      { value: 'KEN113', label: 'KEN113', image: '/forms/hard/KEN113.png' },
+      { value: 'KEN114', label: 'KEN114', image: '/forms/hard/KEN114.png' },
+      { value: 'KEN115', label: 'KEN115', image: '/forms/hard/KEN115.png' },
+      { value: 'KEN116', label: 'KEN116', image: '/forms/hard/KEN116.png' },
+      { value: 'KEN117', label: 'KEN117', image: '/forms/hard/KEN117.png' },
+      { value: 'KEN118', label: 'KEN118', image: '/forms/hard/KEN118.png' },
+      { value: 'KEN119', label: 'KEN119', image: '/forms/hard/KEN119.png' },
+      { value: 'KEN120', label: 'KEN120', image: '/forms/hard/KEN120.png' },
+      { value: 'KEN121', label: 'KEN121', image: '/forms/hard/KEN121.png' },
+      { value: 'KEN122', label: 'KEN122', image: '/forms/hard/KEN122.png' },
+      { value: 'KEN123', label: 'KEN123', image: '/forms/hard/KEN123.png' },
+      { value: 'KEN124', label: 'KEN124', image: '/forms/hard/KEN124.png' },
+      { value: 'KEN218', label: 'KEN218', image: '/forms/hard/KEN218.png' }
+    ],
+    'COLORED_KEV': [
+      { value: 'KEVV01', label: 'KEVV01', image: '/forms/hard/KEVV01.png' },
+      { value: 'KEVV02', label: 'KEVV02', image: '/forms/hard/KEVV02.png' },
+      { value: 'KEVV04', label: 'KEVV04', image: '/forms/hard/KEVV04.png' },
+      { value: 'KEVV07', label: 'KEVV07', image: '/forms/hard/KEVV07.png' },
+      { value: 'KEVV08', label: 'KEVV08', image: '/forms/hard/KEVV08.png' },
+      { value: 'KEVV09', label: 'KEVV09', image: '/forms/hard/KEVV09.png' },
+      { value: 'KEVV10', label: 'KEVV10', image: '/forms/hard/KEVV10.png' },
+      { value: 'KEVV11', label: 'KEVV11', image: '/forms/hard/KEVV11.png' },
+      { value: 'KEVV13', label: 'KEVV13', image: '/forms/hard/KEVV13.png' },
+      { value: 'KEVV14', label: 'KEVV14', image: '/forms/hard/KEVV14.png' },
+      { value: 'KEVV15', label: 'KEVV15', image: '/forms/hard/KEVV15.png' },
+      { value: 'KEVV16', label: 'KEVV16', image: '/forms/hard/KEVV16.png' },
+      { value: 'KEVV18', label: 'KEVV18', image: '/forms/hard/KEVV18.png' },
+      { value: 'KEVV19', label: 'KEVV19', image: '/forms/hard/KEVV19.png' },
+      { value: 'KEVV33', label: 'KEVV33', image: '/forms/hard/KEVV33.png' },
+      { value: 'KEVV61', label: 'KEVV61', image: '/forms/hard/KEVV61.png' },
+      { value: 'KEVV62', label: 'KEVV62', image: '/forms/hard/KEVV62.png' },
+      { value: 'KEVV63', label: 'KEVV63', image: '/forms/hard/KEVV63.png' }
+    ],
+    'CLOTH': [
+      { value: 'RD3', label: 'RD3', image: '/forms/hard/RD3.png' },
+      { value: 'RD4', label: 'RD4', image: '/forms/hard/RD4.png' },
+      { value: 'RD7', label: 'RD7', image: '/forms/hard/RD7.png' },
+      { value: 'RD8', label: 'RD8', image: '/forms/hard/RD8.png' },
+      { value: 'RD9', label: 'RD9', image: '/forms/hard/RD9.png' },
+      { value: 'RD10', label: 'RD10', image: '/forms/hard/RD10.png' },
+      { value: 'RD12', label: 'RD12', image: '/forms/hard/RD12.png' },
+      { value: 'RD13', label: 'RD13', image: '/forms/hard/RD13.png' },
+      { value: 'RD14', label: 'RD14', image: '/forms/hard/RD14.png' },
+      { value: 'RD15', label: 'RD15', image: '/forms/hard/RD15.png' },
+      { value: 'RD16', label: 'RD16', image: '/forms/hard/RD16.png' },
+      { value: 'RD17', label: 'RD17', image: '/forms/hard/RD17.png' },
+      { value: 'RD18', label: 'RD18', image: '/forms/hard/RD18.png' },
+      { value: 'RD19', label: 'RD19', image: '/forms/hard/RD19.png' },
+      { value: 'RD22', label: 'RD22', image: '/forms/hard/RD22.png' },
+      { value: 'RD25', label: 'RD25', image: '/forms/hard/RD25.png' },
+      { value: 'RD26', label: 'RD26', image: '/forms/hard/RD26.png' },
+      { value: 'RD28', label: 'RD28', image: '/forms/hard/RD28.png' },
+      { value: 'RD30', label: 'RD30', image: '/forms/hard/RD30.png' }
+    ],
+    'CLOTH_GLOSS': [
+      { value: 'RD3', label: 'RD3', image: '/forms/hard/RD3.png' },
+      { value: 'RD4', label: 'RD4', image: '/forms/hard/RD4.png' },
+      { value: 'RD7', label: 'RD7', image: '/forms/hard/RD7.png' },
+      { value: 'RD8', label: 'RD8', image: '/forms/hard/RD8.png' },
+      { value: 'RD9', label: 'RD9', image: '/forms/hard/RD9.png' },
+      { value: 'RD10', label: 'RD10', image: '/forms/hard/RD10.png' },
+      { value: 'RD12', label: 'RD12', image: '/forms/hard/RD12.png' },
+      { value: 'RD13', label: 'RD13', image: '/forms/hard/RD13.png' },
+      { value: 'RD14', label: 'RD14', image: '/forms/hard/RD14.png' },
+      { value: 'RD15', label: 'RD15', image: '/forms/hard/RD15.png' },
+      { value: 'RD16', label: 'RD16', image: '/forms/hard/RD16.png' },
+      { value: 'RD17', label: 'RD17', image: '/forms/hard/RD17.png' },
+      { value: 'RD18', label: 'RD18', image: '/forms/hard/RD18.png' },
+      { value: 'RD19', label: 'RD19', image: '/forms/hard/RD19.png' },
+      { value: 'RD22', label: 'RD22', image: '/forms/hard/RD22.png' },
+      { value: 'RD25', label: 'RD25', image: '/forms/hard/RD25.png' },
+      { value: 'RD26', label: 'RD26', image: '/forms/hard/RD26.png' },
+      { value: 'RD28', label: 'RD28', image: '/forms/hard/RD28.png' },
+      { value: 'RD30', label: 'RD30', image: '/forms/hard/RD30.png' }
+    ],
+    'CLOTH_MATTE': [
+      { value: 'RD3', label: 'RD3', image: '/forms/hard/RD3.png' },
+      { value: 'RD4', label: 'RD4', image: '/forms/hard/RD4.png' },
+      { value: 'RD7', label: 'RD7', image: '/forms/hard/RD7.png' },
+      { value: 'RD8', label: 'RD8', image: '/forms/hard/RD8.png' },
+      { value: 'RD9', label: 'RD9', image: '/forms/hard/RD9.png' },
+      { value: 'RD10', label: 'RD10', image: '/forms/hard/RD10.png' },
+      { value: 'RD12', label: 'RD12', image: '/forms/hard/RD12.png' },
+      { value: 'RD13', label: 'RD13', image: '/forms/hard/RD13.png' },
+      { value: 'RD14', label: 'RD14', image: '/forms/hard/RD14.png' },
+      { value: 'RD15', label: 'RD15', image: '/forms/hard/RD15.png' },
+      { value: 'RD16', label: 'RD16', image: '/forms/hard/RD16.png' },
+      { value: 'RD17', label: 'RD17', image: '/forms/hard/RD17.png' },
+      { value: 'RD18', label: 'RD18', image: '/forms/hard/RD18.png' },
+      { value: 'RD19', label: 'RD19', image: '/forms/hard/RD19.png' },
+      { value: 'RD22', label: 'RD22', image: '/forms/hard/RD22.png' },
+      { value: 'RD25', label: 'RD25', image: '/forms/hard/RD25.png' },
+      { value: 'RD26', label: 'RD26', image: '/forms/hard/RD26.png' },
+      { value: 'RD28', label: 'RD28', image: '/forms/hard/RD28.png' },
+      { value: 'RD30', label: 'RD30', image: '/forms/hard/RD30.png' }
+    ]
   },
   
-  // Inside paper options
-  insidePaperOptions: {
-    'GLOSS': {
-      label: 'Gloss',
-      options: [
-        { value: '68# text', label: '68# text' },
-        { value: '80# text', label: '80# text' },
-        { value: '100# text', label: '100# text' },
-        { value: '67# cover', label: '67# cover' },
-        { value: '74# cover', label: '74# cover' },
-        { value: '92# cover', label: '92# cover' }
-      ]
-    },
-    'MATTE': {
-      label: 'Matte',
-      options: [
-        { value: '68# text', label: '68# text' },
-        { value: '80# text', label: '80# text' },
-        { value: '100# text', label: '100# text' },
-        { value: '67# cover', label: '67# cover' },
-        { value: '74# cover', label: '74# cover' },
-        { value: '92# cover', label: '92# cover' }
-      ]
-    },
-    'HI-PLUS': {
-      label: 'Hi-Plus',
-      options: [
-        { value: '60# text', label: '60# text' },
-        { value: '68# text', label: '68# text' },
-        { value: '80# text', label: '80# text' }
-      ]
-    },
-    'HI-QMATTE': {
-      label: 'Hi-Q Matte',
-      options: [
-        { value: '89# text', label: '89# text' },
-        { value: '109# text', label: '109# text' }
-      ]
-    },
-    'HIUNCOATED': {
-      label: 'Hi Uncoated',
-      options: [
-        { value: '47# text', label: '47# text' },
-        { value: '54# text', label: '54# text' },
-        { value: '60# text', label: '60# text' },
-        { value: '68# text', label: '68# text' },
-        { value: '80# text', label: '80# text' },
-        { value: '100# text', label: '100# text' },
-        { value: '67# cover', label: '67# cover' },
-        { value: '81# cover', label: '81# cover' }
-      ]
-    },
-    'HIPREMIUM': {
-      label: 'Hi Premium',
-      options: [
-        { value: '60# text', label: '60# text' },
-        { value: '68# text', label: '68# text' },
-        { value: '88# text', label: '88# text' },
-        { value: '108# text', label: '108# text' },
-        { value: '70# cover', label: '70# cover' },
-        { value: '78# cover', label: '78# cover' }
-      ]
-    },
-    'HINEWPLUS': {
-      label: 'Hi New Plus',
-      options: [
-        { value: '47# text', label: '47# text' },
-        { value: '54# text', label: '54# text' },
-        { value: '68# text', label: '68# text' }
-      ]
-    },
-    'TEXTBOOK': {
-      label: 'Textbook',
-      options: [
-        { value: '51# text', label: '51# text' }
-      ]
-    },
-    'TRANSLUCENT': {
-      label: 'Translucent',
-      options: [
-        { value: '54# text', label: '54# text' },
-        { value: '68# text', label: '68# text' },
-        { value: '88# text', label: '88# text' },
-        { value: '100# text', label: '100# text' },
-        { value: '63# cover', label: '63# cover' },
-        { value: '74# cover', label: '74# cover' },
-        { value: '81# cover', label: '81# cover' }
-      ]
-    },
-    'COLORED': {
-      label: 'Colored',
-      options: [
-        { value: 'A-BE01', label: 'A-BE01', image: '/forms/A-BE01.png' },
-        { value: 'A-BE10', label: 'A-BE10', image: '/forms/A-BE10.png' },
-        { value: 'A-BE15', label: 'A-BE15', image: '/forms/A-BE15.png' },
-        { value: 'A-BE30', label: 'A-BE30', image: '/forms/A-BE30.png' },
-        { value: 'A-BE42', label: 'A-BE42', image: '/forms/A-BE42.png' },
-        { value: 'A-BE50', label: 'A-BE50', image: '/forms/A-BE50.png' },
-        { value: 'A-BE51', label: 'A-BE51', image: '/forms/A-BE51.png' },
-        { value: 'A-BE75', label: 'A-BE75', image: '/forms/A-BE75.png' },
-        { value: 'A-BE83', label: 'A-BE83', image: '/forms/A-BE83.png' },
-        { value: 'A-BE85', label: 'A-BE85', image: '/forms/A-BE85.png' },
-        { value: 'B-BE16', label: 'B-BE16', image: '/forms/B-BE16.png' },
-        { value: 'B-BE17', label: 'B-BE17', image: '/forms/B-BE17.png' },
-        { value: 'B-BE24', label: 'B-BE24', image: '/forms/B-BE24.png' },
-        { value: 'B-BE80', label: 'B-BE80', image: '/forms/B-BE80.png' },
-        { value: 'B-BE81', label: 'B-BE81', image: '/forms/B-BE81.png' },
-        { value: 'C-BE36', label: 'C-BE36', image: '/forms/C-BE36.png' },
-        { value: 'C-BE54', label: 'C-BE54', image: '/forms/C-BE54.png' },
-        { value: 'C-BE66', label: 'C-BE66', image: '/forms/C-BE66.png' },
-        { value: 'C-BE73', label: 'C-BE73', image: '/forms/C-BE73.png' },
-        { value: 'D-BE18', label: 'D-BE18', image: '/forms/D-BE18.png' },
-        { value: 'D-BE32', label: 'D-BE32', image: '/forms/D-BE32.png' },
-        { value: 'D-BE35', label: 'D-BE35', image: '/forms/D-BE35.png' },
-        { value: 'D-BE69', label: 'D-BE69', image: '/forms/D-BE69.png' },
-        { value: 'D-BE76', label: 'D-BE76', image: '/forms/D-BE76.png' },
-        { value: 'E-BE05', label: 'E-BE05', image: '/forms/E-BE05.png' }
-      ]
-    }
+  // Inside paper weight options - UPDATED TO MATCH FORM STRUCTURE
+  insidePaperWeightOptions: {
+    'GLOSS': [
+      { value: '68# text', label: '68# text' },
+      { value: '80# text', label: '80# text' },
+      { value: '100# text', label: '100# text' },
+      { value: '67# cover', label: '67# cover' },
+      { value: '74# cover', label: '74# cover' },
+      { value: '92# cover', label: '92# cover' }
+    ],
+    'MATTE': [
+      { value: '68# text', label: '68# text' },
+      { value: '80# text', label: '80# text' },
+      { value: '100# text', label: '100# text' },
+      { value: '67# cover', label: '67# cover' },
+      { value: '74# cover', label: '74# cover' },
+      { value: '92# cover', label: '92# cover' }
+    ],
+    'HI-PLUS': [
+      { value: '60# text', label: '60# text' },
+      { value: '68# text', label: '68# text' },
+      { value: '80# text', label: '80# text' }
+    ],
+    'HI-QMATTE': [
+      { value: '89# text', label: '89# text' },
+      { value: '109# text', label: '109# text' }
+    ],
+    'HIUNCOATED': [
+      { value: '47# text', label: '47# text' },
+      { value: '54# text', label: '54# text' },
+      { value: '60# text', label: '60# text' },
+      { value: '68# text', label: '68# text' },
+      { value: '80# text', label: '80# text' },
+      { value: '100# text', label: '100# text' },
+      { value: '67# cover', label: '67# cover' },
+      { value: '81# cover', label: '81# cover' }
+    ],
+    'HIPREMIUM': [
+      { value: '60# text', label: '60# text' },
+      { value: '68# text', label: '68# text' },
+      { value: '88# text', label: '88# text' },
+      { value: '108# text', label: '108# text' },
+      { value: '70# cover', label: '70# cover' },
+      { value: '78# cover', label: '78# cover' }
+    ],
+    'HINEWPLUS': [
+      { value: '47# text', label: '47# text' },
+      { value: '54# text', label: '54# text' },
+      { value: '68# text', label: '68# text' }
+    ],
+    'TEXTBOOK': [
+      { value: '51# text', label: '51# text' }
+    ],
+    'TRANSLUCENT': [
+      { value: '54# text', label: '54# text' },
+      { value: '68# text', label: '68# text' },
+      { value: '88# text', label: '88# text' },
+      { value: '100# text', label: '100# text' },
+      { value: '63# cover', label: '63# cover' },
+      { value: '74# cover', label: '74# cover' },
+      { value: '81# cover', label: '81# cover' }
+    ],
+    'COLORED': [
+      { value: 'A-BE01', label: 'A-BE01', image: '/forms/A-BE01.png' },
+      { value: 'A-BE10', label: 'A-BE10', image: '/forms/A-BE10.png' },
+      { value: 'A-BE15', label: 'A-BE15', image: '/forms/A-BE15.png' },
+      { value: 'A-BE30', label: 'A-BE30', image: '/forms/A-BE30.png' },
+      { value: 'A-BE42', label: 'A-BE42', image: '/forms/A-BE42.png' },
+      { value: 'A-BE50', label: 'A-BE50', image: '/forms/A-BE50.png' },
+      { value: 'A-BE51', label: 'A-BE51', image: '/forms/A-BE51.png' },
+      { value: 'A-BE75', label: 'A-BE75', image: '/forms/A-BE75.png' },
+      { value: 'A-BE83', label: 'A-BE83', image: '/forms/A-BE83.png' },
+      { value: 'A-BE85', label: 'A-BE85', image: '/forms/A-BE85.png' },
+      { value: 'B-BE16', label: 'B-BE16', image: '/forms/B-BE16.png' },
+      { value: 'B-BE17', label: 'B-BE17', image: '/forms/B-BE17.png' },
+      { value: 'B-BE24', label: 'B-BE24', image: '/forms/B-BE24.png' },
+      { value: 'B-BE80', label: 'B-BE80', image: '/forms/B-BE80.png' },
+      { value: 'B-BE81', label: 'B-BE81', image: '/forms/B-BE81.png' },
+      { value: 'C-BE36', label: 'C-BE36', image: '/forms/C-BE36.png' },
+      { value: 'C-BE54', label: 'C-BE54', image: '/forms/C-BE54.png' },
+      { value: 'C-BE66', label: 'C-BE66', image: '/forms/C-BE66.png' },
+      { value: 'C-BE73', label: 'C-BE73', image: '/forms/C-BE73.png' },
+      { value: 'D-BE18', label: 'D-BE18', image: '/forms/D-BE18.png' },
+      { value: 'D-BE32', label: 'D-BE32', image: '/forms/D-BE32.png' },
+      { value: 'D-BE35', label: 'D-BE35', image: '/forms/D-BE35.png' },
+      { value: 'D-BE69', label: 'D-BE69', image: '/forms/D-BE69.png' },
+      { value: 'D-BE76', label: 'D-BE76', image: '/forms/D-BE76.png' },
+      { value: 'E-BE05', label: 'E-BE05', image: '/forms/E-BE05.png' }
+    ]
   },
   
   printColors: [
@@ -610,12 +570,6 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
   const [activeTab, setActiveTab] = useState('general');
   const [preview, setPreview] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [expandedSections, setExpandedSections] = useState({
-    paper: true,
-    binding: true,
-    additional: true,
-    pricing: true
-  });
 
   // Initialize with saved config or defaults
   useEffect(() => {
@@ -724,14 +678,6 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
     } finally {
       setSaving(false);
     }
-  };
-
-  // Toggle section expansion
-  const toggleSection = (section) => {
-    setExpandedSections(prev => ({
-      ...prev,
-      [section]: !prev[section]
-    }));
   };
 
   // Render editable array with multiple fields
@@ -893,8 +839,8 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
     );
   };
 
-  // Render nested paper types editor (for coverPaperTypes and insidePaperOptions)
-  const renderNestedPaperTypes = (title, path, isCover = true) => {
+  // Render nested paper weight options (for coverPaperWeightOptions and insidePaperWeightOptions)
+  const renderNestedPaperWeightOptions = (title, path) => {
     const getObject = () => {
       const keys = path.split('.');
       let current = config;
@@ -923,10 +869,7 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
                   if (!current[keys[i]]) current[keys[i]] = {};
                   current = current[keys[i]];
                 }
-                current[newKey] = {
-                  label: 'New Paper Type',
-                  options: []
-                };
+                current[newKey] = [];
                 return newConfig;
               });
             }}
@@ -965,24 +908,9 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
                     className="p-2 border border-gray-300 rounded text-sm font-mono focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                   />
                   <span className="text-gray-500">→</span>
-                  <input
-                    type="text"
-                    value={nestedObject[key]?.label || ''}
-                    onChange={(e) => {
-                      setConfig(prev => {
-                        const newConfig = JSON.parse(JSON.stringify(prev));
-                        const keys = path.split('.');
-                        let current = newConfig;
-                        for (let i = 0; i < keys.length; i++) {
-                          current = current[keys[i]];
-                        }
-                        current[key].label = e.target.value;
-                        return newConfig;
-                      });
-                    }}
-                    className="p-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="Display label"
-                  />
+                  <span className="text-sm text-gray-700">
+                    {nestedObject[key]?.length || 0} options
+                  </span>
                 </div>
                 <button
                   onClick={() => {
@@ -1016,10 +944,10 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
                         for (let i = 0; i < keys.length; i++) {
                           current = current[keys[i]];
                         }
-                        current[key].options.push({
+                        current[key].push({
                           value: `OPTION_${Date.now()}`,
                           label: 'New Option',
-                          image: isCover ? '/forms/hard/placeholder.png' : ''
+                          image: ''
                         });
                         return newConfig;
                       });
@@ -1032,7 +960,7 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
                 </div>
                 
                 <div className="space-y-2">
-                  {nestedObject[key]?.options?.map((option, optionIndex) => (
+                  {nestedObject[key]?.map((option, optionIndex) => (
                     <div key={optionIndex} className="flex items-center space-x-3 p-3 border border-gray-200 rounded bg-gray-50">
                       <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
                         <div>
@@ -1048,7 +976,7 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
                                 for (let i = 0; i < keys.length; i++) {
                                   current = current[keys[i]];
                                 }
-                                current[key].options[optionIndex].value = e.target.value;
+                                current[key][optionIndex].value = e.target.value;
                                 return newConfig;
                               });
                             }}
@@ -1068,35 +996,33 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
                                 for (let i = 0; i < keys.length; i++) {
                                   current = current[keys[i]];
                                 }
-                                current[key].options[optionIndex].label = e.target.value;
+                                current[key][optionIndex].label = e.target.value;
                                 return newConfig;
                               });
                             }}
                             className="w-full p-2 border border-gray-300 rounded text-sm"
                           />
                         </div>
-                        {isCover && (
-                          <div>
-                            <label className="block text-xs font-medium text-gray-500 mb-1">Image URL</label>
-                            <input
-                              type="text"
-                              value={option.image || ''}
-                              onChange={(e) => {
-                                setConfig(prev => {
-                                  const newConfig = JSON.parse(JSON.stringify(prev));
-                                  const keys = path.split('.');
-                                  let current = newConfig;
-                                  for (let i = 0; i < keys.length; i++) {
-                                    current = current[keys[i]];
-                                  }
-                                  current[key].options[optionIndex].image = e.target.value;
-                                  return newConfig;
-                                });
-                              }}
-                              className="w-full p-2 border border-gray-300 rounded text-sm"
-                            />
-                          </div>
-                        )}
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 mb-1">Image URL</label>
+                          <input
+                            type="text"
+                            value={option.image || ''}
+                            onChange={(e) => {
+                              setConfig(prev => {
+                                const newConfig = JSON.parse(JSON.stringify(prev));
+                                const keys = path.split('.');
+                                let current = newConfig;
+                                for (let i = 0; i < keys.length; i++) {
+                                  current = current[keys[i]];
+                                }
+                                current[key][optionIndex].image = e.target.value;
+                                return newConfig;
+                              });
+                            }}
+                            className="w-full p-2 border border-gray-300 rounded text-sm"
+                          />
+                        </div>
                       </div>
                       <button
                         onClick={() => {
@@ -1107,7 +1033,7 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
                             for (let i = 0; i < keys.length; i++) {
                               current = current[keys[i]];
                             }
-                            current[key].options = current[key].options.filter((_, i) => i !== optionIndex);
+                            current[key] = current[key].filter((_, i) => i !== optionIndex);
                             return newConfig;
                           });
                         }}
@@ -1255,25 +1181,25 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
           </>
         );
 
-      case 'cover-paper-types':
+      case 'cover-paper-weights':
         return (
           <>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Cover Paper Types & Options</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Cover Paper Weight Options</h3>
             <p className="text-sm text-gray-600 mb-4">
-              Configure different paper types and their specific options (colors, textures, etc.)
+              Configure paper weight/color options for each cover paper type
             </p>
-            {renderNestedPaperTypes('Cover Paper Types', 'coverPaperTypes', true)}
+            {renderNestedPaperWeightOptions('Cover Paper Weight Options', 'coverPaperWeightOptions')}
           </>
         );
 
-      case 'inside-paper-options':
+      case 'inside-paper-weights':
         return (
           <>
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Inside Paper Options</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Inside Paper Weight Options</h3>
             <p className="text-sm text-gray-600 mb-4">
-              Configure paper options for interior pages based on paper type
+              Configure paper weight options for interior pages based on paper type
             </p>
-            {renderNestedPaperTypes('Inside Paper Options', 'insidePaperOptions', false)}
+            {renderNestedPaperWeightOptions('Inside Paper Weight Options', 'insidePaperWeightOptions')}
           </>
         );
 
@@ -1492,8 +1418,8 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
               { id: 'headband', label: 'Headband', icon: <Palette size={14} /> },
               { id: 'paper-cover', label: 'Cover Paper', icon: <FileText size={14} /> },
               { id: 'paper-inside', label: 'Inside Paper', icon: <FileText size={14} /> },
-              { id: 'cover-paper-types', label: 'Cover Types', icon: <ImageIcon size={14} /> },
-              { id: 'inside-paper-options', label: 'Inside Options', icon: <Layers size={14} /> },
+              { id: 'cover-paper-weights', label: 'Cover Weights', icon: <ImageIcon size={14} /> },
+              { id: 'inside-paper-weights', label: 'Inside Weights', icon: <Layers size={14} /> },
               { id: 'print-colors', label: 'Print Colors', icon: <Droplets size={14} /> },
               { id: 'cover-finishes', label: 'Finishes', icon: <Shield size={14} /> },
               { id: 'bookmark', label: 'Bookmark', icon: <FileText size={14} /> },
@@ -1534,7 +1460,7 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
               <div className="mt-4 p-4 bg-gray-50 rounded-lg text-left">
                 <h4 className="font-medium text-gray-900 mb-2">Current Configuration Summary:</h4>
                 <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• Cover Paper Types: {Object.keys(config.coverPaperTypes || {}).length} types</li>
+                  <li>• Cover Paper Types: {Object.keys(config.coverPaperWeightOptions || {}).length} types</li>
                   <li>• Headband Colors: {config.headbandColors?.length || 0} colors</li>
                   <li>• Print Colors: {config.printColors?.length || 0} options</li>
                   <li>• Page Counts: {config.pageCounts?.length || 0} options</li>
@@ -1556,8 +1482,8 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
                     { id: 'headband', label: 'Headband Colors', icon: <Palette size={14} /> },
                     { id: 'paper-cover', label: 'Cover Paper', icon: <FileText size={14} /> },
                     { id: 'paper-inside', label: 'Inside Paper', icon: <FileText size={14} /> },
-                    { id: 'cover-paper-types', label: 'Cover Paper Types', icon: <ImageIcon size={14} /> },
-                    { id: 'inside-paper-options', label: 'Inside Paper Options', icon: <Layers size={14} /> },
+                    { id: 'cover-paper-weights', label: 'Cover Paper Weights', icon: <ImageIcon size={14} /> },
+                    { id: 'inside-paper-weights', label: 'Inside Paper Weights', icon: <Layers size={14} /> },
                     { id: 'print-colors', label: 'Print Colors', icon: <Droplets size={14} /> },
                     { id: 'cover-finishes', label: 'Cover Finishes', icon: <Shield size={14} /> },
                     { id: 'bookmark', label: 'Bookmark Options', icon: <FileText size={14} /> },
@@ -1599,7 +1525,7 @@ export default function HardQuoteFormEditor({ formConfig, onSave }) {
                       </div>
                       <div className="flex justify-between">
                         <span>Cover Types:</span>
-                        <span className="font-medium">{Object.keys(config.coverPaperTypes || {}).length}</span>
+                        <span className="font-medium">{Object.keys(config.coverPaperWeightOptions || {}).length}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Paper Options:</span>
