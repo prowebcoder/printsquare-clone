@@ -2132,13 +2132,24 @@ const SaddleQuoteForm = () => {
                   Cover Specifications
                 </h3>
                 <div className="flex space-x-4 mt-2 sm:mt-0">
-                  <button className="text-indigo-600 hover:text-indigo-800 font-medium text-sm transition-colors">
-                    View Portfolio
-                  </button>
-                  <button className="text-indigo-600 hover:text-indigo-800 font-medium text-sm transition-colors">
-                    Paper Samples
-                  </button>
-                </div>
+  <Link
+    href="/portfolio"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="italic text-indigo-600 hover:text-indigo-800 font-medium text-sm transition-colors"
+  >
+    View Portfolio
+  </Link>
+
+  <Link
+    href="/papers"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="italic text-indigo-600 hover:text-indigo-800 font-medium text-sm transition-colors"
+  >
+    Paper Samples
+  </Link>
+</div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 mb-6">

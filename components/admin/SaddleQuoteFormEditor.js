@@ -1,46 +1,52 @@
 // components/admin/SaddleQuoteFormEditor.js
 'use client';
 import { useState, useEffect } from 'react';
-import { Save, Eye, Plus, Trash2, DollarSign, Edit2, Check, X, Image as ImageIcon } from 'lucide-react';
+import { Save, Eye, Plus, Trash2, DollarSign, Image as ImageIcon, Upload, Copy, GripVertical, Download, Settings, Layers } from 'lucide-react';
 
 const SADDLEQUOTE_DEFAULT_CONFIG = {
   general: {
-    title: "Saddle Stichhing Quote",
-    description: "Configure your perfect bound book with our professional printing services. Get instant pricing and add to cart in minutes.",
+    title: "Saddle Stitching Quote",
+    description: "Configure your saddle stitched book with our professional printing services. Get instant pricing and add to cart in minutes.",
     submitButtonText: "Add to Cart",
     shippingButtonText: "Calculate Shipping",
     disclaimer: "Prices are estimates and final cost may vary based on specifications"
   },
+  
+  // Saddle stitching specific options
+  bindingTypes: [
+    { 
+      value: 'SADDLE', 
+      label: 'Saddle Stitch', 
+      desc: 'Staples through the spine, ideal for booklets',
+      image: '/forms/saddle-stitch.png',
+      price: 0
+    },
+    { 
+      value: 'PERFECT', 
+      label: 'Perfect Binding', 
+      desc: 'Glued spine, for thicker books',
+      image: '/forms/perfect-bind.png',
+      price: 50
+    },
+    { 
+      value: 'WIRE_O', 
+      label: 'Wire-O Binding', 
+      desc: 'Double-loop wire binding',
+      image: '/forms/wire-o.png',
+      price: 75
+    },
+  ],
+  
+  // Saddle stitch specific sizes (typically smaller)
   sizes: [
     { value: '5.5x8.5', label: '5.5 x 8.5"', price: 0 },
-    { value: '7.5x10', label: '7.5 x 10"', price: 25 },
-    { value: '8.5x11', label: '8.5 x 11"', price: 50 },
-    { value: '9x12', label: '9 x 12"', price: 75 },
+    { value: '8.5x11', label: '8.5 x 11"', price: 25 },
+    { value: '8.5x14', label: '8.5 x 14"', price: 50 },
+    { value: '11x17', label: '11 x 17"', price: 75 },
     { value: 'custom', label: 'Custom Size', price: 100 }
   ],
-  bindingEdges: [
-    { 
-      value: 'LEFT', 
-      label: 'Left Side', 
-      desc: 'Binding on the left, most common', 
-      price: 0,
-      image: '/forms/edge01.png'
-    },
-    { 
-      value: 'RIGHT', 
-      label: 'Right Side', 
-      desc: 'First inside page starts from the right', 
-      price: 50,
-      image: '/forms/edge02.png'
-    },
-    { 
-      value: 'TOP', 
-      label: 'Top Side', 
-      desc: 'Binding on the top, a.k.a calendar binding', 
-      price: 75,
-      image: '/forms/edge03.png'
-    },
-  ],
+  
+  // Saddle stitch paper options (usually different weights)
   paperOptions: {
     cover: [
       { 
@@ -71,33 +77,7 @@ const SADDLEQUOTE_DEFAULT_CONFIG = {
         ]
       },
       { 
-        value: 'HI-PLUS', 
-        label: 'Hi-Plus', 
-        description: 'Thicker than Matte. Good printability',
-        price: 50,
-        weightOptions: [
-          { value: '150', label: '150 gsm', price: 20 },
-          { value: '180', label: '180 gsm', price: 30 },
-          { value: '200', label: '200 gsm', price: 40 },
-          { value: '250', label: '250 gsm', price: 60 },
-          { value: '300', label: '300 gsm', price: 80 }
-        ]
-      },
-      { 
-        value: 'HI-QMATTE', 
-        label: 'Hi-Q Matte', 
-        description: 'Thicker than Matte, Premium grade',
-        price: 100,
-        weightOptions: [
-          { value: '150', label: '150 gsm', price: 30 },
-          { value: '180', label: '180 gsm', price: 40 },
-          { value: '200', label: '200 gsm', price: 50 },
-          { value: '250', label: '250 gsm', price: 70 },
-          { value: '300', label: '300 gsm', price: 90 }
-        ]
-      },
-      { 
-        value: 'UNCOATED_W', 
+        value: 'UNCOATED', 
         label: 'Uncoated', 
         description: 'Matte and very much used',
         price: 0,
@@ -106,19 +86,6 @@ const SADDLEQUOTE_DEFAULT_CONFIG = {
           { value: '120', label: '120 gsm', price: 5 },
           { value: '150', label: '150 gsm', price: 15 },
           { value: '180', label: '180 gsm', price: 25 }
-        ]
-      },
-      { 
-        value: 'MONTBLANC_EW', 
-        label: 'Premium', 
-        description: 'Used for high-end magazines and catalogs',
-        price: 150,
-        weightOptions: [
-          { value: '150', label: '150 gsm', price: 40 },
-          { value: '180', label: '180 gsm', price: 50 },
-          { value: '200', label: '200 gsm', price: 60 },
-          { value: '250', label: '250 gsm', price: 80 },
-          { value: '300', label: '300 gsm', price: 100 }
         ]
       }
     ],
@@ -146,16 +113,6 @@ const SADDLEQUOTE_DEFAULT_CONFIG = {
         ]
       },
       { 
-        value: 'HI-PLUS', 
-        label: 'Hi-Plus', 
-        price: 25,
-        weightOptions: [
-          { value: '120', label: '120 gsm', price: 15 },
-          { value: '150', label: '150 gsm', price: 25 },
-          { value: '180', label: '180 gsm', price: 35 }
-        ]
-      },
-      { 
         value: 'UNCOATED', 
         label: 'Uncoated', 
         price: 0,
@@ -165,73 +122,10 @@ const SADDLEQUOTE_DEFAULT_CONFIG = {
           { value: '120', label: '120 gsm', price: 10 },
           { value: '150', label: '150 gsm', price: 20 }
         ]
-      },
-      { 
-        value: 'TEXTBOOK', 
-        label: 'Textbook', 
-        price: 30,
-        weightOptions: [
-          { value: '80', label: '80 gsm', price: 10 },
-          { value: '100', label: '100 gsm', price: 15 },
-          { value: '120', label: '120 gsm', price: 20 },
-          { value: '150', label: '150 gsm', price: 30 },
-          { value: '180', label: '180 gsm', price: 40 }
-        ]
-      },
-      { 
-        value: 'COLORED', 
-        label: 'Colored', 
-        price: 40,
-        weightOptions: [
-          { value: '100', label: '100 gsm', price: 20 },
-          { value: '120', label: '120 gsm', price: 25 },
-          { value: '150', label: '150 gsm', price: 35 }
-        ]
-      },
-    ],
-    subscription: [
-      { 
-        value: 'MATTE', 
-        label: 'Matte', 
-        price: 0,
-        weightOptions: [
-          { value: '100', label: '100 gsm', price: 5 },
-          { value: '120', label: '120 gsm', price: 10 },
-          { value: '150', label: '150 gsm', price: 20 }
-        ]
-      },
-      { 
-        value: 'HI-QMATTE', 
-        label: 'Hi-Q Matte', 
-        price: 25,
-        weightOptions: [
-          { value: '150', label: '150 gsm', price: 25 },
-          { value: '180', label: '180 gsm', price: 35 },
-          { value: '200', label: '200 gsm', price: 45 }
-        ]
-      },
-      { 
-        value: 'UNCOATED_W', 
-        label: 'Uncoated', 
-        price: 0,
-        weightOptions: [
-          { value: '100', label: '100 gsm', price: 5 },
-          { value: '120', label: '120 gsm', price: 10 },
-          { value: '150', label: '150 gsm', price: 20 }
-        ]
-      },
-      { 
-        value: 'MONTBLANC_EW', 
-        label: 'Premium', 
-        price: 50,
-        weightOptions: [
-          { value: '150', label: '150 gsm', price: 30 },
-          { value: '180', label: '180 gsm', price: 40 },
-          { value: '200', label: '200 gsm', price: 50 }
-        ]
-      },
+      }
     ]
   },
+  
   printColors: [
     { 
       value: 'CMYK', 
@@ -267,128 +161,207 @@ const SADDLEQUOTE_DEFAULT_CONFIG = {
       price: -25, 
       description: 'Black + 1 Pantone spot color',
       image: '/forms/d5.png'
-    },
-    { 
-      value: 'BW_PMS2', 
-      label: 'Black + 2 Spot color', 
-      price: 50, 
-      description: 'Black + 2 Pantone spot colors',
-      image: '/forms/d6.png'
-    },
+    }
   ],
+  
   coverFinishes: [
     { value: 'MATTE', label: 'Matte lamination', price: 50, description: 'Non-reflective finish' },
     { value: 'GLOSS', label: 'Gloss lamination', price: 50, description: 'Shiny protective finish' },
     { value: 'NONE', label: 'None', price: 0, description: 'No additional finish' },
-    { value: 'SOFTTOUCH', label: 'Soft Touch', price: 75, description: 'Velvet-like soft finish' },
     { value: 'SPOTUV', label: 'Spot UV', price: 100, description: 'Glossy spot coating' },
   ],
-  coverFolds: [
-    { value: 'NONE', label: 'No fold', price: 0, description: 'Standard flat cover' },
-    { value: 'FRONT', label: 'Front cover fold', price: 25, description: 'Fold on front cover only' },
-    { value: 'BACK', label: 'Back cover fold', price: 25, description: 'Fold on back cover only' },
-    { value: 'BOTH', label: 'Both cover folds', price: 40, description: 'Folds on both covers' },
-    { value: 'GATEFOLD', label: 'Gatefold', price: 75, description: 'Double fold opening' },
+  
+  foldingOptions: [
+    { value: 'HALF', label: 'Half Fold', price: 0, description: 'Single fold down the middle' },
+    { value: 'TRIFOLD', label: 'Tri-Fold', price: 25, description: 'Two folds creating three panels' },
+    { value: 'Z_FOLD', label: 'Z-Fold', price: 30, description: 'Accordion style fold' },
+    { value: 'GATEFOLD', label: 'Gatefold', price: 50, description: 'Double fold opening' },
+    { value: 'FRENCH_FOLD', label: 'French Fold', price: 75, description: 'Sheet folded twice' },
   ],
+  
+  // Saddle stitch specific additional options
   additionalOptions: {
-    proof: [
-      { value: 'ONLINE', label: 'E-Proof (PDF proof, free)', price: 0, description: 'Digital PDF proof via email' },
-      { value: 'DIGITAL', label: 'Digital Proof', price: 50, description: 'Physical digital print proof' },
-      { value: 'HARDPROOF', label: 'Hard Proof', price: 150, description: 'High-quality color proof' },
-    ],
     holePunch: [
       { value: '6', label: '0.236" (6mm) drill', price: 15, description: 'Standard 6mm hole punch' },
       { value: '8', label: '0.315" (8mm) drill', price: 20, description: '8mm hole punch' },
       { value: '9.5', label: '0.374" (9.5mm) drill', price: 25, description: '9.5mm hole punch for binders' },
-      { value: 'CUSTOM', label: 'Custom drill size', price: 50, description: 'Custom hole punch size' },
     ],
-    slipcase: [
-      { value: 'NONE', label: 'None', price: 0, description: 'No slipcase' },
-      { value: 'CASE', label: 'Slipcase only', price: 80, description: 'Plain slipcase without printing' },
-      { value: 'CASEPRINT', label: 'Slipcase + printing', price: 150, description: 'Printed slipcase' },
-      { value: 'BOXBIND', label: 'Box binding', price: 200, description: 'Premium box binding' },
+    perforation: [
+      { value: 'NONE', label: 'None', price: 0, description: 'No perforation' },
+      { value: 'STRAIGHT', label: 'Straight Perforation', price: 20, description: 'Straight line perforation' },
+      { value: 'MICRO', label: 'Micro-Perforation', price: 30, description: 'Micro-perforation for easy tear' },
+      { value: 'CUSTOM', label: 'Custom Perforation', price: 50, description: 'Custom perforation pattern' },
+    ],
+    numbering: [
+      { value: 'NONE', label: 'None', price: 0, description: 'No numbering' },
+      { value: 'CONSECUTIVE', label: 'Consecutive numbering', price: 0.10, description: 'Sequential page numbering' },
+      { value: 'PERFORATED', label: 'Perforated numbering', price: 0.15, description: 'Numbering with perforation' },
+    ],
+    cornerRounding: [
+      { value: 'NONE', label: 'None', price: 0, description: 'Square corners' },
+      { value: 'SMALL', label: 'Small radius', price: 15, description: '1/4" corner rounding' },
+      { value: 'MEDIUM', label: 'Medium radius', price: 20, description: '1/2" corner rounding' },
+      { value: 'LARGE', label: 'Large radius', price: 25, description: '3/4" corner rounding' },
     ],
     shrinkWrap: [
       { value: '1', label: '1 copy/wrapping', price: 0.15, description: 'Individual wrapping' },
       { value: '2', label: '2 copy/wrapping', price: 0.12, description: 'Two copies per wrap' },
       { value: '3', label: '3 copy/wrapping', price: 0.10, description: 'Three copies per wrap' },
       { value: '5', label: '5 copy/wrapping', price: 0.08, description: 'Five copies per wrap' },
-    ],
-    directMail: [
-      { value: 'ALL', label: 'DM all quantity', price: 0.75, description: 'Direct mail all copies' },
-      { value: 'PORTION', label: 'DM a portion of the quantity', price: 0.50, description: 'Direct mail partial quantity' },
-      { value: 'PREMIUM', label: 'Premium DM service', price: 1.25, description: 'Priority direct mail' },
-    ],
-    numbering: [
-      { value: 'NONE', label: 'None', price: 0, description: 'No numbering' },
-      { value: 'CONSECUTIVE', label: 'Consecutive numbering', price: 0.10, description: 'Sequential page numbering' },
-      { value: 'PERFORATED', label: 'Perforated numbering', price: 0.15, description: 'Numbering with perforation' },
     ]
   },
+  
+  // Saddle stitch specific positions
   positions: [
-    { value: 'FRONT', label: 'Before page 1', description: 'Insert before first page' },
-    { value: 'BACK', label: 'After last page', description: 'Insert after last page' },
-    { value: 'SELECT', label: 'Front of page no.', description: 'Insert at specific page' },
-    { value: 'CENTER', label: 'Center spread', description: 'Insert at center spread' },
+    { value: 'FRONT', label: 'Front cover', description: 'Inside front cover' },
+    { value: 'BACK', label: 'Back cover', description: 'Inside back cover' },
+    { value: 'CENTER', label: 'Center spread', description: 'Center pages' },
+    { value: 'INSERT', label: 'Insert page', description: 'Loose insert' },
   ],
-  pageCounts: Array.from({ length: (880 - 24) / 2 + 1 }, (_, i) => 24 + i * 2),
-  weightOptions: [
-    { value: '100', label: '100 gsm / 68# text', price: 0 },
-    { value: '120', label: '120 gsm / 80# text', price: 10 },
-    { value: '150', label: '150 gsm / 100# text', price: 20 },
-    { value: '180', label: '180 gsm / 65# cover', price: 30 },
-    { value: '200', label: '200 gsm / 74# cover', price: 40 },
-    { value: '250', label: '250 gsm / 92# cover', price: 50 },
-    { value: '300', label: '300 gsm / 110# cover', price: 60 },
-  ],
+  
+  // Saddle stitch typically has lower page counts
+  pageCounts: [4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96],
+  
+  // Standard quantities
   quantities: [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
-  customSizeInstructions: "📏 Minimum: 4\" × 4\" | Maximum: 11.8\" × 14.3\"",
-  spineWidth: '0.178"',
+  
+  customSizeInstructions: {
+    INCH: "📏 Minimum: 4\" × 4\" | Maximum: 17\" × 22\"",
+    MM: "📏 Minimum: 102 × 102 mm | Maximum: 432 × 559 mm"
+  },
+  
+  // Saddle stitch specific pricing
   pricing: {
-    baseSetupCost: 200,
-    costPerPage: 0.05,
-    customSizeMultiplier: 1.2,
-    standardSizeMultiplier: 1.1,
-    dustCoverBaseCost: 100,
-    dustCoverPerCopy: 0.25,
-    subscriptionCardBaseCost: 25,
-    subscriptionCardPerCopy: 0.02,
-    rushFeePercentage: 25,
+    baseSetupCost: 150,
+    costPerPage: 0.03,
+    customSizeMultiplier: 1.3,
+    standardSizeMultiplier: 1.15,
+    minimumPages: 4,
+    maximumPages: 96,
+    rushFeePercentage: 30,
     volumeDiscounts: [
       { quantity: 500, discount: 5 },
       { quantity: 1000, discount: 10 },
       { quantity: 2000, discount: 15 },
       { quantity: 5000, discount: 20 }
-    ]
+    ],
+    saddleStitchSetup: 75,
+    additionalStitchCost: 0.02
   },
-  maxSubscriptionCards: 10,
+  
+  // Saddle stitch weight options
+  weightOptions: [
+    { value: '80', label: '80 gsm / 60# text', price: 0 },
+    { value: '100', label: '100 gsm / 68# text', price: 10 },
+    { value: '120', label: '120 gsm / 80# text', price: 20 },
+    { value: '150', label: '150 gsm / 100# text', price: 30 },
+    { value: '200', label: '200 gsm / 74# cover', price: 50 },
+  ],
+  
+  // Paper weight conversions for saddle stitch
+  paperWeightConversions: {
+    '80': { gsm: '80 gsm', us: '60# text', pt: '2.3 pt', kg: '69 kg' },
+    '100': { gsm: '100 gsm', us: '68# text', pt: '3.2 pt', kg: '86 kg' },
+    '120': { gsm: '120 gsm', us: '80# text', pt: '3.8 pt', kg: '103 kg' },
+    '150': { gsm: '150 gsm', us: '100# text', pt: '4.8 pt', kg: '129 kg' },
+    '200': { gsm: '200 gsm', us: '74# cover', pt: '7.1 pt', kg: '172 kg' }
+  },
+  
+  // Size conversions for saddle stitch
+  sizeConversions: {
+    INCH: {
+      '5.5x8.5': '5.5" x 8.5"',
+      '8.5x11': '8.5" x 11"',
+      '8.5x14': '8.5" x 14"',
+      '11x17': '11" x 17"',
+      'custom': 'Custom Size'
+    },
+    MM: {
+      '5.5x8.5': '140 x 216 mm',
+      '8.5x11': '216 x 279 mm',
+      '8.5x14': '216 x 356 mm',
+      '11x17': '279 x 432 mm',
+      'custom': 'Custom Size'
+    }
+  },
+  
+  // Available sizes for saddle stitch
+  availableSizes: ['5.5x8.5', '8.5x11', '8.5x14', '11x17', 'custom'],
+  
+  // Saddle stitch specific shipping options
   shippingOptions: {
     domestic: [
-      { service: 'GROUND', price: 15, days: '5-7 business days' },
-      { service: 'EXPEDITED', price: 25, days: '3-4 business days' },
-      { service: 'EXPRESS', price: 40, days: '1-2 business days' },
+      { service: 'GROUND', price: 12, days: '5-7 business days' },
+      { service: 'EXPEDITED', price: 20, days: '3-4 business days' },
+      { service: 'EXPRESS', price: 35, days: '1-2 business days' },
     ],
     international: [
-      { service: 'ECONOMY', price: 35, days: '10-14 business days' },
-      { service: 'PRIORITY', price: 60, days: '5-7 business days' },
-      { service: 'EXPRESS', price: 100, days: '2-3 business days' },
+      { service: 'ECONOMY', price: 30, days: '10-14 business days' },
+      { service: 'PRIORITY', price: 50, days: '5-7 business days' },
+      { service: 'EXPRESS', price: 85, days: '2-3 business days' },
+    ]
+  },
+  
+  // Max inserts for saddle stitch
+  maxInserts: 5,
+  
+  // Saddle stitch finishing options
+  finishingOptions: {
+    trimming: [
+      { value: 'STANDARD', label: 'Standard Trim', price: 0, description: 'Standard edge trimming' },
+      { value: 'BLEED', label: 'Full Bleed Trim', price: 25, description: 'Full bleed edge trimming' },
+      { value: 'ROUGH', label: 'Rough Cut', price: -10, description: 'Unfinished edges' }
+    ],
+    scoring: [
+      { value: 'NONE', label: 'No Scoring', price: 0, description: 'No score lines' },
+      { value: 'SINGLE', label: 'Single Score', price: 15, description: 'Single score line' },
+      { value: 'MULTIPLE', label: 'Multiple Scores', price: 30, description: 'Multiple score lines' }
     ]
   }
 };
+
+// Draggable array item component
+const DraggableItem = ({ children, index, onDragStart, onDragOver, onDrop, isDragging }) => (
+  <div
+    draggable
+    onDragStart={(e) => onDragStart(e, index)}
+    onDragOver={(e) => onDragOver(e, index)}
+    onDrop={(e) => onDrop(e, index)}
+    className={`relative ${isDragging ? 'opacity-50' : 'opacity-100'} transition-opacity`}
+  >
+    <div className="absolute left-0 top-0 bottom-0 flex items-center cursor-move">
+      <GripVertical size={16} className="text-gray-400" />
+    </div>
+    <div className="ml-6">
+      {children}
+    </div>
+  </div>
+);
 
 export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
   const [config, setConfig] = useState(SADDLEQUOTE_DEFAULT_CONFIG);
   const [activeTab, setActiveTab] = useState('general');
   const [preview, setPreview] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [editingWeight, setEditingWeight] = useState(null);
-  const [expandedPaper, setExpandedPaper] = useState({});
+  const [draggedItem, setDraggedItem] = useState(null);
   const [imageUploading, setImageUploading] = useState({});
+  const [expandedSections, setExpandedSections] = useState({});
+  const [jsonEditors, setJsonEditors] = useState({
+    paperWeightConversions: JSON.stringify(SADDLEQUOTE_DEFAULT_CONFIG.paperWeightConversions, null, 2),
+    sizeConversions: JSON.stringify(SADDLEQUOTE_DEFAULT_CONFIG.sizeConversions, null, 2)
+  });
+  const [jsonErrors, setJsonErrors] = useState({});
 
   useEffect(() => {
     if (formConfig && Object.keys(formConfig).length > 0) {
       console.log('📥 Loading saved config:', formConfig);
       setConfig(formConfig);
+      
+      // Update JSON editors with loaded config
+      setJsonEditors({
+        paperWeightConversions: JSON.stringify(formConfig.paperWeightConversions || SADDLEQUOTE_DEFAULT_CONFIG.paperWeightConversions, null, 2),
+        sizeConversions: JSON.stringify(formConfig.sizeConversions || SADDLEQUOTE_DEFAULT_CONFIG.sizeConversions, null, 2)
+      });
     } else {
       console.log('📥 Loading default config');
       setConfig(SADDLEQUOTE_DEFAULT_CONFIG);
@@ -425,10 +398,81 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
       
       const arrayKey = keys[keys.length - 1];
       if (Array.isArray(current[arrayKey]) && current[arrayKey][index]) {
-        current[arrayKey][index] = { 
-          ...current[arrayKey][index], 
-          [field]: field === 'price' ? parseFloat(value) || 0 : value 
-        };
+        if (field === 'price') {
+          current[arrayKey][index] = { 
+            ...current[arrayKey][index], 
+            [field]: parseFloat(value) || 0 
+          };
+        } else {
+          current[arrayKey][index] = { 
+            ...current[arrayKey][index], 
+            [field]: value 
+          };
+        }
+      }
+      
+      return newConfig;
+    });
+  };
+
+  const addArrayItem = (path, newItem) => {
+    const keys = path.split('.');
+    setConfig(prev => {
+      const newConfig = JSON.parse(JSON.stringify(prev));
+      let current = newConfig;
+      
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) current[keys[i]] = {};
+        current = current[keys[i]];
+      }
+      
+      const arrayKey = keys[keys.length - 1];
+      if (!Array.isArray(current[arrayKey])) {
+        current[arrayKey] = [];
+      }
+      
+      current[arrayKey] = [...current[arrayKey], newItem];
+      return newConfig;
+    });
+  };
+
+  const removeArrayItem = (path, index) => {
+    const keys = path.split('.');
+    setConfig(prev => {
+      const newConfig = JSON.parse(JSON.stringify(prev));
+      let current = newConfig;
+      
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) return prev;
+        current = current[keys[i]];
+      }
+      
+      const arrayKey = keys[keys.length - 1];
+      if (Array.isArray(current[arrayKey])) {
+        current[arrayKey] = current[arrayKey].filter((_, i) => i !== index);
+      }
+      
+      return newConfig;
+    });
+  };
+
+  const moveArrayItem = (path, fromIndex, toIndex) => {
+    const keys = path.split('.');
+    setConfig(prev => {
+      const newConfig = JSON.parse(JSON.stringify(prev));
+      let current = newConfig;
+      
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (!current[keys[i]]) return prev;
+        current = current[keys[i]];
+      }
+      
+      const arrayKey = keys[keys.length - 1];
+      if (Array.isArray(current[arrayKey])) {
+        const array = [...current[arrayKey]];
+        const [movedItem] = array.splice(fromIndex, 1);
+        array.splice(toIndex, 0, movedItem);
+        current[arrayKey] = array;
       }
       
       return newConfig;
@@ -486,45 +530,19 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
     });
   };
 
-  const addArrayItem = (path, newItem) => {
-    const keys = path.split('.');
-    setConfig(prev => {
-      const newConfig = JSON.parse(JSON.stringify(prev));
-      let current = newConfig;
-      
-      for (let i = 0; i < keys.length - 1; i++) {
-        if (!current[keys[i]]) current[keys[i]] = {};
-        current = current[keys[i]];
-      }
-      
-      const arrayKey = keys[keys.length - 1];
-      if (!Array.isArray(current[arrayKey])) {
-        current[arrayKey] = [];
-      }
-      
-      current[arrayKey] = [...current[arrayKey], newItem];
-      return newConfig;
-    });
+  const handleDragStart = (e, index) => {
+    setDraggedItem(index);
   };
 
-  const removeArrayItem = (path, index) => {
-    const keys = path.split('.');
-    setConfig(prev => {
-      const newConfig = JSON.parse(JSON.stringify(prev));
-      let current = newConfig;
-      
-      for (let i = 0; i < keys.length - 1; i++) {
-        if (!current[keys[i]]) return prev;
-        current = current[keys[i]];
-      }
-      
-      const arrayKey = keys[keys.length - 1];
-      if (Array.isArray(current[arrayKey])) {
-        current[arrayKey] = current[arrayKey].filter((_, i) => i !== index);
-      }
-      
-      return newConfig;
-    });
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (path, index) => {
+    if (draggedItem !== null && draggedItem !== index) {
+      moveArrayItem(path, draggedItem, index);
+    }
+    setDraggedItem(null);
   };
 
   const handleImageUpload = async (path, index, field) => {
@@ -540,9 +558,9 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
       setImageUploading(prev => ({ ...prev, [uploadKey]: true }));
       
       try {
+        // In a real app, upload to server and get URL
         const imageUrl = URL.createObjectURL(file);
         updateArrayItem(path, index, field, imageUrl);
-        console.log('Image uploaded (local):', imageUrl);
       } catch (error) {
         console.error('Error uploading image:', error);
         alert('Error uploading image. Please try again.');
@@ -552,6 +570,31 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
     };
     
     input.click();
+  };
+
+  const handleJsonEditorChange = (field, value) => {
+    setJsonEditors(prev => ({ ...prev, [field]: value }));
+    
+    try {
+      const parsed = JSON.parse(value);
+      setJsonErrors(prev => ({ ...prev, [field]: null }));
+      
+      // Update the config with parsed JSON
+      if (field === 'paperWeightConversions') {
+        updateNestedConfig('paperWeightConversions', parsed);
+      } else if (field === 'sizeConversions') {
+        updateNestedConfig('sizeConversions', parsed);
+      }
+    } catch (error) {
+      setJsonErrors(prev => ({ ...prev, [field]: error.message }));
+    }
+  };
+
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
   };
 
   const handleSave = async () => {
@@ -569,244 +612,7 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
     }
   };
 
-  const togglePaperExpansion = (paperType, paperIndex) => {
-    const key = `${paperType}-${paperIndex}`;
-    setExpandedPaper(prev => ({
-      ...prev,
-      [key]: !prev[key]
-    }));
-  };
-
-  const renderPaperOptionsWithWeights = (type) => {
-    const paperTypes = {
-      'cover': { title: 'Cover Paper', path: 'paperOptions.cover' },
-      'inside': { title: 'Inside Paper', path: 'paperOptions.inside' },
-      'subscription': { title: 'Subscription Paper', path: 'paperOptions.subscription' }
-    };
-
-    const { title, path } = paperTypes[type];
-    const paperOptions = config.paperOptions?.[type] || [];
-
-    return (
-      <div className="space-y-6">
-        <h3 className="text-xl font-semibold text-gray-900">{title} Options</h3>
-        
-        <div className="space-y-6">
-          {paperOptions.map((paper, paperIndex) => {
-            const expansionKey = `${type}-${paperIndex}`;
-            const isExpanded = expandedPaper[expansionKey];
-            
-            return (
-              <div key={paperIndex} className="border border-gray-300 rounded-xl overflow-hidden bg-white">
-                <div className="bg-gray-50 p-4 border-b border-gray-200">
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center space-x-4">
-                      <button
-                        onClick={() => togglePaperExpansion(type, paperIndex)}
-                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-                      >
-                        {isExpanded ? '▼' : '▶'}
-                      </button>
-                      <div>
-                        <h4 className="font-semibold text-gray-900">{paper.label || 'Unnamed Paper'}</h4>
-                        <div className="flex items-center space-x-3 mt-1">
-                          <code className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
-                            {paper.value || 'No value'}
-                          </code>
-                          <span className="text-sm text-gray-600">Base Price: ${paper.price || 0}</span>
-                        </div>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => removeArrayItem(path, paperIndex)}
-                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Remove paper"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                </div>
-                
-                <div className={`${isExpanded ? 'block' : 'hidden'}`}>
-                  <div className="p-6 border-b border-gray-200">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Paper Value
-                        </label>
-                        <input
-                          type="text"
-                          value={paper.value || ''}
-                          onChange={(e) => updateArrayItem(path, paperIndex, 'value', e.target.value)}
-                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                          placeholder="e.g., GLOSS"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Paper Label
-                        </label>
-                        <input
-                          type="text"
-                          value={paper.label || ''}
-                          onChange={(e) => updateArrayItem(path, paperIndex, 'label', e.target.value)}
-                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                          placeholder="e.g., Gloss"
-                        />
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Base Price ($)
-                        </label>
-                        <div className="relative">
-                          <input
-                            type="number"
-                            step="0.01"
-                            value={paper.price || 0}
-                            onChange={(e) => updateArrayItem(path, paperIndex, 'price', e.target.value)}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 pl-10"
-                          />
-                          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                            $
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {type === 'cover' && (
-                      <div className="mt-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Description
-                        </label>
-                        <textarea
-                          value={paper.description || ''}
-                          onChange={(e) => updateArrayItem(path, paperIndex, 'description', e.target.value)}
-                          rows={2}
-                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                          placeholder="Paper description"
-                        />
-                      </div>
-                    )}
-                  </div>
-                  
-                  <div className="p-6 bg-gray-50">
-                    <div className="flex justify-between items-center mb-4">
-                      <h5 className="font-semibold text-gray-900">Available Weight Options</h5>
-                      <button
-                        onClick={() => addWeightOption(type, paperIndex)}
-                        className="flex items-center px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm"
-                      >
-                        <Plus size={14} className="mr-1" />
-                        Add Weight
-                      </button>
-                    </div>
-                    
-                    {paper.weightOptions && paper.weightOptions.length > 0 ? (
-                      <div className="space-y-4">
-                        {paper.weightOptions.map((weight, weightIndex) => (
-                          <div key={weightIndex} className="flex items-center space-x-4 p-4 bg-white border border-gray-200 rounded-lg">
-                            <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
-                              <div>
-                                <label className="block text-xs font-medium text-gray-500 mb-1">
-                                  Weight Value (gsm)
-                                </label>
-                                <input
-                                  type="text"
-                                  value={weight.value || ''}
-                                  onChange={(e) => updatePaperWeightOption(type, paperIndex, weightIndex, 'value', e.target.value)}
-                                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                  placeholder="e.g., 100"
-                                />
-                              </div>
-                              
-                              <div>
-                                <label className="block text-xs font-medium text-gray-500 mb-1">
-                                  Weight Label
-                                </label>
-                                <input
-                                  type="text"
-                                  value={weight.label || ''}
-                                  onChange={(e) => updatePaperWeightOption(type, paperIndex, weightIndex, 'label', e.target.value)}
-                                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-                                  placeholder="e.g., 100 gsm"
-                                />
-                              </div>
-                              
-                              <div>
-                                <label className="block text-xs font-medium text-gray-500 mb-1">
-                                  Additional Price ($)
-                                </label>
-                                <div className="relative">
-                                  <input
-                                    type="number"
-                                    step="0.01"
-                                    value={weight.price || 0}
-                                    onChange={(e) => updatePaperWeightOption(type, paperIndex, weightIndex, 'price', e.target.value)}
-                                    className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 pl-8"
-                                  />
-                                  <div className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">
-                                    $
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            
-                            <button
-                              onClick={() => removeWeightOption(type, paperIndex, weightIndex)}
-                              className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
-                              title="Remove weight option"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-center py-6 border-2 border-dashed border-gray-300 rounded-lg">
-                        <p className="text-gray-500 mb-2">No weight options configured</p>
-                        <p className="text-sm text-gray-400">Add weight options to allow selection for this paper type</p>
-                      </div>
-                    )}
-                    
-                    <div className="mt-4 text-sm text-gray-500">
-                      <p><span className="font-medium">Note:</span> Weight options allow users to select different paper weights for this paper type. The price shown will be: Base Price + Weight Price.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-        
-        <div className="pt-4 border-t border-gray-200">
-          <button
-            onClick={() => {
-              const newPaper = {
-                value: `NEW_${Date.now()}`,
-                label: 'New Paper',
-                price: 0,
-                weightOptions: []
-              };
-              
-              if (type === 'cover') {
-                newPaper.description = '';
-              }
-              
-              addArrayItem(path, newPaper);
-            }}
-            className="flex items-center justify-center w-full py-4 border-2 border-dashed border-gray-300 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-colors group"
-          >
-            <Plus size={20} className="mr-2 text-gray-400 group-hover:text-indigo-600" />
-            <span className="font-medium text-gray-600 group-hover:text-indigo-700">Add New Paper Option</span>
-          </button>
-        </div>
-      </div>
-    );
-  };
-
-  const renderEditableArray = (title, path, fields, isNested = false, hasImages = false) => {
+  const renderEditableArray = (title, path, fields, hasImages = false, draggable = false) => {
     const getArray = () => {
       const keys = path.split('.');
       let current = config;
@@ -818,8 +624,6 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
     };
 
     const array = getArray();
-    const hasImageField = fields.includes('image') || hasImages;
-    const gridCols = hasImageField ? 'lg:grid-cols-5' : 'lg:grid-cols-4';
 
     return (
       <div className="space-y-4 mb-6">
@@ -861,39 +665,90 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
         <div className="space-y-4">
           {array.map((item, index) => (
             <div key={index} className="border border-gray-200 rounded-xl overflow-hidden bg-white">
-              <div className="bg-gray-50 p-4 border-b border-gray-200 flex justify-between items-center">
-                <div className="flex items-center">
-                  {item.image && (
-                    <div className="mr-3 w-10 h-10 rounded overflow-hidden border border-gray-200">
-                      <img 
-                        src={item.image} 
-                        alt={item.label || 'Preview'} 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
-                  <div>
-                    {item.label && (
-                      <span className="font-medium text-gray-900">{item.label}</span>
-                    )}
-                    {item.value && (
-                      <code className="ml-2 px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
-                        {item.value}
-                      </code>
-                    )}
-                  </div>
-                </div>
-                <button
-                  onClick={() => removeArrayItem(path, index)}
-                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                  title="Remove"
+              {draggable ? (
+                <DraggableItem
+                  index={index}
+                  onDragStart={handleDragStart}
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDrop(path, index)}
+                  isDragging={draggedItem === index}
                 >
-                  <Trash2 size={16} />
-                </button>
-              </div>
+                  <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+                    <div className="flex items-center">
+                      {item.image && (
+                        <div className="mr-3 w-10 h-10 rounded overflow-hidden border border-gray-200">
+                          <img 
+                            src={item.image} 
+                            alt={item.label || 'Preview'} 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      <div>
+                        {item.label && (
+                          <span className="font-medium text-gray-900">{item.label}</span>
+                        )}
+                        {item.value && (
+                          <code className="ml-2 px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
+                            {item.value}
+                          </code>
+                        )}
+                        {item.price !== undefined && (
+                          <span className={`ml-2 text-sm ${item.price > 0 ? 'text-green-600' : item.price < 0 ? 'text-red-600' : 'text-gray-500'}`}>
+                            ${item.price}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => removeArrayItem(path, index)}
+                      className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      title="Remove"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </DraggableItem>
+              ) : (
+                <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+                  <div className="flex items-center">
+                    {item.image && (
+                      <div className="mr-3 w-10 h-10 rounded overflow-hidden border border-gray-200">
+                        <img 
+                          src={item.image} 
+                          alt={item.label || 'Preview'} 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <div>
+                      {item.label && (
+                        <span className="font-medium text-gray-900">{item.label}</span>
+                      )}
+                      {item.value && (
+                        <code className="ml-2 px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
+                          {item.value}
+                        </code>
+                      )}
+                      {item.price !== undefined && (
+                        <span className={`ml-2 text-sm ${item.price > 0 ? 'text-green-600' : item.price < 0 ? 'text-red-600' : 'text-gray-500'}`}>
+                          ${item.price}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => removeArrayItem(path, index)}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    title="Remove"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              )}
               
               <div className="p-6">
-                <div className={`grid grid-cols-1 md:grid-cols-2 ${gridCols} gap-4`}>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   {fields.map(field => {
                     if (field === 'image') {
                       return (
@@ -959,10 +814,7 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
                               type="number"
                               step="0.01"
                               value={item[field] || 0}
-                              onChange={(e) => {
-                                const value = parseFloat(e.target.value) || 0;
-                                updateArrayItem(path, index, field, value);
-                              }}
+                              onChange={(e) => updateArrayItem(path, index, field, e.target.value)}
                               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors pl-10"
                               placeholder="0.00"
                             />
@@ -972,14 +824,9 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
                           </div>
                         ) : (
                           <input
-                            type={field === 'quantity' || field === 'discount' ? 'number' : 'text'}
+                            type="text"
                             value={item[field] || ''}
-                            onChange={(e) => {
-                              const value = field === 'quantity' || field === 'discount' 
-                                ? parseInt(e.target.value) || 0 
-                                : e.target.value;
-                              updateArrayItem(path, index, field, value);
-                            }}
+                            onChange={(e) => updateArrayItem(path, index, field, e.target.value)}
                             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                             placeholder={`Enter ${field}`}
                           />
@@ -1006,14 +853,355 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
     );
   };
 
+  const renderPaperOptionsWithWeights = (type) => {
+    const paperOptions = config.paperOptions?.[type] || [];
+    const title = type.charAt(0).toUpperCase() + type.slice(1) + ' Paper Options';
+    
+    return (
+      <div className="space-y-6">
+        <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
+        
+        <div className="space-y-6">
+          {paperOptions.map((paper, paperIndex) => (
+            <div key={paperIndex} className="border border-gray-300 rounded-xl overflow-hidden bg-white">
+              <div className="bg-gray-50 p-4 border-b border-gray-200">
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center">
+                    <div>
+                      <h4 className="font-semibold text-gray-900">{paper.label || 'Unnamed Paper'}</h4>
+                      <div className="flex items-center space-x-3 mt-1">
+                        <code className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
+                          {paper.value || 'No value'}
+                        </code>
+                        <span className="text-sm text-gray-600">Base Price: ${paper.price || 0}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => removeArrayItem(`paperOptions.${type}`, paperIndex)}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    title="Remove paper"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              </div>
+              
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Paper Value
+                    </label>
+                    <input
+                      type="text"
+                      value={paper.value || ''}
+                      onChange={(e) => updateArrayItem(`paperOptions.${type}`, paperIndex, 'value', e.target.value)}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      placeholder="e.g., GLOSS"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Paper Label
+                    </label>
+                    <input
+                      type="text"
+                      value={paper.label || ''}
+                      onChange={(e) => updateArrayItem(`paperOptions.${type}`, paperIndex, 'label', e.target.value)}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      placeholder="e.g., Gloss"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Base Price ($)
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={paper.price || 0}
+                        onChange={(e) => updateArrayItem(`paperOptions.${type}`, paperIndex, 'price', e.target.value)}
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 pl-10"
+                      />
+                      <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                        $
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {type === 'cover' && (
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Description
+                    </label>
+                    <textarea
+                      value={paper.description || ''}
+                      onChange={(e) => updateArrayItem(`paperOptions.${type}`, paperIndex, 'description', e.target.value)}
+                      rows={2}
+                      className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                      placeholder="Paper description"
+                    />
+                  </div>
+                )}
+                
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <div className="flex justify-between items-center mb-4">
+                    <h5 className="font-semibold text-gray-900">Available Weight Options</h5>
+                    <button
+                      onClick={() => addWeightOption(type, paperIndex)}
+                      className="flex items-center px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm"
+                    >
+                      <Plus size={14} className="mr-1" />
+                      Add Weight
+                    </button>
+                  </div>
+                  
+                  {paper.weightOptions && paper.weightOptions.length > 0 ? (
+                    <div className="space-y-4">
+                      {paper.weightOptions.map((weight, weightIndex) => (
+                        <div key={weightIndex} className="flex items-center space-x-4 p-4 bg-white border border-gray-200 rounded-lg">
+                          <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                              <label className="block text-xs font-medium text-gray-500 mb-1">
+                                Weight Value (gsm)
+                              </label>
+                              <input
+                                type="text"
+                                value={weight.value || ''}
+                                onChange={(e) => updatePaperWeightOption(type, paperIndex, weightIndex, 'value', e.target.value)}
+                                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                placeholder="e.g., 100"
+                              />
+                            </div>
+                            
+                            <div>
+                              <label className="block text-xs font-medium text-gray-500 mb-1">
+                                Weight Label
+                              </label>
+                              <input
+                                type="text"
+                                value={weight.label || ''}
+                                onChange={(e) => updatePaperWeightOption(type, paperIndex, weightIndex, 'label', e.target.value)}
+                                className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                placeholder="e.g., 100 gsm"
+                              />
+                            </div>
+                            
+                            <div>
+                              <label className="block text-xs font-medium text-gray-500 mb-1">
+                                Additional Price ($)
+                              </label>
+                              <div className="relative">
+                                <input
+                                  type="number"
+                                  step="0.01"
+                                  value={weight.price || 0}
+                                  onChange={(e) => updatePaperWeightOption(type, paperIndex, weightIndex, 'price', e.target.value)}
+                                  className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 pl-8"
+                                />
+                                <div className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">
+                                  $
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <button
+                            onClick={() => removeWeightOption(type, paperIndex, weightIndex)}
+                            className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+                            title="Remove weight option"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-6 border-2 border-dashed border-gray-300 rounded-lg">
+                      <p className="text-gray-500 mb-2">No weight options configured</p>
+                      <p className="text-sm text-gray-400">Add weight options to allow selection for this paper type</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div className="pt-4 border-t border-gray-200">
+          <button
+            onClick={() => {
+              const newPaper = {
+                value: `NEW_${Date.now()}`,
+                label: 'New Paper',
+                price: 0,
+                weightOptions: []
+              };
+              
+              if (type === 'cover') {
+                newPaper.description = '';
+              }
+              
+              addArrayItem(`paperOptions.${type}`, newPaper);
+            }}
+            className="flex items-center justify-center w-full py-4 border-2 border-dashed border-gray-300 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-colors group"
+          >
+            <Plus size={20} className="mr-2 text-gray-400 group-hover:text-indigo-600" />
+            <span className="font-medium text-gray-600 group-hover:text-indigo-700">Add New Paper Option</span>
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderAdditionalOptions = (category) => {
+    const options = config.additionalOptions?.[category] || [];
+    const titles = {
+      holePunch: 'Hole Punch Options',
+      perforation: 'Perforation Options',
+      numbering: 'Numbering Options',
+      cornerRounding: 'Corner Rounding Options',
+      shrinkWrap: 'Shrink Wrap Options'
+    };
+    
+    return (
+      <div className="space-y-4">
+        <h4 className="text-lg font-medium text-gray-900">{titles[category]}</h4>
+        {renderEditableArray('', `additionalOptions.${category}`, ['value', 'label', 'price', 'description'], false, true)}
+      </div>
+    );
+  };
+
+  const renderFinishingOptions = (category) => {
+    const options = config.finishingOptions?.[category] || [];
+    const titles = {
+      trimming: 'Trimming Options',
+      scoring: 'Scoring Options'
+    };
+    
+    return (
+      <div className="space-y-4">
+        <h4 className="text-lg font-medium text-gray-900">{titles[category]}</h4>
+        {renderEditableArray('', `finishingOptions.${category}`, ['value', 'label', 'price', 'description'])}
+      </div>
+    );
+  };
+
+  const renderJsonEditor = (title, field, description) => {
+    return (
+      <div className="space-y-4">
+        <div>
+          <h4 className="text-lg font-medium text-gray-900">{title}</h4>
+          <p className="text-sm text-gray-600 mb-4">{description}</p>
+        </div>
+        
+        <div className="relative">
+          <textarea
+            value={jsonEditors[field]}
+            onChange={(e) => handleJsonEditorChange(field, e.target.value)}
+            rows={20}
+            className={`w-full font-mono text-sm p-4 border rounded-lg transition-colors ${
+              jsonErrors[field] ? 'border-red-500' : 'border-gray-300 focus:border-indigo-500'
+            }`}
+            spellCheck="false"
+          />
+          {jsonErrors[field] && (
+            <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-700 text-sm">
+                <span className="font-semibold">JSON Error:</span> {jsonErrors[field]}
+              </p>
+            </div>
+          )}
+          
+          <div className="mt-4 flex justify-between items-center">
+            <div className="text-sm text-gray-500">
+              Edit the JSON structure directly. Make sure to maintain valid JSON format.
+            </div>
+            <button
+              onClick={() => {
+                try {
+                  const parsed = JSON.parse(jsonEditors[field]);
+                  const pretty = JSON.stringify(parsed, null, 2);
+                  handleJsonEditorChange(field, pretty);
+                } catch (error) {
+                  // Ignore if already invalid
+                }
+              }}
+              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-sm"
+            >
+              Format JSON
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderPreview = () => {
+    return (
+      <div className="bg-white rounded-xl shadow-sm border p-8">
+        <h3 className="text-lg font-semibold mb-6 pb-4 border-b border-gray-200">Saddle Stitch Configuration Preview</h3>
+        
+        <div className="space-y-6">
+          <div className="grid grid-cols-2 gap-6">
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <h4 className="font-semibold text-gray-900 mb-2">General Settings</h4>
+              <p className="text-sm text-gray-600">{config.general?.title}</p>
+              <p className="text-xs text-gray-500 mt-1">{config.general?.description}</p>
+            </div>
+            
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <h4 className="font-semibold text-gray-900 mb-2">Binding Options</h4>
+              <p className="text-sm text-gray-600">{config.bindingTypes?.length || 0} binding types</p>
+            </div>
+          </div>
+          
+          <div className="border-t pt-6">
+            <h4 className="font-semibold text-gray-900 mb-4">Available Options Summary</h4>
+            <div className="grid grid-cols-3 gap-4 text-sm">
+              <div className="p-3 bg-blue-50 rounded-lg">
+                <p className="font-medium text-blue-900">Paper Types</p>
+                <p className="text-blue-700">Cover: {config.paperOptions?.cover?.length || 0}</p>
+                <p className="text-blue-700">Inside: {config.paperOptions?.inside?.length || 0}</p>
+              </div>
+              <div className="p-3 bg-green-50 rounded-lg">
+                <p className="font-medium text-green-900">Print Colors</p>
+                <p className="text-green-700">{config.printColors?.length || 0} options</p>
+              </div>
+              <div className="p-3 bg-purple-50 rounded-lg">
+                <p className="font-medium text-purple-900">Folding Options</p>
+                <p className="text-purple-700">{config.foldingOptions?.length || 0} options</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="border-t pt-6">
+            <h4 className="font-semibold text-gray-900 mb-2">Pricing Configuration</h4>
+            <div className="text-sm text-gray-600 space-y-1">
+              <p>Base Setup: ${config.pricing?.baseSetupCost || 0}</p>
+              <p>Cost Per Page: ${config.pricing?.costPerPage || 0}</p>
+              <p>Minimum Pages: {config.pricing?.minimumPages || 0}</p>
+              <p>Maximum Pages: {config.pricing?.maximumPages || 0}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Saddle Quote Form Editor</h1>
-              <p className="text-sm text-gray-600 mt-1">Configure pricing and options for perfect binding book printing</p>
+              <h1 className="text-2xl font-bold text-gray-900">Saddle Stitch Form Editor</h1>
+              <p className="text-sm text-gray-600 mt-1">Configure pricing and options for saddle stitch book printing</p>
             </div>
             <div className="flex space-x-3">
               <button
@@ -1021,7 +1209,7 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
                 className="flex items-center px-4 py-2 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
               >
                 <Eye size={16} className="mr-2" />
-                {preview ? 'Edit Mode' : 'Preview Mode'}
+                {preview ? 'Back to Editor' : 'Preview'}
               </button>
               <button
                 onClick={handleSave}
@@ -1036,10 +1224,10 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
 
           <div className="flex space-x-8 overflow-x-auto pb-2">
             {[
-              'general', 'sizes', 'binding', 'colors', 'paper-cover', 'paper-inside', 
-              'paper-subscription', 'finishes', 'folds', 'additional',
-              'positions', 'page-counts', 'weights', 'quantities', 'pricing', 
-              'shipping', 'volume-discounts'
+              'general', 'binding', 'sizes', 'paper-cover', 'paper-inside',
+              'colors', 'finishes', 'folding', 'additional', 'finishing',
+              'positions', 'page-counts', 'quantities', 'pricing', 'shipping',
+              'weights', 'weight-conversions', 'size-conversions'
             ].map(tab => (
               <button
                 key={tab}
@@ -1059,33 +1247,7 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {preview ? (
-          <div className="bg-white rounded-xl shadow-sm border p-8">
-            <h3 className="text-lg font-semibold mb-6 pb-4 border-b border-gray-200">Form Preview</h3>
-            <div className="border-2 border-dashed border-gray-300 rounded-xl p-12 text-center bg-gray-50">
-              <div className="max-w-md mx-auto">
-                <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Eye size={24} className="text-indigo-600" />
-                </div>
-                <h4 className="text-lg font-medium text-gray-900 mb-2">Form Preview</h4>
-                <p className="text-gray-600 mb-6">
-                  The actual form component would be rendered here using the current configuration.
-                  All pricing and options are configured in the editor.
-                </p>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-white border border-gray-200 rounded-lg">
-                    <p className="text-sm font-medium text-gray-900">Form Title</p>
-                    <p className="text-sm text-gray-600 mt-1">{config.general?.title}</p>
-                  </div>
-                  <div className="p-4 bg-white border border-gray-200 rounded-lg">
-                    <p className="text-sm font-medium text-gray-900">Paper Options</p>
-                    <p className="text-sm text-gray-600 mt-1">
-                      Cover: {config.paperOptions?.cover?.length || 0} types
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          renderPreview()
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <div className="lg:col-span-1">
@@ -1094,22 +1256,23 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
                 <nav className="space-y-1">
                   {[
                     { id: 'general', label: 'General Settings', icon: '⚙️' },
+                    { id: 'binding', label: 'Binding Types', icon: '📖' },
                     { id: 'sizes', label: 'Sizes & Dimensions', icon: '📐' },
-                    { id: 'binding', label: 'Binding Options', icon: '📖' },
-                    { id: 'colors', label: 'Color Options', icon: '🎨' },
                     { id: 'paper-cover', label: 'Cover Paper', icon: '🟫' },
                     { id: 'paper-inside', label: 'Inside Paper', icon: '📄' },
-                    { id: 'paper-subscription', label: 'Subscription Paper', icon: '💳' },
+                    { id: 'colors', label: 'Color Options', icon: '🎨' },
                     { id: 'finishes', label: 'Cover Finishes', icon: '✨' },
-                    { id: 'folds', label: 'Cover Folds', icon: '📐' },
+                    { id: 'folding', label: 'Folding Options', icon: '📐' },
                     { id: 'additional', label: 'Additional Services', icon: '➕' },
-                    { id: 'positions', label: 'Card Positions', icon: '📍' },
-                    { id: 'page-counts', label: 'Page Count Options', icon: '📊' },
-                    { id: 'weights', label: 'Global Weight Options', icon: '⚖️' },
-                    { id: 'quantities', label: 'Quantity Options', icon: '📦' },
+                    { id: 'finishing', label: 'Finishing Options', icon: '✂️' },
+                    { id: 'positions', label: 'Insert Positions', icon: '📍' },
+                    { id: 'page-counts', label: 'Page Counts', icon: '📊' },
+                    { id: 'quantities', label: 'Quantities', icon: '📦' },
                     { id: 'pricing', label: 'Pricing Settings', icon: '💰' },
                     { id: 'shipping', label: 'Shipping Options', icon: '🚚' },
-                    { id: 'volume-discounts', label: 'Volume Discounts', icon: '📈' },
+                    { id: 'weights', label: 'Global Weights', icon: '⚖️' },
+                    { id: 'weight-conversions', label: 'Weight Conversions', icon: '🔄' },
+                    { id: 'size-conversions', label: 'Size Conversions', icon: '📏' },
                   ].map(section => (
                     <button
                       key={section.id}
@@ -1129,7 +1292,7 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
                 <div className="mt-8 pt-6 border-t border-gray-200">
                   <div className="p-3 bg-blue-50 rounded-lg">
                     <p className="text-xs text-blue-800">
-                      <span className="font-semibold">💡 Tip:</span> Binding Edge and Print Color options support images for better visualization.
+                      <span className="font-semibold">💡 Tip:</span> Drag and drop items to reorder them in lists.
                     </p>
                   </div>
                 </div>
@@ -1195,96 +1358,101 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
 
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Disclaimer/Note
+                            Custom Size Instructions (INCH)
                           </label>
                           <textarea
-                            value={config.general?.disclaimer || ''}
-                            onChange={(e) => updateNestedConfig('general.disclaimer', e.target.value)}
+                            value={config.customSizeInstructions?.INCH || ''}
+                            onChange={(e) => updateNestedConfig('customSizeInstructions.INCH', e.target.value)}
                             rows={3}
                             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-                            placeholder="Add any disclaimer or note for users"
                           />
                         </div>
 
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Spine Width Display
+                            Custom Size Instructions (MM)
+                          </label>
+                          <textarea
+                            value={config.customSizeInstructions?.MM || ''}
+                            onChange={(e) => updateNestedConfig('customSizeInstructions.MM', e.target.value)}
+                            rows={3}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Max Insert Pages
                           </label>
                           <input
-                            type="text"
-                            value={config.spineWidth || ''}
-                            onChange={(e) => updateNestedConfig('spineWidth', e.target.value)}
+                            type="number"
+                            value={config.maxInserts || 5}
+                            onChange={(e) => updateNestedConfig('maxInserts', parseInt(e.target.value) || 5)}
                             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-                            placeholder="e.g., 0.178&quot;"
                           />
-                          <p className="text-xs text-gray-500 mt-2">This will be displayed in the Binding Details section</p>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Custom Size Instructions
-                          </label>
-                          <textarea
-                            value={config.customSizeInstructions || ''}
-                            onChange={(e) => updateNestedConfig('customSizeInstructions', e.target.value)}
-                            rows={3}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-                            placeholder="Instructions for custom size input"
-                          />
+                          <p className="text-xs text-gray-500 mt-1">Maximum number of insert pages allowed</p>
                         </div>
                       </div>
+                    </div>
+                  )}
+
+                  {activeTab === 'binding' && (
+                    <div className="space-y-6">
+                      <h3 className="text-xl font-semibold text-gray-900">Binding Types</h3>
+                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                        <p className="text-sm text-blue-800">
+                          <span className="font-semibold">💡 Note:</span> Binding options support images for better visualization.
+                        </p>
+                      </div>
+                      {renderEditableArray('Binding Types', 'bindingTypes', ['value', 'label', 'desc', 'price', 'image'], true, true)}
                     </div>
                   )}
 
                   {activeTab === 'sizes' && (
                     <div className="space-y-6">
                       <h3 className="text-xl font-semibold text-gray-900">Sizes & Dimensions</h3>
-                      {renderEditableArray('Standard Sizes', 'sizes', ['value', 'label', 'price'])}
-                    </div>
-                  )}
-
-                  {activeTab === 'binding' && (
-                    <div className="space-y-6">
-                      <h3 className="text-xl font-semibold text-gray-900">Binding Options</h3>
-                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
-                        <p className="text-sm text-blue-800">
-                          <span className="font-semibold">💡 Note:</span> Binding Edge options support images. Recommended image paths: 
-                          /forms/edge01.png (Left Side), /forms/edge02.png (Right Side), /forms/edge03.png (Top Side)
-                        </p>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Available Standard Sizes (comma separated)
+                        </label>
+                        <input
+                          type="text"
+                          value={config.availableSizes?.join(', ') || ''}
+                          onChange={(e) => updateNestedConfig('availableSizes', e.target.value.split(',').map(s => s.trim()))}
+                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                          placeholder="5.5x8.5, 8.5x11, 8.5x14, ..."
+                        />
                       </div>
-                      {renderEditableArray('Binding Edges', 'bindingEdges', ['value', 'label', 'desc', 'price', 'image'], false, true)}
-                    </div>
-                  )}
-
-                  {activeTab === 'colors' && (
-                    <div className="space-y-6">
-                      <h3 className="text-xl font-semibold text-gray-900">Color Options</h3>
-                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
-                        <p className="text-sm text-blue-800">
-                          <span className="font-semibold">💡 Note:</span> Print Color options support images. Recommended image paths:
-                          /forms/d1.png (Full color), /forms/d2.png (Full color + 1 Spot color), /forms/d3.png (Full color + 2 Spot color),
-                          /forms/d4.png (Black only), /forms/d5.png (Black + 1 Spot color), /forms/d6.png (Black + 2 Spot color)
-                        </p>
-                      </div>
-                      {renderEditableArray('Print Colors', 'printColors', ['value', 'label', 'price', 'description', 'image'], false, true)}
+                      {renderEditableArray('Size Options', 'sizes', ['value', 'label', 'price'], false, true)}
                     </div>
                   )}
 
                   {activeTab === 'paper-cover' && renderPaperOptionsWithWeights('cover')}
                   {activeTab === 'paper-inside' && renderPaperOptionsWithWeights('inside')}
-                  {activeTab === 'paper-subscription' && renderPaperOptionsWithWeights('subscription')}
+
+                  {activeTab === 'colors' && (
+                    <div className="space-y-6">
+                      <h3 className="text-xl font-semibold text-gray-900">Print Color Options</h3>
+                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                        <p className="text-sm text-blue-800">
+                          <span className="font-semibold">💡 Note:</span> Color options support images. Drag and drop to reorder.
+                        </p>
+                      </div>
+                      {renderEditableArray('Print Colors', 'printColors', ['value', 'label', 'price', 'description', 'image'], true, true)}
+                    </div>
+                  )}
 
                   {activeTab === 'finishes' && (
                     <div className="space-y-6">
                       <h3 className="text-xl font-semibold text-gray-900">Cover Finishes</h3>
-                      {renderEditableArray('Cover Finishes', 'coverFinishes', ['value', 'label', 'price', 'description'])}
+                      {renderEditableArray('Cover Finishes', 'coverFinishes', ['value', 'label', 'price', 'description'], false, true)}
                     </div>
                   )}
 
-                  {activeTab === 'folds' && (
+                  {activeTab === 'folding' && (
                     <div className="space-y-6">
-                      <h3 className="text-xl font-semibold text-gray-900">Cover Folds</h3>
-                      {renderEditableArray('Cover Folds', 'coverFolds', ['value', 'label', 'price', 'description'])}
+                      <h3 className="text-xl font-semibold text-gray-900">Folding Options</h3>
+                      {renderEditableArray('Folding Options', 'foldingOptions', ['value', 'label', 'price', 'description'], false, true)}
                     </div>
                   )}
 
@@ -1294,48 +1462,38 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
                       
                       <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
                         <p className="text-sm text-blue-800">
-                          <span className="font-semibold">Note:</span> Configure additional services for proofing, hole punching, slipcases, shrink wrapping, direct mailing, and numbering.
+                          <span className="font-semibold">Note:</span> Configure additional services specific to saddle stitch printing.
                         </p>
                       </div>
 
                       <div className="space-y-8">
-                        <div>
-                          <h4 className="text-lg font-medium text-gray-900 mb-4">Proof Types</h4>
-                          {renderEditableArray('', 'additionalOptions.proof', ['value', 'label', 'price', 'description'])}
-                        </div>
+                        {['holePunch', 'perforation', 'numbering', 'cornerRounding', 'shrinkWrap'].map(category => (
+                          <div key={category}>
+                            {renderAdditionalOptions(category)}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
-                        <div>
-                          <h4 className="text-lg font-medium text-gray-900 mb-4">Hole Punch Options</h4>
-                          {renderEditableArray('', 'additionalOptions.holePunch', ['value', 'label', 'price', 'description'])}
-                        </div>
-
-                        <div>
-                          <h4 className="text-lg font-medium text-gray-900 mb-4">Slipcase Options</h4>
-                          {renderEditableArray('', 'additionalOptions.slipcase', ['value', 'label', 'price', 'description'])}
-                        </div>
-
-                        <div>
-                          <h4 className="text-lg font-medium text-gray-900 mb-4">Shrink Wrap Options</h4>
-                          {renderEditableArray('', 'additionalOptions.shrinkWrap', ['value', 'label', 'price', 'description'])}
-                        </div>
-
-                        <div>
-                          <h4 className="text-lg font-medium text-gray-900 mb-4">Direct Mail Options</h4>
-                          {renderEditableArray('', 'additionalOptions.directMail', ['value', 'label', 'price', 'description'])}
-                        </div>
-
-                        <div>
-                          <h4 className="text-lg font-medium text-gray-900 mb-4">Numbering Options</h4>
-                          {renderEditableArray('', 'additionalOptions.numbering', ['value', 'label', 'price', 'description'])}
-                        </div>
+                  {activeTab === 'finishing' && (
+                    <div className="space-y-6">
+                      <h3 className="text-xl font-semibold text-gray-900">Finishing Options</h3>
+                      
+                      <div className="space-y-8">
+                        {['trimming', 'scoring'].map(category => (
+                          <div key={category}>
+                            {renderFinishingOptions(category)}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )}
 
                   {activeTab === 'positions' && (
                     <div className="space-y-6">
-                      <h3 className="text-xl font-semibold text-gray-900">Card Positions</h3>
-                      {renderEditableArray('Insertion Positions', 'positions', ['value', 'label', 'description'])}
+                      <h3 className="text-xl font-semibold text-gray-900">Insert Positions</h3>
+                      {renderEditableArray('Insert Positions', 'positions', ['value', 'label', 'description'])}
                     </div>
                   )}
 
@@ -1344,75 +1502,40 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
                       <h3 className="text-xl font-semibold text-gray-900">Page Count Options</h3>
                       <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
                         <p className="text-sm text-yellow-800">
-                          <span className="font-semibold">Note:</span> Page counts are auto-generated from 24 to 880 in increments of 2. This is calculated automatically based on your settings below.
+                          <span className="font-semibold">Note:</span> Saddle stitch typically has lower page counts (4-96 pages).
                         </p>
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Minimum Pages
-                          </label>
-                          <input
-                            type="number"
-                            value={24}
-                            disabled
-                            className="w-full p-3 border border-gray-300 rounded-lg bg-gray-100"
-                          />
-                          <p className="text-xs text-gray-500 mt-1">Fixed at 24 pages minimum</p>
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Maximum Pages
-                          </label>
-                          <input
-                            type="number"
-                            value={880}
-                            disabled
-                            className="w-full p-3 border border-gray-300 rounded-lg bg-gray-100"
-                          />
-                          <p className="text-xs text-gray-500 mt-1">Fixed at 880 pages maximum</p>
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Increment
-                          </label>
-                          <input
-                            type="number"
-                            value={2}
-                            disabled
-                            className="w-full p-3 border border-gray-300 rounded-lg bg-gray-100"
-                          />
-                          <p className="text-xs text-gray-500 mt-1">Fixed at 2-page increments</p>
-                        </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Page Counts (comma separated)
+                        </label>
+                        <input
+                          type="text"
+                          value={config.pageCounts?.join(', ') || ''}
+                          onChange={(e) => updateNestedConfig('pageCounts', e.target.value.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n)))}
+                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                          placeholder="4, 8, 12, 16, 20, ..."
+                        />
                       </div>
-                    </div>
-                  )}
-
-                  {activeTab === 'weights' && (
-                    <div className="space-y-6">
-                      <h3 className="text-xl font-semibold text-gray-900">Global Weight Options</h3>
-                      <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
-                        <p className="text-sm text-yellow-800">
-                          <span className="font-semibold">Note:</span> These are global weight options. 
-                          Individual paper types can use these as references or override with their own weight options.
-                        </p>
-                      </div>
-                      {renderEditableArray('Global Weight Options', 'weightOptions', ['value', 'label', 'price'])}
                     </div>
                   )}
 
                   {activeTab === 'quantities' && (
                     <div className="space-y-6">
                       <h3 className="text-xl font-semibold text-gray-900">Quantity Options</h3>
-                      <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
-                        <p className="text-sm text-yellow-800">
-                          <span className="font-semibold">Note:</span> These quantities will appear in the pricing table. You can add or remove quantities as needed.
-                        </p>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Available Quantities (comma separated)
+                        </label>
+                        <input
+                          type="text"
+                          value={config.quantities?.join(', ') || ''}
+                          onChange={(e) => updateNestedConfig('quantities', e.target.value.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n)))}
+                          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                          placeholder="100, 200, 300, 400, 500, ..."
+                        />
                       </div>
-                      {renderEditableArray('Available Quantities', 'quantities', ['value'])}
                     </div>
                   )}
 
@@ -1436,7 +1559,6 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
                               $
                             </div>
                           </div>
-                          <p className="text-xs text-gray-500 mt-1">Fixed setup cost for all orders</p>
                         </div>
                         
                         <div>
@@ -1455,7 +1577,6 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
                               $
                             </div>
                           </div>
-                          <p className="text-xs text-gray-500 mt-1">Cost per page (multiplied by quantity)</p>
                         </div>
                         
                         <div>
@@ -1465,11 +1586,10 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
                           <input
                             type="number"
                             step="0.1"
-                            value={config.pricing?.customSizeMultiplier || 1.0}
-                            onChange={(e) => updateNestedConfig('pricing.customSizeMultiplier', parseFloat(e.target.value) || 1.0)}
+                            value={config.pricing?.customSizeMultiplier || 1.3}
+                            onChange={(e) => updateNestedConfig('pricing.customSizeMultiplier', parseFloat(e.target.value) || 1.3)}
                             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                           />
-                          <p className="text-xs text-gray-500 mt-1">Multiplier for custom sizes (e.g., 1.2 = 20% extra)</p>
                         </div>
                         
                         <div>
@@ -1479,47 +1599,34 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
                           <input
                             type="number"
                             step="0.1"
-                            value={config.pricing?.standardSizeMultiplier || 1.0}
-                            onChange={(e) => updateNestedConfig('pricing.standardSizeMultiplier', parseFloat(e.target.value) || 1.0)}
+                            value={config.pricing?.standardSizeMultiplier || 1.15}
+                            onChange={(e) => updateNestedConfig('pricing.standardSizeMultiplier', parseFloat(e.target.value) || 1.15)}
                             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                           />
-                          <p className="text-xs text-gray-500 mt-1">Multiplier for non-standard sizes</p>
                         </div>
                         
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Dust Cover Base Cost ($)
+                            Minimum Pages
                           </label>
-                          <div className="relative">
-                            <input
-                              type="number"
-                              step="0.01"
-                              value={config.pricing?.dustCoverBaseCost || 0}
-                              onChange={(e) => updateNestedConfig('pricing.dustCoverBaseCost', parseFloat(e.target.value) || 0)}
-                              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors pl-10"
-                            />
-                            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                              $
-                            </div>
-                          </div>
+                          <input
+                            type="number"
+                            value={config.pricing?.minimumPages || 4}
+                            onChange={(e) => updateNestedConfig('pricing.minimumPages', parseInt(e.target.value) || 4)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                          />
                         </div>
                         
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Dust Cover Per Copy ($)
+                            Maximum Pages
                           </label>
-                          <div className="relative">
-                            <input
-                              type="number"
-                              step="0.001"
-                              value={config.pricing?.dustCoverPerCopy || 0}
-                              onChange={(e) => updateNestedConfig('pricing.dustCoverPerCopy', parseFloat(e.target.value) || 0)}
-                              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors pl-10"
-                            />
-                            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                              $
-                            </div>
-                          </div>
+                          <input
+                            type="number"
+                            value={config.pricing?.maximumPages || 96}
+                            onChange={(e) => updateNestedConfig('pricing.maximumPages', parseInt(e.target.value) || 96)}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                          />
                         </div>
                         
                         <div>
@@ -1529,24 +1636,28 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
                           <input
                             type="number"
                             step="1"
-                            value={config.pricing?.rushFeePercentage || 0}
-                            onChange={(e) => updateNestedConfig('pricing.rushFeePercentage', parseFloat(e.target.value) || 0)}
+                            value={config.pricing?.rushFeePercentage || 30}
+                            onChange={(e) => updateNestedConfig('pricing.rushFeePercentage', parseFloat(e.target.value) || 30)}
                             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                           />
-                          <p className="text-xs text-gray-500 mt-1">Percentage added for rush orders</p>
                         </div>
                         
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Max Subscription Cards
+                            Saddle Stitch Setup Cost ($)
                           </label>
-                          <input
-                            type="number"
-                            value={config.maxSubscriptionCards || 10}
-                            onChange={(e) => updateNestedConfig('maxSubscriptionCards', parseInt(e.target.value) || 10)}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
-                          />
-                          <p className="text-xs text-gray-500 mt-1">Maximum number of subscription cards allowed</p>
+                          <div className="relative">
+                            <input
+                              type="number"
+                              step="0.01"
+                              value={config.pricing?.saddleStitchSetup || 0}
+                              onChange={(e) => updateNestedConfig('pricing.saddleStitchSetup', parseFloat(e.target.value) || 0)}
+                              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors pl-10"
+                            />
+                            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                              $
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1570,25 +1681,57 @@ export default function SaddleQuoteFormEditor({ formConfig, onSave }) {
                     </div>
                   )}
 
-                  {activeTab === 'volume-discounts' && (
+                  {activeTab === 'weights' && (
                     <div className="space-y-6">
-                      <h3 className="text-xl font-semibold text-gray-900">Volume Discounts</h3>
+                      <h3 className="text-xl font-semibold text-gray-900">Global Weight Options</h3>
                       <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
                         <p className="text-sm text-yellow-800">
-                          <span className="font-semibold">Note:</span> Configure automatic discounts based on order quantity.
+                          <span className="font-semibold">Note:</span> These are global weight options for quick reference.
                         </p>
                       </div>
-                      {renderEditableArray('Volume Discounts', 'pricing.volumeDiscounts', ['quantity', 'discount'])}
+                      {renderEditableArray('Global Weight Options', 'weightOptions', ['value', 'label', 'price'])}
+                    </div>
+                  )}
+
+                  {activeTab === 'weight-conversions' && (
+                    <div className="space-y-6">
+                      <h3 className="text-xl font-semibold text-gray-900">Paper Weight Conversions</h3>
+                      {renderJsonEditor(
+                        'Weight Conversion Table',
+                        'paperWeightConversions',
+                        'Mapping of weight values to their equivalents in different measurement systems.'
+                      )}
+                    </div>
+                  )}
+
+                  {activeTab === 'size-conversions' && (
+                    <div className="space-y-6">
+                      <h3 className="text-xl font-semibold text-gray-900">Size Conversions</h3>
+                      {renderJsonEditor(
+                        'Size Conversion Tables',
+                        'sizeConversions',
+                        'Size display strings for both inch and millimeter measurement systems.'
+                      )}
                     </div>
                   )}
                 </div>
               </div>
 
-              <div className="mt-8 flex justify-end">
+              <div className="mt-8 flex justify-end space-x-4">
+                <button
+                  onClick={() => {
+                    if (confirm('Reset to default configuration? This will discard all changes.')) {
+                      setConfig(SADDLEQUOTE_DEFAULT_CONFIG);
+                    }
+                  }}
+                  className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
+                >
+                  Reset to Default
+                </button>
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="px-8 py-3 bg-green-600 text-white rounded-xl font-semibold hover:bg-green-700 transition-colors shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center"
+                  className="px-8 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 transition-colors shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center"
                 >
                   <Save size={18} className="mr-2" />
                   {saving ? 'Saving Configuration...' : 'Save All Changes'}
