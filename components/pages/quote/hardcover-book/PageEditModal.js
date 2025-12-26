@@ -402,25 +402,38 @@ const AddonEditModal = ({
           </div>
 
           <div className="bg-gray-50 p-6 rounded-xl border border-gray-200">
-            <h4 className="font-semibold text-gray-900 mb-4">Add-on Information</h4>
-            <div className="space-y-4">
-              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-xs text-blue-800">
-                  <span className="font-semibold">Note:</span> Add-ons are special finishing techniques applied after printing.
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">
-                  Select the type of add-on and the size area it should cover on the selected pages.
-                </p>
-              </div>
-              <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-xs text-green-800">
-                  <span className="font-semibold">Tip:</span> Use add-ons to enhance specific areas like logos, titles, or decorative elements.
-                </p>
-              </div>
-            </div>
-          </div>
+  <h4 className="font-semibold text-gray-900 mb-4">
+    Add-on Information
+  </h4>
+  <div className="space-y-4">
+    <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+      <p className="text-xs text-blue-800">
+        <span className="font-semibold">Note:</span> Add-ons are special finishing techniques applied after printing.
+      </p>
+    </div>
+
+    <div>
+      <p className="text-sm text-gray-600">
+        Select the type of add-on and the size area it should cover on the selected pages.
+      </p>
+    </div>
+
+    <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+      <p className="text-xs text-green-800">
+        <span className="font-semibold">Tip:</span> Use add-ons to enhance specific areas like logos, titles, or decorative elements.
+      </p>
+    </div>
+	{/* Image */}
+  <div className="mb-4">
+    <img
+      src="/forms/img_page_eng.jpg"
+      alt="Add-on information guide"
+      className="w-full max-w-md mx-auto rounded-lg border border-gray-200"
+    />
+  </div>
+  </div>
+</div>
+
         </div>
 
         <div className="flex justify-end gap-4 mt-8 pt-6 border-t border-gray-200">
