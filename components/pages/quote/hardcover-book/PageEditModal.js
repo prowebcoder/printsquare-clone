@@ -430,6 +430,8 @@ const AddonEditModal = ({
       alt="Add-on information guide"
       className="w-full max-w-md mx-auto rounded-lg border border-gray-200"
     />
+    <h3>Page size</h3>
+<p className="text-sm">Cost varies depending on the size of add-on. Please choose the right size that can cover the net area of add-on.</p>
   </div>
   </div>
 </div>
