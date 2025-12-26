@@ -335,9 +335,8 @@ const AddonEditModal = ({
   ];
 
   const sizeOptions = [
-    { value: 'SMALL', label: 'Small (25% of page)' },
-    { value: 'MEDIUM', label: 'Medium (50% of page)' },
-    { value: 'LARGE', label: 'Large (75% of page)' },
+    { value: '1/2', label: '1/2' },
+    { value: '1/4', label: '1/4' },
     { value: 'FULL', label: 'Full page' },
   ];
 
