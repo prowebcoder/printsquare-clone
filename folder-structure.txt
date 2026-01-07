@@ -17,6 +17,7 @@
 │   │   │   │   │   ├── HeroBannerRenderer.js
 │   │   │   │   │   ├── ImageBannerRenderer.js
 │   │   │   │   │   ├── ImageBannerTwoRenderer.js
+│   │   │   │   │   ├── ImageWithTabsRenderer.js
 │   │   │   │   │   ├── MethodRenderer.js
 │   │   │   │   │   ├── MultiColumnRenderer.js
 │   │   │   │   │   ├── MultiTableRenderer.js
@@ -117,6 +118,10 @@
 │   │   │       ├── [id]
 │   │   │       │   └── route.js
 │   │   │       └── route.js
+│   │   ├── checkout
+│   │   │   ├── session
+│   │   │   │   └── route.js
+│   │   │   └── route.js
 │   │   ├── customer
 │   │   │   └── auth
 │   │   │       ├── login
@@ -144,6 +149,21 @@
 │   │   │   │   └── route.js
 │   │   │   └── wire-quote
 │   │   │       └── route.js
+│   │   ├── orders
+│   │   │   ├── create
+│   │   │   │   └── route.js
+│   │   │   └── customer
+│   │   │       └── [customerId]
+│   │   │           └── route.js
+│   │   ├── paypal
+│   │   │   └── create-order
+│   │   │       └── route.js
+│   │   ├── quotes
+│   │   │   ├── create
+│   │   │   │   └── route.js
+│   │   │   └── customer
+│   │   │       └── [customerId]
+│   │   │           └── route.js
 │   │   ├── reset-pages
 │   │   │   └── route.js
 │   │   ├── send-quote
@@ -157,14 +177,14 @@
 │   │   │   │   └── route.js
 │   │   │   └── wire-quote
 │   │   │       └── route.js
-│   │   ├── test-form-config
-│   │   │   └── route.js
-│   │   ├── test-stripe
-│   │   │   └── route.js
 │   │   └── upload
 │   │       └── route.js
 │   ├── cart
 │   │   └── page.js
+│   ├── checkout
+│   │   ├── success
+│   │   │   └── page.js
+│   │   └── success-content.js
 │   ├── customer
 │   │   ├── account
 │   │   │   └── page.js
@@ -222,6 +242,7 @@
 │   │   └── Popup.js
 │   ├── modals
 │   │   ├── CustomQuote.js
+│   │   ├── ImagePreviewModal.js
 │   │   └── RequestingSample.js
 │   ├── PageBuilder
 │   │   ├── editors
@@ -238,6 +259,7 @@
 │   │   │   ├── ImageBannerEditor.js
 │   │   │   ├── ImageBannerTwoEditor.js
 │   │   │   ├── ImageEditor.js
+│   │   │   ├── ImageWithTabsEditor.js
 │   │   │   ├── MethodEditor.js
 │   │   │   ├── MultiColumnEditor.js
 │   │   │   ├── MultiTableEditor.js
@@ -337,23 +359,27 @@
 │   │   │   │   ├── HardQuoteForm.js
 │   │   │   │   ├── Heading.js
 │   │   │   │   ├── index.js
+│   │   │   │   ├── PageEditModal.js
 │   │   │   │   └── Tabs.js
 │   │   │   ├── perfect-binding
 │   │   │   │   ├── FormTabs.js
 │   │   │   │   ├── Heading.js
 │   │   │   │   ├── index.js
+│   │   │   │   ├── PageEditModal.js
 │   │   │   │   ├── PrintQuoteForm.js
 │   │   │   │   └── Tabs.js
 │   │   │   ├── saddle-stitching
 │   │   │   │   ├── FormTabs.js
 │   │   │   │   ├── Heading.js
 │   │   │   │   ├── index.js
+│   │   │   │   ├── PageEditModal.js
 │   │   │   │   ├── SaddleQuoteForm.js
 │   │   │   │   └── Tabs.js
 │   │   │   ├── wire-binding
 │   │   │   │   ├── FormTabs.js
 │   │   │   │   ├── Heading.js
 │   │   │   │   ├── index.js
+│   │   │   │   ├── PageEditModal.js
 │   │   │   │   ├── Tabs.js
 │   │   │   │   └── WireQuoteForm.js
 │   │   │   └── index.js
@@ -367,15 +393,17 @@
 │   └── useCustomerAuth.js
 ├── lib
 │   ├── auth.js
-│   ├── db.js
 │   ├── formConfigStorage.js
 │   ├── mongodb.js
+│   ├── paypal.js
 │   └── stripe.js
 ├── models
 │   ├── Content.js
 │   ├── Customer.js
+│   ├── CustomQuote.js
 │   ├── FormConfiguration.js
 │   ├── Media.js
+│   ├── Order.js
 │   ├── Page.js
 │   ├── PageContent.js
 │   └── User.js
@@ -392,15 +420,164 @@
 │   │   ├── main-footer-5.png
 │   │   └── main-footer-logo.png
 │   ├── forms
-│   │   ├── 3.png
+│   │   ├── hard
+│   │   │   ├── A-BE01.png
+│   │   │   ├── A-BE10.png
+│   │   │   ├── A-BE15.png
+│   │   │   ├── A-BE30.png
+│   │   │   ├── A-BE42.png
+│   │   │   ├── A-BE50.png
+│   │   │   ├── A-BE51.png
+│   │   │   ├── A-BE75.png
+│   │   │   ├── A-BE83.png
+│   │   │   ├── A-BE85.png
+│   │   │   ├── A-L2051.png
+│   │   │   ├── A-L2052.png
+│   │   │   ├── A-L2101.png
+│   │   │   ├── A-L912.png
+│   │   │   ├── A-L913.png
+│   │   │   ├── A-L914.png
+│   │   │   ├── A-L915.png
+│   │   │   ├── A-L916.png
+│   │   │   ├── A-L917.png
+│   │   │   ├── A-T01.png
+│   │   │   ├── A-T02.png
+│   │   │   ├── A-T03.png
+│   │   │   ├── A-T04.png
+│   │   │   ├── A-T05.png
+│   │   │   ├── B-BE16.png
+│   │   │   ├── B-BE17.png
+│   │   │   ├── B-BE24.png
+│   │   │   ├── B-BE80.png
+│   │   │   ├── B-BE81.png
+│   │   │   ├── B-L2102.png
+│   │   │   ├── B-L2103.png
+│   │   │   ├── B-T06.png
+│   │   │   ├── book_option01.png
+│   │   │   ├── book_option02.png
+│   │   │   ├── C-BE36.png
+│   │   │   ├── C-BE54.png
+│   │   │   ├── C-BE66.png
+│   │   │   ├── C-BE73.png
+│   │   │   ├── C-L2051.png
+│   │   │   ├── C-L918.png
+│   │   │   ├── C-T07.png
+│   │   │   ├── C-T08.png
+│   │   │   ├── D-BE18.png
+│   │   │   ├── D-BE32.png
+│   │   │   ├── D-BE35.png
+│   │   │   ├── D-BE69.png
+│   │   │   ├── D-BE76.png
+│   │   │   ├── D-L2052.png
+│   │   │   ├── D-L2053.png
+│   │   │   ├── D-L2054.png
+│   │   │   ├── D-L2104.png
+│   │   │   ├── D-L910.png
+│   │   │   ├── D-L919.png
+│   │   │   ├── D-T09.png
+│   │   │   ├── d1.png
+│   │   │   ├── d2.png
+│   │   │   ├── d3.png
+│   │   │   ├── d4.png
+│   │   │   ├── d5.png
+│   │   │   ├── d6.png
+│   │   │   ├── E-BE05.png
+│   │   │   ├── KEN101.png
+│   │   │   ├── KEN102.png
+│   │   │   ├── KEN103.png
+│   │   │   ├── KEN104.png
+│   │   │   ├── KEN105.png
+│   │   │   ├── KEN106.png
+│   │   │   ├── KEN107.png
+│   │   │   ├── KEN108.png
+│   │   │   ├── KEN109.png
+│   │   │   ├── KEN110.png
+│   │   │   ├── KEN111.png
+│   │   │   ├── KEN112.png
+│   │   │   ├── KEN113.png
+│   │   │   ├── KEN114.png
+│   │   │   ├── KEN115.png
+│   │   │   ├── KEN116.png
+│   │   │   ├── KEN117.png
+│   │   │   ├── KEN118.png
+│   │   │   ├── KEN120.png
+│   │   │   ├── KEN121.png
+│   │   │   ├── KEN122.png
+│   │   │   ├── KEN123.png
+│   │   │   ├── KEN124.png
+│   │   │   ├── KEN218.png
+│   │   │   ├── KEVV01.png
+│   │   │   ├── KEVV02.png
+│   │   │   ├── KEVV04.png
+│   │   │   ├── KEVV07.png
+│   │   │   ├── KEVV08.png
+│   │   │   ├── KEVV09.png
+│   │   │   ├── KEVV10.png
+│   │   │   ├── KEVV11.png
+│   │   │   ├── KEVV13.png
+│   │   │   ├── KEVV14.png
+│   │   │   ├── KEVV15.png
+│   │   │   ├── KEVV16.png
+│   │   │   ├── KEVV18.png
+│   │   │   ├── KEVV19.png
+│   │   │   ├── KEVV33.png
+│   │   │   ├── KEVV61.png
+│   │   │   ├── KEVV62.png
+│   │   │   ├── KEVV63.png
+│   │   │   ├── RD10.png
+│   │   │   ├── RD12.png
+│   │   │   ├── RD13.png
+│   │   │   ├── RD14.png
+│   │   │   ├── RD15.png
+│   │   │   ├── RD16.png
+│   │   │   ├── RD17.png
+│   │   │   ├── RD18.png
+│   │   │   ├── RD19.png
+│   │   │   ├── RD22.png
+│   │   │   ├── RD25.png
+│   │   │   ├── RD26.png
+│   │   │   ├── RD28.png
+│   │   │   ├── RD3.png
+│   │   │   ├── RD30.png
+│   │   │   ├── RD4.png
+│   │   │   ├── RD7.png
+│   │   │   ├── RD8.png
+│   │   │   └── RD9.png
+│   │   ├── A-BE01.png
+│   │   ├── A-BE10.png
+│   │   ├── A-BE15.png
+│   │   ├── A-BE30.png
+│   │   ├── A-BE42.png
+│   │   ├── A-BE50.png
+│   │   ├── A-BE51.png
+│   │   ├── A-BE75.png
+│   │   ├── A-BE83.png
+│   │   ├── A-BE85.png
+│   │   ├── B-BE16.png
+│   │   ├── B-BE17.png
+│   │   ├── B-BE24.png
+│   │   ├── B-BE80.png
+│   │   ├── B-BE81.png
+│   │   ├── C-BE36.png
+│   │   ├── C-BE54.png
+│   │   ├── C-BE66.png
+│   │   ├── C-BE73.png
+│   │   ├── D-BE18.png
+│   │   ├── D-BE32.png
+│   │   ├── D-BE35.png
+│   │   ├── D-BE69.png
+│   │   ├── D-BE76.png
 │   │   ├── d1.png
 │   │   ├── d2.png
+│   │   ├── d3.png
 │   │   ├── d4.png
 │   │   ├── d5.png
 │   │   ├── d6.png
+│   │   ├── E-BE05.png
 │   │   ├── edge01.png
 │   │   ├── edge02.png
-│   │   └── edge03.png
+│   │   ├── edge03.png
+│   │   └── img_page_eng.jpg
 │   ├── homepage
 │   │   ├── video
 │   │   │   └── printing.mp4
@@ -444,6 +621,9 @@
 │   │   ├── paper-480538_1280.jpg
 │   │   ├── paper.png
 │   │   └── Print.png
+│   ├── images
+│   │   ├── placeholder-color.png
+│   │   └── placeholder.jpg
 │   ├── portfolio
 │   │   ├── 24.jpg
 │   │   ├── p1.jpg
@@ -536,6 +716,9 @@
 │   │   ├── 90e16369-501a-47d8-8cf4-8abc7e5bac2f.jpg
 │   │   ├── 94e64bcc-1ac4-41d4-91a8-d2f03d9f3f9f.png
 │   │   ├── a5ee9f0e-548a-4389-abfb-f940e60ea572.jpg
+│   │   ├── b-1765797860528.jpg
+│   │   ├── b-1765797929189.jpg
+│   │   ├── Hardcover_Book_Layout_Guide-1765781169239.zip
 │   │   ├── image-1763535064257.png
 │   │   ├── image-1763535242316.jpg
 │   │   ├── image-1763536514796.png
@@ -588,7 +771,39 @@
 │   │   ├── image-1764577058855.PNG
 │   │   ├── image-1764583073390.mp4
 │   │   ├── image-1764584192610.jpg
-│   │   └── image-1764649148353.png
+│   │   ├── image-1764649148353.png
+│   │   ├── image-1765777517164.zip
+│   │   ├── paper_cloth-1766051260557.jpg
+│   │   ├── paper_colored_ken-1766051207402.jpg
+│   │   ├── paper_colored_kev-1766051234832.jpg
+│   │   ├── paper_colored-1766050970277.jpg
+│   │   ├── paper_gloss-1766046227282.jpg
+│   │   ├── paper_hi_plus-1766050519439.jpg
+│   │   ├── paper_leathack_205-1766051107586.jpg
+│   │   ├── paper_leathack_210-1766051140204.jpg
+│   │   ├── paper_leathack_91-1766051059974.jpg
+│   │   ├── paper_matte-1766050435591.jpg
+│   │   ├── paper_mermaid-1766051006991.jpg
+│   │   ├── paper_new_plus-1766050725210.jpg
+│   │   ├── paper_premium-1766050678360.jpg
+│   │   ├── paper_tant-1766051180577.jpg
+│   │   ├── paper_translucent-1766050934942.jpg
+│   │   ├── paper_uncoated-1766050632810.jpg
+│   │   ├── Perfect_Binding_Layout_Guide-1765780887838.zip
+│   │   ├── Saddle_Stitching_Layout_Guide-1765781186500.zip
+│   │   ├── sub1-05-1-1-1766044471855.png
+│   │   ├── sub1-05-1-1-1766044683250.png
+│   │   ├── sub2-01-10-1765792168000.png
+│   │   ├── sub2-01-5-1765791552760.png
+│   │   ├── sub2-01-6-1765791949604.png
+│   │   ├── sub2-01-7-1765792116219.png
+│   │   ├── sub2-01-8-1765792070975.png
+│   │   ├── sub2-01-9-1765792140889.png
+│   │   ├── sub2-04-3-1765781822024.png
+│   │   ├── sub2-04-3-1765787167600.png
+│   │   ├── sub2-04-4-1765787188037.png
+│   │   ├── sub2-04-5-1765787200970.png
+│   │   └── Wire_Binding_Layout_Guide-1765781194329.zip
 │   ├── file.svg
 │   ├── folder_structure.txt
 │   ├── folder-structure.txt

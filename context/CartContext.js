@@ -145,6 +145,44 @@ const saveOrderToDatabase = async (orderData) => {
   }
 };
 
+const createWireTransferOrder = async (orderData) => {
+  try {
+    const response = await fetch('/api/orders/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        ...orderData,
+        paymentMethod: 'wire_transfer',
+        status: 'pending',
+        requiresAction: true,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to create wire transfer order');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error creating wire transfer order:', error);
+    throw error;
+  }
+};
+
+processWireTransferCheckout: async (orderData) => {
+  try {
+    const result = await createWireTransferOrder(orderData);
+    
+    // Don't clear cart immediately - wait for confirmation
+    return result;
+  } catch (error) {
+    console.error('Failed to process wire transfer checkout:', error);
+    throw error;
+  }
+};
+
 // Then add to the CartContext provider value
 completeCheckout: async (orderData) => {
   try {

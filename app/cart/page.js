@@ -13,9 +13,14 @@ export default function CartPage() {
   const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart, isCartLoaded, startCheckout } = useCart();
   const { customer, isLoading: authLoading } = useCustomerAuth();
   const router = useRouter();
+  
   const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [isWireTransferCheckingOut, setIsWireTransferCheckingOut] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [showWireTransferDetails, setShowWireTransferDetails] = useState(false);
+  const [wireTransferOrderId, setWireTransferOrderId] = useState(null);
+  const [wireTransferDetails, setWireTransferDetails] = useState(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -78,9 +83,136 @@ export default function CartPage() {
     }
   };
 
+  // Wire Transfer Checkout
+const handleWireTransferCheckout = async () => {
+  // Check if user is logged in
+  if (!customer) {
+    setShowLoginPrompt(true);
+    return;
+  }
+
+  setIsWireTransferCheckingOut(true);
+  
+  try {
+    // Generate order ID
+    const orderId = startCheckout();
+    
+    // Log customer object to see its structure
+    console.log('Customer object:', customer);
+    
+    // Prepare order data - using the correct customer field structure
+    const orderData = {
+      orderId,
+      customerId: customer._id || customer.id || `customer_${customer.email}`,
+      customerEmail: customer.email,
+      customerName: customer.name || customer.email,
+      items: cartItems.map(item => ({
+        productName: item.productName || `${item.type.replace('-', ' ').toUpperCase()} Book`,
+        type: item.type,
+        price: item.price,
+        quantity: item.quantity,
+        total: item.total,
+        summary: item.summary,
+        configuration: item.configuration
+      })),
+      totalAmount: cartTotal,
+      subtotal: cartTotal,
+      taxAmount: cartTotal * 0.08,
+      shippingAmount: 0,
+      total: cartTotal + (cartTotal * 0.08),
+      paymentMethod: 'wire_transfer',
+      status: 'pending',
+      requiresAction: true,
+      createdAt: new Date().toISOString(),
+    };
+
+    console.log('Order data being sent:', orderData);
+
+    // Try the wire transfer API first
+    let response;
+    try {
+      response = await fetch('/api/wire-transfer/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
+    } catch (apiError) {
+      console.log('Wire transfer API not available, trying orders API instead:', apiError);
+      // Fall back to regular orders API if wire transfer endpoint doesn't exist
+      response = await fetch('/api/orders/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
+    }
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Server error:', errorData);
+      throw new Error(errorData.error || errorData.message || 'Failed to create order');
+    }
+
+    const result = await response.json();
+    
+    // Set the order ID and details for display
+    setWireTransferOrderId(orderId);
+    setWireTransferDetails(result);
+    
+    // Show wire transfer details modal
+    setShowWireTransferDetails(true);
+    
+    console.log('Order created successfully:', result);
+    
+  } catch (error) {
+    console.error('Wire transfer checkout error:', error);
+    alert(`Checkout failed: ${error.message || 'Unknown error'}`);
+  } finally {
+    setIsWireTransferCheckingOut(false);
+  }
+};
+
+  // Helper function to create wire transfer order (if needed elsewhere)
+  const createWireTransferOrder = async (orderData) => {
+    try {
+      const response = await fetch('/api/orders/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...orderData,
+          paymentMethod: 'wire_transfer',
+          status: 'pending',
+          requiresAction: true,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create wire transfer order');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating wire transfer order:', error);
+      throw error;
+    }
+  };
+
   // Handle login redirect
   const handleLoginRedirect = () => {
     router.push('/customer/login?redirect=/cart');
+  };
+
+  // Copy order ID to clipboard
+  const copyOrderIdToClipboard = () => {
+    if (wireTransferOrderId) {
+      navigator.clipboard.writeText(wireTransferOrderId);
+      alert('Order ID copied to clipboard!');
+    }
   };
 
   // Show loading state
@@ -446,39 +578,77 @@ export default function CartPage() {
                     </div>
                   </div>
                 ) : (
-                  /* PayPal Checkout Button (only shows when logged in) */
-                  <button
-                    onClick={handlePayPalCheckout}
-                    disabled={isCheckingOut || cartItems.length === 0}
-                    className="group relative w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none disabled:hover:shadow-lg cursor-pointer"
-                  >
-                    {isCheckingOut ? (
-                      <div className="flex items-center justify-center">
-                        <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
-                        Processing Payment...
-                      </div>
-                    ) : (
-                      <>
+                  <>
+                    {/* PayPal Checkout Button */}
+                    <button
+                      onClick={handlePayPalCheckout}
+                      disabled={isCheckingOut || cartItems.length === 0}
+                      className="group relative w-full py-4 px-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none disabled:hover:shadow-lg cursor-pointer mb-4"
+                    >
+                      {isCheckingOut ? (
                         <div className="flex items-center justify-center">
-                          <svg className="w-6 h-6 mr-3" viewBox="0 0 24 24" fill="none">
-                            <path d="M7 17L17 7M17 7H8M17 7V16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                          </svg>
-                          Proceed to Checkout
-                          <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                          </svg>
+                          <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
+                          Processing Payment...
                         </div>
-                        <div className="text-sm font-normal mt-2 opacity-90">
-                          Secure checkout via PayPal
-                        </div>
-                        {customer && (
-                          <div className="text-xs mt-1 opacity-75">
-                            Order will be linked to: {customer.email}
+                      ) : (
+                        <>
+                          <div className="flex items-center justify-center">
+                            <svg className="w-6 h-6 mr-3" viewBox="0 0 24 24" fill="none">
+                              <path d="M7 17L17 7M17 7H8M17 7V16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                            Pay with PayPal
+                            <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
                           </div>
-                        )}
-                      </>
-                    )}
-                  </button>
+                          <div className="text-sm font-normal mt-2 opacity-90">
+                            Secure checkout via PayPal
+                          </div>
+                        </>
+                      )}
+                    </button>
+
+                    {/* OR separator */}
+                    <div className="relative flex items-center justify-center my-4">
+                      <div className="flex-grow border-t border-gray-300"></div>
+                      <span className="flex-shrink mx-4 text-gray-500 text-sm">OR</span>
+                      <div className="flex-grow border-t border-gray-300"></div>
+                    </div>
+
+                    {/* Wire Transfer Checkout Button */}
+                    <button
+                      onClick={handleWireTransferCheckout}
+                      disabled={isWireTransferCheckingOut || cartItems.length === 0}
+                      className="group relative w-full py-4 px-6 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-bold text-lg hover:from-green-700 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:transform-none disabled:hover:shadow-lg cursor-pointer"
+                    >
+                      {isWireTransferCheckingOut ? (
+                        <div className="flex items-center justify-center">
+                          <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
+                          Processing Wire Transfer...
+                        </div>
+                      ) : (
+                        <>
+                          <div className="flex items-center justify-center">
+                            <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                            Pay by Wire Transfer
+                            <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                          </div>
+                          <div className="text-sm font-normal mt-2 opacity-90">
+                            Bank transfer payment
+                          </div>
+                          {customer && (
+                            <div className="text-xs mt-1 opacity-75">
+                              Order will be linked to: {customer.email}
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </button>
+                  </>
                 )}
               </div>
               
@@ -543,6 +713,115 @@ export default function CartPage() {
         </div>
       </div>
       <Footer />
+
+      {/* Wire Transfer Details Modal */}
+      {showWireTransferDetails && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">Wire Transfer Payment Details</h2>
+                <button
+                  onClick={() => setShowWireTransferDetails(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              {wireTransferOrderId && (
+                <>
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 mb-6 border border-green-200">
+                    <div className="flex items-center">
+                      <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                        <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-gray-900">Order Created Successfully!</h3>
+                        <p className="text-sm text-gray-600">Order ID: <span className="font-mono font-bold">{wireTransferOrderId}</span></p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Bank Transfer Information</h3>
+                      <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Bank Name:</span>
+                          <span className="font-semibold">Your Bank Name Here</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Account Name:</span>
+                          <span className="font-semibold">Your Company Name</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Account Number:</span>
+                          <span className="font-mono font-semibold">1234 5678 9012 3456</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Routing Number:</span>
+                          <span className="font-mono font-semibold">021000021</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">SWIFT/BIC:</span>
+                          <span className="font-mono font-semibold">BOFAUS3N</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Instructions</h3>
+                      <ol className="list-decimal pl-5 space-y-2 text-gray-700">
+                        <li>Use the order ID <span className="font-mono font-bold">{wireTransferOrderId}</span> as payment reference</li>
+                        <li>Transfer the total amount of <span className="font-bold">{formatCurrency(cartTotal + (cartTotal * 0.08))}</span></li>
+                        <li>Email your transfer receipt to <span className="font-semibold">accounts@yourcompany.com</span></li>
+                        <li>We'll confirm your payment within 1-2 business days</li>
+                        <li>Production will begin upon payment confirmation</li>
+                      </ol>
+                    </div>
+
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <div className="flex items-start">
+                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
+                          <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">Important Notes</p>
+                          <p className="text-sm text-gray-600 mt-1">
+                            Your order will be reserved for 7 days pending payment. Please complete the wire transfer within this period to avoid order cancellation.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex space-x-4">
+                      <button
+                        onClick={copyOrderIdToClipboard}
+                        className="flex-1 py-3 border-2 border-gray-900 text-gray-900 rounded-xl font-semibold hover:bg-gray-900 hover:text-white transition-all duration-300"
+                      >
+                        Copy Order ID
+                      </button>
+                      <button
+                        onClick={() => setShowWireTransferDetails(false)}
+                        className="flex-1 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300"
+                      >
+                        Done
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
