@@ -1,71 +1,75 @@
+// app/api/customer/auth/login/route.js
 export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
-import dbConnect from "@/lib/mongodb";
+import dbConnect from '@/lib/mongodb';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import Customer from '@/models/Customer';
-import { comparePassword, generateCustomerToken } from '@/lib/auth';
 
 export async function POST(request) {
   try {
     await dbConnect();
     
     const { email, password } = await request.json();
-
-    // Validation
+    
+    // Validate input
     if (!email || !password) {
       return NextResponse.json(
-        { error: 'Email and password are required' },
+        { success: false, error: 'Email and password are required' },
         { status: 400 }
       );
     }
 
-    // Find customer
-    const customer = await Customer.findOne({ email });
+    // Find customer by email
+    const customer = await Customer.findOne({ email: email.toLowerCase().trim() });
+    
     if (!customer) {
       return NextResponse.json(
-        { error: 'Invalid email or password' },
+        { success: false, error: 'Invalid credentials' },
         { status: 401 }
       );
     }
 
     // Check password
-    const isPasswordValid = await comparePassword(password, customer.password);
-    if (!isPasswordValid) {
+    const isValidPassword = await bcrypt.compare(password, customer.password);
+    
+    if (!isValidPassword) {
       return NextResponse.json(
-        { error: 'Invalid email or password' },
+        { success: false, error: 'Invalid credentials' },
         { status: 401 }
       );
     }
 
-    // Generate token
-    const token = generateCustomerToken(customer);
-
-    // Create response
-    const response = NextResponse.json(
+    // Generate JWT token
+    const token = jwt.sign(
       { 
-        message: 'Login successful',
-        customer: {
-          id: customer._id,
-          email: customer.email,
-          name: customer.name
-        }
+        id: customer._id, 
+        email: customer.email,
+        name: customer.name 
       },
-      { status: 200 }
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '30d' }
     );
 
-    // Set cookie
-    response.cookies.set('customerToken', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 // 7 days
-    });
+    // Remove password from response
+    const customerData = customer.toObject();
+    delete customerData.password;
 
-    return response;
+    return NextResponse.json({
+      success: true,
+      token,
+      customer: {
+        ...customerData,
+        _id: customerData._id.toString(),
+        id: customerData._id.toString(),
+      },
+      message: 'Login successful'
+    });
 
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { success: false, error: 'Login failed' },
       { status: 500 }
     );
   }

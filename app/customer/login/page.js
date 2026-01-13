@@ -1,3 +1,4 @@
+// app/customer/login/page.js
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -149,30 +150,21 @@ export default function LoginPage() {
                   </div>
                 </div>
 
-                {/* Remember Me & Forgot Password */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className="relative flex items-center">
-                      <input
-                        type="checkbox"
-                        id="rememberMe"
-                        name="rememberMe"
-                        checked={formData.rememberMe}
-                        onChange={handleChange}
-                        className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-xl cursor-pointer"
-                      />
-                      <label htmlFor="rememberMe" className="ml-3 block text-sm font-medium text-gray-700 cursor-pointer">
-                        Remember me
-                      </label>
-                    </div>
+                {/* Remember Me ONLY - Remove Forgot Password */}
+                <div className="flex items-center">
+                  <div className="relative flex items-center">
+                    <input
+                      type="checkbox"
+                      id="rememberMe"
+                      name="rememberMe"
+                      checked={formData.rememberMe}
+                      onChange={handleChange}
+                      className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-xl cursor-pointer"
+                    />
+                    <label htmlFor="rememberMe" className="ml-3 block text-sm font-medium text-gray-700 cursor-pointer">
+                      Remember me
+                    </label>
                   </div>
-
-                  <Link 
-                    href="/customer/forgot-password" 
-                    className="text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors duration-200"
-                  >
-                    Forgot password?
-                  </Link>
                 </div>
 
                 {/* Login Button */}

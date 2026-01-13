@@ -252,6 +252,24 @@ export default function AccountPage() {
                         <label className="text-sm font-medium text-gray-500 block mb-1">Email Address</label>
                         <p className="text-gray-900 font-medium text-lg">{customer.email}</p>
                       </div>
+
+                      <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+  <label className="text-sm font-medium text-gray-500 block mb-1">Phone Number</label>
+  <p className="text-gray-900 font-medium text-lg">{customer.phone || 'Not provided'}</p>
+</div>
+
+<div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+  <label className="text-sm font-medium text-gray-500 block mb-1">Address</label>
+  {customer.address?.street ? (
+    <div className="text-gray-900 font-medium">
+      <p>{customer.address.street}</p>
+      <p>{customer.address.city}, {customer.address.state} {customer.address.zipCode}</p>
+      <p>{customer.address.country}</p>
+    </div>
+  ) : (
+    <p className="text-gray-900 font-medium">No address provided</p>
+  )}
+</div>
                       
                       {customer.recommender && (
                         <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
@@ -280,12 +298,14 @@ export default function AccountPage() {
                         <span>Logout</span>
                       </button>
                       
-                      <button className="w-full bg-gradient-to-r from-gray-600 to-gray-700 text-white py-3 px-6 rounded-xl hover:from-gray-700 hover:to-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                        <span>Edit Profile</span>
-                      </button>
+                      <Link href="/customer/edit" className="block w-full">
+  <button className="w-full bg-gradient-to-r from-gray-600 to-gray-700 text-white py-3 px-6 rounded-xl hover:from-gray-700 hover:to-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2">
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+    </svg>
+    <span>Edit Profile</span>
+  </button>
+</Link>
                       
                       <Link href="/cart" className="block w-full">
                         <button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 px-6 rounded-xl hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2">

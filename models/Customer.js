@@ -1,6 +1,7 @@
-const mongoose = require('mongoose');
+// models/Customer.js
+import mongoose from 'mongoose';
 
-const CustomerSchema = new mongoose.Schema({
+const customerSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
@@ -10,21 +11,39 @@ const CustomerSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
-    minlength: 6
+    required: true
   },
   name: {
     type: String,
     required: true,
     trim: true
   },
-  recommender: {
+  phone: {
     type: String,
-    default: ''
+    trim: true
   },
-  emailVerified: {
-    type: Boolean,
-    default: false
+  address: {
+    street: {
+      type: String,
+      trim: true
+    },
+    city: {
+      type: String,
+      trim: true
+    },
+    state: {
+      type: String,
+      trim: true
+    },
+    zipCode: {
+      type: String,
+      trim: true
+    },
+    country: {
+      type: String,
+      trim: true,
+      default: 'United States'
+    }
   },
   createdAt: {
     type: Date,
@@ -36,4 +55,12 @@ const CustomerSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.models.Customer || mongoose.model('Customer', CustomerSchema);
+// Update the updatedAt timestamp on save
+customerSchema.pre('save', function(next) {
+  this.updatedAt = Date.now();
+  next();
+});
+
+const Customer = mongoose.models.Customer || mongoose.model('Customer', customerSchema);
+
+export default Customer;

@@ -82,125 +82,121 @@ export default function CartPage() {
       setIsCheckingOut(false);
     }
   };
-
+// Helper function to clean cart items
+const cleanCartItems = (items) => {
+  return items.map(item => {
+    // Create a clean copy of the item
+    const cleanItem = {
+      productName: item.productName || 'Printing Product',
+      type: item.type || 'perfect-binding',
+      price: Number(item.price) || 0,
+      quantity: Number(item.quantity) || 1,
+      total: Number(item.total) || 0,
+      summary: item.summary || {},
+    };
+    
+    // Handle configuration object - ensure it's not a string
+    if (typeof item.configuration === 'string') {
+      try {
+        cleanItem.configuration = JSON.parse(item.configuration);
+      } catch (e) {
+        console.warn('Could not parse configuration string:', e);
+        cleanItem.configuration = {};
+      }
+    } else if (item.configuration && typeof item.configuration === 'object') {
+      // Deep clone to avoid reference issues
+      cleanItem.configuration = JSON.parse(JSON.stringify(item.configuration));
+    } else {
+      cleanItem.configuration = {};
+    }
+    
+    return cleanItem;
+  });
+};
   // Wire Transfer Checkout
 const handleWireTransferCheckout = async () => {
-  // Check if user is logged in
   if (!customer) {
-    setShowLoginPrompt(true);
+    alert('Please login to proceed with wire transfer');
+    router.push('/customer/login?redirect=/cart');
     return;
   }
 
   setIsWireTransferCheckingOut(true);
   
   try {
-    // Generate order ID
-    const orderId = startCheckout();
+    // Generate unique order ID
+    const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
     
-    // Log customer object to see its structure
-    console.log('Customer object:', customer);
-    
-    // Prepare order data - using the correct customer field structure
+    // Prepare cart items properly - SIMPLIFY THIS FIRST
+    const cleanItems = cartItems.map(item => {
+      return {
+        productName: item.productName || 'Printing Product',
+        type: item.type || 'printing',
+        price: Number(item.price) || 0,
+        quantity: Number(item.quantity) || 1,
+        total: Number(item.total) || 0,
+        summary: item.summary || {},
+        configuration: item.configuration || {}
+      };
+    });
+
+    // Calculate totals
+    const subtotal = cartTotal;
+    const taxAmount = subtotal * 0.08;
+    const shippingAmount = 0;
+    const total = subtotal + taxAmount + shippingAmount;
+
+    // Prepare SIMPLE order data for testing
     const orderData = {
-      orderId,
-      customerId: customer._id || customer.id || `customer_${customer.email}`,
-      customerEmail: customer.email,
-      customerName: customer.name || customer.email,
-      items: cartItems.map(item => ({
-        productName: item.productName || `${item.type.replace('-', ' ').toUpperCase()} Book`,
-        type: item.type,
-        price: item.price,
-        quantity: item.quantity,
-        total: item.total,
-        summary: item.summary,
-        configuration: item.configuration
-      })),
-      totalAmount: cartTotal,
-      subtotal: cartTotal,
-      taxAmount: cartTotal * 0.08,
-      shippingAmount: 0,
-      total: cartTotal + (cartTotal * 0.08),
-      paymentMethod: 'wire_transfer',
-      status: 'pending',
-      requiresAction: true,
-      createdAt: new Date().toISOString(),
+      orderId: orderId,
+      customerId: customer._id || customer.id || 'customer-' + Date.now(),
+      customerEmail: customer.email || '',
+      customerName: customer.name || 'Customer',
+      customerPhone: customer.phone || '',
+      customerAddress: customer.address || {},
+      items: cleanItems,
+      subtotal: subtotal,
+      taxAmount: taxAmount,
+      shippingAmount: shippingAmount,
+      total: total,
+      totalAmount: total,
+      paymentMethod: 'wire_transfer'
     };
 
-    console.log('Order data being sent:', orderData);
+    console.log('📤 Sending simplified order data:', orderData);
 
-    // Try the wire transfer API first
-    let response;
-    try {
-      response = await fetch('/api/wire-transfer/create-order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderData),
-      });
-    } catch (apiError) {
-      console.log('Wire transfer API not available, trying orders API instead:', apiError);
-      // Fall back to regular orders API if wire transfer endpoint doesn't exist
-      response = await fetch('/api/orders/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderData),
-      });
-    }
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Server error:', errorData);
-      throw new Error(errorData.error || errorData.message || 'Failed to create order');
-    }
+    // Use the simple API route first for testing
+    const response = await fetch('/api/orders/simple', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(orderData),
+    });
 
     const result = await response.json();
+    console.log('📥 API Response:', result);
     
-    // Set the order ID and details for display
-    setWireTransferOrderId(orderId);
-    setWireTransferDetails(result);
-    
-    // Show wire transfer details modal
-    setShowWireTransferDetails(true);
-    
-    console.log('Order created successfully:', result);
-    
+    if (response.ok && result.success) {
+      console.log('✅ Order created successfully:', result);
+      // Clear cart and redirect
+      clearCart();
+      router.push(`/order-success?orderId=${orderId}&type=wire_transfer`);
+    } else {
+      console.error('❌ Order creation failed with details:', result.details);
+      throw new Error(result.message || result.error || 'Failed to create order');
+    }
   } catch (error) {
-    console.error('Wire transfer checkout error:', error);
-    alert(`Checkout failed: ${error.message || 'Unknown error'}`);
+    console.error('❌ Wire transfer checkout error:', error);
+    alert(`Order creation failed: ${error.message}. Please check console for details.`);
   } finally {
     setIsWireTransferCheckingOut(false);
   }
 };
 
-  // Helper function to create wire transfer order (if needed elsewhere)
-  const createWireTransferOrder = async (orderData) => {
-    try {
-      const response = await fetch('/api/orders/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...orderData,
-          paymentMethod: 'wire_transfer',
-          status: 'pending',
-          requiresAction: true,
-        }),
-      });
 
-      if (!response.ok) {
-        throw new Error('Failed to create wire transfer order');
-      }
 
-      return await response.json();
-    } catch (error) {
-      console.error('Error creating wire transfer order:', error);
-      throw error;
-    }
-  };
+
 
   // Handle login redirect
   const handleLoginRedirect = () => {
@@ -510,6 +506,7 @@ const handleWireTransferCheckout = async () => {
                 >
                   Clear Cart
                 </button>
+                
               </div>
             </div>
             
@@ -713,115 +710,6 @@ const handleWireTransferCheckout = async () => {
         </div>
       </div>
       <Footer />
-
-      {/* Wire Transfer Details Modal */}
-      {showWireTransferDetails && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">Wire Transfer Payment Details</h2>
-                <button
-                  onClick={() => setShowWireTransferDetails(false)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-
-              {wireTransferOrderId && (
-                <>
-                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 mb-6 border border-green-200">
-                    <div className="flex items-center">
-                      <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
-                        <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-gray-900">Order Created Successfully!</h3>
-                        <p className="text-sm text-gray-600">Order ID: <span className="font-mono font-bold">{wireTransferOrderId}</span></p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Bank Transfer Information</h3>
-                      <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Bank Name:</span>
-                          <span className="font-semibold">Your Bank Name Here</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Account Name:</span>
-                          <span className="font-semibold">Your Company Name</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Account Number:</span>
-                          <span className="font-mono font-semibold">1234 5678 9012 3456</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Routing Number:</span>
-                          <span className="font-mono font-semibold">021000021</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">SWIFT/BIC:</span>
-                          <span className="font-mono font-semibold">BOFAUS3N</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Instructions</h3>
-                      <ol className="list-decimal pl-5 space-y-2 text-gray-700">
-                        <li>Use the order ID <span className="font-mono font-bold">{wireTransferOrderId}</span> as payment reference</li>
-                        <li>Transfer the total amount of <span className="font-bold">{formatCurrency(cartTotal + (cartTotal * 0.08))}</span></li>
-                        <li>Email your transfer receipt to <span className="font-semibold">accounts@yourcompany.com</span></li>
-                        <li>We'll confirm your payment within 1-2 business days</li>
-                        <li>Production will begin upon payment confirmation</li>
-                      </ol>
-                    </div>
-
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                      <div className="flex items-start">
-                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 mt-0.5">
-                          <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-900">Important Notes</p>
-                          <p className="text-sm text-gray-600 mt-1">
-                            Your order will be reserved for 7 days pending payment. Please complete the wire transfer within this period to avoid order cancellation.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex space-x-4">
-                      <button
-                        onClick={copyOrderIdToClipboard}
-                        className="flex-1 py-3 border-2 border-gray-900 text-gray-900 rounded-xl font-semibold hover:bg-gray-900 hover:text-white transition-all duration-300"
-                      >
-                        Copy Order ID
-                      </button>
-                      <button
-                        onClick={() => setShowWireTransferDetails(false)}
-                        className="flex-1 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-semibold hover:from-green-700 hover:to-emerald-700 transition-all duration-300"
-                      >
-                        Done
-                      </button>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }

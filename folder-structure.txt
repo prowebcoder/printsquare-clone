@@ -59,6 +59,8 @@
 │   │   │   │   └── page.js
 │   │   │   ├── media
 │   │   │   │   └── page.js
+│   │   │   ├── orders
+│   │   │   │   └── page.js
 │   │   │   ├── pages
 │   │   │   │   ├── [id]
 │   │   │   │   │   └── page.js
@@ -102,6 +104,13 @@
 │   │   │   │   ├── sync
 │   │   │   │   │   └── route.js
 │   │   │   │   └── route.js
+│   │   │   ├── orders
+│   │   │   │   ├── [orderId]
+│   │   │   │   │   └── status
+│   │   │   │   │       └── route.js
+│   │   │   │   ├── create
+│   │   │   │   │   └── route.js
+│   │   │   │   └── route.js
 │   │   │   ├── pages
 │   │   │   │   ├── [id]
 │   │   │   │   │   ├── duplicate
@@ -130,10 +139,10 @@
 │   │   │       │   └── route.js
 │   │   │       ├── me
 │   │   │       │   └── route.js
-│   │   │       └── signup
+│   │   │       ├── signup
+│   │   │       │   └── route.js
+│   │   │       └── update
 │   │   │           └── route.js
-│   │   ├── debug-config
-│   │   │   └── route.js
 │   │   ├── fix-pages
 │   │   │   └── route.js
 │   │   ├── folder-structure
@@ -150,11 +159,7 @@
 │   │   │   └── wire-quote
 │   │   │       └── route.js
 │   │   ├── orders
-│   │   │   ├── create
-│   │   │   │   └── route.js
-│   │   │   └── customer
-│   │   │       └── [customerId]
-│   │   │           └── route.js
+│   │   │   └── route.js
 │   │   ├── paypal
 │   │   │   └── create-order
 │   │   │       └── route.js
@@ -187,6 +192,8 @@
 │   │   └── success-content.js
 │   ├── customer
 │   │   ├── account
+│   │   │   └── page.js
+│   │   ├── edit
 │   │   │   └── page.js
 │   │   ├── join
 │   │   │   └── page.js

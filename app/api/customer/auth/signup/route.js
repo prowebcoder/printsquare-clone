@@ -1,87 +1,78 @@
+// app/api/customer/auth/signup/route.js
 export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
-import dbConnect from "@/lib/mongodb";
+import dbConnect from '@/lib/mongodb';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import Customer from '@/models/Customer';
-import { hashPassword, generateCustomerToken } from '@/lib/auth';
 
 export async function POST(request) {
   try {
     await dbConnect();
     
-    const { email, password, confirmPassword, name, recommender } = await request.json();
-
-    // Validation
-    if (!email || !password || !confirmPassword || !name) {
+    const { email, password, name, phone, address, recommender } = await request.json();
+    
+    // Validate input
+    if (!email || !password || !name) {
       return NextResponse.json(
-        { error: 'All fields are required' },
-        { status: 400 }
-      );
-    }
-
-    if (password !== confirmPassword) {
-      return NextResponse.json(
-        { error: 'Passwords do not match' },
-        { status: 400 }
-      );
-    }
-
-    if (password.length < 6) {
-      return NextResponse.json(
-        { error: 'Password must be at least 6 characters' },
+        { success: false, error: 'Email, password, and name are required' },
         { status: 400 }
       );
     }
 
     // Check if customer already exists
-    const existingCustomer = await Customer.findOne({ email });
+    const existingCustomer = await Customer.findOne({ email: email.toLowerCase().trim() });
+    
     if (existingCustomer) {
       return NextResponse.json(
-        { error: 'Customer already exists with this email' },
+        { success: false, error: 'Customer with this email already exists' },
         { status: 400 }
       );
     }
 
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // Create new customer
-    const hashedPassword = await hashPassword(password);
-    const customer = new Customer({
-      email,
+    const customer = await Customer.create({
+      email: email.toLowerCase().trim(),
       password: hashedPassword,
-      name,
-      recommender: recommender || ''
+      name: name.trim(),
+      phone: phone?.trim() || '',
+      address: address || {},
+      recommender: recommender?.trim() || '',
     });
 
-    await customer.save();
-
-    // Generate token
-    const token = generateCustomerToken(customer);
-
-    // Create response
-    const response = NextResponse.json(
+    // Generate JWT token
+    const token = jwt.sign(
       { 
-        message: 'Customer created successfully',
-        customer: {
-          id: customer._id,
-          email: customer.email,
-          name: customer.name
-        }
+        id: customer._id, 
+        email: customer.email,
+        name: customer.name 
       },
-      { status: 201 }
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '30d' }
     );
 
-    // Set cookie
-    response.cookies.set('customerToken', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 // 7 days
-    });
+    // Remove password from response
+    const customerData = customer.toObject();
+    delete customerData.password;
 
-    return response;
+    return NextResponse.json({
+      success: true,
+      token,
+      customer: {
+        ...customerData,
+        _id: customerData._id.toString(),
+        id: customerData._id.toString(),
+      },
+      message: 'Account created successfully'
+    });
 
   } catch (error) {
     console.error('Signup error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { success: false, error: 'Signup failed' },
       { status: 500 }
     );
   }

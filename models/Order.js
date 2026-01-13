@@ -1,79 +1,92 @@
-// models/Order.js
+// models/Order.js - UPDATED VERSION
 import mongoose from 'mongoose';
 
 const orderSchema = new mongoose.Schema({
   orderId: {
     type: String,
-    required: true,
-    unique: true
+    required: [true, 'Order ID is required'],
+    unique: true,
+    trim: true
   },
   customerId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Customer',
-    required: true
-  },
-  customerName: {
     type: String,
-    required: true
+    required: [true, 'Customer ID is required'],
+    trim: true
   },
   customerEmail: {
     type: String,
+    required: [true, 'Customer email is required'],
+    trim: true,
+    lowercase: true
+  },
+  customerName: {
+    type: String,
+    required: [true, 'Customer name is required'],
+    trim: true
+  },
+  customerPhone: {
+    type: String,
+    default: '',
+    trim: true
+  },
+  customerAddress: {
+    type: Object,
+    default: {}
+  },
+  items: {
+    type: Array,
+    default: [],
     required: true
   },
-  items: [{
-    productName: String,
-    type: String,
-    configuration: Object,
-    summary: Object,
-    quantity: Number,
-    price: Number,
-    total: Number
-  }],
+  totalAmount: {
+    type: Number,
+    default: 0,
+    min: 0
+  },
   subtotal: {
     type: Number,
-    required: true
+    default: 0,
+    min: 0
   },
-  tax: {
+  taxAmount: {
     type: Number,
-    default: 0
+    default: 0,
+    min: 0
   },
-  shipping: {
+  shippingAmount: {
     type: Number,
-    default: 0
+    default: 0,
+    min: 0
   },
   total: {
     type: Number,
-    required: true
-  },
-  status: {
-    type: String,
-    enum: ['pending', 'processing', 'shipped', 'delivered', 'completed', 'cancelled'],
-    default: 'pending'
-  },
-  shippingAddress: {
-    street: String,
-    city: String,
-    state: String,
-    country: String,
-    zipCode: String
-  },
-  shippingMethod: {
-    type: String,
-    default: 'Standard Shipping'
+    default: 0,
+    min: 0
   },
   paymentMethod: {
     type: String,
-    default: 'PayPal'
+    required: true,
+    enum: ['paypal', 'wire_transfer', 'card'],
+    default: 'wire_transfer'
   },
   paymentStatus: {
     type: String,
     enum: ['pending', 'paid', 'failed', 'refunded'],
     default: 'pending'
   },
-  paymentTransactionId: String,
-  notes: String,
-  estimatedDelivery: Date,
-  deliveredAt: Date,
+  status: {
+    type: String,
+    enum: ['pending', 'processing', 'completed', 'cancelled'],
+    default: 'pending'
+  },
+  requiresAction: {
+    type: Boolean,
+    default: false
+  },
+  notes: {
+    type: String,
+    default: ''
+  },
   createdAt: {
     type: Date,
     default: Date.now
@@ -84,9 +97,17 @@ const orderSchema = new mongoose.Schema({
   }
 });
 
+// Create indexes
+orderSchema.index({ orderId: 1 }, { unique: true });
+orderSchema.index({ customerEmail: 1 });
+orderSchema.index({ paymentStatus: 1 });
+orderSchema.index({ createdAt: -1 });
+
 orderSchema.pre('save', function(next) {
   this.updatedAt = Date.now();
   next();
 });
 
-export default mongoose.models.Order || mongoose.model('Order', orderSchema);
+// Fix for Next.js hot reloading
+const Order = mongoose.models.Order || mongoose.model('Order', orderSchema);
+export default Order;

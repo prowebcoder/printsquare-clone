@@ -21,68 +21,179 @@ export const CartProvider = ({ children }) => {
   // Load cart from localStorage on initial render
   useEffect(() => {
     const savedCart = localStorage.getItem('printingCart');
-    const savedOrderId = localStorage.getItem('pendingOrderId');
     
     if (savedCart) {
       try {
         const parsedCart = JSON.parse(savedCart);
-        setCartItems(parsedCart);
+        
+        // Fix: Clean up any stringified objects in the cart
+        const validatedCart = parsedCart.map(item => {
+          // Fix: Handle configuration if it's a string
+          let configuration = {};
+          if (item.configuration) {
+            if (typeof item.configuration === 'string') {
+              try {
+                // Try to parse it if it's a JSON string
+                configuration = JSON.parse(item.configuration);
+              } catch (e) {
+                // If it's a string like "paperUnit: 'US',\n selectedSize: '8.5 x 11'"
+                // Convert it to proper object
+                configuration = convertStringToObject(item.configuration);
+              }
+            } else {
+              configuration = item.configuration;
+            }
+          }
+
+          // Fix: Ensure summary is an object, not a string
+          let summary = {};
+          if (item.summary && typeof item.summary === 'object') {
+            summary = item.summary;
+          }
+
+          return {
+            ...item,
+            id: item.id || `${item.type || 'item'}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            price: Number(item.price) || 0,
+            quantity: Number(item.quantity) || 1,
+            total: Number(item.total) || 0,
+            summary: summary,
+            configuration: configuration
+          };
+        });
+        
+        setCartItems(validatedCart);
       } catch (error) {
-        console.error('Error loading cart from localStorage:', error);
+        console.error('Error loading cart:', error);
+        setCartItems([]);
       }
-    }
-    
-    if (savedOrderId) {
-      setPendingOrderId(savedOrderId);
     }
     
     setIsCartLoaded(true);
   }, []);
 
+  // Helper function to convert string to object
+  const convertStringToObject = (str) => {
+    try {
+      // If it's already an object, return it
+      if (typeof str === 'object') return str;
+      
+      // If it's a string that looks like a JS object, try to evaluate it
+      if (typeof str === 'string') {
+        // Remove line breaks and extra spaces
+        const cleanStr = str
+          .replace(/\n/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+        
+        // Try to parse as JSON first
+        try {
+          return JSON.parse(str);
+        } catch (e) {
+          // If not JSON, try to extract key-value pairs
+          const obj = {};
+          const pairs = cleanStr.split(',');
+          
+          pairs.forEach(pair => {
+            const [key, ...valueParts] = pair.split(':');
+            if (key && valueParts.length > 0) {
+              const cleanKey = key.trim().replace(/['"]/g, '');
+              let value = valueParts.join(':').trim().replace(/['"]/g, '');
+              
+              // Try to parse numbers
+              if (!isNaN(value) && value !== '') {
+                value = Number(value);
+              } else if (value === 'true') {
+                value = true;
+              } else if (value === 'false') {
+                value = false;
+              } else if (value === 'null') {
+                value = null;
+              }
+              
+              obj[cleanKey] = value;
+            }
+          });
+          
+          return obj;
+        }
+      }
+    } catch (e) {
+      console.warn('Could not convert string to object:', e);
+    }
+    return {};
+  };
+
   // Save cart to localStorage whenever it changes
   useEffect(() => {
     if (isCartLoaded) {
-      localStorage.setItem('printingCart', JSON.stringify(cartItems));
+      try {
+        // Ensure configuration is properly stringified as JSON
+        const cleanCart = cartItems.map(item => ({
+          type: item.type,
+          productName: item.productName,
+          price: Number(item.price),
+          quantity: Number(item.quantity),
+          total: Number(item.total),
+          summary: item.summary || {},
+          configuration: item.configuration || {},
+          id: item.id,
+          addedAt: item.addedAt || new Date().toISOString()
+        }));
+        
+        localStorage.setItem('printingCart', JSON.stringify(cleanCart));
+      } catch (error) {
+        console.error('Error saving cart:', error);
+      }
     }
   }, [cartItems, isCartLoaded]);
 
-  // Save pendingOrderId to localStorage
-  useEffect(() => {
-    if (pendingOrderId) {
-      localStorage.setItem('pendingOrderId', pendingOrderId);
-    } else {
-      localStorage.removeItem('pendingOrderId');
-    }
-  }, [pendingOrderId]);
-
-  // Add item to cart
+  // Add item to cart with proper validation
   const addToCart = (item) => {
-    const newItem = {
-      ...item,
-      id: `${item.type}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      addedAt: new Date().toISOString(),
+    // Fix: Ensure configuration is stored as proper object
+    let configuration = {};
+    if (item.configuration) {
+      if (typeof item.configuration === 'string') {
+        configuration = convertStringToObject(item.configuration);
+      } else {
+        configuration = item.configuration;
+      }
+    }
+
+    const cleanItem = {
+      type: item.type || 'perfect-binding',
+      productName: item.productName || 'Printing Product',
+      price: Number(item.price) || 0,
+      quantity: Number(item.quantity) || 1,
+      total: Number(item.total) || (Number(item.price) || 0) * (Number(item.quantity) || 1),
+      summary: item.summary || {},
+      configuration: configuration,
+      id: `${item.type || 'item'}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      addedAt: new Date().toISOString()
     };
 
     setCartItems(prevItems => {
-      // Check if similar configuration already exists
+      // Check if similar item exists
       const existingIndex = prevItems.findIndex(
         existingItem => 
-          existingItem.type === item.type &&
-          JSON.stringify(existingItem.configuration) === JSON.stringify(item.configuration)
+          existingItem.type === cleanItem.type &&
+          existingItem.productName === cleanItem.productName
       );
 
       if (existingIndex !== -1) {
         // Update quantity if same item exists
         const updatedItems = [...prevItems];
+        const existingItem = updatedItems[existingIndex];
+        const newQuantity = existingItem.quantity + cleanItem.quantity;
         updatedItems[existingIndex] = {
-          ...updatedItems[existingIndex],
-          quantity: updatedItems[existingIndex].quantity + item.quantity,
-          total: (updatedItems[existingIndex].quantity + item.quantity) * item.price
+          ...existingItem,
+          quantity: newQuantity,
+          total: newQuantity * existingItem.price
         };
         return updatedItems;
       } else {
         // Add new item
-        return [...prevItems, newItem];
+        return [...prevItems, cleanItem];
       }
     });
 
@@ -120,96 +231,6 @@ export const CartProvider = ({ children }) => {
     setCartItems([]);
     setPendingOrderId(null);
     localStorage.removeItem('printingCart');
-    localStorage.removeItem('pendingOrderId');
-  };
-
-  // Add to CartContext.js
-const saveOrderToDatabase = async (orderData) => {
-  try {
-    const response = await fetch('/api/orders/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(orderData),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to save order');
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error saving order:', error);
-    throw error;
-  }
-};
-
-const createWireTransferOrder = async (orderData) => {
-  try {
-    const response = await fetch('/api/orders/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        ...orderData,
-        paymentMethod: 'wire_transfer',
-        status: 'pending',
-        requiresAction: true,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to create wire transfer order');
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error creating wire transfer order:', error);
-    throw error;
-  }
-};
-
-processWireTransferCheckout: async (orderData) => {
-  try {
-    const result = await createWireTransferOrder(orderData);
-    
-    // Don't clear cart immediately - wait for confirmation
-    return result;
-  } catch (error) {
-    console.error('Failed to process wire transfer checkout:', error);
-    throw error;
-  }
-};
-
-// Then add to the CartContext provider value
-completeCheckout: async (orderData) => {
-  try {
-    await saveOrderToDatabase(orderData);
-    setCartItems([]);
-    setPendingOrderId(null);
-    localStorage.removeItem('printingCart');
-    localStorage.removeItem('pendingOrderId');
-  } catch (error) {
-    console.error('Failed to complete checkout:', error);
-    throw error;
-  }
-};
-
-  // Start checkout process - generate order ID
-  const startCheckout = () => {
-    const orderId = 'order_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    setPendingOrderId(orderId);
-    return orderId;
-  };
-
-  // Complete checkout - clear cart after successful payment
-  const completeCheckout = () => {
-    setCartItems([]);
-    setPendingOrderId(null);
-    localStorage.removeItem('printingCart');
-    localStorage.removeItem('pendingOrderId');
   };
 
   // Calculate cart total
@@ -217,6 +238,20 @@ completeCheckout: async (orderData) => {
 
   // Calculate item count for cart icon
   const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  // Start checkout process
+  const startCheckout = () => {
+    const orderId = 'order_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    setPendingOrderId(orderId);
+    return orderId;
+  };
+
+  // Complete checkout
+  const completeCheckout = () => {
+    setCartItems([]);
+    setPendingOrderId(null);
+    localStorage.removeItem('printingCart');
+  };
 
   return (
     <CartContext.Provider

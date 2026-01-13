@@ -1,15 +1,14 @@
+//` app/api/customer/auth/logout/route.js
 export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
 
 export async function POST() {
-  const response = NextResponse.json({ message: 'Logout successful' });
+  // Since we're using JWT tokens stored on the client side,
+  // logout just involves the client removing the token.
+  // We could implement token blacklisting here if needed.
   
-  response.cookies.set('customerToken', '', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: 0
+  return NextResponse.json({
+    success: true,
+    message: 'Logged out successfully'
   });
-
-  return response;
 }

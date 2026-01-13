@@ -1,11 +1,11 @@
-// app/api/customer/auth/me/route.js
+// app/api/customer/auth/update/route.js
 export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import jwt from 'jsonwebtoken';
 import Customer from '@/models/Customer';
 
-export async function GET(request) {
+export async function PUT(request) {
   try {
     await dbConnect();
     
@@ -23,9 +23,19 @@ export async function GET(request) {
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
     
-    // Find customer
-    const customer = await Customer.findById(decoded.id).select('-password').lean();
+    const updateData = await request.json();
     
+    // Remove sensitive fields
+    delete updateData.password;
+    delete updateData.email; // Don't allow email change
+    
+    // Update customer
+    const customer = await Customer.findByIdAndUpdate(
+      decoded.id,
+      { $set: updateData },
+      { new: true, runValidators: true }
+    ).select('-password');
+
     if (!customer) {
       return NextResponse.json(
         { success: false, error: 'Customer not found' },
@@ -36,14 +46,15 @@ export async function GET(request) {
     return NextResponse.json({
       success: true,
       customer: {
-        ...customer,
+        ...customer.toObject(),
         _id: customer._id.toString(),
         id: customer._id.toString(),
-      }
+      },
+      message: 'Profile updated successfully'
     });
 
   } catch (error) {
-    console.error('Error fetching customer:', error);
+    console.error('Update customer error:', error);
     
     if (error.name === 'JsonWebTokenError') {
       return NextResponse.json(
@@ -53,7 +64,7 @@ export async function GET(request) {
     }
     
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch customer data' },
+      { success: false, error: 'Failed to update profile' },
       { status: 500 }
     );
   }

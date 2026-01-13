@@ -9,23 +9,53 @@ export async function GET(request, { params }) {
     await dbConnect();
     
     const { customerId } = params;
-    
-    if (!customerId) {
-      return NextResponse.json(
-        { error: 'Customer ID is required' },
-        { status: 400 }
-      );
-    }
 
-    const orders = await Order.find({ customerId })
-      .sort({ createdAt: -1 })
-      .limit(20);
+    // Fetch orders for this customer
+    const orders = await Order.find({ 
+      $or: [
+        { customerId: customerId },
+        { 'customer._id': customerId }
+      ]
+    })
+    .sort({ createdAt: -1 })
+    .lean();
 
-    return NextResponse.json({ orders });
+    // Transform orders for frontend
+    const formattedOrders = orders.map(order => ({
+      _id: order._id.toString(),
+      orderId: order.orderId,
+      customerId: order.customerId,
+      customerName: order.customerName,
+      customerEmail: order.customerEmail,
+      customerPhone: order.customerPhone || '',
+      customerAddress: order.customerAddress || {},
+      items: order.items || [],
+      subtotal: order.subtotal || 0,
+      taxAmount: order.taxAmount || 0,
+      shippingAmount: order.shippingAmount || 0,
+      total: order.total || 0,
+      paymentMethod: order.paymentMethod,
+      paymentStatus: order.paymentStatus,
+      status: order.status || 'pending',
+      notes: order.notes || '',
+      requiresAction: order.requiresAction || false,
+      createdAt: order.createdAt,
+      updatedAt: order.updatedAt
+    }));
+
+    return NextResponse.json({
+      success: true,
+      orders: formattedOrders
+    });
+
   } catch (error) {
-    console.error('Error fetching orders:', error);
+    console.error('❌ Error fetching customer orders:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch orders' },
+      { 
+        success: false,
+        error: 'Failed to fetch customer orders',
+        message: error.message
+      },
       { status: 500 }
     );
   }

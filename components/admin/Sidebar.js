@@ -11,6 +11,7 @@ import {
   Image,
   Settings,
   ChevronLeft,
+  ShoppingBag,
   ChevronRight,
   FormInput,
 } from 'lucide-react';
@@ -22,6 +23,7 @@ export default function Sidebar() {
   const menuItems = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
     { name: 'Users', href: '/admin/dashboard/users', icon: Users },
+    { name: 'Orders', href: '/admin/dashboard/orders', icon: ShoppingBag },
     { name: 'Pages', href: '/admin/dashboard/pages', icon: FileText },
     { name: 'Media', href: '/admin/dashboard/media', icon: Image },
     { name: 'Forms', href: '/admin/dashboard/forms', icon: FormInput },
