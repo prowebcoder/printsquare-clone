@@ -12,14 +12,13 @@ import {
   Zap,
   Cpu,
   HardDrive,
-  Tool,
   Filter,
   Thermometer,
   Box,
-  Cogs
+  Cog
 } from "lucide-react";
 
-// Icon mapping
+// Icon mapping - updated to use existing icons
 const iconComponents = {
   wrench: Wrench,
   printer: Printer,
@@ -30,11 +29,11 @@ const iconComponents = {
   zap: Zap,
   cpu: Cpu,
   hardDrive: HardDrive,
-  tool: Tool,
   filter: Filter,
   thermometer: Thermometer,
   box: Box,
-  cogs: Cogs
+  cog: Cog,
+  tool: Wrench 
 };
 
 export default function ServiceBoxRenderer({ component, index }) {
@@ -135,6 +134,7 @@ export default function ServiceBoxRenderer({ component, index }) {
         {/* Boxes Grid */}
         <div className={`grid grid-cols-1 ${content.boxesPerRow === 2 ? 'sm:grid-cols-2' : content.boxesPerRow === 3 ? 'sm:grid-cols-2 lg:grid-cols-3' : 'sm:grid-cols-2 lg:grid-cols-4'} gap-8`}>
           {content.boxes?.map((box, boxIndex) => {
+            // Use fallback if icon doesn't exist
             const IconComponent = iconComponents[box.icon] || Wrench;
             
             return (

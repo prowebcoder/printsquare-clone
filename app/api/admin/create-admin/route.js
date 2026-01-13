@@ -1,14 +1,15 @@
 // app/api/admin/create-admin/route.js
 export const dynamic = "force-dynamic";
-import { connectToDatabase } from '@/lib/mongodb';
+import dbConnect from '@/lib/mongodb'; 
 import User from '@/models/User';
 import bcrypt from 'bcryptjs';
 
 export async function POST(request) {
   try {
-    const { db } = await connectToDatabase();
+   
+    await dbConnect();
 
-    // Check if there's already an admin user
+  
     const existingAdmin = await User.findOne({ role: 'admin' });
     if (existingAdmin) {
       return new Response(JSON.stringify({ message: 'Admin user already exists' }), {
